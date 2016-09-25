@@ -1,0 +1,3 @@
+
+include ':FuzzPCore'
+project(':FuzzPCore').projectDir = new File(settingsDir, '../FuzzPCore')
