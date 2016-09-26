@@ -4,7 +4,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import core.FuzzyPetriLogic.FuzzyToken;
@@ -66,32 +65,6 @@ public class TwoXOneTable implements ITable {
 		    .filter(fvAr -> ruleTable.get(((FuzzyValue[]) fvAr)[0]).get(((FuzzyValue[]) fvAr)[1]) != FuzzyValue.FF)
 		    .findAny();
 		return rez.isPresent();
-	}
-
-	public String toShortString() {
-		String toRet = FuzzyValue.inOrder.stream().map(fv -> {
-			String val = FuzzyValue.inOrder.stream().map(ifv -> ruleTable.get(fv).get(ifv))
-			    .map(ffv -> ((ffv != null) ? ffv.name() : "!null!")).collect(Collectors.joining(";"));
-			return "{" + val + "}";
-		}).collect(Collectors.joining("\n"));
-		return "[" + toRet + "]";
-	}
-
-	public static TwoXOneTable buildFromString(String from) {
-		from = from.replace(',', ';').replace('[', '\0').replace(']', '\0').replace('{', '\0').replace('}', ';');
-		String[] la = from.split(";");
-		EnumMap<FuzzyValue, Map<FuzzyValue, FuzzyValue>> ruleTable = new EnumMap<>(FuzzyValue.class);
-
-		for (int i = 0; i < FuzzyValue.inOrder.size(); i++) {
-			EnumMap<FuzzyValue, FuzzyValue> tempRuleTable = new EnumMap<>(FuzzyValue.class);
-			for (int q = 0; q < FuzzyValue.inOrder.size(); q++) {
-				int index = i * FuzzyValue.inOrder.size() + q;
-				tempRuleTable.put(FuzzyValue.inOrder.get(q), FuzzyValue.fromString(la[index]));
-			}
-			ruleTable.put(FuzzyValue.inOrder.get(i), tempRuleTable);
-		}
-
-		return new TwoXOneTable(ruleTable);
 	}
 
 	public Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> getTable() {

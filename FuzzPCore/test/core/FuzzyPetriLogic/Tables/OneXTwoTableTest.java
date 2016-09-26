@@ -6,12 +6,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 
 public class OneXTwoTableTest {
+	TableParser parser;
 
   @Before
   public void setUp() throws Exception {
+		parser = new TableParser(true);
   }
 
   @Test
@@ -41,7 +44,8 @@ public class OneXTwoTableTest {
 
   @Test
   public void inverse_test() {
-    OneXTwoTable table = OneXTwoTable.buildFromString("[NL;NM;ZR;PM;PL;FF;PL; PL; ZR;NL;NL;FF ]");
+		OneXTwoTable table = parser.parseOneXTwoTable("{[<NL,PL><NM,PL><ZR,ZR><PM,NL><PL,NL><FF,FF>]}");
+    
     FuzzyToken ll = new FuzzyToken(0.1, 0.2, 0.3, 0.35, 0.05);
     FuzzyToken[] res = table.execute(new FuzzyToken[] { ll });
     assertTrue(res.length == 2);
@@ -53,7 +57,7 @@ public class OneXTwoTableTest {
 
   @Test
   public void selector_test() {
-    OneXTwoTable table = OneXTwoTable.buildFromString("[NL;NM;ZR;PM;PL;FF; FF; FF; FF;FF;FF;ZR ]");
+		OneXTwoTable table = parser.parseOneXTwoTable("{[<NL,FF><NM,FF><ZR,FF><PM,FF><PL,FF><FF,ZR>]}");
     FuzzyToken ll = new FuzzyToken(0.1, 0.2, 0.3, 0.35, 0.05);
     FuzzyToken[] res = table.execute(new FuzzyToken[] { ll });
 

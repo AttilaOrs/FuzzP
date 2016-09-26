@@ -6,18 +6,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 
 public class TwoXTwoTableTest {
 
-  @Test
-  public void parsing_string_test() {
-    TwoXTwoTable def = TwoXTwoTable.defaultTable();
-    String les = def.toShortString();
-    TwoXTwoTable rez = TwoXTwoTable.buildFromString(les);
-    String built = rez.toShortString();
-    assertEquals(les, built);
-  }
 
   @Test
   public void default_test() {
@@ -39,16 +32,17 @@ public class TwoXTwoTableTest {
   }
 
   String fuzzTable = ""//
-      + "[{<NL,FF>;<NL,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>}" //
-      + "{<NL,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>}" //
-      + "{<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>}"//
-      + "{<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,PL>;<FF,FF>}"//
-      + "{<FF,FF>;<FF,FF>;<FF,FF>;<FF,PL>;<FF,PL>;<FF,FF>}"//
-      + "{<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>}]";
+	    + "{[<NL,FF>;<NL,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>]" //
+	    + "[<NL,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>]" //
+	    + "[<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>]"//
+	    + "[<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,PL>;<FF,FF>]"//
+	    + "[<FF,FF>;<FF,FF>;<FF,FF>;<FF,PL>;<FF,PL>;<FF,FF>]"//
+	    + "[<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>;<FF,FF>]}";
 
   @Test
   public void intersting_table_test() {
-    TwoXTwoTable intersting = TwoXTwoTable.buildFromString(fuzzTable);
+		TableParser parser = new TableParser(true);
+		TwoXTwoTable intersting = parser.parseTwoXTwoTable(fuzzTable);
     FuzzyToken firstToken = new FuzzyToken(0.0, 0.5, 0.0, 0.0, 0.5);
     FuzzyToken secondToken = new FuzzyToken(0.5, 0.0, 0.0, 0.5, 0.0);
     FuzzyToken[] input = new FuzzyToken[] { firstToken, secondToken };

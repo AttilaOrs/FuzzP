@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import core.FuzzyPetriLogic.FuzzyToken;
@@ -75,37 +74,6 @@ public class TwoXTwoTable implements ITable {
 			ruleTable.get(FuzzyValue.FF).put(fv, FuzzyValue.FF);
 		}
 		return new TwoXTwoTable(ruleTable, ruleTable);
-	}
-
-	public String toShortString() {
-		String toRet = FuzzyValue.inOrder.stream().map(fv -> {
-			String val = FuzzyValue.inOrder.stream()
-			    .map(ifv -> "<" + ruleTable1.get(fv).get(ifv).name() + "," + ruleTable2.get(fv).get(ifv).name() + ">")
-			    .collect(Collectors.joining(";"));
-			return "{" + val + "}";
-		}).collect(Collectors.joining("\n"));
-		return "[" + toRet + "]";
-	}
-
-	public static TwoXTwoTable buildFromString(String from) {
-		from = from.replace("[", "").replace("]", "").replace("{", "").replace("}", ";").replace("\n", "");
-		String[] la = from.split(";");
-		Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> ruleTable1 = new EnumMap<>(FuzzyValue.class);
-		Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> ruleTable2 = new EnumMap<>(FuzzyValue.class);
-
-		for (int i = 0; i < FuzzyValue.inOrder.size(); i++) {
-			EnumMap<FuzzyValue, FuzzyValue> tempRuleTable1 = new EnumMap<>(FuzzyValue.class);
-			EnumMap<FuzzyValue, FuzzyValue> tempRuleTable2 = new EnumMap<>(FuzzyValue.class);
-			for (int q = 0; q < FuzzyValue.inOrder.size(); q++) {
-				int index = i * FuzzyValue.inOrder.size() + q;
-				String[] samePlaceRules = la[index].replace("<", "").replace(">", "").split(",");
-				tempRuleTable1.put(FuzzyValue.inOrder.get(q), FuzzyValue.fromString(samePlaceRules[0]));
-				tempRuleTable2.put(FuzzyValue.inOrder.get(q), FuzzyValue.fromString(samePlaceRules[1]));
-			}
-			ruleTable1.put(FuzzyValue.inOrder.get(i), tempRuleTable1);
-			ruleTable2.put(FuzzyValue.inOrder.get(i), tempRuleTable2);
-		}
-		return new TwoXTwoTable(ruleTable1, ruleTable2);
 	}
 
 	public ArrayList<Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>>> getTables() {

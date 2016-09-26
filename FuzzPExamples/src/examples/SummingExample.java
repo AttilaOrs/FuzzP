@@ -28,7 +28,7 @@ public class SummingExample {
 
 		TwoXOneTable table = parser.parseTwoXOneTable(tableStr);
     // print out the table to see if it is everything OK
-    System.out.println(table.toShortString());
+		System.out.println(parser.createString(table));
     // create a driver
 		FuzzyDriver driver = FuzzyDriver.createDriverFromMinMax(-5, 5);
     // create list where you can store the inps and outs

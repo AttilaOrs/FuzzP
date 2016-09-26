@@ -61,28 +61,6 @@ public class OneXTwoTable implements ITable {
 		return rez.isPresent();
 	}
 
-	public static OneXTwoTable buildFromString(String from) {
-		String[] splitted = from.replace('[', '\0').replace(']', '\0').split(";");
-		EnumMap<FuzzyValue, FuzzyValue> table1 = new EnumMap<>(FuzzyValue.class);
-		EnumMap<FuzzyValue, FuzzyValue> table2 = new EnumMap<>(FuzzyValue.class);
-		for (int i = 0; i < FuzzyValue.inOrder.size(); i++) {
-			table1.put(FuzzyValue.inOrder.get(i), FuzzyValue.fromString(splitted[i]));
-			table2.put(FuzzyValue.inOrder.get(i), FuzzyValue.fromString(splitted[i + FuzzyValue.inOrder.size()]));
-		}
-		return new OneXTwoTable(table1, table2);
-	}
-
-	public String toShortString() {
-		StringBuilder table1Str = new StringBuilder();
-		StringBuilder table2Str = new StringBuilder();
-		for (FuzzyValue ff : FuzzyValue.inOrder) {
-			table1Str.append(valTable1.get(ff)).append(";");
-			table2Str.append(valTable2.get(ff)).append(";");
-		}
-		table1Str.append(table2Str.toString());
-		return table1Str.toString();
-	}
-
 	public List<Map<FuzzyValue, FuzzyValue>> getTables() {
 		List<Map<FuzzyValue, FuzzyValue>> toRet = new ArrayList<>();
 		toRet.add(valTable1);

@@ -69,15 +69,6 @@ public class OneXOneTable implements ITable {
 		return rez.isPresent();
 	}
 
-	public static OneXOneTable buildFromString(String from) {
-		String[] splitted = from.replace('[', '\0').replace(']', '\0').split(";");
-		EnumMap<FuzzyValue, FuzzyValue> table = new EnumMap<>(FuzzyValue.class);
-		for (int i = 0; i < FuzzyValue.inOrder.size(); i++) {
-			table.put(FuzzyValue.inOrder.get(i), FuzzyValue.fromString(splitted[i]));
-		}
-		return new OneXOneTable(table);
-	}
-
 	@Override
 	public Stream<FuzzyValue> cellsOneByOne() {
 		return FuzzyValue.inOrder.stream().map(fv -> valTable.get(fv));

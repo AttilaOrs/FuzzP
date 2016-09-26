@@ -24,6 +24,79 @@ public class TableParser {
 		this.phiIsRequired = phiIsRequired;
 	}
 
+	public String createString(ITable table) {
+		if(table instanceof OneXOneTable){
+			return createStrForOneXOneTable((OneXOneTable) table);
+		} else if (table instanceof OneXTwoTable){
+			return createStrForOneXTwoTable((OneXTwoTable) table);
+		} else if (table instanceof TwoXOneTable) {
+			return createStrForTwoXOneTable((TwoXOneTable) table);
+		} else if (table instanceof TwoXTwoTable) {
+			return createStrForTwoXOneTable((TwoXTwoTable) table);
+		}
+
+		return "";
+	}
+
+	private String createStrForTwoXOneTable(TwoXTwoTable table) {
+		ArrayList<String> lines = new ArrayList<>();
+		for (FuzzyValue index : fuzzyValsInOrder()) {
+			lines.add(createLineWithDoubleCells(table.getTables().get(0).get(index), table.getTables().get(1).get(index)));
+		}
+		return createTabeStrFromLines(lines);
+	}
+
+	private String createStrForTwoXOneTable(TwoXOneTable table) {
+		ArrayList<String> lines = new ArrayList<>();
+		for (FuzzyValue index : fuzzyValsInOrder()) {
+			lines.add(createLineWithSinleCelss(table.getTable().get(index)));
+		}
+		return createTabeStrFromLines(lines);
+	}
+
+	private String createStrForOneXTwoTable(OneXTwoTable table) {
+		String lineStr = createLineWithDoubleCells(table.getTables().get(0), table.getTables().get(1));
+		return createTableFromASingleLine(lineStr);
+	}
+
+	private String createStrForOneXOneTable(OneXOneTable table) {
+		String lineStr = createLineWithSinleCelss(table.getTable());
+		return createTableFromASingleLine(lineStr);
+	}
+
+	private String createTableFromASingleLine(String lineStr) {
+		return "{" + lineStr + "}";
+	}
+
+	private String createTabeStrFromLines(List<String> lines) {
+		StringBuilder bld = new StringBuilder("{");
+		for (String line : lines) {
+			bld.append(line).append("\n");
+		}
+		bld.append("}");
+		return bld.toString();
+	}
+
+	private String createLineWithSinleCelss(Map<FuzzyValue, FuzzyValue> table) {
+		StringBuilder bld = new StringBuilder("[");
+		for (FuzzyValue fv : fuzzyValsInOrder()) {
+			bld.append("<").append(table.get(fv).name()).append(">");
+		}
+		bld.append("]");
+		return bld.toString();
+	}
+
+	private String createLineWithDoubleCells(Map<FuzzyValue, FuzzyValue> firstTable,
+	    Map<FuzzyValue, FuzzyValue> secondTable) {
+		StringBuilder bld = new StringBuilder("[");
+		for (FuzzyValue fv : fuzzyValsInOrder()) {
+			bld.append("<").append(firstTable.get(fv).name())
+			    .append(",").append(secondTable.get(fv).name()).append(">");
+		}
+		bld.append("]");
+		return bld.toString();
+	}
+
 	public ITable parseTable(String strToParse) {
 		List<String> ls = splitToCellsContent(strToParse);
 		if (!ls.get(0).contains(",")) {

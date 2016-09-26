@@ -7,12 +7,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 
 public class OneXOneTableTest {
+	TableParser parserWithPhi;
 
   @Before
   public void setUp() throws Exception {
+		parserWithPhi = new TableParser(true);
   }
 
   @Test
@@ -26,7 +29,7 @@ public class OneXOneTableTest {
 
   @Test
   public void inverse_test() {
-    OneXOneTable def = OneXOneTable.buildFromString("[PL;PM;ZR;NM;NL;FF]");
+		OneXOneTable def = parserWithPhi.parseOneXOneTable("{[<PL><PM><ZR><NM><NL><FF>]}");
     FuzzyToken token = new FuzzyToken(0.1, 0.6, 0.0, 0.0, 0.3);
     FuzzyToken[] res = def.execute(new FuzzyToken[] { token });
     assertTrue(res.length == 1);
@@ -35,7 +38,7 @@ public class OneXOneTableTest {
 
   @Test
   public void nothing_gives_nothing() {
-    OneXOneTable def = OneXOneTable.buildFromString("[PL;PM;ZR;NM;NL;FF]");
+		OneXOneTable def = parserWithPhi.parseOneXOneTable("{[<PL><PM><ZR><NM><NL><FF>]}");
     FuzzyToken token = new FuzzyToken();
     FuzzyToken[] res = def.execute(new FuzzyToken[] { token });
     assertTrue(res.length == 1);
@@ -44,7 +47,7 @@ public class OneXOneTableTest {
 
   @Test
   public void no_rule_gives_nothing() {
-    OneXOneTable def = OneXOneTable.buildFromString("[PL;FF;ZR;NM;FF;FF]");
+		OneXOneTable def = parserWithPhi.parseOneXOneTable("{[<PL><FF><ZR><NM><FF><FF>]}");
     FuzzyToken token = new FuzzyToken(0.0, 0.6, 0.0, 0.0, 0.4);
     FuzzyToken[] res = def.execute(new FuzzyToken[] { token });
     assertTrue(res.length == 1);
@@ -53,7 +56,7 @@ public class OneXOneTableTest {
 
   @Test
   public void inhibition() {
-    OneXOneTable def = OneXOneTable.buildFromString("[FF;FF;FF;FF;FF;ZR]");
+		OneXOneTable def = parserWithPhi.parseOneXOneTable("{[<FF><FF><FF><FF><FF><ZR>]}");
     FuzzyToken token = new FuzzyToken();
     FuzzyToken[] res = def.execute(new FuzzyToken[] { token });
     assertTrue(res.length == 1);
@@ -66,7 +69,7 @@ public class OneXOneTableTest {
     assertFalse(tt.executable(new FuzzyToken[] { new FuzzyToken() }));
     assertTrue(tt.executable(new FuzzyToken[] { new FuzzyToken(1.0, 0.0, 0.0, 0.0, 0.0) }));
 
-    OneXOneTable otherTable = OneXOneTable.buildFromString("[FF;ZR;FF;ZR;FF;ZR]");
+		OneXOneTable otherTable = parserWithPhi.parseOneXOneTable("{[<FF><ZR><FF><ZR><FF><ZR>]}");
 
     assertTrue(otherTable.executable(new FuzzyToken[] { new FuzzyToken() }));
     assertFalse(otherTable.executable(new FuzzyToken[] { new FuzzyToken(0.5, 0.0, 0.5, 0.0, 0.0) }));

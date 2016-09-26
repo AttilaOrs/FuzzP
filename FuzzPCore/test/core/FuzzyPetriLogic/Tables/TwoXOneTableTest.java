@@ -2,19 +2,14 @@ package core.FuzzyPetriLogic.Tables;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 
 public class TwoXOneTableTest {
-  @Test
-  public void parsing_test() {
-    TwoXOneTable table = TwoXOneTable.defaultTable();
-    String str = table.toShortString();
-    TwoXOneTable parsedTable = TwoXOneTable.buildFromString(str);
-    assertEquals(str, parsedTable.toShortString());
-  }
 
   @Test
   public void default_test() {
@@ -38,17 +33,18 @@ public class TwoXOneTableTest {
 
   }
 
-  String change = String.join("\n", //
-      "[{FF;FF;FF;FF;FF;PL}", //
-      " {FF;FF;FF;FF;FF;PL}", //
-      " {FF;FF;FF;FF;FF;PL}", //
-      " {FF;FF;FF;FF;FF;PL}", //
-      " {FF;FF;FF;FF;FF;PL}", //
-      " {NL;NL;NL;NL;NL;ZR}])"); //
+	String changerStr = "" +
+	    "{[<FF><FF><FF><FF><FF><PL>]" +
+	    " [<FF><FF><FF><FF><FF><PL>]" +
+	    " [<FF><FF><FF><FF><FF><PL>]" +
+	    " [<FF><FF><FF><FF><FF><PL>]" +
+	    " [<FF><FF><FF><FF><FF><PL>]" +
+	    " [<NL><NL><NL><NL><NL><ZR>]}";
 
   @Test
   public void changer_test() {
-    TwoXOneTable changer = TwoXOneTable.buildFromString(change);
+		TableParser parser = new TableParser(true);
+		TwoXOneTable changer = parser.parseTwoXOneTable(changerStr);
     FuzzyToken phi = new FuzzyToken();
     FuzzyToken nonPhi = new FuzzyToken(1.0, 0.0, 0.0, 0.0, 0.0);
     FuzzyToken[] res = changer.execute(new FuzzyToken[] { phi, nonPhi });
@@ -64,18 +60,37 @@ public class TwoXOneTableTest {
 
     res = changer.execute(new FuzzyToken[] { nonPhi, nonPhi });
     assertEquals("<phi>", res[0].shortString());
+
+		assertFalse(changer.executable(new FuzzyToken[] { nonPhi, nonPhi }));
+		assertTrue(changer.executable(new FuzzyToken[] { nonPhi, phi }));
+		assertTrue(changer.executable(new FuzzyToken[] { phi, nonPhi }));
+		assertTrue(changer.executable(new FuzzyToken[] { phi, phi }));
   }
 
-  String c_test = "PL, PM, ZR, FF, FF, FF ,PM, PM, ZR, FF, FF, FF,FF, FF, ZR, FF, FF, ZR,FF, FF, ZR, NM, NM, FF,FF, FF, ZR, NM, NL, FF,FF, FF, ZR, FF, FF, FF";
+	String c_test = "PL, PM, ZR, FF, FF, FF "
+	    + ",PM, PM, ZR, FF, FF, FF,"
+	    + "FF, FF, ZR, FF, FF, ZR,"
+	    + "FF, FF, ZR, NM, NM, FF,"
+	    + "FF, FF, ZR, NM, NL, FF,FF, FF, ZR, FF, FF, FF";
 
+	String c_tets_str = "" +
+	    "{[<PL><PM><ZR><FF><FF><FF>]" +
+	    " [<PM><PM><ZR><FF><FF><ff>]" +
+	    " [<FF><FF><ZR><FF><FF><ZR>]" +
+	    " [<FF><FF><ZR><NM><NM><FF>]" +
+	    " [<FF><FF><FF><NM><NL><FF>]" +
+	    " [<FF><FF><ZR><FF><FF><FF>]}";
   @Test
   public void direction_test() {
-    TwoXOneTable c = TwoXOneTable.buildFromString(c_test);
+		TableParser parser = new TableParser(true);
+		TwoXOneTable c = parser.parseTwoXOneTable(c_tets_str);
     FuzzyToken NLZR = new FuzzyToken(0.5, 0.0, 0.5, 0.0, 0.0);
     FuzzyToken PLPM = new FuzzyToken(0.0, 0.0, 0.0, 0.5, 0.5);
 
     assertFalse(c.executable(new FuzzyToken[] { NLZR, PLPM }));
-    assert(c.executable(new FuzzyToken[] { PLPM, NLZR }));
+    assertTrue(c.executable(new FuzzyToken[] { PLPM, NLZR }));
+		assertFalse(c.executable(new FuzzyToken[] { new FuzzyToken(), new FuzzyToken() }));
+		assertTrue(c.executable(new FuzzyToken[] { FuzzyToken.zeroToken(), new FuzzyToken() }));
   }
 
 }
