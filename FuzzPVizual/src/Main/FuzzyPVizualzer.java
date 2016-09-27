@@ -1,6 +1,7 @@
 package Main;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -11,12 +12,15 @@ import core.FuzzyPetriLogic.FuzzyDriver;
 import core.FuzzyPetriLogic.Controller.FuzzyPetriNetSyncornousController;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
+import exampleNets.SelectionLikeTwoBranchExample;
 import exampleNets.SimpleDelayPetriNetBuilder;
 
 public class FuzzyPVizualzer {
 
   public static FuzzyPVizualModel createModel() {
-    SimpleDelayPetriNetBuilder bld = new SimpleDelayPetriNetBuilder();
+    SelectionLikeTwoBranchExample bld = new SelectionLikeTwoBranchExample();
+    int P1_inp  = 1;
+    int P2_inp  = 2;
     HashMap<Integer, FuzzyDriver> ll = new HashMap<>();
     ll.put(2, FuzzyDriver.createDriverFromMinMax(-1.0, 1.0));
     FuzzyPetriNet net = bld.getNet();
@@ -24,10 +28,14 @@ public class FuzzyPVizualzer {
     FuzzyPetriNetSyncornousController controller = new FuzzyPetriNetSyncornousController(ll, ll, net);
     controller.setRecorderForExecutor(recorder);
     
-    HashMap<Integer, Double> inpMap = new HashMap<>();
+    Random rnd =  new Random();
     for (int i = 0; i < 100; i++) {
-    inpMap.put(2, i/100.0);
-      
+		HashMap<Integer, Double> inpMap = new HashMap<>();
+		if(i%4 == 0){
+			inpMap.put(P1_inp, rnd.nextDouble());
+		} else if(i%5 == 2){
+			inpMap.put(P2_inp, rnd.nextDouble());
+		}
       controller.control(inpMap);
     }
 

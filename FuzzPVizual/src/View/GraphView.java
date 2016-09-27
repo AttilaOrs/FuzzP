@@ -23,13 +23,21 @@ public class GraphView implements IView {
   private static int FONT_SIZE = BIG_SIZE / 2 - SMALL_SIZE;
 
   private static final String TRANSITION_STYLE = "shape=rectangle;fillColor=#6C939F;strokeColor=#6C939F;fontSize="
-      + FONT_SIZE;
+      + FONT_SIZE + ";";
+  private static final String TRANSITION_STYLE_OUT = "shape=rectangle;fillColor=#6C939F;strokeColor=#104050;strokeWidth=2;fontSize="
+      + FONT_SIZE + ";";
   private static final String TRANSITION_STYLE_SELECTED = "shape=rectangle;fillColor=#104050;strokeColor=#104050;fontSize="
-      + FONT_SIZE;
-  private static final String PLACE_STYLE = "shape=ellipse;fillColor=#6C939F;strokeColor=#104050;fontColor=#104050;"
-      + FONT_SIZE;
-  private static final String PLACE_STYLE_SELECTED = "shape=ellipse;fillColor=#104050;strokeWidth=2;strokeColor=#6C939F;fontColor=#6C939F;"
-      + FONT_SIZE;
+      + FONT_SIZE + ";";
+  private static final String TRANSITION_STYLE_SELECTED_OUT = "shape=rectangle;fillColor=#104050;strokeColor=#6C939F;strokeWidth=2;fontSize="
+      + FONT_SIZE + ";";
+  private static final String PLACE_STYLE = "shape=ellipse;fillColor=#6C939F;strokeColor=#104050;fontColor=#104050;fontSize="
+      + FONT_SIZE +";";
+  private static final String PLACE_STYLE_INP = "shape=ellipse;fillColor=#6C939F;strokeWidth=3;strokeColor=#104050;fontColor=#104050;fontSize="
+      + FONT_SIZE +";";
+  private static final String PLACE_STYLE_SELECTED = "shape=ellipse;fillColor=#104050;strokeWidth=2;strokeColor=#6C939F;fontColor=#6C939F;fontSize="
+      + FONT_SIZE + ";";
+  private static final String PLACE_STYLE_SELECTED_INP = "shape=ellipse;fillColor=#104050;strokeWidth=4;strokeColor=#6C939F;fontColor=#6C939F;fontSize="
+      + FONT_SIZE + ";";
   private static final String EDGE_STYLE = "fillColor=#6C939F;strokeColor=#6C939F;verticalAlign=top;";
 
   private static String TR_NR = "TRNR";
@@ -145,17 +153,18 @@ public class GraphView implements IView {
 private void createPlacesOnCanvas(Object parent) {
     for (int i = 0; i < model.getDrowableNet().getNrOfPlaces(); i++) {
         mxCell plCell = (mxCell) graph.insertVertex(parent, PL_ID_PTTRN.replace(PL_NR, Integer.toString(i)),
-          model.getDrowableNet().getPlaceName(i), 0, 0, BIG_SIZE, BIG_SIZE, PLACE_STYLE);
+          model.getDrowableNet().getPlaceName(i), 0, 0, BIG_SIZE, BIG_SIZE, placeStyle(i));
         graph.getCellGeometry(plCell).setOffset(new mxPoint(new mxPoint(0, +BIG_SIZE / 10)));
         palceCells.add(plCell);
       }
 }
 
+
 private void createTransitionsOnCanvas(Object parent) {
     for (int i = 0; i < model.getDrowableNet().getNrOfTransition(); i++) {
 
         mxCell trCell = (mxCell) graph.insertVertex(parent, TR_ID_PTTRN.replace(TR_NR, Integer.toString(i)),
-          model.getDrowableNet().getTransitionName(i), 0, 0, SMALL_SIZE, BIG_SIZE, TRANSITION_STYLE);
+          model.getDrowableNet().getTransitionName(i), 0, 0, SMALL_SIZE, BIG_SIZE, transitionStyle(i) );
         graph.getCellGeometry(trCell).setOffset(new mxPoint(0, BIG_SIZE - SMALL_SIZE));
         transitionCells.add(trCell);
       }
@@ -246,27 +255,27 @@ private void createTransitionsOnCanvas(Object parent) {
 
   @Override
   public void placeSelected(int plId) {
-    palceCells.get(plId).setStyle(PLACE_STYLE_SELECTED);
+    palceCells.get(plId).setStyle(placeStyleSelection(plId));
     graphComponent.refresh();
 
   }
 
   @Override
   public void placeDeselect(int plId) {
-    this.palceCells.get(plId).setStyle(PLACE_STYLE);
+    this.palceCells.get(plId).setStyle(placeStyle(plId));
     graphComponent.refresh();
   }
 
 
   @Override
   public void transitionSelected(int trId) {
-    transitionCells.get(trId).setStyle(TRANSITION_STYLE_SELECTED);
+    transitionCells.get(trId).setStyle(transitionStyleSelection(trId));
     graphComponent.refresh();
   }
 
   @Override
   public void transitionDeselected(int trId) {
-    transitionCells.get(trId).setStyle(TRANSITION_STYLE);
+    transitionCells.get(trId).setStyle(transitionStyle(trId));
     graphComponent.refresh();
   }
 
@@ -282,5 +291,21 @@ private void createTransitionsOnCanvas(Object parent) {
   public void zoomOut() {
     graphComponent.zoom(0.95);
   }
+  
+private String placeStyle(int i) {
+	return (model.getDrowableNet().isInputPlace(i))?PLACE_STYLE_INP : PLACE_STYLE;
+}
+
+private String placeStyleSelection(int i) {
+	return (model.getDrowableNet().isInputPlace(i))?PLACE_STYLE_SELECTED_INP : PLACE_STYLE_SELECTED;
+}
+
+private String transitionStyle(int trId){
+	return (model.getDrowableNet().isOuputTransition(trId))?TRANSITION_STYLE_OUT : TRANSITION_STYLE;
+}
+
+private String transitionStyleSelection(int trId){
+	return (model.getDrowableNet().isOuputTransition(trId))?TRANSITION_STYLE_SELECTED_OUT : TRANSITION_STYLE_SELECTED;
+}
 
 }
