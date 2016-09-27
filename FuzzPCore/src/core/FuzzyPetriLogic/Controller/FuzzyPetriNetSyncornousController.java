@@ -7,10 +7,10 @@ import core.FuzzyPetriLogic.FuzzyDriver;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.IDefuzzifier;
 import core.FuzzyPetriLogic.IFuzzyfier;
+import core.FuzzyPetriLogic.Executor.SynchronousFuzzyPetriExecutor;
 import core.FuzzyPetriLogic.Fuzzifiers.TriangleFuzzyfier;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 import core.FuzzyPetriLogic.PetriNet.IFuzzyPetriBehaviourRecorder;
-import core.FuzzyPetriLogic.PetriNet.SynchronousFuzzyPetriExecutor;
 
 public class FuzzyPetriNetSyncornousController {
   private Map<Integer, FuzzyDriver> inpuDrivers;
@@ -57,7 +57,7 @@ public class FuzzyPetriNetSyncornousController {
         fuzzyInps.put(placeId, inp);
       }
     }
-    simulator.startTick(fuzzyInps);
+    simulator.runTick(fuzzyInps);
     Map<Integer, Double> out = new HashMap<>();
     for (Integer trId : recordedOuput.keySet()) {
       out.put(trId, getDefuzzyfier(trId).defuzzify(recordedOuput.get(trId)));

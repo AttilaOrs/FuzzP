@@ -1,5 +1,7 @@
 package exampleNets;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -9,33 +11,47 @@ import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 
 public abstract class AbstarctPetriNetExampleBuilder {
 
-  protected List<FuzzyToken> results;
-  protected List<Integer> firedOuptTransition;
-  protected FuzzyPetriNet exampleNet;
+	protected List<FireLog> results;
+	protected FuzzyPetriNet exampleNet;
 
-  public AbstarctPetriNetExampleBuilder() {
-    results = new ArrayList<>();
-    firedOuptTransition = new ArrayList<>();
-    exampleNet = new FuzzyPetriNet();
-  }
+	public AbstarctPetriNetExampleBuilder() {
+		results = new ArrayList<>();
+		exampleNet = new FuzzyPetriNet();
+	}
 
-  public Consumer<FuzzyToken> testAction(int trId) {
-    return (tk -> {
-      results.add(tk);
-      firedOuptTransition.add(trId);
-    });
-  }
+	public Consumer<FuzzyToken> testAction(int trId) {
+		return (tk -> {
+			results.add(new FireLog(trId, tk, System.currentTimeMillis()));
+		});
+	}
 
-  public FuzzyPetriNet getNet() {
-    return exampleNet;
-  }
+	public FuzzyPetriNet getNet() {
+		return exampleNet;
+	}
 
-  public List<Integer> getFiredOuputTransition() {
-    return firedOuptTransition;
-  }
+	public List<Integer> getFiredOuputTransition() {
+		return results.stream().map(res -> res.trId).collect(toList());
+	}
 
-  public List<FuzzyToken> getResults() {
-    return results;
-  }
+	public List<FuzzyToken> getTokens() {
+		return results.stream().map(res -> res.token).collect(toList());
+	}
+
+	public List<Long> getTimeStamps() {
+		return results.stream().map(res -> res.timeStamp).collect(toList());
+	}
+
+	public static class FireLog {
+		Integer trId;
+		FuzzyToken token;
+		long timeStamp;
+
+		public FireLog(Integer trId, FuzzyToken token, long timeStamp) {
+			this.trId = trId;
+			this.token = token;
+			this.timeStamp = timeStamp;
+		}
+
+	}
 
 }

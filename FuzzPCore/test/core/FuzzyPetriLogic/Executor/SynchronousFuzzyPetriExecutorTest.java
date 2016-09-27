@@ -1,4 +1,4 @@
-package core.FuzzyPetriLogic.PetriNet;
+package core.FuzzyPetriLogic.Executor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import core.FuzzyPetriLogic.FuzzyToken;
+import core.FuzzyPetriLogic.Executor.SynchronousFuzzyPetriExecutor;
 import exampleNets.ConcurentPetriNetBuilder;
 import exampleNets.SelectionLikeTwoBranchExample;
 import exampleNets.SimpleDelayPetriNetBuilder;
@@ -31,18 +32,18 @@ public class SynchronousFuzzyPetriExecutorTest {
     HashMap<Integer, FuzzyToken> inps = new HashMap<>();
     inps.put(2, new FuzzyToken(1.0, 0.0, 0.0, 0.0, 0.0));
 
-    executor.startTick(inps);
+    executor.runTick(inps);
     assertTrue(exampleBuilder.getFiredOuputTransition().size() == 0);
 
-    executor.startTick(inps);
+    executor.runTick(inps);
     assertTrue(exampleBuilder.getFiredOuputTransition().size() == 1);
-    assertTrue(exampleBuilder.getResults().get(0).shortString().equals("<0.00,1.00,0.00,0.00,0.00>"));
+    assertTrue(exampleBuilder.getTokens().get(0).shortString().equals("<0.00,1.00,0.00,0.00,0.00>"));
 
-    executor.startTick(null);
+    executor.runTick(null);
     assertTrue(exampleBuilder.getFiredOuputTransition().size() == 2);
-    assertTrue(exampleBuilder.getResults().get(0).shortString().equals("<0.00,1.00,0.00,0.00,0.00>"));
+    assertTrue(exampleBuilder.getTokens().get(0).shortString().equals("<0.00,1.00,0.00,0.00,0.00>"));
 
-    executor.startTick(null);
+    executor.runTick(null);
     assertTrue(exampleBuilder.getFiredOuputTransition().size() == 2);
 
 
@@ -56,28 +57,28 @@ public class SynchronousFuzzyPetriExecutorTest {
     inp.put(1, FuzzyToken.zeroToken());
     inp.put(2, new FuzzyToken());
 
-    sim.startTick(inp);
+    sim.runTick(inp);
     assertTrue(builder.getFiredOuputTransition().size() == 1);
     assertTrue(builder.getFiredOuputTransition().get(0) == 4); // t4 fired
-    assertTrue(builder.getResults().get(0).shortString().equals("<0.00,0.00,1.00,0.00,0.00>"));
+    assertTrue(builder.getTokens().get(0).shortString().equals("<0.00,0.00,1.00,0.00,0.00>"));
     checkSimState(sim, "<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>", "[0, 0, 0, 0, 0, 0, 1, 0, 0]");
 
-    sim.startTick(null);
+    sim.runTick(null);
     assertTrue(builder.getFiredOuputTransition().size() == 1);
     checkSimState(sim, "<0.00,0.00,1.00,0.00,0.00>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>",
         "[0, 0, 0, 0, 0, 0, 0, 0, 0]");
 
     inp.put(1, new FuzzyToken());
     inp.put(2, new FuzzyToken(0.0, 1.0, 0.0, 0.0, 0.0));
-    sim.startTick(inp);
+    sim.runTick(inp);
     assertTrue(builder.getFiredOuputTransition().size() == 2);
     assertTrue(builder.getFiredOuputTransition().get(1) == 5); // t5 fired
-    assertTrue(builder.getResults().get(1).shortString().equals("<0.00,1.00,0.00,0.00,0.00>"));
+    assertTrue(builder.getTokens().get(1).shortString().equals("<0.00,1.00,0.00,0.00,0.00>"));
     checkSimState(sim, "<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>", "[0, 0, 0, 0, 0, 0, 0, 2, 0]");
 
-    sim.startTick(null);
+    sim.runTick(null);
     checkSimState(sim, "<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>", "[0, 0, 0, 0, 0, 0, 0, 1, 0]");
-    sim.startTick(null);
+    sim.runTick(null);
     checkSimState(sim, "<0.00,1.00,0.00,0.00,0.00>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>;<phi>",
         "[0, 0, 0, 0, 0, 0, 0, 0, 0]");
   }
@@ -87,18 +88,18 @@ public class SynchronousFuzzyPetriExecutorTest {
     ConcurentPetriNetBuilder builder = new ConcurentPetriNetBuilder();
     SynchronousFuzzyPetriExecutor sim = new SynchronousFuzzyPetriExecutor(builder.getNet());
 
-    sim.startTick(null);
+    sim.runTick(null);
     checkSimState(sim, "<phi>;<0.00,0.00,1.00,0.00,0.00>;<0.00,0.00,1.00,0.00,0.00>;<phi>;<phi>;<phi>;<phi>",
         "[0, 0, 0, 0, 0]");
 
     HashMap<Integer, FuzzyToken> inp = new HashMap<>();
     inp.put(3, FuzzyToken.zeroToken());
-    sim.startTick(inp);
+    sim.runTick(inp);
     assertTrue(builder.getFiredOuputTransition().size() == 1);
     assertTrue(builder.getFiredOuputTransition().get(0) == 2); // t5 fired
     checkSimState(sim, "<phi>;<phi>;<0.00,0.00,1.00,0.00,0.00>;<phi>;<phi>;<phi>;<phi>", "[0, 0, 0, 1, 0]");
 
-    sim.startTick(null);
+    sim.runTick(null);
     assertTrue(builder.getFiredOuputTransition().size() == 1);
     checkSimState(sim, "<phi>;<0.00,0.00,1.00,0.00,0.00>;<0.00,0.00,1.00,0.00,0.00>;<phi>;<phi>;<phi>;<phi>",
         "[0, 0, 0, 0, 0]");

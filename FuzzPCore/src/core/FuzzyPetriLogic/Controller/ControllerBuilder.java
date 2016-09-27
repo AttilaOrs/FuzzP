@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import core.FuzzyPetriLogic.IDefuzzifier;
 import core.FuzzyPetriLogic.IFuzzyfier;
-import core.FuzzyPetriLogic.PetriNet.SynchronousFuzzyPetriExecutor;
+import core.FuzzyPetriLogic.Executor.SynchronousFuzzyPetriExecutor;
 import structure.IOperatorFactory;
 
 public class ControllerBuilder {
