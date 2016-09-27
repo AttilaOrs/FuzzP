@@ -3,4 +3,6 @@ FuzzP is Fuzzy Petri-net visualizer and executor for teaching and academic purpo
 For visualization  uses [JGraphX](https://github.com/jgraph/jgraphx) and [Gral](https://github.com/eseifert/gral) libraries. 
 
 #Requirements
-Java 1.8 (or higher)
+Java 1.8 (or higher) for FuzzPCore [Gson](https://github.com/google/gson) is required (for serialziation). For FuzzPVizual the two libraries mentioned above. Running the tests requires the usual: [JUnit](http://junit.org/junit4/)
+
+The FuzzPExamples should run with the newest buil from fatJar. (The jars contain all the dependeces)
