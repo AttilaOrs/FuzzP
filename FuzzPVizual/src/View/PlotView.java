@@ -95,7 +95,6 @@ public class PlotView implements IView {
     }
     String name = "P" + plId;
     DataTable data = model.getDataForPlace(plId);
-
     DataSeries ss = addToPlotWithName(name, data);
 
     placeSeries.put(plId, ss);

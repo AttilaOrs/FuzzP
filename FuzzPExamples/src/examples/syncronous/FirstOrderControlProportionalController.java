@@ -1,4 +1,4 @@
-package examples.FirstOrderControl;
+package examples.syncronous;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,10 +17,12 @@ import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
 import core.FuzzyPetriLogic.Tables.OneXTwoTable;
 
-public class FirstOrderPIControl {
+public class FirstOrderControlProportionalController {
 	/*
-	 * This example impelents P[k] = a*e[k] + b*e[k-1] + P[k-1]
+	 * This example impelents a real proprtioanl controller ::::::::::::::::
+	 * P[k]= a*e[k] + P(t-1)
 	 */
+
 
 	String reader = "" +
 	    "{[<NL><NM><ZR><PM><PL>]" +
@@ -30,32 +32,25 @@ public class FirstOrderPIControl {
 	    " [<NL><NM><ZR><PM><PL>]}";
 
 
+	String differentiator = "" +
+	    "{[<ZR><PM><PL><PL><PL>]" +
+	    " [<NM><ZR><PM><PL><PL>]" +
+	    " [<NL><NM><ZR><PM><PL>]" +
+	    " [<NL><NL><NM><ZR><PM>]" +
+	    " [<NL><NL><NL><NM><ZR>]}";
 
+  
 	String doubleChannelAdder = ""//
 	    + "{[<NL,NL><NL,NL><NL,NL><NM,NM><ZR,ZR>]" //
 	    + " [<NL,NL><NL,NL><NM,NM><ZR,ZR><PM,PM>]" //
 	    + " [<NL,NL><NM,NM><ZR,ZR><PM,PM><PL,PL>]"//
 	    + " [<NM,NM><ZR,ZR><PM,PM><PL,PL><PL,PL>]"//
 	    + " [<ZR,ZR><PM,PM><PL,PL><PL,PL><PL,PL>]}";
-
-	String doubleChannelDifferentiator = ""//
-	    + "{[<ZR,ZR><PM,PM><PL,PL><PL,PL><PL,PL>]" //
-	    + " [<NM,NM><ZR,ZR><PM,PM><PL,PL><PL,PL>]" //
-	    + " [<NL,NL><NM,NM><ZR,ZR><PM,PM><PL,PL>]"//
-	    + " [<NL,NL><NL,NL><NM,NM><ZR,ZR><PM,PM>]"//
-	    + " [<NL,NL><NL,NL><NL,NL><NM,NM><ZR,ZR>]}";
-
-  String adder = String.join("\n", //
-	    "{[<NL><NL><NL><NM><ZR>]", //
-	    " [<NL><NL><NM><ZR><PM>]", //
-	    " [<NL><NM><ZR><PM><PL>]", //
-	    " [<NM><ZR><PM><PL><PL>]", //
-	    " [<ZR><PM><PL><PL><PL>]}");
-
-	public FirstOrderPIControl() {
+  
+  public FirstOrderControlProportionalController() {
 		TableParser parser = new TableParser();
     FuzzyPetriNet net = new FuzzyPetriNet();
-
+    
     int p0 = net.addPlace();
     net.setInitialMarkingForPlace(p0, FuzzyToken.zeroToken());
     int t0 = net.addTransition(0, OneXOneTable.defaultTable());
@@ -70,39 +65,29 @@ public class FirstOrderPIControl {
     int p3 = net.addPlace();
     net.addArcFromTransitionToPlace(t1, p3);
     int p4InpCmd = net.addInputPlace();
-		int t2 = net.addTransition(0, parser.parseTable(doubleChannelDifferentiator));
+		int t2 = net.addTransition(0, parser.parseTable(differentiator));
     net.addArcFromPlaceToTransition(p4InpCmd, t2, 1.0);
     net.addArcFromPlaceToTransition(p3, t2, 1.0);
     int p5 = net.addPlace();
     net.addArcFromTransitionToPlace(t2, p5);
+		int t3 = net.addTransition(0, parser.parseTable(doubleChannelAdder));
+    net.addArcFromPlaceToTransition(p5, t3, 1.0);
     int p6 = net.addPlace();
-    net.addArcFromTransitionToPlace(t2, p6);
-		int t3 = net.addTransition(0, parser.parseTable(adder));//
-    int t4delay = net.addTransition(1, OneXOneTable.defaultTable());
-    net.addArcFromPlaceToTransition(p6, t4delay, 1.0);
-    int p7Mem = net.addPlace();
-    net.setInitialMarkingForPlace(p7Mem, FuzzyToken.zeroToken());
-    net.addArcFromTransitionToPlace(t4delay, p7Mem);
-    net.addArcFromPlaceToTransition(p7Mem, t3, 0.2);
-    net.addArcFromPlaceToTransition(p5, t3, 0.8);
-    int p8 = net.addPlace();
-    net.addArcFromTransitionToPlace(t3, p8);
-		int t5 = net.addTransition(0, parser.parseTable(doubleChannelAdder));
-    net.addArcFromPlaceToTransition(p8, t5, 1.0);
-    int p9 = net.addPlace();
-    net.addArcFromTransitionToPlace(t5, p9);
-    int p10 = net.addPlace();
-    net.addArcFromTransitionToPlace(t5, p10);
-    int t6delay = net.addTransition(1, OneXTwoTable.defaultTable());
-    net.addArcFromPlaceToTransition(p10, t6delay, 1.0);
-    net.addArcFromTransitionToPlace(t6delay, p1);
-    int p11Mem = net.addPlace();
-    net.setInitialMarkingForPlace(p11Mem, FuzzyToken.zeroToken());
-    net.addArcFromTransitionToPlace(t6delay, p11Mem);
-    net.addArcFromPlaceToTransition(p11Mem, t5, 1.0);
+    net.addArcFromTransitionToPlace(t3, p6);
+    int p7 = net.addPlace();
+    net.addArcFromTransitionToPlace(t3, p7);
+    int t4delay = net.addTransition(1, OneXTwoTable.defaultTable());
+    net.addArcFromPlaceToTransition(p7, t4delay, 1.0);
+    net.addArcFromTransitionToPlace(t4delay, p1);
+    int p8Mem = net.addPlace();
+    net.setInitialMarkingForPlace(p8Mem, FuzzyToken.zeroToken());
+    net.addArcFromTransitionToPlace(t4delay, p8Mem);
+    net.addArcFromPlaceToTransition(p8Mem, t3, 1.0);
 
-    int t7Out = net.addOuputTransition(OneXOneTable.defaultTable());
-    net.addArcFromPlaceToTransition(p9, t7Out, 1.0);
+    int t5Out = net.addOuputTransition(OneXOneTable.defaultTable());
+    net.addArcFromPlaceToTransition(p6, t5Out, 1.0);
+
+
 
     FuzzyDriver plantInDriver = FuzzyDriver.createDriverFromMinMax(-0.6, +0.6);
     FuzzyDriver userCommandInDriver = FuzzyDriver.createDriverFromMinMax(-0.6, +0.6);
@@ -112,7 +97,7 @@ public class FirstOrderPIControl {
 
     FuzzyDriver controlOutDriver = FuzzyDriver.createDriverFromMinMax(-1.0, 1.0);
     HashMap<Integer, FuzzyDriver> outputDriver = new HashMap<>();
-    outputDriver.put(t7Out, controlOutDriver);
+    outputDriver.put(t5Out, controlOutDriver);
 
     FuzzyPetriNetSyncornousController controller = new FuzzyPetriNetSyncornousController(inputDrivers, outputDriver,
         net);
@@ -132,14 +117,14 @@ public class FirstOrderPIControl {
       }
       inputs.put(p2InpSys, command);
       inputs.put(p4InpCmd, prevSysOut);
-
+      
       Map<Integer, Double> controllerResult = controller.control(inputs);
 
       double controlOut = 0.0;
-      if (!controllerResult.containsKey(t7Out)) {
+      if (!controllerResult.containsKey(t5Out)) {
         System.err.println("command not fired in tick: " + i);
       } else {
-        controlOut = controllerResult.get(t7Out);
+        controlOut = controllerResult.get(t5Out);
 
       }
       prevSysOut = plant.executeSystem(controlOut);
@@ -154,9 +139,9 @@ public class FirstOrderPIControl {
     Plotter plotter = new Plotter(forPlot);
     mainView.addInteractivePanel("Real out", plotter.makeInteractivePlot());
 
-	}
+  }
 
-	public static void main(String args[]) {
-		new FirstOrderPIControl();
-	}
+  public static void main(String args[]) {
+    new FirstOrderControlProportionalController();
+  }
 }

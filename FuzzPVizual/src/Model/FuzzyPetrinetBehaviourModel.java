@@ -59,7 +59,10 @@ public class FuzzyPetrinetBehaviourModel {
             || (eventsGroupedByTick.get(tickNr).get(eventIndex) instanceof TokenFromPlaceToTransition)) {
           AbstarctTokenMovment event = (AbstarctTokenMovment) (eventsGroupedByTick.get(tickNr).get(eventIndex));
           if (event.place == placeId) {
-            dataInCurrentTick.add(defultFuzz.defuzzify(event.token));
+            Double dd = defultFuzz.defuzzify(event.token);
+            if (dd != null) {
+              dataInCurrentTick.add(dd);
+            }
           }
         }
       }

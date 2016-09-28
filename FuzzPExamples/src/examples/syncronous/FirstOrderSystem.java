@@ -1,4 +1,4 @@
-package examples.FirstOrderControl;
+package examples.syncronous;
 
 public class FirstOrderSystem {
 
