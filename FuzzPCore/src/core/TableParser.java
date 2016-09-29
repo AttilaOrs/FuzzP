@@ -25,23 +25,24 @@ public class TableParser {
 	}
 
 	public String createString(ITable table) {
-		if(table instanceof OneXOneTable){
+		if (table instanceof OneXOneTable) {
 			return createStrForOneXOneTable((OneXOneTable) table);
-		} else if (table instanceof OneXTwoTable){
+		} else if (table instanceof OneXTwoTable) {
 			return createStrForOneXTwoTable((OneXTwoTable) table);
 		} else if (table instanceof TwoXOneTable) {
 			return createStrForTwoXOneTable((TwoXOneTable) table);
 		} else if (table instanceof TwoXTwoTable) {
-			return createStrForTwoXOneTable((TwoXTwoTable) table);
+			return createStrForTwoXTwoTable((TwoXTwoTable) table);
 		}
 
 		return "";
 	}
 
-	private String createStrForTwoXOneTable(TwoXTwoTable table) {
+	private String createStrForTwoXTwoTable(TwoXTwoTable table) {
 		ArrayList<String> lines = new ArrayList<>();
 		for (FuzzyValue index : fuzzyValsInOrder()) {
-			lines.add(createLineWithDoubleCells(table.getTables().get(0).get(index), table.getTables().get(1).get(index)));
+			lines.add(createLineWithDoubleCells(table.getTables().get(0).get(index),
+					table.getTables().get(1).get(index)));
 		}
 		return createTabeStrFromLines(lines);
 	}
@@ -87,11 +88,11 @@ public class TableParser {
 	}
 
 	private String createLineWithDoubleCells(Map<FuzzyValue, FuzzyValue> firstTable,
-	    Map<FuzzyValue, FuzzyValue> secondTable) {
+			Map<FuzzyValue, FuzzyValue> secondTable) {
 		StringBuilder bld = new StringBuilder("[");
 		for (FuzzyValue fv : fuzzyValsInOrder()) {
-			bld.append("<").append(firstTable.get(fv).name())
-			    .append(",").append(secondTable.get(fv).name()).append(">");
+			bld.append("<").append(firstTable.get(fv).name()).append(",").append(secondTable.get(fv).name())
+					.append(">");
 		}
 		bld.append("]");
 		return bld.toString();
@@ -100,9 +101,10 @@ public class TableParser {
 	public ITable parseTable(String strToParse) {
 		List<String> ls = splitToCellsContent(strToParse);
 		if (!ls.get(0).contains(",")) {
-			if(ls.size()< 10){
+			if (ls.size() < 10) {
 				return createOneXOneTableFromBareCells(ls);
-			}{
+			}
+			{
 				return createTwoXOneTableFromCells(ls);
 			}
 		} else {
@@ -171,13 +173,14 @@ public class TableParser {
 	private void checkCellNrForBigTable(List<String> ls) {
 		if ((ls.size() != 25 && !phiIsRequired) || (ls.size() != 36 && phiIsRequired)) {
 			throw new TablePareserExcetion(
-			    "Table type string should containt " + ((phiIsRequired) ? "36" : "25") + " cells");
+					"Table type string should containt " + ((phiIsRequired) ? "36" : "25") + " cells");
 		}
 	}
 
 	private OneXTwoTable createOneXTwoTableFromCells(List<String> ls) {
 		if ((ls.size() != 5 && !phiIsRequired) || (ls.size() != 6 && phiIsRequired)) {
-			throw new TablePareserExcetion("OneXTwoTable string should containt " + ((phiIsRequired) ? "6" : "5") + " cells");
+			throw new TablePareserExcetion(
+					"OneXTwoTable string should containt " + ((phiIsRequired) ? "6" : "5") + " cells");
 		}
 
 		Map<FuzzyValue, FuzzyValue> table1 = new EnumMap<>(FuzzyValue.class);
@@ -194,8 +197,12 @@ public class TableParser {
 	private FuzzyValue[] parseBareCellWithTwoValues(String bareCellString) {
 		String splitted[] = bareCellString.split(",");
 		if (splitted.length != 2) {
-			throw new TablePareserExcetion(
-			    "A cell of OneXTwoTable should containt two fuzzy values separted with comma (',')");
+			if (!bareCellString.contains(",")) {
+				throw new TablePareserExcetion(
+						"A cell of OneXTwoTable should containt two fuzzy values separted with comma (',')");
+			} else {
+				throw new TablePareserExcetion("Cells with two values has to contain TWO values, separated with comma");
+			}
 		}
 		FuzzyValue val1 = FuzzyValue.fromString(splitted[0]);
 		FuzzyValue val2 = FuzzyValue.fromString(splitted[1]);
@@ -216,7 +223,8 @@ public class TableParser {
 
 	private OneXOneTable createOneXOneTableFromBareCells(List<String> ls) {
 		if ((ls.size() != 5 && !phiIsRequired) || (ls.size() != 6 && phiIsRequired)) {
-			throw new TablePareserExcetion("OneXOneTabe string should containt " + ((phiIsRequired) ? "6" : "5") + " cells");
+			throw new TablePareserExcetion(
+					"OneXOneTabe string should containt " + ((phiIsRequired) ? "6" : "5") + " cells");
 		}
 		Map<FuzzyValue, FuzzyValue> table = new EnumMap<>(FuzzyValue.class);
 		int cntr = 0;
@@ -236,7 +244,8 @@ public class TableParser {
 
 	private List<String> splitToCellsContent(String strToParse) {
 		if (!(strToParse.startsWith("{") && strToParse.endsWith("}"))) {
-			throw new TablePareserExcetion("Table not defined:: a table string should start with { and should and with }");
+			throw new TablePareserExcetion(
+					"Table not defined:: a table string should start with { and should and with }");
 		}
 		String bareaTable = strToParse.replace("{", "").replace("}", "");
 		String[] lines = bareaTable.split("\\[");
@@ -244,7 +253,7 @@ public class TableParser {
 		for (int i = 1; i < lines.length; i++) {
 			if (!lines[i].contains("]")) {
 				throw new TablePareserExcetion(
-				    "Table not defined:: lines in the table should start with [ and should end with ]");
+						"Table not defined:: lines in the table should start with [ and should end with ]");
 			}
 			int lastIndex = lines[i].indexOf("]");
 			String bareLine = lines[i].substring(0, lastIndex);
@@ -252,7 +261,7 @@ public class TableParser {
 			for (int j = 1; j < cells.length; j++) {
 				if (!cells[j].contains(">")) {
 					throw new TablePareserExcetion(
-					    "Table not defined:: cless in the table should start with < and should end with >");
+							"Table not defined:: cless in the table should start with < and should end with >");
 				}
 				int lastIndexCels = cells[j].indexOf(">");
 				String bareCell = cells[j].substring(0, lastIndexCels);
