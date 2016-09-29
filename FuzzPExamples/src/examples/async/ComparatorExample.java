@@ -2,6 +2,7 @@ package examples.async;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import Main.FuzzyPVizualzer;
 import core.TableParser;
@@ -21,7 +22,7 @@ public class ComparatorExample {
 			" [<PL><PL><PM><ZR><NM>]" + //
 			" [<PL><PL><PL><PM><ZR>]}";
 
-	String separator = "{[<NM,FF><NM,FF><NM,PM><FF,PM><FF,PM>]}";
+	String separator = "{[<NL,FF><NL,FF><FF,FF><FF,PL><FF,PL>]}";
 
 	public ComparatorExample() {
 		TableParser parser = new TableParser();
@@ -45,10 +46,23 @@ public class ComparatorExample {
 		int p4 = petriNet.addPlace();
 		petriNet.addArcFromTransitionToPlace(t1, p4);
 
-		int t2 = petriNet.addOuputTransition(OneXOneTable.defaultTable());
-		petriNet.addArcFromPlaceToTransition(p3, t2, 1.0);
-		int t3 = petriNet.addOuputTransition(OneXOneTable.defaultTable());
-		petriNet.addArcFromPlaceToTransition(p4, t3, 1.0);
+		int t2Out = petriNet.addOuputTransition(OneXOneTable.defaultTable());
+		petriNet.addArcFromPlaceToTransition(p3, t2Out, 1.0);
+		petriNet.addActionForOuputTransition(t2Out, new Consumer<FuzzyToken>() {
+			@Override
+			public void accept(FuzzyToken t) {
+				System.out.println("Output From Transition 2: " + t.shortString());
+			}
+		});
+
+		int t3Out = petriNet.addOuputTransition(OneXOneTable.defaultTable());
+		petriNet.addArcFromPlaceToTransition(p4, t3Out, 1.0);
+		petriNet.addActionForOuputTransition(t3Out, new Consumer<FuzzyToken>() {
+			@Override
+			public void accept(FuzzyToken t) {
+				System.out.println("Output From Transition 3: " + t.shortString());
+			}
+		});
 
 		AsyncronRunnableExecutor executor = new AsyncronRunnableExecutor(petriNet, 20);
 		FullRecorder recorder = new FullRecorder();
@@ -58,10 +72,15 @@ public class ComparatorExample {
 
 		(new Thread(executor)).start();
 
-		for (double d = 0.0; d < 10.0; d += 0.25) {
+		for (int i = 0; i < 100; i++) {
 			Map<Integer, FuzzyToken> inps = new HashMap<>();
-			inps.put(p0Inp, driver.fuzzifie(Math.sin(d)));
-			inps.put(p1Inp, driver.fuzzifie(Math.cos(d)));
+			if (i % 10 < 5) {
+				inps.put(p0Inp, driver.fuzzifie(i / 100.0));
+				inps.put(p1Inp, driver.fuzzifie(i / -100.0));
+			} else {
+				inps.put(p1Inp, driver.fuzzifie(i / 100.0));
+				inps.put(p0Inp, driver.fuzzifie(i / -100.0));
+			}
 			executor.putTokenInInputPlace(inps);
 			try {
 				Thread.sleep(5);
