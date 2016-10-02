@@ -40,28 +40,26 @@ public class AsyncronRunnableExecutor extends AbstractExecutor implements Runnab
 		}
 	}
 
-	@Override
-	public void run() {
-		startTick();
-		while (!stop) {
-			synchronized (this) {
+  @Override
+  public void run() {
+    startTick();
+    while (!stop) {
 
-				if (currentTimeMillis() > nextWakeUp) {
-					startTick();
-				}
-				reackToExistingInpus();
-				long timeToWait = nextWakeUp - currentTimeMillis();
-				if (timeToWait > precision)
-					try {
-						wait(nextWakeUp - currentTimeMillis());
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-
-			}
-		}
-
-	}
+      if (currentTimeMillis() > nextWakeUp) {
+        startTick();
+      }
+      reackToExistingInpus();
+      long timeToWait = nextWakeUp - currentTimeMillis();
+      if (timeToWait > precision)
+        try {
+          synchronized (this) {
+            wait(nextWakeUp - currentTimeMillis());
+          }
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+    }
+  }
 
 	private void reackToExistingInpus() {
 		while (inputsWaitingToProcess.size() != 0) {
