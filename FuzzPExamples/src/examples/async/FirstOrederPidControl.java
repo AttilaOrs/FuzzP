@@ -54,7 +54,7 @@ public class FirstOrederPidControl {
 			" [<NM><ZR><PM><PL><PL>]", //
 			" [<ZR><PM><PL><PL><PL>]}");
 
-	public FirstOrederPidControl() throws InterruptedException {
+  public FirstOrederPidControl() {
 		long period = 10;
 		FirtsOrderSystemThreaded plant = new FirtsOrderSystemThreaded(0.5, 0.7, 0.2, 0.3, period);
 		FuzzyDriver plantInDriver = FuzzyDriver.createDriverFromMinMax(-0.6, +0.6);
@@ -151,7 +151,11 @@ public class FirstOrederPidControl {
 			input.put(p4InpCmd, userCommandInDriver.fuzzifie(command));
 			input.put(p2InpSys, plantInDriver.fuzzifie(plant.curentStatus()));
 			executor.putTokenInInputPlace(input);
-			Thread.sleep(period);
+      try {
+        Thread.sleep(period);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
 		}
 		plant.stop();
 		executor.stop();
@@ -159,7 +163,7 @@ public class FirstOrederPidControl {
 		MainView mainView = FuzzyPVizualzer.visualize(net, recorder);
 	}
 
-	public static void main(String args[]) throws InterruptedException {
+  public static void main(String args[]) {
 		new FirstOrederPidControl();
 	}
 }
