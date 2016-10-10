@@ -1,5 +1,6 @@
-// Generated from /home/ors/IdeaProjects/proba/src/FuzzyPLang.g4 by ANTLR 4.5.3
+// Generated from FuzzyPLang.g4 by ANTLR 4.5
 package FuzzyPLang.gen;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -22,6 +23,24 @@ public interface FuzzyPLangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStateMent(FuzzyPLangParser.StateMentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link FuzzyPLangParser#subCompDcl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSubCompDcl(FuzzyPLangParser.SubCompDclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link FuzzyPLangParser#newSubComp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNewSubComp(FuzzyPLangParser.NewSubCompContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link FuzzyPLangParser#subCompRef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSubCompRef(FuzzyPLangParser.SubCompRefContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link FuzzyPLangParser#putInitToken}.
 	 * @param ctx the parse tree

@@ -93,7 +93,7 @@ public class ComparatorExample {
 
 	}
 
-	public static void main(String[] main) {
+  public static void main(String args[]) {
 		new ComparatorExample();
 
 	}

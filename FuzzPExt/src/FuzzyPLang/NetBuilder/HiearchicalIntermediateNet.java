@@ -1,0 +1,177 @@
+package FuzzyPLang.NetBuilder;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import core.FuzzyPetriLogic.ITable;
+
+public class HiearchicalIntermediateNet {
+    private ArrayList<String[]> tokensAdded;
+    private ArrayList<String> places;
+    private ArrayList<String> inpPlaces;
+    private ArrayList<String> transitions;
+    private ArrayList<String> outTransitions;
+    private ArrayList<NodeRef[]> unweigthedArc;
+    private ArrayList<NodeRef[]> weigthedArcs;
+    private ArrayList<Double> weigthsForArc;
+    private Map<String, Integer> delayMap;
+    private Map<String, String> transitionTableName;
+    private Map<String, ITable> tableMap;
+    private Map<String, HiearchicalIntermediateNet> declarations;
+    private Map<String, String> instances;
+
+    public HiearchicalIntermediateNet() {
+        places = new ArrayList<>();
+        inpPlaces = new ArrayList<>();
+        transitions = new ArrayList<>();
+        outTransitions = new ArrayList<>();
+        unweigthedArc = new ArrayList<>();
+        weigthedArcs = new ArrayList<>();
+        weigthsForArc = new ArrayList<>();
+        delayMap = new HashMap<>();
+        tableMap = new HashMap<>();
+        transitionTableName = new HashMap<>();
+        tokensAdded = new ArrayList<>();
+        declarations = new HashMap<>();
+        instances = new HashMap<>();
+    }
+
+    public void addPlace(StaticScope sub, String str) {
+        System.out.println(sub.toString() + " addPlace " + str);
+        if (sub.current()) {
+            if (!places.contains(str)) {
+                places.add(str);
+            }
+        } else {
+            String subName = sub.removeFirstSub();
+            declarations.get(subName).addPlace(sub, str);
+        }
+    }
+
+    public void addInpPlace(StaticScope sub, String str) {
+        System.out.println(sub.toString() + " addInpPlace " + str);
+        if (sub.current()) {
+            if (!inpPlaces.contains(str)) {
+                inpPlaces.add(str);
+            }
+        } else {
+            String subName = sub.removeFirstSub();
+            declarations.get(subName).addInpPlace(sub, str);
+        }
+    }
+
+    public void addTransition(StaticScope sub, String tr) {
+        System.out.println(sub.toString() + " addTransition " + tr);
+        if (sub.current()) {
+            if (!transitions.contains(tr)) {
+                transitions.add(tr);
+            }
+        } else {
+            String subName = sub.removeFirstSub();
+            declarations.get(subName).addTransition(sub, tr);
+        }
+    }
+
+    public void addOutTransition(StaticScope sub, String tr) {
+        System.out.println(sub.toString() + " addOutTransition " + tr);
+        if (sub.current()) {
+            if (!outTransitions.contains(tr)) {
+                outTransitions.add(tr);
+            }
+        } else {
+            String subName = sub.removeFirstSub();
+            declarations.get(subName).addOutTransition(sub, tr);
+        }
+    }
+
+    public void addArc(StaticScope sub, NodeRef firsNodeName, NodeRef secondNodeName, double weigth) {
+        System.out.println(
+                sub.toString() + " addArc " + firsNodeName.toString() + " " + secondNodeName.toString() + " " + weigth);
+        if (sub.current()) {
+            weigthedArcs.add(new NodeRef[] { firsNodeName, secondNodeName });
+            weigthsForArc.add(weigth);
+        } else {
+            String subName = sub.removeFirstSub();
+            declarations.get(subName).addArc(sub, firsNodeName, secondNodeName, weigth);
+        }
+    }
+
+    public void addArc(StaticScope sub, NodeRef firsNodeName, NodeRef secondNodeName) {
+        System.out.println(
+                sub.toString() + " addArc " + firsNodeName.toString() + " " + secondNodeName.toString());
+        if (sub.current()) {
+            unweigthedArc.add(new NodeRef[] { firsNodeName, secondNodeName });
+        } else {
+            String subName = sub.removeFirstSub();
+            declarations.get(subName).addArc(sub, firsNodeName, secondNodeName);
+        }
+    }
+
+    public void setDelayForTransition(StaticScope sub, String trName, int delay) {
+        System.out.println(
+                sub.toString() + " setDelayForTransition " + trName + " " + delay);
+        if (sub.current()) {
+            delayMap.put(trName, delay);
+        } else {
+            String subName = sub.removeFirstSub();
+            declarations.get(subName).setDelayForTransition(sub, trName, delay);
+        }
+    }
+
+    public void setNamedTableForTransition(StaticScope sub, String trName, String nameOfTable) {
+        System.out.println(
+                sub.toString() + " setNamedTableForTransition " + trName + " " + nameOfTable);
+        if (sub.current()) {
+            transitionTableName.put(trName, nameOfTable);
+        } else {
+            String subName = sub.removeFirstSub();
+            declarations.get(subName).setNamedTableForTransition(sub, trName, nameOfTable);
+        }
+    }
+
+    public void addTableWithName(StaticScope sub, String tableName, ITable table) {
+        System.out.println(
+                sub.toString() + " addTableWithName " + tableName + " ");
+        if (sub.current()) {
+            tableMap.put(tableName, table);
+        } else {
+            String subName = sub.removeFirstSub();
+            declarations.get(subName).addTableWithName(sub, tableName, table);
+        }
+    }
+
+    public void addInitialTokenInPlace(StaticScope sub, String placeName, String token) {
+        System.out.println(
+                sub.toString() + " addInitialTokenInPlace " + placeName + " ");
+        if (sub.current()) {
+            tokensAdded.add(new String[] { placeName, token });
+        } else {
+            String subName = sub.removeFirstSub();
+            declarations.get(subName).addInitialTokenInPlace(sub, placeName, token);
+        }
+    }
+
+    public void makeDeclaration(StaticScope sub, String newSubName) {
+        System.out.println(
+                sub.toString() + " makeDeclaration " + sub + " " + newSubName);
+        if (sub.current()) {
+            declarations.put(newSubName, new HiearchicalIntermediateNet());
+        } else {
+            String subName = sub.removeFirstSub();
+            declarations.get(subName).makeDeclaration(sub, newSubName);
+        }
+    }
+
+    public void makeInstenciation(StaticScope sub, String varName, String declaredSubName) {
+        System.out.println(
+                sub.toString() + " makeInstenciation " + varName + " " + declaredSubName);
+        if (sub.current()) {
+            instances.put(varName, declaredSubName);
+        } else {
+            String subName = sub.removeFirstSub();
+            declarations.get(subName).makeInstenciation(sub, varName, declaredSubName);
+        }
+    }
+
+}

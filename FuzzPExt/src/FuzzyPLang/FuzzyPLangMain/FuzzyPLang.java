@@ -10,11 +10,9 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import FuzzyPLang.NetBuilder.FuzzyPetriNetBuilder;
 import FuzzyPLang.Visitor.Visitor;
 import FuzzyPLang.gen.FuzzyPLangLexer;
 import FuzzyPLang.gen.FuzzyPLangParser;
-import FuzzyPetriNetToCode.MakerGenerator;
 import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 
@@ -58,12 +56,12 @@ public class FuzzyPLang {
 		CommonTokenStream cms = new CommonTokenStream(ll);
 		FuzzyPLangParser parser = new FuzzyPLangParser(cms);
 		ParseTree parseTree = parser.prog();
-		FuzzyPetriNetBuilder builder = new FuzzyPetriNetBuilder();
-		Visitor vis = new Visitor(builder);
+        Visitor vis = new Visitor();
 		vis.visit(parseTree);
-		builtNet = builder.build();
-		nameStrore = builder.getNameStore();
-		errors = builder.getErrors();
+        /*
+         * builtNet = builder.build(); nameStrore = builder.getNameStore();
+         * errors = builder.getErrors();
+         */
 	}
 
 	public FuzzyPetriNet getNet() {
@@ -79,16 +77,20 @@ public class FuzzyPLang {
 	}
 
 	public static void main(String[] args) throws Exception {
-		FuzzyPLang main = new FuzzyPLang();
-		if (args.length > 0) {
-			main.loadFile(args[0]);
-		} else {
-			main.createNet(System.in);
-		}
-		MakerGenerator makerGenerator = new MakerGenerator(main.getNet(), main.getNameStore(), "fuzzyP.exampleNets");
-		String res = (makerGenerator.createMaker("ConcurentGenerated"));
-		System.err.println(main.getErrors());
-		System.out.println(res);
+
+        FuzzyPLang main = new FuzzyPLang();
+        if (args.length > 0) {
+            main.loadFile(args[0]);
+        } else {
+            main.createNet(System.in);
+        }
+        /*
+         * MakerGenerator makerGenerator = new MakerGenerator(main.getNet(),
+         * main.getNameStore(), "fuzzyP.exampleNets"); String res =
+         * (makerGenerator.createMaker("ConcurentGenerated"));
+         * System.err.println(main.getErrors()); System.out.println(res);
+         */
+
 	}
 
 }

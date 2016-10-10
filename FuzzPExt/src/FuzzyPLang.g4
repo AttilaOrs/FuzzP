@@ -6,12 +6,19 @@ prog: stateMent+;
 stateMent : tableDcl ';'
           | petriLine ';'
           | putInitToken ';'
+          | subCompDcl
+          | newSubComp ';'
           ;
+          
+subCompDcl : 'sub' ID  '{' stateMent+ '}';
+newSubComp : ID '=' 'new ' ID ;
+subCompRef : (ID'.')+ (inpPlace | otranz) ;
+
 putInitToken : (inpPlace | place ) '<=' token ;
 
-petriLine : (inpPlace | place| tranz | otranz ) lineCont ;
+petriLine : (inpPlace | place| tranz | otranz | subCompRef ) lineCont ;
 
-lineCont :(arcOp (inpPlace | place| tranz | otranz ))+;
+lineCont :(arcOp (inpPlace | place| tranz | otranz| subCompRef ))+;
 
 arcOp
    : '->'

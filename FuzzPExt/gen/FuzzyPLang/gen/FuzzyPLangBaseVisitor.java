@@ -1,5 +1,6 @@
-// Generated from /home/ors/IdeaProjects/proba/src/FuzzyPLang.g4 by ANTLR 4.5.3
+// Generated from FuzzyPLang.g4 by ANTLR 4.5
 package FuzzyPLang.gen;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -25,6 +26,27 @@ public class FuzzyPLangBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitStateMent(FuzzyPLangParser.StateMentContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitSubCompDcl(FuzzyPLangParser.SubCompDclContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitNewSubComp(FuzzyPLangParser.NewSubCompContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitSubCompRef(FuzzyPLangParser.SubCompRefContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

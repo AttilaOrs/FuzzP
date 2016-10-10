@@ -1,0 +1,27 @@
+
+sub SimpleSub {
+    table = {[<PL><PM><ZR><NM><NL>]};
+	iP0-(1.2)->oT0[table];
+}
+sub ComplexSub{
+	sub InnerSub {
+		iP0-> t0 -> P0->oT1;
+		iP1-> t0;
+	}
+	
+	inner = new InnerSub;
+	iP0-> t0-> inner.iP0;
+	
+}
+simF =  new SimpleSub ;
+simS = new SimpleSub;
+comp = new ComplexSub;
+table = {[<ZR><ZR><ZR><ZR><ZR>]};
+
+iP0->t0[table]->simF.iP0;
+simF.oT0->simS.iP0;
+simS.oT0->p2-> comp.iP0;
+iP1->t12->comp.inner.iP1;
+comp.inner.oT1 -> p23 ->t23;
+
+
