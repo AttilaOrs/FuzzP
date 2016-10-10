@@ -57,7 +57,7 @@ public class FuzzyPVizualzer {
 	public static void main(String[] args) {
 		FuzzyPVizualModel model = createModel();
 		GlobalController controller = new GlobalController(model);
-		MainView frame = new MainView(model, controller);
+    MainView frame = new MainView(model, controller, false, true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(800, 600);
 		frame.setResizable(true);

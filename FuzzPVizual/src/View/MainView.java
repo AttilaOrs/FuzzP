@@ -2,6 +2,7 @@ package View;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -20,95 +21,150 @@ import de.erichseifert.gral.ui.InteractivePanel;
 
 public class MainView extends JFrame {
 
-  private static boolean SaveOpenEnabled = false;
+  private static final boolean DefalutSaveOpenEnabled = false;
+  private static final boolean DefailtDuzzyPLangEnabled = false;
 
-  private FuzzyPVizualModel model;
-  private GraphView graphView;
-  private PlotView plotView;
-  private IGlobalController controller;
+  private boolean saveOpenEnabled;
+  private boolean fuzzyPLangEnabled;
 
-  private JTabbedPane tabbedPane;
+	private FuzzyPVizualModel model;
+	private GraphView graphView;
+	private PlotView plotView;
+	private IGlobalController controller;
+
+	private JTabbedPane tabbedPane;
+	private File lastFile;
 
   public MainView(FuzzyPVizualModel model, IGlobalController controller) {
-    super("Fuzzy Petri Visualizer");
-    this.model = model;
-    graphView = new GraphView(model);
-    plotView = new PlotView(model);
-    this.controller = controller;
-    mxGraphComponent graphComponent = graphView.createGraphComponent();
-
-    GridLayout ll = new GridLayout(2, 0);
-    getContentPane().setLayout(ll);
-    getContentPane().add(graphComponent, 0);
-    tabbedPane = new JTabbedPane();
-    getContentPane().add(tabbedPane, 1);
-    JPanel jp2 = new JPanel();
-    InteractivePanel plotViewPanel = plotView.getInteractivePanel();
-    plotViewPanel.setBackground(Color.WHITE);
-    tabbedPane.addTab("Plots", plotViewPanel);
-    tabbedPane.addTab("Fuzzy Tables", jp2);
-    tabbedPane.setBackground(Color.WHITE);
-    TableView tableView = new TableView(model, jp2);
-
-    controller.addView(graphView);
-    controller.addView(plotView);
-    controller.addView(tableView);
-    graphView.setController(controller);
-    plotView.setController(controller);
-    tableView.setController(controller);
-    addMenu();
+    this(model, controller, DefalutSaveOpenEnabled, DefailtDuzzyPLangEnabled);
   }
 
-  public void addInteractivePanel(String tabName, InteractivePanel panel) {
-    tabbedPane.add(tabName, panel);
+  public MainView(FuzzyPVizualModel model, IGlobalController controller, boolean saveOpenEnabled,
+      boolean fuzzyPLangEnabled) {
+		super("Fuzzy Petri Visualizer");
+    this.saveOpenEnabled = saveOpenEnabled;
+    this.fuzzyPLangEnabled = fuzzyPLangEnabled;
+		this.model = model;
+		graphView = new GraphView(model);
+		plotView = new PlotView(model);
+		this.controller = controller;
+		mxGraphComponent graphComponent = graphView.createGraphComponent();
 
-  }
+		GridLayout ll = new GridLayout(2, 0);
+		getContentPane().setLayout(ll);
+		getContentPane().add(graphComponent, 0);
+		tabbedPane = new JTabbedPane();
+		getContentPane().add(tabbedPane, 1);
+		JPanel jp2 = new JPanel();
+		InteractivePanel plotViewPanel = plotView.getInteractivePanel();
+		plotViewPanel.setBackground(Color.WHITE);
+		tabbedPane.addTab("Plots", plotViewPanel);
+		tabbedPane.addTab("Fuzzy Tables", jp2);
+		tabbedPane.setBackground(Color.WHITE);
+		TableView tableView = new TableView(model, jp2);
 
-  private void addMenu() {
-    JFileChooser choose = new JFileChooser();
-    JMenuBar bar = new JMenuBar();
-    this.setJMenuBar(bar);
+		controller.addView(graphView);
+		controller.addView(plotView);
+		controller.addView(tableView);
+		graphView.setController(controller);
+		plotView.setController(controller);
+		tableView.setController(controller);
+		addMenu();
+	}
 
-    if (SaveOpenEnabled) {
-      JMenu fileMenu = new JMenu("File");
-      JMenuItem saveItem = new JMenuItem("Save");
-      saveItem.addActionListener(ac -> {
-        int rez = choose.showSaveDialog(this);
-        if (rez == JFileChooser.APPROVE_OPTION) {
-          model.save(choose.getSelectedFile());
+	public void addInteractivePanel(String tabName, InteractivePanel panel) {
+		tabbedPane.add(tabName, panel);
+
+	}
+
+	private void addMenu() {
+		JFileChooser choose = new JFileChooser();
+		JMenuBar bar = new JMenuBar();
+		this.setJMenuBar(bar);
+
+		if (saveOpenEnabled) {
+			JMenu fileMenu = new JMenu("File");
+			JMenuItem saveItem = new JMenuItem("Save");
+			saveItem.addActionListener(ac -> {
+				int rez = choose.showSaveDialog(this);
+				if (rez == JFileChooser.APPROVE_OPTION) {
+					model.save(choose.getSelectedFile());
+				}
+			});
+			KeyStroke keyStrokeToSave = KeyStroke.getKeyStroke("shift S");
+			saveItem.setAccelerator(keyStrokeToSave);
+			JMenuItem openItem = new JMenuItem("Open");
+			openItem.addActionListener(ac -> {
+				int rez = choose.showOpenDialog(this);
+				if (rez == JFileChooser.APPROVE_OPTION) {
+					model.load(choose.getSelectedFile());
+					controller.globalModelUpdate();
+				}
+			});
+			KeyStroke keyStrokeToOpen = KeyStroke.getKeyStroke("shift O");
+			openItem.setAccelerator(keyStrokeToOpen);
+
+			fileMenu.add(saveItem);
+			fileMenu.add(openItem);
+			bar.add(fileMenu);
+		}
+
+		if (fuzzyPLangEnabled) {
+			JMenu fileMenu = new JMenu("FuzzyPLang");
+			JMenuItem refresh = new JMenuItem("Refresh");
+			refresh.addActionListener(ac -> {
+				model.loadFuzzyPLang(lastFile);
+				controller.globalModelUpdate();
+			});
+			KeyStroke keyStrokeToRefrash = KeyStroke.getKeyStroke("shift R");
+			refresh.setAccelerator(keyStrokeToRefrash);
+
+			JMenuItem openFzp = new JMenuItem("Open FuzzyPLang");
+			openFzp.addActionListener(ac -> {
+				int rez = choose.showOpenDialog(this);
+				if (rez == JFileChooser.APPROVE_OPTION) {
+					lastFile = choose.getSelectedFile();
+					model.loadFuzzyPLang(lastFile);
+					controller.globalModelUpdate();
+				}
+			});
+			KeyStroke keyStrokeToOpenFz = KeyStroke.getKeyStroke("shift F");
+			openFzp.setAccelerator(keyStrokeToOpenFz);
+
+			JMenuItem saveJava = new JMenuItem("Save Java");
+			saveJava.addActionListener(ac -> {
+        if (lastFile != null) {
+          model.saveToJava(lastFile);
+        } else {
+          int rez = choose.showSaveDialog(this);
+          if (rez == JFileChooser.APPROVE_OPTION) {
+            model.saveToJava(choose.getSelectedFile());
+          }
         }
-      });
-      KeyStroke keyStrokeToSave = KeyStroke.getKeyStroke("shift S");
-      saveItem.setAccelerator(keyStrokeToSave);
-      JMenuItem openItem = new JMenuItem("Open");
-      openItem.addActionListener(ac -> {
-        int rez = choose.showOpenDialog(this);
-        if (rez == JFileChooser.APPROVE_OPTION) {
-          model.load(choose.getSelectedFile());
-          controller.globalModelUpdate();
-        }
-      });
-      KeyStroke keyStrokeToOpen = KeyStroke.getKeyStroke("shift O");
-      openItem.setAccelerator(keyStrokeToOpen);
+			});
+			KeyStroke keyStrokeToSavejava = KeyStroke.getKeyStroke("shift J");
+			saveJava.setAccelerator(keyStrokeToSavejava);
 
-      fileMenu.add(saveItem);
-      fileMenu.add(openItem);
-      bar.add(fileMenu);
-    }
-    JMenu zoomMenu = new JMenu("Zoom");
-    bar.add(zoomMenu);
-    JMenuItem zoomInMenuItem = new JMenuItem("Zoom in");
-    zoomInMenuItem.addActionListener(a -> graphView.zoomIn());
-    KeyStroke keyStrokeToZoomIn = KeyStroke.getKeyStroke(',', java.awt.event.InputEvent.SHIFT_MASK );
-    zoomInMenuItem.setAccelerator(keyStrokeToZoomIn);
+			fileMenu.add(saveJava);
+			fileMenu.add(openFzp);
+			fileMenu.add(refresh);
+			bar.add(fileMenu);
+		}
 
-    JMenuItem zoomOutMenuItem = new JMenuItem("Zoom out");
-    zoomOutMenuItem.addActionListener(a -> graphView.zoomOut());
-    KeyStroke keyStrokeToZoomOut = KeyStroke.getKeyStroke('.', java.awt.event.InputEvent.SHIFT_MASK );
-    zoomOutMenuItem.setAccelerator(keyStrokeToZoomOut);
+		JMenu zoomMenu = new JMenu("Zoom");
+		bar.add(zoomMenu);
+		JMenuItem zoomInMenuItem = new JMenuItem("Zoom in");
+		zoomInMenuItem.addActionListener(a -> graphView.zoomIn());
+		KeyStroke keyStrokeToZoomIn = KeyStroke.getKeyStroke(',', java.awt.event.InputEvent.SHIFT_MASK);
+		zoomInMenuItem.setAccelerator(keyStrokeToZoomIn);
 
-    zoomMenu.add(zoomInMenuItem);
-    zoomMenu.add(zoomOutMenuItem);
-  }
+		JMenuItem zoomOutMenuItem = new JMenuItem("Zoom out");
+		zoomOutMenuItem.addActionListener(a -> graphView.zoomOut());
+		KeyStroke keyStrokeToZoomOut = KeyStroke.getKeyStroke('.', java.awt.event.InputEvent.SHIFT_MASK);
+		zoomOutMenuItem.setAccelerator(keyStrokeToZoomOut);
+
+		zoomMenu.add(zoomInMenuItem);
+		zoomMenu.add(zoomOutMenuItem);
+	}
 
 }

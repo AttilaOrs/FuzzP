@@ -25,6 +25,7 @@ repositories {
 
 dependencies {
       compile project(':FuzzPCore') 
+      compile project(':FuzzPExt') 
       compile 'org.tinyjee.jgraphx:jgraphx:3.4.1.3'
       compile 'de.erichseifert.gral:gral-core:0.11'
 }
