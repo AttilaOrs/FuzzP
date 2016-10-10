@@ -1,0 +1,15 @@
+//table declaration
+inv = {[<ZR><ZR><ZR><ZR><ZR>]};
+//defining places, transition and relation between them,
+p0-(12.0)->t0->p1->t1->p2->t3->p4->t4[inv,1]->p0;
+//note that input places names start with an `i`
+//and output transition's name start's with an `o`
+iP5->t0;
+iP6->t1;
+t3->p7->oT5;
+//set initial token for some places
+p0 <= <0.0, 0.0, 1.0, 0.0, 0.0>;
+p2 <= <0.0, 0.0, 1.0, 0.0, 0.0>;
+
+
+
