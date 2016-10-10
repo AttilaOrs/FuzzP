@@ -1,0 +1,15 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceSets.main.java.srcDirs = ['src', 'gen']
+sourceSets.main.resources { srcDirs = ["src"]; exclude "**/*.java" }
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+   compile project(':FuzzPCore') 
+   compile group: 'org.antlr', name: 'antlr4', version: '4.5.3'
+}
+
+mainClassName = "FuzzyPLang.FuzzpyPLangMain.FuzzyPLang"

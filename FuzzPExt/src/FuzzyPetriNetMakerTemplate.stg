@@ -1,0 +1,69 @@
+fuzPetriTemplate(netName, inpPlace, place, outTrans, trans, palceToTransArc, transToPlaceArc, initalMarking, package) ::= <<
+<if(package)> package <package>; <endif>
+import core.FuzzyPetriLogic.FuzzyToken;
+import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
+import core.TableParser;
+
+public class <netName:className()> {
+    public FuzzyPetriNet net;
+    /*input places */
+    public int <inpPlace:{x |<x>};  separator=", " > ;
+    /*ordinary places */
+    int <place:{x |<x>};  separator=", " > ;
+    /* output transitions */
+    public int <outTrans :{tr | <tr.id>}; separator=", ">;
+    /* table for out transitions */
+    <outTrans:{tr |String <tr:tableName()> = "<tr.table>";};separator="\n" >
+    /* ordinary transitions */
+    int <trans :{tr | <tr.id>}; separator=", ">;
+    /* table for ordinary transitions */
+    <trans:{tr |String <tr:tableName()> = "<tr.table>";};separator="\n" >
+
+
+    private static TableParser parser = new TableParser(true);
+
+    public <netName:className()> (){
+        net = new FuzzyPetriNet();
+        addPlaces();
+        addTransitions();
+        addArcs();
+        putInitialMarking();
+
+    }
+
+    private void addPlaces(){
+        <inpPlace:addInpPlace();separator="\n" >
+        <place:addPlace();separator="\n" >
+    }
+
+    private void addTransitions(){
+        <outTrans:addOutTransition();separator="\n" >
+        <trans:addTransition();separator="\n" >
+    }
+
+    private void addArcs(){
+        <palceToTransArc:addArcFromPlaceToTrans();separator="\n">
+        <transToPlaceArc:addArcFromTransToPlace();separator="\n">
+    }
+
+    private void putInitialMarking(){
+        <initalMarking:setInitialMarking();separator="\n" >
+    }
+
+}
+>>
+
+className(netName) ::= "<netName>FuzzyPetriMaker"
+tableName(tr) ::="<tr.id>_tableStr"
+
+addInpPlace(placeName) ::="<placeName> = net.addInputPlace();"
+addPlace(placeName) ::="<placeName> = net.addPlace();"
+
+addOutTransition(tr) ::= "<tr.id> =  net.addOuputTransition(parser.parseOneXOneTable(<tr:tableName()>));"
+addTransition(tr) ::= "<tr.id> =  net.addTransition(<tr.delay>,parser.parseTable(<tr:tableName()>));"
+addArcFromPlaceToTrans(arc) ::= "net.addArcFromPlaceToTransition(<arc.place>, <arc.trans>, <arc.weight>);"
+addArcFromTransToPlace(arc) ::= "net.addArcFromTransitionToPlace(<arc.trans>, <arc.place>);"
+
+setInitialMarking(mark) ::= "net.setInitialMarkingForPlace(<mark.place>, FuzzyToken.buildFromString(\"<mark.token>\"));"
+
+
