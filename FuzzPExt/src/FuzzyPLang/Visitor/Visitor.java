@@ -31,6 +31,11 @@ public class Visitor extends FuzzyPLangBaseVisitor<Boolean> {
         intermediateNet = new HiearchicalIntermediateNet();
         curentDynScope = new DynamicScope();
     }
+    
+    public HiearchicalIntermediateNet getIntermeddiateNet(){
+    	return intermediateNet;
+    }
+    
 
     @Override
     public Boolean visitSubCompDcl(FuzzyPLangParser.SubCompDclContext ctx) {
@@ -84,7 +89,9 @@ public class Visitor extends FuzzyPLangBaseVisitor<Boolean> {
     @Override
     public Boolean visitInpPlace(FuzzyPLangParser.InpPlaceContext ctx) {
         String name = "iP" + ctx.INT();
-        intermediateNet.addInpPlace(subState.cloneSubState(), name);
+        if( curentDynScope.current()){
+			intermediateNet.addInpPlace(subState.cloneSubState(), name);
+        }
         addArcIfPossible(name);
         return true;
     }
@@ -92,7 +99,9 @@ public class Visitor extends FuzzyPLangBaseVisitor<Boolean> {
     @Override
     public Boolean visitPlace(FuzzyPLangParser.PlaceContext ctx) {
         String name = "P" + ctx.INT();
-        intermediateNet.addPlace(subState.cloneSubState(), name);
+        if( curentDynScope.current()){
+			intermediateNet.addPlace(subState.cloneSubState(), name);
+        }
         addArcIfPossible(name);
         return true;
     }
@@ -113,7 +122,9 @@ public class Visitor extends FuzzyPLangBaseVisitor<Boolean> {
     @Override
     public Boolean visitTranz(FuzzyPLangParser.TranzContext ctx) {
         String transitionName = "T" + ctx.INT();
-        intermediateNet.addTransition(subState.cloneSubState(), transitionName);
+        if( curentDynScope.current()){
+			intermediateNet.addTransition(subState.cloneSubState(), transitionName);
+        }
         addArcIfPossible(transitionName);
         return visitChildren(ctx);
     }
@@ -121,7 +132,11 @@ public class Visitor extends FuzzyPLangBaseVisitor<Boolean> {
     @Override
     public Boolean visitOtranz(FuzzyPLangParser.OtranzContext ctx) {
         String transitionName = "oT" + ctx.INT();
-        intermediateNet.addOutTransition(subState.cloneSubState(), transitionName);
+        
+        if( curentDynScope.current()){
+			intermediateNet.addOutTransition(subState.cloneSubState(), transitionName);
+        }
+        
         addArcIfPossible(transitionName);
         return visitChildren(ctx);
     }

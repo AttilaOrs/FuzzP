@@ -1,27 +1,43 @@
 
-sub SimpleSub {
-    table = {[<PL><PM><ZR><NM><NL>]};
-	iP0-(1.2)->oT0[table];
+sub SimplSub {
+    inv = {[<FF><FF><ZR><FF><FF>]};
+	iP11 ->t10[inv] -> P12 ->oT11;
+	p12 <= <0, 0, 1, 0, 0,>; 
+} 
+
+/*
+sub Compsub {
+    sub Inner {
+    	iP1 -> oT1;
+    }
+    la = new Inner;
+    iP10 -> t10 -> la.iP1 ;
+    la.oT1 -> P11 -> oT11; 
+    
 }
-sub ComplexSub{
-	sub InnerSub {
-		iP0-> t0 -> P0->oT1;
-		iP1-> t0;
+*/
+/*
+sub EvenComplex{
+	simpInEvenComplex = new SimplSub;
+}
+sub Tourcher{
+	sub SimplSub {
+		iP11 -> oT11;
 	}
-	
-	inner = new InnerSub;
-	iP0-> t0-> inner.iP0;
+	ss = new SimplSub;
 	
 }
-simF =  new SimpleSub ;
-simS = new SimpleSub;
-comp = new ComplexSub;
-table = {[<ZR><ZR><ZR><ZR><ZR>]};
+*/
+inv = {[<NM><NM><NM><NM><NM>][<NM><NM><NM><NM><NM>][<NM><NM><NM><NM><NM>][<NM><NM><NM><NM><NM>][<NM><NM><NM><NM><NM>]};
+simS = new SimplSub;
+iP0 -> t0[inv] -> simS.iP11; 
+simS.oT1-> P2 -> ot0;
 
-iP0->t0[table]->simF.iP0;
-simF.oT0->simS.iP0;
-simS.oT0->p2-> comp.iP0;
-iP1->t12->comp.inner.iP1;
-comp.inner.oT1 -> p23 ->t23;
+//simF = new SimplSub;
+//comp = new Compsub;
+//eve =  new EvenComplex;
+//tt = new Tourcher;
 
+//iP0 -> t0 -> simS.iP0 ;
+//simS.oT0 -> P2 -> ot1;
 

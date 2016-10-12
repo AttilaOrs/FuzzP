@@ -4,6 +4,10 @@ public class NodeRef {
 
     String nodeName;
     DynamicScope subState;
+    
+    public NodeRef(String nodeName){
+    	this(nodeName, null);
+    }
 
     public NodeRef(String nodeName, DynamicScope subState) {
         this.nodeName = nodeName;

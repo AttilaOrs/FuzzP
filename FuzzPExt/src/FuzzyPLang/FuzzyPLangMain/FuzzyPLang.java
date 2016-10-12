@@ -10,6 +10,8 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import FuzzyPLang.NetBuilder.HiearchicalIntermediateNet;
+import FuzzyPLang.NetBuilder.HierachicalBuilder;
 import FuzzyPLang.Visitor.Visitor;
 import FuzzyPLang.gen.FuzzyPLangLexer;
 import FuzzyPLang.gen.FuzzyPLangParser;
@@ -58,6 +60,9 @@ public class FuzzyPLang {
 		ParseTree parseTree = parser.prog();
         Visitor vis = new Visitor();
 		vis.visit(parseTree);
+		HiearchicalIntermediateNet net = vis.getIntermeddiateNet();
+		HierachicalBuilder bld = new HierachicalBuilder(net);
+	
         /*
          * builtNet = builder.build(); nameStrore = builder.getNameStore();
          * errors = builder.getErrors();

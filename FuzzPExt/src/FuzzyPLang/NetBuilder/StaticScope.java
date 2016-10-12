@@ -9,4 +9,16 @@ public class StaticScope extends ScopeState {
         }
         return ss;
     }
+
+	public boolean sameFamily(StaticScope secific) {
+		if(secific.subs.size() < subs.size()){
+			return false;
+		}
+		for(int i = 0; i<subs.size(); i++){
+			if(!secific.subs.get(i).equals(subs.get(i))){
+				return false;
+			}
+		}
+		return true;
+	}
 }

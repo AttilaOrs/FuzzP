@@ -5,9 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import core.FuzzyPetriLogic.ITable;
+import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
+import core.FuzzyPetriLogic.Tables.OneXOneTable;
 
 public class HiearchicalIntermediateNet {
-    private ArrayList<String[]> tokensAdded;
     private ArrayList<String> places;
     private ArrayList<String> inpPlaces;
     private ArrayList<String> transitions;
@@ -20,8 +21,10 @@ public class HiearchicalIntermediateNet {
     private Map<String, ITable> tableMap;
     private Map<String, HiearchicalIntermediateNet> declarations;
     private Map<String, String> instances;
+    private Map<String, String> tokensAdded;
 
-    public HiearchicalIntermediateNet() {
+    
+    public HiearchicalIntermediateNet(){
         places = new ArrayList<>();
         inpPlaces = new ArrayList<>();
         transitions = new ArrayList<>();
@@ -32,12 +35,12 @@ public class HiearchicalIntermediateNet {
         delayMap = new HashMap<>();
         tableMap = new HashMap<>();
         transitionTableName = new HashMap<>();
-        tokensAdded = new ArrayList<>();
+        tokensAdded = new HashMap<>();
         declarations = new HashMap<>();
         instances = new HashMap<>();
     }
-
-    public void addPlace(StaticScope sub, String str) {
+    
+	public void addPlace(StaticScope sub, String str) {
         System.out.println(sub.toString() + " addPlace " + str);
         if (sub.current()) {
             if (!places.contains(str)) {
@@ -145,7 +148,7 @@ public class HiearchicalIntermediateNet {
         System.out.println(
                 sub.toString() + " addInitialTokenInPlace " + placeName + " ");
         if (sub.current()) {
-            tokensAdded.add(new String[] { placeName, token });
+            tokensAdded.put(placeName, token );
         } else {
             String subName = sub.removeFirstSub();
             declarations.get(subName).addInitialTokenInPlace(sub, placeName, token);
@@ -173,5 +176,57 @@ public class HiearchicalIntermediateNet {
             declarations.get(subName).makeInstenciation(sub, varName, declaredSubName);
         }
     }
+
+	public Map<String, String> getTokensAdded() {
+		return tokensAdded;
+	}
+
+	public ArrayList<String> getPlaces() {
+		return places;
+	}
+
+	public ArrayList<String> getInpPlaces() {
+		return inpPlaces;
+	}
+
+	public ArrayList<String> getTransitions() {
+		return transitions;
+	}
+
+	public ArrayList<String> getOutTransitions() {
+		return outTransitions;
+	}
+
+	public ArrayList<NodeRef[]> getUnweigthedArc() {
+		return unweigthedArc;
+	}
+
+	public ArrayList<NodeRef[]> getWeigthedArcs() {
+		return weigthedArcs;
+	}
+
+	public ArrayList<Double> getWeigthsForArc() {
+		return weigthsForArc;
+	}
+
+	public Map<String, Integer> getDelayMap() {
+		return delayMap;
+	}
+
+	public Map<String, String> getTransitionTableName() {
+		return transitionTableName;
+	}
+
+	public Map<String, ITable> getTableMap() {
+		return tableMap;
+	}
+
+	public Map<String, HiearchicalIntermediateNet> getDeclarations() {
+		return declarations;
+	}
+
+	public Map<String, String> getInstances() {
+		return instances;
+	}
 
 }
