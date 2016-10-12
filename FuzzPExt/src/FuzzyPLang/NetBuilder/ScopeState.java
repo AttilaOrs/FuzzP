@@ -20,6 +20,10 @@ abstract public class ScopeState {
         subs.add(sub);
     }
 
+    public void addToHead(String sub) {
+        subs.add(0, sub);
+    }
+
     public String removeLastSub() {
         if (!subs.isEmpty()) {
             return subs.remove(subs.size() - 1);

@@ -42,4 +42,15 @@ public class NodeRef {
 
     }
 
+    public void updateToFullDynScope(DynamicScope dinScope) {
+        while (!dinScope.current()) {
+            subState.addToHead(dinScope.removeFirstSub());
+        }
+
+    }
+
+    public NodeRef copyNodeRef() {
+        return new NodeRef(nodeName, subState.cloneSubState());
+    }
+
 }

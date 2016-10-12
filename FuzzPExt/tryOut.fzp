@@ -1,8 +1,8 @@
 
 sub SimplSub {
     inv = {[<FF><FF><ZR><FF><FF>]};
-	iP11 ->t10[inv] -> P12 ->oT11;
-	p12 <= <0, 0, 1, 0, 0,>; 
+	iP11 ->t10[inv] -> P12 -(22.0)->oT11;
+	p12 <= <0, 0, 1, 0, 0>; 
 } 
 
 /*
@@ -31,7 +31,7 @@ sub Tourcher{
 inv = {[<NM><NM><NM><NM><NM>][<NM><NM><NM><NM><NM>][<NM><NM><NM><NM><NM>][<NM><NM><NM><NM><NM>][<NM><NM><NM><NM><NM>]};
 simS = new SimplSub;
 iP0 -> t0[inv] -> simS.iP11; 
-simS.oT1-> P2 -> ot0;
+simS.oT1-> P2 -(12.0)-> ot0;
 
 //simF = new SimplSub;
 //comp = new Compsub;

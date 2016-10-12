@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import core.FuzzyPetriLogic.ITable;
+import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
+import core.FuzzyPetriLogic.Tables.OneXOneTable;
 
 public class HierachicalBuilder {
 	
@@ -23,6 +26,9 @@ public class HierachicalBuilder {
 	Map<NodeRef, StaticScope> staticScopeOfTransitions;
 	List<NodeRef> realOuputTrans;
 	
+    List<NodeRef[]> unweigthedArcs;
+    List<NodeRef[]> weigthedArsc;
+    List<Double> weigths;
 	
 	private HiearchicalIntermediateNet interNet;
 	
@@ -32,28 +38,131 @@ public class HierachicalBuilder {
 		
 		generateAlllDecalrationRefs();
 		generateAllTableDeclarations();
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-		declarationScopesName.entrySet().forEach(ent -> System.out.println(ent.getKey() + " >><< " + ent.getValue() ) );
 		generateAllPlaceRefs();
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-		System.out.println(tableDeclaration);
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-		staticScopeOfPlaces.entrySet().forEach(ent -> System.out.println(ent.getKey() + " >><< " + ent.getValue() ) );
-		System.out.println(">inps:");
-		realInputPlaces.forEach(ff -> System.out.println(ff));
-		System.out.println(">tokens:");
-		tokensPuttedInPlace.entrySet().forEach(ent -> System.out.println(ent.getKey() + " <= " + ent.getValue() ) );
 		generateAllTransRefs();
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-		staticScopeOfTransitions.entrySet().forEach(ent -> System.out.println(ent.getKey() + " >><< " + ent.getValue() ) );
-		System.out.println(">outs:");
-		realOuputTrans.forEach(ff -> System.out.println(ff));
-		
+        collectArcs();
 	}
 	
+    public FuzzyPetriNet buildPetriNet() {
+        FuzzyPetriNet toRet = new FuzzyPetriNet();
+        HashMap<NodeRef, Integer> nodeIds = new HashMap<>();
+        HashMap<NodeRef, Integer> trIDs = new HashMap<>();
+        for (NodeRef palceRef : staticScopeOfPlaces.keySet()) {
+            if (realInputPlaces.contains(palceRef)) {
+                nodeIds.put(palceRef, toRet.addInputPlace());
+            } else {
+                nodeIds.put(palceRef, toRet.addPlace());
+            }
+        }
+        for (NodeRef trRef : staticScopeOfTransitions.keySet()) {
+            if (realOuputTrans.contains(trRef)) {
+                OneXOneTable table = getOutTransitionTable(trRef);
+                trIDs.put(trRef, toRet.addOuputTransition(table));
+            } else {
+                ITable table = getTransitionTable(trRef);
+                trIDs.put(trRef, toRet.addTransition(getDelay(trRef), table));
+
+            }
+        }
+
+        return toRet;
+
+    }
 	
 
-	private void generateAllTableDeclarations() {
+    private int getDelay(NodeRef trRef) {
+        HiearchicalIntermediateNet net = declearions.get(staticScopeOfTransitions.get(trRef));
+        if (net.getDelayMap().containsKey(trRef.getNodeName())) {
+            return net.getDelayMap().get(trRef.getNodeName());
+        }
+        return 0;
+    }
+
+    private ITable getTransitionTable(NodeRef trRef) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private OneXOneTable getOutTransitionTable(NodeRef trRef) {
+        HiearchicalIntermediateNet net = declearions.get(staticScopeOfTransitions.get(trRef));
+        if (net.getTransitionTableName().containsKey(trRef.getNodeName())) {
+            String tableName = net.getTransitionTableName().get(trRef.getNodeName());
+            ITable table = findTable(tableName, staticScopeOfTransitions.get(trRef).cloneSubState());
+            if (table != null && table instanceof OneXOneTable) {
+                return (OneXOneTable) table;
+            }
+            
+        }
+        return OneXOneTable.defaultTable();
+    }
+
+    private ITable findTable(String tableName, StaticScope staticScope) {
+        if (tableDeclaration.containsKey(tableName)) {
+
+            Set<StaticScope> alternatives = tableDeclaration.get(tableName).keySet();
+            do {
+                for (StaticScope curentAlternative : alternatives) {
+                    if (staticScope.sameFamily(curentAlternative)) {
+                        return tableDeclaration.get(tableName).get(curentAlternative);
+                    }
+                }
+            } while (staticScope.removeLastSub() != null);
+
+        }
+        System.err.println("No table with name `" + tableName + "` found in scope " + staticScope);
+
+        return null;
+
+    }
+
+    private void collectArcs() {
+        unweigthedArcs = new ArrayList<>();
+        weigthedArsc = new ArrayList<>();
+        weigths = new ArrayList<>();
+        DynamicScope dinScope = new DynamicScope();
+        StaticScope staticScope = new StaticScope();
+        collecArcsRecursivily(staticScope, dinScope, interNet);
+
+    }
+
+    private void collecArcsRecursivily(StaticScope staticScope, DynamicScope dinScope,
+            HiearchicalIntermediateNet currentNet) {
+        for (NodeRef[] arc : currentNet.getUnweigthedArc()) {
+            NodeRef ref1 = arc[0].copyNodeRef();
+            ref1.updateToFullDynScope(dinScope.cloneSubState());
+            NodeRef ref2 = arc[1].copyNodeRef();
+            ref2.updateToFullDynScope(dinScope.cloneSubState());
+            NodeRef[] fullArc = new NodeRef[] { ref1, ref2 };
+
+            unweigthedArcs.add(fullArc);
+        }
+        for (int i = 0; i < currentNet.getWeigthedArcs().size(); i++) {
+            NodeRef[] arc = currentNet.getWeigthedArcs().get(i);
+            NodeRef ref1 = arc[0].copyNodeRef();
+            ref1.updateToFullDynScope(dinScope.cloneSubState());
+            NodeRef ref2 = arc[1].copyNodeRef();
+            ref2.updateToFullDynScope(dinScope.cloneSubState());
+            NodeRef[] fullArc = new NodeRef[] { ref1, ref2 };
+            weigthedArsc.add(fullArc);
+            weigths.add(currentNet.getWeigthsForArc().get(i));
+        }
+        for (Entry<String, String> instance : currentNet.getInstances().entrySet()) {
+
+            DynamicScope insatnceDynScope = dinScope.cloneSubState();
+            insatnceDynScope.addSub(instance.getKey());
+            StaticScope insatnceStaticScope = staticScope.cloneSubState();
+            insatnceStaticScope.addSub(instance.getValue());
+
+            HiearchicalIntermediateNet net = findDeclaration(instance.getValue(), staticScope.cloneSubState());
+            collecArcsRecursivily(insatnceStaticScope, insatnceDynScope, net);
+
+        }
+
+
+    }
+
+
+    private void generateAllTableDeclarations() {
 		tableDeclaration = new HashMap<>();
 		for(StaticScope sc : declearions.keySet()){
 			HiearchicalIntermediateNet hin = declearions.get(sc);
