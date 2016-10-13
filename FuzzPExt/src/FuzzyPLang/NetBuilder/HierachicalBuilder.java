@@ -1,15 +1,22 @@
 package FuzzyPLang.NetBuilder;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
+import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.ITable;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
+import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNetChecker;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
+import core.FuzzyPetriLogic.Tables.OneXTwoTable;
+import core.FuzzyPetriLogic.Tables.TwoXOneTable;
+import core.FuzzyPetriLogic.Tables.TwoXTwoTable;
 
 public class HierachicalBuilder {
 	
@@ -31,11 +38,24 @@ public class HierachicalBuilder {
     List<Double> weigths;
 	
 	private HiearchicalIntermediateNet interNet;
+	private HashMap<NodeRef, Integer> placeIDs;
+	private HashMap<NodeRef, Integer> trIDs;
+	private StringBuilder errorLog;
+	private boolean errorFound;
+	private final boolean strict;
+	private FuzzyPetriNetChecker checker;
 	
 	public HierachicalBuilder(HiearchicalIntermediateNet net){
+		this(net, false);
+	}
+	
+	
+	public HierachicalBuilder(HiearchicalIntermediateNet net, boolean strict){
 		this.interNet = net;
-		
-		
+		errorLog = new StringBuilder();
+		errorFound = false;
+        checker = new FuzzyPetriNetChecker();
+        this.strict = strict;
 		generateAlllDecalrationRefs();
 		generateAllTableDeclarations();
 		generateAllPlaceRefs();
@@ -43,15 +63,38 @@ public class HierachicalBuilder {
         collectArcs();
 	}
 	
+	public TransitionPlaceNameStore createSimplifiedNameStore(){
+		TransitionPlaceNameStore nametStore = new TransitionPlaceNameStore();
+		for(Entry<NodeRef, Integer> placeEntry : placeIDs.entrySet()){
+			if(placeEntry.getKey().getDynamicScope().current()){
+				nametStore.addPlaceName(placeEntry.getValue(), placeEntry.getKey().getNodeName());
+			} else {
+				nametStore.addPlaceName(placeEntry.getValue(), "_P"+placeEntry.getValue());
+			}
+		}
+		for(Entry<NodeRef, Integer> transitionEntry : trIDs.entrySet()){
+			if(transitionEntry.getKey().getDynamicScope().current()){
+				nametStore.addTransitionName(transitionEntry.getValue(), transitionEntry.getKey().getNodeName());
+			} else {
+				nametStore.addTransitionName(transitionEntry.getValue(), "_T"+transitionEntry.getValue());
+			}
+		}
+		return nametStore;
+	}
+	
+	public String getErrors(){
+		return errorLog.toString();
+	}
+	
     public FuzzyPetriNet buildPetriNet() {
         FuzzyPetriNet toRet = new FuzzyPetriNet();
-        HashMap<NodeRef, Integer> nodeIds = new HashMap<>();
-        HashMap<NodeRef, Integer> trIDs = new HashMap<>();
+        placeIDs = new HashMap<>();
+        trIDs = new HashMap<>();
         for (NodeRef palceRef : staticScopeOfPlaces.keySet()) {
             if (realInputPlaces.contains(palceRef)) {
-                nodeIds.put(palceRef, toRet.addInputPlace());
+                placeIDs.put(palceRef, toRet.addInputPlace());
             } else {
-                nodeIds.put(palceRef, toRet.addPlace());
+                placeIDs.put(palceRef, toRet.addPlace());
             }
         }
         for (NodeRef trRef : staticScopeOfTransitions.keySet()) {
@@ -64,9 +107,35 @@ public class HierachicalBuilder {
 
             }
         }
-
+        for(int index = 0 ; index < weigthedArsc.size() ; index++){
+        	NodeRef[] arc = weigthedArsc.get(index);
+        	Double weigth = weigths.get(index);
+        	if(placeIDs.containsKey(arc[0]) && trIDs.containsKey(arc[1])){
+        		toRet.addArcFromPlaceToTransition(placeIDs.get(arc[0]), trIDs.get(arc[1]), weigth);
+        	} else if(trIDs.containsKey(arc[0]) && placeIDs.containsKey(arc[1])){
+        		error("You cannot have WEIGTED arc between a transition ("+ arc[0] +") and place  (" +arc[1] + ") \n" );
+        		toRet.addArcFromTransitionToPlace(trIDs.get(arc[0]), placeIDs.get(arc[1]));
+        	} else {
+        		error("You cannot have ARCs between a transition ("+ arc[0] +") and place  (" +arc[1] + ") \n" );
+        	}
+        }
+        
+        for(int index = 0 ; index < unweigthedArcs.size() ; index++){
+        	NodeRef[] arc = unweigthedArcs.get(index);
+        	if(placeIDs.containsKey(arc[0]) && trIDs.containsKey(arc[1])){
+        		toRet.addArcFromPlaceToTransition(placeIDs.get(arc[0]), trIDs.get(arc[1]), 1.0);
+        	} else if(trIDs.containsKey(arc[0]) && placeIDs.containsKey(arc[1])){
+        		toRet.addArcFromTransitionToPlace(trIDs.get(arc[0]), placeIDs.get(arc[1]));
+        	} else {
+        		error("You cannot have ARCs between a transition ("+ arc[0] +") and place  (" +arc[1] + ") \n" );
+        	}
+        }
+         errorFound |= checker.checkPetriNet(toRet);
+         errorLog.append(checker.getErrorMsg());
+         if(strict  && errorFound){
+        	 throw new RuntimeException("Incorrect Petri net :" + errorLog.toString());
+         }
         return toRet;
-
     }
 	
 
@@ -79,21 +148,65 @@ public class HierachicalBuilder {
     }
 
     private ITable getTransitionTable(NodeRef trRef) {
-        // TODO Auto-generated method stub
-        return null;
+    	ITable table = findNamedTableForTransition(trRef);
+    	if(table != null){
+    		return table;
+    	}
+    	
+    	long outGoingArcs = countArcsWhich(arc -> arc[0].equals(trRef));
+    	long incommingArcs = countArcsWhich(arc -> arc[1].equals(trRef));
+    	if(outGoingArcs <1 || outGoingArcs > 2 || incommingArcs >2 || incommingArcs <1  ){
+    		error(" the transition `" + trRef +"` has " + outGoingArcs + "` outgoing arc and " + incommingArcs + " incomming arcs \n");
+    		return TwoXTwoTable.defaultTable();
+    	}
+    	if(incommingArcs == 1){
+    		if(outGoingArcs == 1){
+    			return OneXOneTable.defaultTable();
+    		} else {
+    			return OneXTwoTable.defaultTable();
+    		}
+    	} else {
+    		if(outGoingArcs == 1){
+    			return TwoXOneTable.defaultTable();
+    		} else {
+    			return TwoXTwoTable.defaultTable();
+    		}
+    		
+    	}
+    	
     }
 
+	private long countArcsWhich(Predicate<NodeRef[]> outgoingArcsFilter) {
+		return weigthedArsc.stream().filter(outgoingArcsFilter).count() 
+    	 + unweigthedArcs.stream().filter(outgoingArcsFilter).count();
+	}
+
     private OneXOneTable getOutTransitionTable(NodeRef trRef) {
-        HiearchicalIntermediateNet net = declearions.get(staticScopeOfTransitions.get(trRef));
-        if (net.getTransitionTableName().containsKey(trRef.getNodeName())) {
-            String tableName = net.getTransitionTableName().get(trRef.getNodeName());
-            ITable table = findTable(tableName, staticScopeOfTransitions.get(trRef).cloneSubState());
-            if (table != null && table instanceof OneXOneTable) {
-                return (OneXOneTable) table;
-            }
-            
+        ITable table = findNamedTableForTransition(trRef);
+        if(table != null){
+        	if(table instanceof OneXOneTable){
+        		return (OneXOneTable) table;
+        	} else {
+        		error(" the ouput transition `" + trRef.nodeName + "` should have OneXOne table incorporated \n");
+        	}
         }
         return OneXOneTable.defaultTable();
+    }
+    
+    private ITable findNamedTableForTransition(NodeRef trRef){
+    	String tableName = findTableNameForTransition(trRef);
+    	if(tableName != null ){
+    		return findTable(tableName, staticScopeOfTransitions.get(trRef));
+    	}
+    	return null;
+    }
+    
+    private String findTableNameForTransition(NodeRef trRef){
+        HiearchicalIntermediateNet net = declearions.get(staticScopeOfTransitions.get(trRef));
+        if(net.getTransitionTableName().containsKey(trRef.getNodeName())){
+        	return net.getTransitionTableName().get(trRef.getNodeName() );
+        }
+        return null;
     }
 
     private ITable findTable(String tableName, StaticScope staticScope) {
@@ -109,7 +222,7 @@ public class HierachicalBuilder {
             } while (staticScope.removeLastSub() != null);
 
         }
-        System.err.println("No table with name `" + tableName + "` found in scope " + staticScope);
+        error("No table with name `" + tableName + "` found in scope " + staticScope);
 
         return null;
 
@@ -154,11 +267,10 @@ public class HierachicalBuilder {
             insatnceStaticScope.addSub(instance.getValue());
 
             HiearchicalIntermediateNet net = findDeclaration(instance.getValue(), staticScope.cloneSubState());
-            collecArcsRecursivily(insatnceStaticScope, insatnceDynScope, net);
-
+            if(net != null){
+				collecArcsRecursivily(insatnceStaticScope, insatnceDynScope, net);
+            }
         }
-
-
     }
 
 
@@ -193,7 +305,10 @@ public class HierachicalBuilder {
 				declarationScopesName.put(decSimpleName, new ArrayList<>());
 			}
 			declarationScopesName.get(decSimpleName).add(scope);
-			generateRecursivlyTheDeclarationRefs(scope.cloneSubState(), curentNet.getDeclarations().get(decSimpleName));
+			HiearchicalIntermediateNet net = curentNet.getDeclarations().get(decSimpleName);
+			if(net != null){
+				generateRecursivlyTheDeclarationRefs(scope.cloneSubState(), net);
+			}
 		}
 	}
 
@@ -231,7 +346,7 @@ public class HierachicalBuilder {
 				Map<NodeRef, StaticScope> rez = genTransRefs(insatnceStaticScope, insatnceDynScope, net);
 				toRet.putAll(rez);
 			} else {
-				System.err.println("No declareation `"+instance.getValue() +"` find in current scope " + curStaticScope );
+				error("No declareation `"+instance.getValue() +"` find in current scope " + curStaticScope );
 			}
 		}
 		return toRet;
@@ -281,7 +396,7 @@ public class HierachicalBuilder {
 				Map<NodeRef, StaticScope> rez = genPlaceRefs(insatnceStaticScope, insatnceDynScope, net);
 				toRet.putAll(rez);
 			} else {
-				System.err.println("No declareation `"+instance.getValue() +"` find in current scope " + curStaticScope );
+				error("No declareation `"+instance.getValue() +"` find in current scope " + curStaticScope +"\n");
 			}
 		}
 		return toRet;
@@ -302,6 +417,9 @@ public class HierachicalBuilder {
 	}
 	
 	
-
+   private void error(String error){
+	   errorLog.append(error);
+	   errorFound = true;
+   }
 
 }

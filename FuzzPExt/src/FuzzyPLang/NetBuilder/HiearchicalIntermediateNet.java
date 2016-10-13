@@ -41,7 +41,6 @@ public class HiearchicalIntermediateNet {
     }
     
 	public void addPlace(StaticScope sub, String str) {
-        System.out.println(sub.toString() + " addPlace " + str);
         if (sub.current()) {
             if (!places.contains(str)) {
                 places.add(str);
@@ -53,7 +52,6 @@ public class HiearchicalIntermediateNet {
     }
 
     public void addInpPlace(StaticScope sub, String str) {
-        System.out.println(sub.toString() + " addInpPlace " + str);
         if (sub.current()) {
             if (!inpPlaces.contains(str)) {
                 inpPlaces.add(str);
@@ -65,7 +63,6 @@ public class HiearchicalIntermediateNet {
     }
 
     public void addTransition(StaticScope sub, String tr) {
-        System.out.println(sub.toString() + " addTransition " + tr);
         if (sub.current()) {
             if (!transitions.contains(tr)) {
                 transitions.add(tr);
@@ -77,7 +74,6 @@ public class HiearchicalIntermediateNet {
     }
 
     public void addOutTransition(StaticScope sub, String tr) {
-        System.out.println(sub.toString() + " addOutTransition " + tr);
         if (sub.current()) {
             if (!outTransitions.contains(tr)) {
                 outTransitions.add(tr);
@@ -89,8 +85,6 @@ public class HiearchicalIntermediateNet {
     }
 
     public void addArc(StaticScope sub, NodeRef firsNodeName, NodeRef secondNodeName, double weigth) {
-        System.out.println(
-                sub.toString() + " addArc " + firsNodeName.toString() + " " + secondNodeName.toString() + " " + weigth);
         if (sub.current()) {
             weigthedArcs.add(new NodeRef[] { firsNodeName, secondNodeName });
             weigthsForArc.add(weigth);
@@ -101,8 +95,6 @@ public class HiearchicalIntermediateNet {
     }
 
     public void addArc(StaticScope sub, NodeRef firsNodeName, NodeRef secondNodeName) {
-        System.out.println(
-                sub.toString() + " addArc " + firsNodeName.toString() + " " + secondNodeName.toString());
         if (sub.current()) {
             unweigthedArc.add(new NodeRef[] { firsNodeName, secondNodeName });
         } else {
@@ -112,8 +104,6 @@ public class HiearchicalIntermediateNet {
     }
 
     public void setDelayForTransition(StaticScope sub, String trName, int delay) {
-        System.out.println(
-                sub.toString() + " setDelayForTransition " + trName + " " + delay);
         if (sub.current()) {
             delayMap.put(trName, delay);
         } else {
@@ -123,8 +113,6 @@ public class HiearchicalIntermediateNet {
     }
 
     public void setNamedTableForTransition(StaticScope sub, String trName, String nameOfTable) {
-        System.out.println(
-                sub.toString() + " setNamedTableForTransition " + trName + " " + nameOfTable);
         if (sub.current()) {
             transitionTableName.put(trName, nameOfTable);
         } else {
@@ -134,8 +122,6 @@ public class HiearchicalIntermediateNet {
     }
 
     public void addTableWithName(StaticScope sub, String tableName, ITable table) {
-        System.out.println(
-                sub.toString() + " addTableWithName " + tableName + " ");
         if (sub.current()) {
             tableMap.put(tableName, table);
         } else {
@@ -145,8 +131,6 @@ public class HiearchicalIntermediateNet {
     }
 
     public void addInitialTokenInPlace(StaticScope sub, String placeName, String token) {
-        System.out.println(
-                sub.toString() + " addInitialTokenInPlace " + placeName + " ");
         if (sub.current()) {
             tokensAdded.put(placeName, token );
         } else {
@@ -156,8 +140,6 @@ public class HiearchicalIntermediateNet {
     }
 
     public void makeDeclaration(StaticScope sub, String newSubName) {
-        System.out.println(
-                sub.toString() + " makeDeclaration " + sub + " " + newSubName);
         if (sub.current()) {
             declarations.put(newSubName, new HiearchicalIntermediateNet());
         } else {
@@ -167,8 +149,6 @@ public class HiearchicalIntermediateNet {
     }
 
     public void makeInstenciation(StaticScope sub, String varName, String declaredSubName) {
-        System.out.println(
-                sub.toString() + " makeInstenciation " + varName + " " + declaredSubName);
         if (sub.current()) {
             instances.put(varName, declaredSubName);
         } else {

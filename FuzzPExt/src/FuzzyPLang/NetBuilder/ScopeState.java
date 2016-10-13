@@ -51,5 +51,14 @@ abstract public class ScopeState {
     public String toString() {
         return subs.stream().collect(Collectors.joining("."));
     }
+    
+    @Override
+    public int hashCode(){
+		int result =  19;
+		for(int i = 0; i < subs.size(); i++){
+			result = 37*result + subs.get(i).hashCode() ;
+		}
+		return result ;
+    }
 
 }

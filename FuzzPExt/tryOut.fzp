@@ -1,43 +1,56 @@
-
-sub SimplSub {
-    inv = {[<FF><FF><ZR><FF><FF>]};
-	iP11 ->t10[inv] -> P12 -(22.0)->oT11;
-	p12 <= <0, 0, 1, 0, 0>; 
-} 
-
-/*
-sub Compsub {
-    sub Inner {
-    	iP1 -> oT1;
-    }
-    la = new Inner;
-    iP10 -> t10 -> la.iP1 ;
-    la.oT1 -> P11 -> oT11; 
-    
-}
+/*This Petri net finds the maximum of three inputs signals. Has four output and. 
+* From the first three only one (which corresponds to the maximum), the fourth allways fires.
+* The example demonstartes the usage of the sub-components.
 */
-/*
-sub EvenComplex{
-	simpInEvenComplex = new SimplSub;
-}
-sub Tourcher{
-	sub SimplSub {
-		iP11 -> oT11;
-	}
-	ss = new SimplSub;
-	
-}
-*/
-inv = {[<NM><NM><NM><NM><NM>][<NM><NM><NM><NM><NM>][<NM><NM><NM><NM><NM>][<NM><NM><NM><NM><NM>][<NM><NM><NM><NM><NM>]};
-simS = new SimplSub;
-iP0 -> t0[inv] -> simS.iP11; 
-simS.oT1-> P2 -(12.0)-> ot0;
 
-//simF = new SimplSub;
-//comp = new Compsub;
-//eve =  new EvenComplex;
-//tt = new Tourcher;
+sub Comparator {
+	diffTable = {[<ZR><NM><NL><NL><NL>]
+			     [<PM><ZR><NM><NL><NL>]
+			     [<PL><PM><ZR><NM><NL>] 
+			     [<PL><PL><PM><ZR><NM>] 
+			     [<PL><PL><PL><PM><ZR>]};
+	separator = {[<ZR,FF><ZR,FF><FF,FF><FF,ZR><FF,ZR>]};
+	iP0 -> t0[diffTable] -> P1 -> t1[separator];
+	iP1 -> t0;
+	t1 -> P2 -> oT2; // output for iP0 is higher 
+	t1 -> P3 -> oT3; // output for iP1 is higher
+}
 
-//iP0 -> t0 -> simS.iP0 ;
-//simS.oT0 -> P2 -> ot1;
+cOne = new Comparator;    //compares iP0 with iP2
+cTwo = new Comparator;    //compares iP1 with iP0
+cThree = new Comparator;  //compares iP2 with iP1
+
+iP0-> t0 -> cOne.iP0;
+iP1-> t1 -> cTwo.iP0;
+iP2-> t2 -> cThree.iP0;
+t0 -> cTwo.iP1 ;
+t1 -> cThree.iP1 ;
+t2 -> cOne.iP1 ; 
+
+//oT0 means iP0 is the biggest
+cOne.oT2 -> P0  -> oT0; // iP0 > iP2  
+cTwo.oT3 -> P1  -> oT0; // iP1 < iP0
+
+//oT1 means iP1 is the biggest
+cTwo.oT2 -> P2 -> oT1;   //iP1 > iP0
+cThree.oT3 -> P3 -> oT1; //iP2 < iP1 
+
+
+//oT2 means iP2 is the biggest
+cThree.oT2 -> P4 -> oT2;   //iP2 > iP1
+cOne.oT3   -> P5 -> oT2;   //iP0 > iP2
+
+//oT3 is only for removeing unncesary tokens
+P0 -> oT3;
+P1 -> oT3;
+P2 -> oT3;
+P3 -> oT3;
+P4 -> oT3;
+P5 -> oT3;
+
+
+
+
+
+
 

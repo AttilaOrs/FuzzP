@@ -1,0 +1,61 @@
+
+/*This Petri net finds the maximum of three inputs signals. Has four output and. 
+* From the first three only one (which corresponds to the maximum), the fourth allways fires.
+* The example demonstartes the usage of the sub-components.
+*/
+
+sub Comparator {
+	diffTable = {[<ZR><NM><NL><NL><NL>]
+			     [<PM><ZR><NM><NL><NL>]
+			     [<PL><PM><ZR><NM><NL>] 
+			     [<PL><PL><PM><ZR><NM>] 
+			     [<PL><PL><PL><PM><ZR>]};
+	separator = {[<FF,ZR><FF,ZR><FF,FF><ZR,FF><ZR,FF>]};
+	
+	iP0 -> t0[diffTable] -> P1 -> t1[separator];
+	iP1 -> t0;
+	t1 -> P2 -> oT0; // output for iP0 is higher 
+	t1 -> P3 -> oT1; // output for iP1 is higher
+}
+
+sub DataGeather { //(iP0, iP1)(iP2, iP3)(iP4, iP5)
+	iP3 -> t0;
+	iP0 -> t0 -> P10 -> t10 -> P21 -> t20; P21 -> t21;
+	iP4 -> t20 ->p30; iP5->t21->p30->oT0;
+	
+	
+	iP5 -> t1;
+	iP2 -> t1 -> P11 -> t11 -> P22 -> t22; P22 -> t23;
+	iP0 -> t22 -> p31; iP1->t23->p31->oT1;
+
+	iP1 -> t2;
+	iP4 -> t2 -> P12 -> t12 -> P23 -> t24 ;P23 -> t25;  
+	iP2 -> t24 -> p32; iP3->t25 -> p32 -> oT2;
+	
+	
+}
+
+
+cOne = new Comparator;    //compares iP0 with iP2
+cTwo = new Comparator;    //compares iP1 with iP0
+cThree = new Comparator;  //compares iP2 with iP1
+logic = new DataGeather;
+
+iP0-> t0 -> cOne.iP0;
+iP1-> t1 -> cTwo.iP0;
+iP2-> t2 -> cThree.iP0;
+t0 -> cTwo.iP1 ;
+t1 -> cThree.iP1 ;
+t2 -> cOne.iP1 ; 
+cOne.oT0 -> logic.iP0;
+cOne.oT1 -> logic.iP1;
+
+cTwo.oT0 -> logic.iP2;
+cTwo.oT1 -> logic.iP3;
+
+cThree.oT0 -> logic.iP4;
+cThree.oT1 -> logic.iP5;
+logic.oT0 -> P1 -> oT0;
+logic.oT1 -> P2 -> oT1;
+logic.oT2 -> P3 -> oT2;
+
