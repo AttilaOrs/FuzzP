@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import core.FuzzyPetriLogic.ITable;
-import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
-import core.FuzzyPetriLogic.Tables.OneXOneTable;
 
 public class HiearchicalIntermediateNet {
     private ArrayList<String> places;

@@ -239,6 +239,8 @@ public class Visitor extends FuzzyPLangBaseVisitor<Boolean> {
             firstTable.put(index, firstMapList.get(cntr));
             secondTable.put(index, secondMapList.get(cntr++));
         }
+        intermediateNet.addTableWithName(subState.cloneSubState(), ctx.ID().getText(),
+                new TwoXTwoTable(firstTable, secondTable));
         firstMapList.clear();
         secondMapList.clear();
         return true;
