@@ -49,6 +49,8 @@ token : '<' number ',' number ',' number ',' number ',' number '>'
       ;
 number : INT
        | INT'.'INT
+       |'-'INT
+       |'-'INT.INT 
        ;
 
 COMMENT

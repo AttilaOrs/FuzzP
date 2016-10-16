@@ -93,7 +93,7 @@ public class PlotView implements IView {
     if (placeSeries.containsKey(plId)) {
       return; // place is already ploted
     }
-    String name = "P" + plId;
+    String name = model.getNameStore().getPlaceName(plId);
     DataTable data = model.getDataForPlace(plId);
     DataSeries ss = addToPlotWithName(name, data);
 

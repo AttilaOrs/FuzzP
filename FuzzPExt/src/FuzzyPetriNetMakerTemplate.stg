@@ -19,6 +19,7 @@ public class <netName:className()> {
     /* table for ordinary transitions */
     <trans:{tr |String <tr:tableName()> = "<tr.table>";};separator="\n" >
 
+    public TransitionPlaceNameStore nameStore = new TransitionPlaceNameStore();
 
     private static TableParser parser = new TableParser(true);
 
@@ -34,11 +35,15 @@ public class <netName:className()> {
     private void addPlaces(){
         <inpPlace:addInpPlace();separator="\n" >
         <place:addPlace();separator="\n" >
+        <inpPlace:addPlaceToNameStore();separator="\n" >
+        <place:addPlaceToNameStore();separator="\n" >
     }
 
     private void addTransitions(){
         <outTrans:addOutTransition();separator="\n" >
+        <outTrans:addTrnToNameStore();separator="\n" >
         <trans:addTransition();separator="\n" >
+        <trans:addTrnToNameStore();separator="\n" >
     }
 
     private void addArcs(){
@@ -58,9 +63,11 @@ tableName(tr) ::="<tr.id>_tableStr"
 
 addInpPlace(placeName) ::="<placeName> = net.addInputPlace();"
 addPlace(placeName) ::="<placeName> = net.addPlace();"
+addPlaceToNameStore(placeName) ::="nameStore.addPlaceName(<placeName>, \"<placeName>\" );"
 
 addOutTransition(tr) ::= "<tr.id> =  net.addOuputTransition(parser.parseOneXOneTable(<tr:tableName()>));"
 addTransition(tr) ::= "<tr.id> =  net.addTransition(<tr.delay>,parser.parseTable(<tr:tableName()>));"
+addTrnToNameStore(tr) ::="nameStore.addTransitionName(<tr.id>, \"<tr.id>\" );"
 addArcFromPlaceToTrans(arc) ::= "net.addArcFromPlaceToTransition(<arc.place>, <arc.trans>, <arc.weight>);"
 addArcFromTransToPlace(arc) ::= "net.addArcFromTransitionToPlace(<arc.trans>, <arc.place>);"
 

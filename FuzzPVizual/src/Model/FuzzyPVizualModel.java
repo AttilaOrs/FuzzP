@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 
 import FuzzyPLang.FuzzyPLangMain.FuzzyPLang;
 import FuzzyPetriNetToCode.MakerGenerator;
-import core.Drawable.DrawableFuzzyPetriNet;
 import core.Drawable.DrawableNetWithExternalNames;
 import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.ITable;
@@ -83,9 +82,8 @@ public class FuzzyPVizualModel {
 		setNameStore(lang.getNameStore());
 	}
 
-	private void setNameStore(TransitionPlaceNameStore nameStore) {
+    public void setNameStore(TransitionPlaceNameStore nameStore) {
 		this.store = nameStore;
-
 	}
 
 	public void setNet(FuzzyPetriNet net) {
@@ -96,9 +94,16 @@ public class FuzzyPVizualModel {
 		this.drawableNet = net;
 	}
 
+    public TransitionPlaceNameStore getNameStore() {
+        if (store == null) {
+            store = TransitionPlaceNameStore.createOrdinarNames(net);
+        }
+        return store;
+    }
+
 	public DrawableNet getDrowableNet() {
 		if (drawableNet == null) {
-			drawableNet = new DrawableFuzzyPetriNet(net);
+            drawableNet = new DrawableNetWithExternalNames(net, getNameStore());
 		}
 		return drawableNet;
 	}

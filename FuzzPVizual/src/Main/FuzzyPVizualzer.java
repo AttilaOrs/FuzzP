@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import Controller.GlobalController;
 import Model.FuzzyPVizualModel;
 import View.MainView;
+import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.FuzzyDriver;
 import core.FuzzyPetriLogic.Controller.FuzzyPetriNetSyncornousController;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
@@ -16,7 +17,7 @@ import exampleNets.TwoLoopNet;
 
 public class FuzzyPVizualzer {
 
-	public static FuzzyPVizualModel createModel() {
+    static FuzzyPVizualModel createModel() {
 		TwoLoopNet loopNet = new TwoLoopNet();
 		HashMap<Integer, FuzzyDriver> ll = new HashMap<>();
 		ll.put(2, FuzzyDriver.createDriverFromMinMax(-1.0, 1.0));
@@ -40,18 +41,23 @@ public class FuzzyPVizualzer {
 		return model;
 	}
 
+    public static MainView visualize(FuzzyPetriNet net, FullRecorder recorder, TransitionPlaceNameStore nameStrore) {
+        FuzzyPVizualModel model = new FuzzyPVizualModel();
+        model.setNameStore(nameStrore);
+        model.setNet(net);
+        model.setFullRecorder(recorder);
+        GlobalController controller = new GlobalController(model);
+        MainView frame = new MainView(model, controller);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setResizable(true);
+        frame.setVisible(true);
+        return frame;
+    }
+
 	public static MainView visualize(FuzzyPetriNet net, FullRecorder recorder) {
-		FuzzyPVizualModel model = new FuzzyPVizualModel();
-		model.setNet(net);
-		model.setFullRecorder(recorder);
-		GlobalController controller = new GlobalController(model);
-		MainView frame = new MainView(model, controller);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800, 600);
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frame.setResizable(true);
-		frame.setVisible(true);
-		return frame;
+        return visualize(net, recorder, TransitionPlaceNameStore.createOrdinarNames(net));
 	}
 
 	public static void main(String[] args) {

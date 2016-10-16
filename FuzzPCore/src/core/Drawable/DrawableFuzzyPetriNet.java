@@ -47,7 +47,14 @@ public class DrawableFuzzyPetriNet implements DrawableNet {
 	public Stream<DrawableNet.Arc> getPlaceTransitinArc() {
 		return IntStream.range(0, getNrOfPlaces()).boxed().flatMap(placeID -> net.getTransitionAfterPlace(placeID)
 				.stream()
-				.map(trID -> new DrawableNet.Arc(formatter.format(net.getWeigth(placeID, trID)), placeID, trID, true)));
+                .map(trID -> {
+                    double weigth = net.getWeigth(placeID, trID);
+                    String label = "";
+                    if (weigth != 1.0) {
+                        label = formatter.format(net.getWeigth(placeID, trID));
+                    }
+                    return new DrawableNet.Arc(label, placeID, trID, true);
+                }));
 
 	}
 

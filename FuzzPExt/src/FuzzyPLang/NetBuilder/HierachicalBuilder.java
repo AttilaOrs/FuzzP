@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import core.Drawable.TransitionPlaceNameStore;
+import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.ITable;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNetChecker;
@@ -62,6 +63,26 @@ public class HierachicalBuilder {
 		generateAllTransRefs();
         collectArcs();
 	}
+
+    public TransitionPlaceNameStore createNameStoreTransitionFullName() {
+        TransitionPlaceNameStore nametStore = new TransitionPlaceNameStore();
+        for (Entry<NodeRef, Integer> placeEntry : placeIDs.entrySet()) {
+            if (placeEntry.getKey().getDynamicScope().current()) {
+                nametStore.addPlaceName(placeEntry.getValue(), placeEntry.getKey().getNodeName());
+            } else {
+                nametStore.addPlaceName(placeEntry.getValue(), "_P" + placeEntry.getValue());
+            }
+        }
+        for (Entry<NodeRef, Integer> transitionEntry : trIDs.entrySet()) {
+            if (transitionEntry.getKey().getDynamicScope().current()) {
+                nametStore.addTransitionName(transitionEntry.getValue(), transitionEntry.getKey().getNodeName());
+            } else {
+                nametStore.addTransitionName(transitionEntry.getValue(),
+                        transitionEntry.getKey().toString().replaceAll("\\.", "_"));
+            }
+        }
+        return nametStore;
+    }
 	
 	public TransitionPlaceNameStore createSimplifiedNameStore(){
 		TransitionPlaceNameStore nametStore = new TransitionPlaceNameStore();
@@ -95,6 +116,11 @@ public class HierachicalBuilder {
                 placeIDs.put(palceRef, toRet.addInputPlace());
             } else {
                 placeIDs.put(palceRef, toRet.addPlace());
+                HiearchicalIntermediateNet net = declearions.get(staticScopeOfPlaces.get(palceRef));
+                String tokenAdded = net.getTokensAdded().get(palceRef.getNodeName());
+                if (tokenAdded != null) {
+                    toRet.setInitialMarkingForPlace(placeIDs.get(palceRef), FuzzyToken.buildFromString(tokenAdded));
+                }
             }
         }
         for (NodeRef trRef : staticScopeOfTransitions.keySet()) {

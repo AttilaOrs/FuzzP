@@ -15,7 +15,6 @@ import FuzzyPLang.NetBuilder.HierachicalBuilder;
 import FuzzyPLang.Visitor.Visitor;
 import FuzzyPLang.gen.FuzzyPLangLexer;
 import FuzzyPLang.gen.FuzzyPLangParser;
-import FuzzyPetriNetToCode.MakerGenerator;
 import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 
@@ -65,7 +64,7 @@ public class FuzzyPLang {
 		HierachicalBuilder bld = new HierachicalBuilder(net);
 	
         builtNet = bld.buildPetriNet(); 
-        nameStrore  = bld.createSimplifiedNameStore();
+        nameStrore = bld.createNameStoreTransitionFullName();
         errors = bld.getErrors();
         System.err.println(">>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         System.err.println(errors);
