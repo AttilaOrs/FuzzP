@@ -1,0 +1,51 @@
+adder = 
+		 {[<NL><NL><NL><NM><ZR>]
+		  [<NL><NL><NM><ZR><PM>]
+		  [<NL><NM><ZR><PM><PL>]
+		  [<NM><ZR><PM><PL><PL>]
+		  [<ZR><PM><PL><PL><PL>]};
+magic = {
+	[<ff,ff><ff,ff><ff,ff><ff,ff><ff,ff>]
+	[<ff,ff><ff,ff><ff,ff><ff,ff><ff,ff>]
+	[<ff,ff><ff,ff><ZR,ZR><PM,ZR><PL,ZR>]
+	[<ff,ff><ff,ff><NM,ZR><ZR,ZR><PM,ZR>]
+	[<ff,ff><ff,ff><NL,ZR><NM,ZR><ZR,ZR>]
+};
+
+reader={
+	[<NL,ZR><NM,ZR><ZR,ZR><PM,ZR><PL,ZR>]
+	[<NL,ZR><NM,ZR><ZR,ZR><PM,ZR><PL,ZR>]
+	[<NL,ZR><NM,ZR><ZR,ZR><PM,ZR><PL,ZR>]
+	[<NL,ZR><NM,ZR><ZR,ZR><PM,ZR><PL,ZR>]
+	[<NL,ZR><NM,ZR><ZR,ZR><PM,ZR><PL,ZR>]
+};
+
+adjuster={
+	[<NL,NL><NL,NL><NL,NL><NL,NL><NL,NL>]
+	[<NM,NM><NM,NM><NM,NM><NM,NM><NM,NM>]
+	[<ZR,ZR><ZR,ZR><ZR,ZR><ZR,ZR><ZR,ZR>]
+	[<PM,PM><PM,PM><PM,PM><PM,PM><PM,PM>]
+	[<PL,PL><PL,PL><PL,PL><PL,PL><PL,PL>]
+};
+P0->t0;
+P0 <= <0.0, 0.0, 1.0, 0.0, 0.0 >;
+t0->P10->t10->P11->t11->P12->t12->P13;
+             t10->P14->oT0;                 // lane request 0
+                       t11->p15->oT1;       // lane request 1
+                  iP0->t11[reader];         // input 0 lane
+                           iP1->t12[adder]; // input 1 lane
+                           
+t0->P20->t20->P21->t21->P22->t22->P23;
+             t20->P24->oT2;                 // lane request 2
+                       t21->p25->oT3;       // lane request 3
+                  iP2->t21[reader];         // input 2 lane
+                           iP3->t22[adder]; // input 3 lane
+                           
+P13->t1[magic]->P1->oT4;
+P23->t1       ->P2->t2[12]->P0;
+
+
+
+
+                           
+                           

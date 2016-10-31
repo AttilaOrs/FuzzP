@@ -1,0 +1,244 @@
+
+adder = 
+		 {[<NL><NL><NL><NM><ZR>]
+		  [<NL><NL><NM><ZR><PM>]
+		  [<NL><NM><ZR><PM><PL>]
+		  [<NM><ZR><PM><PL><PL>]
+		  [<ZR><PM><PL><PL><PL>]};
+
+sub Buffer  {
+	sub Splitter {
+		
+		splitFp = {
+			[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+			[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+			[<FF,FF><FF,FF><ZR,ZR><ZR,ZR><ZR,ZR>]
+			[<FF,FF><FF,FF><PM,ZR><ZR,ZR><ZR,PM>]
+			[<FF,FF><FF,FF><PL,ZR><ZR,ZR><ZR,PL>]
+		};
+
+		splitSc = {
+			[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+			[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+			[<FF,FF><FF,FF><ZR,ZR><ZR,ZR><ZR,ZR>]
+			[<FF,FF><FF,FF><PM,ZR><PM,PM><ZR,PM>]
+			[<FF,FF><FF,FF><PL,ZR><PL,PL><ZR,PL>]
+		};
+
+
+		iP0-(0.5)->t0->P0->T11[splitFp]->P11->T21[adder]->P21-(1.0)->oT0;
+				   t0->P2->T12[splitSc]->P12->T21[adder];
+		iP1-(1.0)->t1->P3->T12->P14->T22[adder]->P22-(1.0)->oT1;
+			 t1->P1->T11->P13->T22[adder];           
+
+	}
+
+
+	reader={
+		[<NL><NM><ZR><PM><PL><FF>]
+		[<NL><NM><ZR><PM><PL><FF>]
+		[<NL><NM><ZR><PM><PL><FF>]
+		[<NL><NM><ZR><PM><PL><FF>]
+		[<NL><NM><ZR><PM><PL><FF>]
+		[<NL><NM><ZR><PM><PL><FF>]
+	};
+
+	secondChReader={
+		[<NL,NL><NL,NL><NL,NL><NL,NL><NL,NL>]
+		[<NM,NM><NM,NM><NM,NM><NM,NM><NM,NM>]
+		[<ZR,ZR><ZR,ZR><ZR,ZR><ZR,ZR><ZR,ZR>]
+		[<PM,PM><PM,PM><PM,PM><PM,PM><PM,PM>]
+		[<PL,PL><PL,PL><PL,PL><PL,PL><PL,PL>]
+	};
+
+	sss = {
+		[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+		[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+		[<FF,FF><FF,FF><ZR,ZR><PM,ZR><PL,ZR>]
+		[<FF,FF><FF,FF><NM,PM><NM,PM><PM,PM>]
+		[<FF,FF><FF,FF><NL,PL><NM,PL><ZR,PL>]
+	};
+
+				
+	sp = new Splitter ;
+
+	t1-> p5-> t1[reader];
+	iP1-> t1; 
+		 t2-> p5-> t2[secondChReader];
+	iP2->t2-> p6-> ot7;
+
+	p5-> t3[sss]-> p5;
+		 t3[sss]-> sp.iP0; 
+		 
+		 sp.oT0-> p7-> ot5;
+		 sp.oT1-> p8-> ot6;
+		 
+	ip4->t4->sp.iP1; 
+	ip3-(0.1)->t3;
+
+//iP1 ~ lane length
+//iP2 ~ send lane length request
+//iP3 ~ enabled (green ligth)
+//iP4 ~ splitValue 
+
+//oT7 ~ lane length (sent because of request)
+//oT5 ~ car out one
+//oT6 ~ car out two
+
+}
+
+sub Coord  {
+	reader={
+		[<NL,NL><NL,NL><NL,NL><NL,NL><NL,NL>]
+		[<NM,NM><NM,NM><NM,NM><NM,NM><NM,NM>]
+		[<ZR,ZR><ZR,ZR><ZR,ZR><ZR,ZR><ZR,ZR>]
+		[<PM,PM><PM,PM><PM,PM><PM,PM><PM,PM>]
+		[<PL,PL><PL,PL><PL,PL><PL,PL><PL,PL>]
+	};
+
+	nonZero ={[<PL,PL><PM,PL><PM,ZR><PM,NL><PL,NL>]};
+	iP0-(0.916666667)-> t0[reader]->P50->t50[nonZero]->P2; //connection point, command here in 12 cyclyes
+	P0 -> t0[reader] ->P1;
+	P1->t1[12]->P0;
+	P0<= <0.0, 0.0, 1.0, 0.0, 0.0>;
+	T50->P10;
+
+	halfModul={
+		[<PL><PM><ZR><PM><PL>]
+		[<PL><PM><ZR><PM><PL>]
+		[<PL><PM><ZR><PM><PL>]
+		[<PL><PM><ZR><PM><PL>]
+		[<PL><PM><ZR><PM><PL>]
+	};
+	P3 <= <0.0,0.0, 1.0, 0.0, 0.0>;
+	p3->  t2;      
+	P2 -> t2[halfModul] -> P3; //P3 is where the loop variable is stored
+		  
+	//t3 differentiator, delay
+
+	halfDiff =  {[<ZR,NL><NM,NM><NL,ZR><NL,PM><NL,PL>]
+				 [<PM,NL><ZR,NM><NM,ZR><NL,PM><NL,PL>]
+				 [<PL,NL><PM,NM><ZR,ZR><NM,PM><NL,PL>] 
+				 [<PL,NL><PL,NM><PM,ZR><ZR,PM><NM,PL>] 
+				 [<PL,NL><PL,NM><PL,ZR><PM,PM><ZR,PL>]};
+
+	tt =    {[<NL,ZR><NL,PM><NL,PL><NL,PL><NL,PL>]
+			 [<NM,NM><NM,ZR><NM,PM><NM,PL><NM,PL>]
+			 [<ZR,NL><ZR,NM><ZR,ZR><ZR,PM><ZR,PL>] 
+			 [<PM,NL><PM,NL><PM,NM><PM,ZR><PM,PM>] 
+			 [<PL,NL><PL,NL><PL,NL><PL,NM><PL,ZR>]};
+				 
+			 
+	p4-> t3[tt] -> p4; 
+	p3-> t3;
+	p4 <= <0, 0, 5.0, 1.0, 0.0>;
+
+	//t10 simple distribuitor
+	//t11 if does not exisit put it back, but only on the next tick
+
+	hib={[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><NL,NL>]
+		 [<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><NL,NL>]
+		 [<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><ZR,ZR>] 
+		 [<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><PL,PL>] 
+		 [<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><PL,PL>]
+		 [<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>] };
+					  
+	hibb={[<NL><NL><NL><NL><NL><NL>]
+		  [<NL><NL><NL><NL><NL><NL>]
+		  [<NL><NL><NL><NL><NL><NL>] 
+		  [<PL><PL><PL><PL><PL><PL>] 
+		  [<PL><PL><PL><PL><PL><PL>]
+		  [<FF><FF><FF><FF><FF><FF>] };
+					  
+	p10->t10->P11->t11[hib,1]->P12->t11->P11;
+	p11->t10[hibb];
+
+
+	which ={[<PL,FF><PL,FF><FF,FF><FF,PL><FF,PL>]
+			[<PL,FF><PL,FF><FF,FF><FF,PL><FF,PL>]
+			[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>] 
+			[<FF,PL><FF,PL><FF,FF><PL,FF><PL,FF>] 
+			[<FF,PL><FF,PL><FF,FF><PL,FF><PL,FF>]
+		  };
+
+
+	//t20 locgic table which is enabled     
+
+	P12->t20[which]->P21->T21->P22->oT0;
+						  T21->P23->oT1;		
+				   
+	t4->p19->t20[which]->P24->T22->P25->oT2;
+							  T22->P26->oT3;	
+	t4->P6->t5[1]->P3;
+	t3->P5->t4;
+}
+
+
+//iP1 ~ lane length
+//iP2 ~ send lane length request
+//iP3 ~ enabled (green ligth)
+//iP4 ~ splitValue 
+
+//oT7 ~ lane length (sent because of request)
+//oT5 ~ car out one
+//oT6 ~ car out two
+
+bI = new Buffer;
+bII = new Buffer;
+bIII = new Buffer;
+bIV = new Buffer;
+c = new Coord;
+
+// lane length inputs
+iP0->t0->bI.iP1;
+iP1->t1->bII.iP1;
+iP2->t2->bIII.iP1;
+iP3->t3->bIV.iP1;
+
+// split inputs inputs
+iP4->t4->bI.iP4;
+iP5->t5->bII.iP4;
+iP6->t6->bIII.iP4;
+iP7->t7->bIV.iP4;
+
+// request lane length
+iP8->t8->bI.iP2;
+iP9->t9->bII.iP2;
+iP10->t10->bIII.iP2;
+iP11->t11->bIV.iP2;
+
+iP12->t12->c.iP0; //command 
+c.oT0->bI.iP3;
+c.oT1->bIII.iP3;
+c.oT2->bII.iP3;
+c.oT3->bIV.iP3;
+
+enabledAdder = {
+	      [<NL><NL><NL><NM><ZR><NL>]
+	      [<NL><NL><NM><ZR><PM><NM>]
+	      [<NL><NM><ZR><PM><PL><ZR>]
+	      [<NM><ZR><PM><PL><PL><PM>]
+	      [<ZR><PM><PL><PL><PL><PL>]
+	      [<NL><NM><ZR><PM><PL><FF>]
+};
+bI.oT5 -> P21 -> t20[enabledAdder] -> P22 -> oT0; // dir 3 backword
+bII.oT6-> P23 -> t20[enabledAdder];
+
+bII.oT5 -> P24 -> t21[enabledAdder] -> p25 -> oT1; // dir 4 backword
+bIII.oT6-> P26 -> t21[enabledAdder];
+
+bIII.oT5-> P27 -> t22[enabledAdder] -> p28 -> oT2; // dir 1 backword
+bIV.oT6 -> P29 -> t22[enabledAdder];
+
+bIV.oT5-> P30 -> t23[enabledAdder] -> p31 -> oT3; // dir 2 backword
+bI.oT6 -> P32 -> t23[enabledAdder];
+
+
+bIII.oT7-> P50 -> oT4; //dir 3 measered lane length
+bIV.oT7-> P51 -> oT5;  //dir 4 measer lane length
+bI.oT7-> P52 -> oT6;   //dir 1 measer lane length
+bII.oT7-> P53 -> oT7;  //dir 2 measerd lane length
+ 
+
+
+

@@ -1,0 +1,94 @@
+
+adder = 
+	     {[<NL><NL><NL><NM><ZR>]
+	      [<NL><NL><NM><ZR><PM>]
+	      [<NL><NM><ZR><PM><PL>]
+	      [<NM><ZR><PM><PL><PL>]
+	      [<ZR><PM><PL><PL><PL>]};
+	      
+sub Splitter {
+	
+	splitFp = {
+		[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+		[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+		[<FF,FF><FF,FF><ZR,ZR><ZR,ZR><ZR,ZR>]
+		[<FF,FF><FF,FF><PM,ZR><ZR,ZR><ZR,PM>]
+		[<FF,FF><FF,FF><PL,ZR><ZR,ZR><ZR,PL>]
+	};
+
+	splitSc = {
+		[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+		[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+		[<FF,FF><FF,FF><ZR,ZR><ZR,ZR><ZR,ZR>]
+		[<FF,FF><FF,FF><PM,ZR><PM,PM><ZR,PM>]
+		[<FF,FF><FF,FF><PL,ZR><PL,PL><ZR,PL>]
+	};
+
+
+	iP0-(0.5)->t0->P0->T11[splitFp]->P11->T21[adder]->P21-(1.0)->oT0;
+			   t0->P2->T12[splitSc]->P12->T21[adder];
+	iP1-(1.0)->t1->P3->T12->P14->T22[adder]->P22-(1.0)->oT1;
+		 t1->P1->T11->P13->T22[adder];           
+
+}
+
+
+reader={
+	[<NL><NM><ZR><PM><PL><FF>]
+	[<NL><NM><ZR><PM><PL><FF>]
+	[<NL><NM><ZR><PM><PL><FF>]
+	[<NL><NM><ZR><PM><PL><FF>]
+	[<NL><NM><ZR><PM><PL><FF>]
+	[<NL><NM><ZR><PM><PL><FF>]
+};
+
+secondChReader={
+	[<NL,NL><NL,NL><NL,NL><NL,NL><NL,NL>]
+	[<NM,NM><NM,NM><NM,NM><NM,NM><NM,NM>]
+	[<ZR,ZR><ZR,ZR><ZR,ZR><ZR,ZR><ZR,ZR>]
+	[<PM,PM><PM,PM><PM,PM><PM,PM><PM,PM>]
+	[<PL,PL><PL,PL><PL,PL><PL,PL><PL,PL>]
+};
+
+sss = {
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+	[<FF,FF><FF,FF><ZR,ZR><PM,ZR><PL,ZR>]
+	[<FF,FF><FF,FF><NM,PM><NM,PM><PM,PM>]
+	[<FF,FF><FF,FF><NL,PL><NM,PL><ZR,PL>]
+};
+
+			
+sp = new Splitter ;
+
+t1-> p5-> t1[reader];
+iP1-> t1; 
+     t2-> p5-> t2[secondChReader];
+iP2->t2-> p6-> ot7;
+
+p5-> t3[sss]-> p5;
+	 t3[sss]-> sp.iP0; 
+	 
+	 sp.oT0-> p7-> ot5;
+	 sp.oT1-> p8-> ot6;
+	 
+ip4->t4->sp.iP1; 
+ip3-(0.1)->t3;
+
+//iP1 ~ lane length
+//iP2 ~ send lane length request
+//iP3 ~ enabled (green ligth)
+//iP4 ~ splitValue 
+
+//oT7 ~ lane length (sent because of request)
+//oT5 ~ car out one
+//oT6 ~ car out two
+	
+
+
+
+
+
+
+
+

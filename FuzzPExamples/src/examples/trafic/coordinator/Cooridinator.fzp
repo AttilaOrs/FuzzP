@@ -1,0 +1,86 @@
+
+reader={
+	[<NL,NL><NL,NL><NL,NL><NL,NL><NL,NL>]
+	[<NM,NM><NM,NM><NM,NM><NM,NM><NM,NM>]
+	[<ZR,ZR><ZR,ZR><ZR,ZR><ZR,ZR><ZR,ZR>]
+	[<PM,PM><PM,PM><PM,PM><PM,PM><PM,PM>]
+	[<PL,PL><PL,PL><PL,PL><PL,PL><PL,PL>]
+};
+
+nonZero ={[<PL,PL><PM,PL><PM,ZR><PM,NL><PL,NL>]};
+iP0-(0.916666667)-> t0[reader]->P50->t50[nonZero]->P2; //connection point, command here in 12 cyclyes
+P0 -> t0[reader] ->P1;
+P1->t1[12]->P0;
+P0<= <0.0, 0.0, 1.0, 0.0, 0.0>;
+T50->P10;
+
+halfModul={
+	[<PL><PM><ZR><PM><PL>]
+	[<PL><PM><ZR><PM><PL>]
+	[<PL><PM><ZR><PM><PL>]
+	[<PL><PM><ZR><PM><PL>]
+	[<PL><PM><ZR><PM><PL>]
+};
+P3 <= <0.0,0.0, 1.0, 0.0, 0.0>;
+p3->  t2;      
+P2 -> t2[halfModul] -> P3; //P3 is where the loop variable is stored
+      
+//t3 differentiator, delay
+
+halfDiff =  {[<ZR,NL><NM,NM><NL,ZR><NL,PM><NL,PL>]
+			 [<PM,NL><ZR,NM><NM,ZR><NL,PM><NL,PL>]
+			 [<PL,NL><PM,NM><ZR,ZR><NM,PM><NL,PL>] 
+			 [<PL,NL><PL,NM><PM,ZR><ZR,PM><NM,PL>] 
+			 [<PL,NL><PL,NM><PL,ZR><PM,PM><ZR,PL>]};
+
+tt =    {[<NL,ZR><NL,PM><NL,PL><NL,PL><NL,PL>]
+    	 [<NM,NM><NM,ZR><NM,PM><NM,PL><NM,PL>]
+		 [<ZR,NL><ZR,NM><ZR,ZR><ZR,PM><ZR,PL>] 
+		 [<PM,NL><PM,NL><PM,NM><PM,ZR><PM,PM>] 
+		 [<PL,NL><PL,NL><PL,NL><PL,NM><PL,ZR>]};
+			 
+		 
+p4-> t3[tt] -> p4; 
+p3-> t3;
+p4 <= <0, 0, 5.0, 1.0, 0.0>;
+
+//t10 simple distribuitor
+//t11 if does not exisit put it back, but only on the next tick
+
+hib={[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><NL,NL>]
+     [<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><NL,NL>]
+     [<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><ZR,ZR>] 
+     [<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><PL,PL>] 
+     [<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><PL,PL>]
+     [<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>] };
+			      
+hibb={[<NL><NL><NL><NL><NL><NL>]
+      [<NL><NL><NL><NL><NL><NL>]
+      [<NL><NL><NL><NL><NL><NL>] 
+      [<PL><PL><PL><PL><PL><PL>] 
+      [<PL><PL><PL><PL><PL><PL>]
+      [<FF><FF><FF><FF><FF><FF>] };
+			      
+p10->t10->P11->t11[hib,1]->P12->t11->P11;
+p11->t10[hibb];
+
+
+which ={[<PL,FF><PL,FF><FF,FF><FF,PL><FF,PL>]
+        [<PL,FF><PL,FF><FF,FF><FF,PL><FF,PL>]
+        [<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>] 
+        [<FF,PL><FF,PL><FF,FF><PL,FF><PL,FF>] 
+        [<FF,PL><FF,PL><FF,FF><PL,FF><PL,FF>]
+      };
+
+
+//t20 locgic table which is enabled     
+
+P12->t20[which]->P21->T21->P22->oT0;
+			          T21->P23->oT1;		
+			   
+t4->p19->t20[which]->P24->T22->P25->oT2;
+			              T22->P26->oT3;	
+t4->P6->t5[1]->P3;
+t3->P5->t4;
+
+
