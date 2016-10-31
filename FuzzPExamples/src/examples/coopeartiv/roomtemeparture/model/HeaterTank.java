@@ -20,7 +20,7 @@ public class HeaterTank {
         - (curentWaterTemepartaure - theoraticalRoomTemp) * 0.005;
   }
 
-  public double getWaterTemeprature() {
+  public double getHotWaterTemeprature() {
     return curentWaterTemepartaure;
   }
 }

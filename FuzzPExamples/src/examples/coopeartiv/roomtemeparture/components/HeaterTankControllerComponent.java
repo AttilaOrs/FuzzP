@@ -12,7 +12,7 @@ import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
 import examples.coopeartiv.roomtemeparture.model.Plant;
 
-public class WaterTankControllerComponent {
+public class HeaterTankControllerComponent {
 
   static String reader = "" +
       "{[<NL><NM><ZR><PM><PL>]" +
@@ -47,7 +47,7 @@ public class WaterTankControllerComponent {
   private int p3SysInp;
 
   private FuzzyPetriNet net;
-  public WaterTankControllerComponent(Plant plant, long simPeriod) {
+  public HeaterTankControllerComponent(Plant plant, long simPeriod) {
 
     TableParser parser = new TableParser();
     net = new FuzzyPetriNet();

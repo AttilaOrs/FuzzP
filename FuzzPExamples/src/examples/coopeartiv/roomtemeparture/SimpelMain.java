@@ -5,8 +5,8 @@ import java.util.DoubleSummaryStatistics;
 import Main.FuzzyPVizualzer;
 import Main.Plotter;
 import View.MainView;
-import examples.coopeartiv.roomtemeparture.components.TermostatComponent;
-import examples.coopeartiv.roomtemeparture.components.WaterTankControllerComponent;
+import examples.coopeartiv.roomtemeparture.components.RoomTemperatureControllerComponent;
+import examples.coopeartiv.roomtemeparture.components.HeaterTankControllerComponent;
 import examples.coopeartiv.roomtemeparture.model.Plant;
 import examples.coopeartiv.roomtemeparture.model.Scenario;
 
@@ -17,10 +17,10 @@ public class SimpelMain {
   public static void main(String[] args) {
     Scenario scenario = Scenario.extremeEvening();
     Plant plant = new Plant(SIM_PERIOD, scenario);
-    WaterTankControllerComponent tankController = new WaterTankControllerComponent(plant, SIM_PERIOD);
-    TermostatComponent termostat = new TermostatComponent(plant, SIM_PERIOD);
+    HeaterTankControllerComponent tankController = new HeaterTankControllerComponent(plant, SIM_PERIOD);
+    RoomTemperatureControllerComponent roomController = new RoomTemperatureControllerComponent(plant, SIM_PERIOD);
 
-    termostat.start();
+    roomController.start();
     tankController.start();
     plant.start();
     double waterRefTemp = 48.0;
@@ -29,7 +29,7 @@ public class SimpelMain {
     for (int i = 0; i < scenario.getScenarioLength(); i++) {
       tankController.setWaterRefTemp(waterRefTemp);
       tankController.setTankWaterTemp(plant.getTankWaterTemperature());
-      termostat.setInput(roomTemperature, plant.getRoomTemperature());
+      roomController.setInput(roomTemperature, plant.getRoomTemperature());
       try {
         Thread.sleep(10);
       } catch (InterruptedException e) {
@@ -38,11 +38,11 @@ public class SimpelMain {
       }
     }
     tankController.stop();
-    termostat.stop();
+    roomController.stop();
 
     MainView windowTankController = FuzzyPVizualzer.visualize(tankController.getNet(),
         tankController.getRecorder());
-    MainView windowTermostat = FuzzyPVizualzer.visualize(termostat.getNet(), termostat.getRecorder());
+    MainView windowTermostat = FuzzyPVizualzer.visualize(roomController.getNet(), roomController.getRecorder());
     Plotter plotterTemperatureLog = new Plotter(plant.getTemeartureLogs());
     Plotter plotterCommandLog = new Plotter(plant.getCommandLogs());
     windowTankController.addInteractivePanel("TempLogs", plotterTemperatureLog.makeInteractivePlot());

@@ -65,7 +65,7 @@ public class Plant {
       public void run() {
         if (tickCntr < scenario.getScenarioLength()) {
           tank.updateSystem(heaterOn, gasCmd);
-          room.updateModel(heaterOn, tank.getWaterTemeprature(), scenario.getWindowOpen(tickCntr),
+          room.updateModel(heaterOn, tank.getHotWaterTemeprature(), scenario.getWindowOpen(tickCntr),
               scenario.getOutSideTemepratue(tickCntr));
           makeLogs();
           tickCntr++;
@@ -81,7 +81,7 @@ public class Plant {
   }
 
   private void makeLogs() {
-    heaterWaterTempLog.add(tank.getWaterTemeprature());
+    heaterWaterTempLog.add(tank.getHotWaterTemeprature());
     roomTempLog.add(room.getCurrentTemperature());
     waterHetarCmdLog.add(gasCmd);
     heatOnCmdLog.add(heaterOn ? 1.0 : 0.0);
@@ -99,7 +99,7 @@ public class Plant {
   }
 
   public Double getTankWaterTemperature() {
-    return tank.getWaterTemeprature();
+    return tank.getHotWaterTemeprature();
   }
 
   public Map<String, List<Double>> getTemeartureLogs() {

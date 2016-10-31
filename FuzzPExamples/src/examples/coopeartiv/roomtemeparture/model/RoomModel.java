@@ -28,8 +28,8 @@ public class RoomModel {
     currentTemaprature = StartingTemperature;
   }
 
-  public void updateModel(boolean heaterOn, double heaterWaterTemp, boolean windowOpen, double outSideTemp) {
-    double delatHeater = (heaterOn) ? (heaterWaterTemp - currentTemaprature) : 0.0;
+  public void updateModel(boolean heatingOn, double heaterWaterTemp, boolean windowOpen, double outSideTemp) {
+    double delatHeater = (heatingOn) ? (heaterWaterTemp - currentTemaprature) : 0.0;
     double outsideDelta = currentTemaprature - outSideTemp;
     currentTemaprature += delatHeater * heaterConstant - outsideDelta * wallConstant -
         ((windowOpen) ? (outsideDelta * windowConstant) : 0.0);

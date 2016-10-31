@@ -12,7 +12,7 @@ import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
 import examples.coopeartiv.roomtemeparture.model.Plant;
 
-public class TermostatComponent {
+public class RoomTemperatureControllerComponent {
 
 
   static String reader = "" +
@@ -42,7 +42,7 @@ public class TermostatComponent {
 
   private int p3RealInp;
 
-  public TermostatComponent(Plant plant, long simPeriod) {
+  public RoomTemperatureControllerComponent(Plant plant, long simPeriod) {
     net = new FuzzyPetriNet();
     TableParser parser = new TableParser();
 
@@ -95,10 +95,10 @@ public class TermostatComponent {
     execcutor.stop();
   }
 
-  public void setInput(double userRef, double real) {
+  public void setInput(double roomTemperatureRef, double roomTemperature) {
     Map<Integer, FuzzyToken> inps = new HashMap<Integer, FuzzyToken>();
-    inps.put(p1RefInp, temepartureDriver.fuzzifie(userRef));
-    inps.put(p3RealInp, temepartureDriver.fuzzifie(real));
+    inps.put(p1RefInp, temepartureDriver.fuzzifie(roomTemperatureRef));
+    inps.put(p3RealInp, temepartureDriver.fuzzifie(roomTemperature));
     execcutor.putTokenInInputPlace(inps);
   }
 

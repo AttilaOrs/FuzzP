@@ -3,6 +3,7 @@ fuzPetriTemplate(netName, inpPlace, place, outTrans, trans, palceToTransArc, tra
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 import core.TableParser;
+import core.Drawable.TransitionPlaceNameStore;
 
 public class <netName:className()> {
     public FuzzyPetriNet net;

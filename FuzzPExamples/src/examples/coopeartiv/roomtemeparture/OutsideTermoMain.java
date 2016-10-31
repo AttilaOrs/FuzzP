@@ -5,9 +5,9 @@ import java.util.DoubleSummaryStatistics;
 import Main.FuzzyPVizualzer;
 import Main.Plotter;
 import View.MainView;
-import examples.coopeartiv.roomtemeparture.components.OutsideTermoComponent;
-import examples.coopeartiv.roomtemeparture.components.TermostatComponent;
-import examples.coopeartiv.roomtemeparture.components.WaterTankControllerComponent;
+import examples.coopeartiv.roomtemeparture.components.OutsideReferenceCalculatorComponent;
+import examples.coopeartiv.roomtemeparture.components.RoomTemperatureControllerComponent;
+import examples.coopeartiv.roomtemeparture.components.HeaterTankControllerComponent;
 import examples.coopeartiv.roomtemeparture.model.Plant;
 import examples.coopeartiv.roomtemeparture.model.Scenario;
 
@@ -17,9 +17,9 @@ public class OutsideTermoMain {
   public static void main(String[] args) {
     Scenario sceonario = Scenario.extremeEvening();
     Plant plant = new Plant(SIM_PERIOD, sceonario);
-    WaterTankControllerComponent tankController = new WaterTankControllerComponent(plant, SIM_PERIOD);
-    TermostatComponent termostat = new TermostatComponent(plant, SIM_PERIOD);
-    OutsideTermoComponent outTermo = new OutsideTermoComponent(plant, tankController, SIM_PERIOD);
+    HeaterTankControllerComponent tankController = new HeaterTankControllerComponent(plant, SIM_PERIOD);
+    RoomTemperatureControllerComponent termostat = new RoomTemperatureControllerComponent(plant, SIM_PERIOD);
+    OutsideReferenceCalculatorComponent outTermo = new OutsideReferenceCalculatorComponent(plant, tankController, SIM_PERIOD);
 
     termostat.start();
     tankController.start();

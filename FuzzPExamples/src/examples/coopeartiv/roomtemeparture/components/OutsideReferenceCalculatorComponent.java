@@ -12,7 +12,7 @@ import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
 import examples.coopeartiv.roomtemeparture.model.Plant;
 
-public class OutsideTermoComponent {
+public class OutsideReferenceCalculatorComponent {
 
   static String reader = "" +
       "{[<ZR,NL><ZR,NM><ZR,ZR><ZR,PM><ZR,PL>]" +
@@ -39,7 +39,7 @@ public class OutsideTermoComponent {
 
   private AsyncronRunnableExecutor execcutor;
 
-  public OutsideTermoComponent(Plant plant, WaterTankControllerComponent comp, long simPeriod) {
+  public OutsideReferenceCalculatorComponent(Plant plant, HeaterTankControllerComponent comp, long simPeriod) {
     buildPetrNet();
     outsideTempDriver = FuzzyDriver.createDriverFromMinMax(-30, 10);
     tankWaterTemeDriver = FuzzyDriver.createDriverFromMinMax(45, 68);
