@@ -17,7 +17,7 @@ public class OutsideTermoMain {
   public static final long SIM_PERIOD = 10;
 
   public static void main(String[] args) {
-    Scenario sceonario = Scenario.extremeEvening();
+    Scenario sceonario = Scenario.winterDay();
     Plant plant = new Plant(SIM_PERIOD, sceonario);
     HeaterTankControllerComponent tankController = new HeaterTankControllerComponent(plant, SIM_PERIOD);
     RoomTemperatureControllerComponent termostat = new RoomTemperatureControllerComponent(plant, SIM_PERIOD);
@@ -59,7 +59,7 @@ public class OutsideTermoMain {
     windowOutTermo.addInteractivePanel("ComandLogs", plotterCommandLog.makeInteractivePlot());
 
     double[] tankTempStats = SimpelMain.calcStatistics(plant.getTemeartureLogs().get("tankTemp"));
-    double[] rommTempStsats =SimpelMain.calcStatistics(plant.getTemeartureLogs().get("tankTemp"));
+    double[] rommTempStsats =SimpelMain.calcStatistics(plant.getTemeartureLogs().get("roomTemp"));
     
     System.out.println("max tank temp :" + tankTempStats[0]);
     System.out.println("min tank temp :" + tankTempStats[1]);

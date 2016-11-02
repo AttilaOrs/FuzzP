@@ -1,6 +1,5 @@
 package examples.coopeartiv.roomtemeparture;
 
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 import Main.FuzzyPVizualzer;
@@ -16,7 +15,7 @@ public class SimpelMain {
 	private static final int SIM_PERIOD = 10;
 
 	public static void main(String[] args) {
-		Scenario scenario = Scenario.extremeEvening();
+		Scenario scenario = Scenario.winterDay();
 		Plant plant = new Plant(SIM_PERIOD, scenario);
 		HeaterTankControllerComponent tankController = new HeaterTankControllerComponent(plant, SIM_PERIOD);
 		RoomTemperatureControllerComponent roomController = new RoomTemperatureControllerComponent(plant, SIM_PERIOD);
@@ -52,7 +51,7 @@ public class SimpelMain {
 		windowTermostat.addInteractivePanel("ComandLogs", plotterCommandLog.makeInteractivePlot());
 
 		double[] tankTempStats = SimpelMain.calcStatistics(plant.getTemeartureLogs().get("tankTemp"));
-		double[] rommTempStsats = SimpelMain.calcStatistics(plant.getTemeartureLogs().get("tankTemp"));
+		double[] rommTempStsats = SimpelMain.calcStatistics(plant.getTemeartureLogs().get("roomTemp"));
 
 		System.out.println("max tank temp :" + tankTempStats[0]);
 		System.out.println("min tank temp :" + tankTempStats[1]);
@@ -61,9 +60,9 @@ public class SimpelMain {
 		System.out.println("min room temp :" + rommTempStsats[1]);
 		System.out.println("avg room temp :" + rommTempStsats[2]);
 		System.out.println("heater on ratio:" + plant.heatingOnRatio());
-		System.out.println("max continous heating on:" + plant.maxContiniousHeaterOn());
+		System.out.println("max nr of mins continous heating on:" + plant.maxContiniousHeaterOn());
 		System.out.println("all consunption ::" + plant.gasConsumption());
-		System.out.println("avg consunption in min ::" + plant.gasConsumption() / scenario.getScenarioLength());
+		System.out.println("avg consunption in  a min ::" + plant.gasConsumption() / scenario.getScenarioLength());
 
 	}
 
@@ -76,7 +75,7 @@ public class SimpelMain {
 			max = (max < d) ? d : max;
 			sum += d;
 		}
-		return new double[] { min, max, sum / list.size() };
+		return new double[] { max, min, sum / list.size() };
 
 	}
 
