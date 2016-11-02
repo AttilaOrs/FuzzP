@@ -2,6 +2,7 @@ package examples.coopeartiv.roomtemeparture.components;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyDriver;
@@ -77,8 +78,20 @@ public class RoomTemperatureControllerComponent {
     net.addArcFromPlaceToTransition(p7, t5, 1.0);
     net.addArcFromPlaceToTransition(p5, t3, 120.0);
     
-    net.addActionForOuputTransition(t4, tk -> plant.setHeatingOn(true));
-    net.addActionForOuputTransition(t5, tk -> plant.setHeatingOn(false));
+    net.addActionForOuputTransition(t4, new Consumer<FuzzyToken>() {
+		
+		@Override
+		public void accept(FuzzyToken t) {
+			plant.setHeatingOn(true);
+		}
+	});
+    net.addActionForOuputTransition(t5, new Consumer<FuzzyToken>() {
+		
+		@Override
+		public void accept(FuzzyToken t) {
+			plant.setHeatingOn(false);
+		}
+	});
 
     temepartureDriver = FuzzyDriver.createDriverFromMinMax(-40, 40);
 

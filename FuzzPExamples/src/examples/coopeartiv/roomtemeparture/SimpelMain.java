@@ -1,6 +1,7 @@
 package examples.coopeartiv.roomtemeparture;
 
 import java.util.DoubleSummaryStatistics;
+import java.util.List;
 
 import Main.FuzzyPVizualzer;
 import Main.Plotter;
@@ -66,5 +67,18 @@ public class SimpelMain {
     System.out.println("avg consunption in min ::" + plant.gasConsumption() / scenario.getScenarioLength());
 
   }
+public static double[] calcStatistics(List<Double> list) {
+	double min = 1000.0;
+	double max = 0.0;
+	double sum  = 0.0;
+	for(Double d : list){
+		min = (min > d)?d:min;
+		max = (max < d)?d:max;
+		sum += d;
+	}
+	return new double[]{min, max, sum/ list.size()};
+	
+	
+}
 
 }
