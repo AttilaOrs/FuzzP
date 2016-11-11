@@ -1,7 +1,6 @@
 package examples.coopeartiv.roomtemeparture;
 
 
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 import Main.FuzzyPVizualzer;
@@ -28,8 +27,6 @@ public class SimpelMain {
         plant.start();
         double waterRefTemp = 48.0;
         double roomTemperature = 24.0;
-		double[] tankTempStats = SimpelMain.calcStatistics(plant.getTemeartureLogs().get("tankTemp"));
-		double[] rommTempStsats = SimpelMain.calcStatistics(plant.getTemeartureLogs().get("roomTemp"));
 
         for (int i = 0; i < scenario.getScenarioLength(); i++) {
             tankController.setWaterRefTemp(waterRefTemp);
@@ -44,16 +41,6 @@ public class SimpelMain {
         }
         tankController.stop();
         roomController.stop();
-		System.out.println("max tank temp :" + tankTempStats[0]);
-		System.out.println("min tank temp :" + tankTempStats[1]);
-		System.out.println("avg tank temp :" + tankTempStats[2]);
-		System.out.println("max room temp :" + rommTempStsats[0]);
-		System.out.println("min room temp :" + rommTempStsats[1]);
-		System.out.println("avg room temp :" + rommTempStsats[2]);
-		System.out.println("heater on ratio:" + plant.heatingOnRatio());
-		System.out.println("max nr of mins continous heating on:" + plant.maxContiniousHeaterOn());
-		System.out.println("all consunption ::" + plant.gasConsumption());
-		System.out.println("avg consunption in  a min ::" + plant.gasConsumption() / scenario.getScenarioLength());
 
         MainView windowTankController = FuzzyPVizualzer.visualize(tankController.getNet(),
                 tankController.getRecorder());
@@ -65,20 +52,19 @@ public class SimpelMain {
         windowTankController.addInteractivePanel("ComandLogs", plotterCommandLog.makeInteractivePlot());
         windowTermostat.addInteractivePanel("ComandLogs", plotterCommandLog.makeInteractivePlot());
 
-        DoubleSummaryStatistics tankStats = plant.getTemeartureLogs().get("tankTemp").stream().mapToDouble(d -> d)
-                .summaryStatistics();
-        DoubleSummaryStatistics roomStats = plant.getTemeartureLogs().get("roomTemp").stream().mapToDouble(d -> d)
-                .summaryStatistics();
-        System.out.println("max tank temp :" + tankStats.getMax());
-        System.out.println("min tank temp :" + tankStats.getMin());
-        System.out.println("avg tank temp :" + tankStats.getAverage());
-        System.out.println("max room temp :" + roomStats.getMax());
-        System.out.println("min room temp :" + roomStats.getMin());
-        System.out.println("avg room temp :" + roomStats.getAverage());
+        double[] tankTempStats = SimpelMain.calcStatistics(plant.getTemeartureLogs().get("tankTemp"));
+        double[] rommTempStsats = SimpelMain.calcStatistics(plant.getTemeartureLogs().get("roomTemp"));
+
+        System.out.println("max tank temp :" + tankTempStats[0]);
+        System.out.println("min tank temp :" + tankTempStats[1]);
+        System.out.println("avg tank temp :" + tankTempStats[2]);
+        System.out.println("max room temp :" + rommTempStsats[0]);
+        System.out.println("min room temp :" + rommTempStsats[1]);
+        System.out.println("avg room temp :" + rommTempStsats[2]);
         System.out.println("heater on ratio:" + plant.heatingOnRatio());
-        System.out.println("max continous heating on:" + plant.maxContiniousHeaterOn());
+        System.out.println("max nr of mins continous heating on:" + plant.maxContiniousHeaterOn());
         System.out.println("all consunption ::" + plant.gasConsumption());
-        System.out.println("avg consunption in min ::" + plant.gasConsumption() / scenario.getScenarioLength());
+        System.out.println("avg consunption in  a min ::" + plant.gasConsumption() / scenario.getScenarioLength());
     }
 
 	public static double[] calcStatistics(List<Double> list) {
