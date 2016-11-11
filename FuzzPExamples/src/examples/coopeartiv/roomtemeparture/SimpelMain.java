@@ -1,6 +1,8 @@
 package examples.coopeartiv.roomtemeparture;
 
+
 import java.util.DoubleSummaryStatistics;
+import java.util.List;
 
 import Main.FuzzyPVizualzer;
 import Main.Plotter;
@@ -12,7 +14,8 @@ import examples.coopeartiv.roomtemeparture.model.Scenario;
 
 public class SimpelMain {
 
-    private static final int SIM_PERIOD = 10;
+	private static final int SIM_PERIOD = 10;
+
 
     public static void main(String[] args) {
         Scenario scenario = Scenario.extremeEvening();
@@ -25,6 +28,8 @@ public class SimpelMain {
         plant.start();
         double waterRefTemp = 48.0;
         double roomTemperature = 24.0;
+		double[] tankTempStats = SimpelMain.calcStatistics(plant.getTemeartureLogs().get("tankTemp"));
+		double[] rommTempStsats = SimpelMain.calcStatistics(plant.getTemeartureLogs().get("roomTemp"));
 
         for (int i = 0; i < scenario.getScenarioLength(); i++) {
             tankController.setWaterRefTemp(waterRefTemp);
@@ -39,6 +44,16 @@ public class SimpelMain {
         }
         tankController.stop();
         roomController.stop();
+		System.out.println("max tank temp :" + tankTempStats[0]);
+		System.out.println("min tank temp :" + tankTempStats[1]);
+		System.out.println("avg tank temp :" + tankTempStats[2]);
+		System.out.println("max room temp :" + rommTempStsats[0]);
+		System.out.println("min room temp :" + rommTempStsats[1]);
+		System.out.println("avg room temp :" + rommTempStsats[2]);
+		System.out.println("heater on ratio:" + plant.heatingOnRatio());
+		System.out.println("max nr of mins continous heating on:" + plant.maxContiniousHeaterOn());
+		System.out.println("all consunption ::" + plant.gasConsumption());
+		System.out.println("avg consunption in  a min ::" + plant.gasConsumption() / scenario.getScenarioLength());
 
         MainView windowTankController = FuzzyPVizualzer.visualize(tankController.getNet(),
                 tankController.getRecorder());
@@ -65,5 +80,18 @@ public class SimpelMain {
         System.out.println("all consunption ::" + plant.gasConsumption());
         System.out.println("avg consunption in min ::" + plant.gasConsumption() / scenario.getScenarioLength());
     }
+
+	public static double[] calcStatistics(List<Double> list) {
+		double min = 1000.0;
+		double max = 0.0;
+		double sum = 0.0;
+		for (Double d : list) {
+			min = (min > d) ? d : min;
+			max = (max < d) ? d : max;
+			sum += d;
+		}
+		return new double[] { max, min, sum / list.size() };
+
+	}
 
 }
