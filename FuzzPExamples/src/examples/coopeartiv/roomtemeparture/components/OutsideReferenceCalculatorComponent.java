@@ -2,6 +2,7 @@ package examples.coopeartiv.roomtemeparture.components;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyDriver;
@@ -43,9 +44,14 @@ public class OutsideReferenceCalculatorComponent {
     buildPetrNet();
     outsideTempDriver = FuzzyDriver.createDriverFromMinMax(-30, 10);
     tankWaterTemeDriver = FuzzyDriver.createDriverFromMinMax(45, 68);
-    net.addActionForOuputTransition(t3Out, tk -> {
-      comp.setWaterRefTemp(tankWaterTemeDriver.defuzzify(tk));
-    });
+        net.addActionForOuputTransition(t3Out, new Consumer<FuzzyToken>() {
+
+            @Override
+            public void accept(FuzzyToken tk) {
+                comp.setWaterRefTemp(tankWaterTemeDriver.defuzzify(tk));
+            }
+        });
+            
     rec = new FullRecorder();
     execcutor = new AsyncronRunnableExecutor(net, simPeriod);
     execcutor.setRecorder(rec);

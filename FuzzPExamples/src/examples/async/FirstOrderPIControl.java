@@ -47,6 +47,7 @@ public class FirstOrderPIControl {
 			+ " [<pl,pl><pm,pm><ZR,ZR><nm,nm><nl,nl>]"//
 			+ " [<pl,pl><pl,pl><pm,pm><ZR,ZR><nm,nm>]"//
 			+ " [<pl,pl><pl,pl><pl,pl><pm,pm><ZR,ZR>]}";
+
 	String adder = String.join("\n", //
 			"{[<NL><NL><NL><NM><ZR>]", //
 			" [<NL><NL><NM><ZR><PM>]", //
@@ -115,6 +116,7 @@ public class FirstOrderPIControl {
 
 			@Override
 			public void accept(FuzzyToken t) {
+                System.out.println("token fired: " + t.shortString());
 				plant.setCommand(controlOutDriver.defuzzify(t));
 			}
 		});

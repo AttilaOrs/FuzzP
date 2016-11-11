@@ -2,6 +2,7 @@ package examples.coopeartiv.roomtemeparture.components;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyDriver;
@@ -47,6 +48,7 @@ public class HeaterTankControllerComponent {
   private int p3SysInp;
 
   private FuzzyPetriNet net;
+
   public HeaterTankControllerComponent(Plant plant, long simPeriod) {
 
     TableParser parser = new TableParser();
@@ -92,8 +94,13 @@ public class HeaterTankControllerComponent {
 
     rec = new FullRecorder();
     execcutor = new AsyncronRunnableExecutor(net, simPeriod);
-    execcutor.setRecorder(rec);
-    net.addActionForOuputTransition(tr2Out, tk -> plant.setHeaterGasCmd(tankCommandDriver.defuzzify(tk)));
+        execcutor.setRecorder(rec);
+    net.addActionForOuputTransition(tr2Out, new Consumer<FuzzyToken>() {
+        @Override
+            public void accept(FuzzyToken tk) {
+            plant.setHeaterGasCmd(tankCommandDriver.defuzzify(tk));
+        }
+    });
   }
 
   public void start() {

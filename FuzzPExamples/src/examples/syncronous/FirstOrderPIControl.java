@@ -29,8 +29,6 @@ public class FirstOrderPIControl {
 	    " [<NL><NM><ZR><PM><PL>]" +
 	    " [<NL><NM><ZR><PM><PL>]}";
 
-
-
 	String doubleChannelAdder = ""//
 	    + "{[<NL,NL><NL,NL><NL,NL><NM,NM><ZR,ZR>]" //
 	    + " [<NL,NL><NL,NL><NM,NM><ZR,ZR><PM,PM>]" //
