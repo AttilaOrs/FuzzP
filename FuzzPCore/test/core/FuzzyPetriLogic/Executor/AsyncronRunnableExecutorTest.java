@@ -14,7 +14,7 @@ import exampleNets.TwoLoopNet;
 
 public class AsyncronRunnableExecutorTest {
 	private static long defaultDelay = 20;
-	private static long precision = 2;
+  private static long precision = 4;
 
 	@Test
 	public void simpleDelayNet() throws InterruptedException {
