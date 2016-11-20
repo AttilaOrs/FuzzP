@@ -10,7 +10,7 @@ public class FirtsOrderSystemThreaded implements Runnable {
 	private boolean stop;
 	private long period;
 
-	FirtsOrderSystemThreaded(double a, double b, double c, double d, long period) {
+    public FirtsOrderSystemThreaded(double a, double b, double c, double d, long period) {
 		this.a = a;
 		this.b = b;
 		this.c = c;

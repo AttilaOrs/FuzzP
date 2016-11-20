@@ -73,9 +73,14 @@ public class FuzzyPetriNet implements BuildableFuzzyPetriNet, ExecutableFuzzyPet
 
   @Override
   public void addArcFromPlaceToTransition(int place, int transition, double weight) {
-    fromPlaceToTrans.get(place).add(transition);
-    placesNeededForTrans.get(transition).add(place);
-    weights.get(place).put(transition, weight);
+    if (fromPlaceToTrans.size() > place) {
+      fromPlaceToTrans.get(place).add(transition);
+      placesNeededForTrans.get(transition).add(place);
+      weights.get(place).put(transition, weight);
+    } else {
+      throw new RuntimeException(
+          "No place with nr " + place + " exists. There are only : " + fromPlaceToTrans.size() + " places");
+    }
   }
 
   @Override
@@ -89,7 +94,11 @@ public class FuzzyPetriNet implements BuildableFuzzyPetriNet, ExecutableFuzzyPet
 
   @Override
   public void addArcFromTransitionToPlace(int transition, int place) {
-    fromTransToPlace.get(transition).add(place);
+    if (fromTransToPlace.size() > transition) {
+      fromTransToPlace.get(transition).add(place);
+    } else {
+      throw new RuntimeException("No transition with nr " + transition + " exists.");
+    }
   }
 
   @Override

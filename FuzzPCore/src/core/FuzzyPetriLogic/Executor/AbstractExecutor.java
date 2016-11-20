@@ -95,6 +95,7 @@ public class AbstractExecutor {
 		int loopCntr = 0; // overcome infinite loop in the system
 		boolean happendSomthing = true;
 		while (happendSomthing && loopCntr < MAX_LOOP_STEP) {
+      happendSomthing = false;
 			loopCntr++;
 			for (int trListIndex = 0; trListIndex < orderOfTransition.size(); trListIndex++) {
 				int currentTrans = orderOfTransition.get(trListIndex);
