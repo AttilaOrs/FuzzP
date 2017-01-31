@@ -1,8 +1,7 @@
 package examples.simple.maximumfinder;
 
-import core.FuzzyPetriLogic.FuzzyToken;
-import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 import core.TableParser;
+import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 
 public class MaximumFinderFuzzyPetriMaker {
     public FuzzyPetriNet net;

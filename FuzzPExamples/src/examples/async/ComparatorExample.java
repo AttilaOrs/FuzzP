@@ -22,7 +22,7 @@ public class ComparatorExample {
 			" [<PL><PL><PM><ZR><NM>]" + //
 			" [<PL><PL><PL><PM><ZR>]}";
 
-	String separator = "{[<NL,FF><NL,FF><FF,FF><FF,PL><FF,PL>]}";
+  String separator = "{[<FF,PL><FF,PL><FF,FF><NL,FF><NL,FF>]}";
 
 	public ComparatorExample() {
 		TableParser parser = new TableParser();
@@ -74,16 +74,11 @@ public class ComparatorExample {
 
 		for (int i = 0; i < 100; i++) {
 			Map<Integer, FuzzyToken> inps = new HashMap<>();
-			if (i % 10 < 5) {
-				inps.put(p0Inp, driver.fuzzifie(i / 100.0));
-				inps.put(p1Inp, driver.fuzzifie(i / -100.0));
-			} else {
-				inps.put(p1Inp, driver.fuzzifie(i / 100.0));
-				inps.put(p0Inp, driver.fuzzifie(i / -100.0));
-			}
+      inps.put(p0Inp, driver.fuzzifie(Math.sin(i / 10.0)));
+      inps.put(p1Inp, driver.fuzzifie(Math.cos(i / 10.0)));
 			executor.putTokenInInputPlace(inps);
 			try {
-				Thread.sleep(5);
+        Thread.sleep(20);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
