@@ -22,6 +22,7 @@ public class FuzzyPetriNet implements BuildableFuzzyPetriNet, ExecutableFuzzyPet
   private List<FuzzyToken> initialMarkingOfThePlaces;
   private transient Map<Integer, List<Consumer<FuzzyToken>>> actionsForOuptutTransirions;
   private List<Boolean> isInputPlaces;
+  private List<Boolean> isOutputTransition;
   private Map<Integer, Map<Integer, Double>> weights;
 
   private int transitionCntr;
@@ -36,22 +37,31 @@ public class FuzzyPetriNet implements BuildableFuzzyPetriNet, ExecutableFuzzyPet
     initialMarkingOfThePlaces = new ArrayList<>();
     actionsForOuptutTransirions = new HashMap<>();
     isInputPlaces = new ArrayList<>();
+    isOutputTransition = new ArrayList<>();
     weights = new HashMap<>();
   }
 
   @Override
   public int addTransition(int delay, ITable table) {
+    int toRet = addTransitionWithoutMarking(delay, table);
+    isOutputTransition.add(false);
+    return toRet;
+  }
+
+  private int addTransitionWithoutMarking(int delay, ITable table) {
     delayForTransition.add(delay);
     tableForTransition.add(table);
     fromTransToPlace.add(new ArrayList<>());
     placesNeededForTrans.add(new ArrayList<>());
     return transitionCntr++;
+
   }
 
   @Override
   public int addOuputTransition(OneXOneTable table) {
-    int trId = addTransition(0, table);
+    int trId = addTransitionWithoutMarking(0, table);
     actionsForOuptutTransirions.put(trId, new ArrayList<>());
+    isOutputTransition.add(true);
     return trId;
   }
 
