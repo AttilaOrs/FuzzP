@@ -20,7 +20,7 @@ public class FuzzyPetriNet implements BuildableFuzzyPetriNet, ExecutableFuzzyPet
   private List<List<Integer>> fromPlaceToTrans;
   private List<List<Integer>> placesNeededForTrans;
   private List<FuzzyToken> initialMarkingOfThePlaces;
-  private Map<Integer, List<Consumer<FuzzyToken>>> actionsForOuptutTransirions;
+  private transient Map<Integer, List<Consumer<FuzzyToken>>> actionsForOuptutTransirions;
   private List<Boolean> isInputPlaces;
   private Map<Integer, Map<Integer, Double>> weights;
 
