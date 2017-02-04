@@ -103,9 +103,21 @@ public class MainView extends JFrame {
 			});
 			KeyStroke keyStrokeToOpen = KeyStroke.getKeyStroke("shift O");
 			openItem.setAccelerator(keyStrokeToOpen);
+			
+
+      JMenuItem savePetriJson = new JMenuItem("Save Petri Json only");
+      savePetriJson.addActionListener(ac -> {
+        int rez = choose.showSaveDialog(this);
+        if (rez == JFileChooser.APPROVE_OPTION) {
+          model.savePetriJsonOnly(choose.getSelectedFile());
+        }
+      });
+      KeyStroke keyStrokeToSaveJson = KeyStroke.getKeyStroke("shift J");
+      savePetriJson.setAccelerator(keyStrokeToSaveJson);
 
 			fileMenu.add(saveItem);
 			fileMenu.add(openItem);
+      fileMenu.add(savePetriJson);
 			bar.add(fileMenu);
 		}
 

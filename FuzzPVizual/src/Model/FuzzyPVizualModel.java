@@ -11,6 +11,7 @@ import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.ITable;
 import core.FuzzyPetriLogic.Fuzzifiers.TriangleFuzzyfier;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
+import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNetJsonSaver;
 import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
 import de.erichseifert.gral.data.DataTable;
 import main.ScenarioSaverLoader;
@@ -123,5 +124,9 @@ public class FuzzyPVizualModel {
 	public ITable getTableForTranition(int trId) {
 		return net.getTableForTransition(trId);
 	}
+
+  public void savePetriJsonOnly(File selectedFile) {
+    FuzzyPetriNetJsonSaver.saveToJsonFile(net, selectedFile.getAbsolutePath());
+  }
 
 }
