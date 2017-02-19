@@ -2,19 +2,19 @@ package examples.async.basin;
 
 import java.util.HashMap;
 
-import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyDriver;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.Executor.AsyncronRunnableExecutor;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
 import core.FuzzyPetriLogic.Tables.OneXTwoTable;
+import core.common.recoder.FullRecorder;
 
 public class BasinController {
 
   private FuzzyPetriNet net;
-  private FullRecorder rec;
+  private FullRecorder<FuzzyToken> rec;
   private AsyncronRunnableExecutor execcutor;
   private int iP1;
   FuzzyDriver waterDriver = FuzzyDriver.createDriverFromMinMax(55.0, 65.0);
@@ -30,7 +30,7 @@ public class BasinController {
 
   public BasinController(Basin bs, int simPeriod) {
 
-    TableParser parser = new TableParser();
+    FuzzyTableParser parser = new FuzzyTableParser();
     net = new FuzzyPetriNet();
     int P0 = net.addPlace();
     iP1 = net.addInputPlace();
@@ -66,7 +66,7 @@ public class BasinController {
 
 
 
-    rec = new FullRecorder();
+    rec = new FullRecorder<>();
     execcutor = new AsyncronRunnableExecutor(net, simPeriod);
     execcutor.setRecorder(rec);
 
@@ -90,7 +90,7 @@ public class BasinController {
     return net;
   }
 
-  public FullRecorder getRecorder() {
+  public FullRecorder<FuzzyToken> getRecorder() {
     return rec;
   }
 

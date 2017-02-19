@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import core.FuzzyPetriLogic.FuzzyToken;
-import core.FuzzyPetriLogic.Executor.SynchronousFuzzyPetriExecutor;
 import exampleNets.ConcurentPetriNetBuilder;
 import exampleNets.SelectionLikeTwoBranchExample;
 import exampleNets.SimpleDelayPetriNetBuilder;
@@ -96,7 +95,7 @@ public class SynchronousFuzzyPetriExecutorTest {
     inp.put(3, FuzzyToken.zeroToken());
     sim.runTick(inp);
     assertTrue(builder.getFiredOuputTransition().size() == 1);
-    assertTrue(builder.getFiredOuputTransition().get(0) == 2); // t5 fired
+    assertTrue(builder.getFiredOuputTransition().get(0) == 2);
     checkSimState(sim, "<phi>;<phi>;<0.00,0.00,1.00,0.00,0.00>;<phi>;<phi>;<phi>;<phi>", "[0, 0, 0, 1, 0]");
 
     sim.runTick(null);

@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyDriver;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.Executor.AsyncronRunnableExecutor;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
+import core.common.recoder.FullRecorder;
 import examples.coopeartiv.roomtemeparture.model.Plant;
 
 public class HeaterTankControllerComponent {
@@ -39,7 +39,7 @@ public class HeaterTankControllerComponent {
 
   private AsyncronRunnableExecutor execcutor;
 
-  private FullRecorder rec;
+  private FullRecorder<FuzzyToken> rec;
 
   private FuzzyDriver tankWaterTemperatureDriver;
 
@@ -51,7 +51,7 @@ public class HeaterTankControllerComponent {
 
   public HeaterTankControllerComponent(Plant plant, long simPeriod) {
 
-    TableParser parser = new TableParser();
+    FuzzyTableParser parser = new FuzzyTableParser();
     net = new FuzzyPetriNet();
     int p0 = net.addPlace();
     net.setInitialMarkingForPlace(p0, FuzzyToken.zeroToken());
@@ -92,7 +92,7 @@ public class HeaterTankControllerComponent {
     FuzzyDriver tankCommandDriver = FuzzyDriver.createDriverFromMinMax(-1.0, 1.0);
     tankWaterTemperatureDriver = FuzzyDriver.createDriverFromMinMax(-75, 75);
 
-    rec = new FullRecorder();
+    rec = new FullRecorder<>();
     execcutor = new AsyncronRunnableExecutor(net, simPeriod);
         execcutor.setRecorder(rec);
     net.addActionForOuputTransition(tr2Out, new Consumer<FuzzyToken>() {
@@ -129,7 +129,7 @@ public class HeaterTankControllerComponent {
     return net;
   }
 
-  public FullRecorder getRecorder() {
+  public FullRecorder<FuzzyToken> getRecorder() {
     return rec;
   }
 

@@ -5,14 +5,14 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import Main.FuzzyPVizualzer;
-import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyDriver;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.Executor.AsyncronRunnableExecutor;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
 import core.FuzzyPetriLogic.Tables.TwoXOneTable;
+import core.common.recoder.FullRecorder;
 
 public class ComparatorExample {
 	String differentiator = "" + //
@@ -25,7 +25,7 @@ public class ComparatorExample {
   String separator = "{[<FF,PL><FF,PL><FF,FF><NL,FF><NL,FF>]}";
 
 	public ComparatorExample() {
-		TableParser parser = new TableParser();
+		FuzzyTableParser parser = new FuzzyTableParser();
 		FuzzyPetriNet petriNet = new FuzzyPetriNet();
 
 		int p0Inp = petriNet.addInputPlace();
@@ -65,7 +65,7 @@ public class ComparatorExample {
 		});
 
 		AsyncronRunnableExecutor executor = new AsyncronRunnableExecutor(petriNet, 20);
-		FullRecorder recorder = new FullRecorder();
+    FullRecorder<FuzzyToken> recorder = new FullRecorder<FuzzyToken>();
 		executor.setRecorder(recorder);
 
 		FuzzyDriver driver = FuzzyDriver.createDriverFromMinMax(-1.0, 1.0);

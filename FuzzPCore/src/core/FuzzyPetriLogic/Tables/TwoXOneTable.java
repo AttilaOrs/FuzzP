@@ -9,8 +9,9 @@ import java.util.stream.Stream;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.FuzzyValue;
 import core.FuzzyPetriLogic.ITable;
+import core.common.generaltable.IGeneralTwoXOneTable;
 
-public class TwoXOneTable implements ITable {
+public class TwoXOneTable implements ITable, IGeneralTwoXOneTable {
 
 	public static TwoXOneTable defaultTable() {
 		EnumMap<FuzzyValue, Map<FuzzyValue, FuzzyValue>> ruleTable = new EnumMap<>(FuzzyValue.class);
@@ -28,7 +29,7 @@ public class TwoXOneTable implements ITable {
 		return new TwoXOneTable(ruleTable);
 	}
 
-	Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> ruleTable;
+  protected Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> ruleTable;
 
 	public TwoXOneTable(Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> rulaTabel) {
 		this.ruleTable = rulaTabel;
@@ -67,6 +68,7 @@ public class TwoXOneTable implements ITable {
 		return rez.isPresent();
 	}
 
+  @Override
 	public Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> getTable() {
 		return this.ruleTable;
 	}

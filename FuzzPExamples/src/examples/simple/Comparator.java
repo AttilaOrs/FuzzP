@@ -3,12 +3,13 @@ package examples.simple;
 import java.util.HashMap;
 
 import Main.FuzzyPVizualzer;
-import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyDriver;
+import core.FuzzyPetriLogic.FuzzyTableParser;
+import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.Controller.FuzzyPetriNetSyncornousController;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
+import core.common.recoder.FullRecorder;
 
 public class Comparator {
   String differentiator = "" +
@@ -20,7 +21,7 @@ public class Comparator {
   String separator = "{[<ZR,FF><ZR,FF><FF,FF><FF,ZR><FF,ZR>]}";
 
   public Comparator() {
-    TableParser parser = new TableParser();
+    FuzzyTableParser parser = new FuzzyTableParser();
 
     FuzzyPetriNet net = new FuzzyPetriNet();
     int p0_inp = net.addInputPlace();
@@ -50,7 +51,7 @@ public class Comparator {
    drv.put(p1_inp, FuzzyDriver.createDriverFromMinMax(-1.0, 1.0));
 
     FuzzyPetriNetSyncornousController controller = new FuzzyPetriNetSyncornousController(drv, drv, net);
-    FullRecorder recorder = new FullRecorder();
+    FullRecorder<FuzzyToken> recorder = new FullRecorder<>();
     controller.setRecorderForExecutor(recorder);
 
     for (int i = 0; i < 100; i++) {

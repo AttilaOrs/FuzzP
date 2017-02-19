@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.ITable;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
 import core.FuzzyPetriLogic.Tables.OneXTwoTable;
@@ -20,7 +21,7 @@ public class TableParserTest {
 	    "[<ZR><PM><PM><PL><PL>]\n}";
 	@Test
 	public void toStringOneXOne() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		String rez = underTest.createString(OneXOneTable.defaultTable());
 		assertTrue(rez.equals("{[<NL><NM><ZR><PM><PL>]}"));
 
@@ -34,7 +35,7 @@ public class TableParserTest {
 
 	@Test
 	public void correctType() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		String oneXoneStr = "{[<NM>, <zr>, < zr  >, <ff>, <PL>]}";
 		ITable oneXone = underTest.parseTable(oneXoneStr);
 		assertTrue(oneXone instanceof OneXOneTable);
@@ -52,7 +53,7 @@ public class TableParserTest {
 
 	@Test
 	public void simpleTableParsing() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		String testStr = "{[<NL>, <NM>, <ZR>, <PM>, <PL>]}";
 		OneXOneTable rez = underTest.parseOneXOneTable(testStr);
 
@@ -61,7 +62,7 @@ public class TableParserTest {
 
 	@Test
 	public void simpleTableParsingWithPhi() {
-		TableParser underTest = new TableParser(true);
+		FuzzyTableParser underTest = new FuzzyTableParser(true);
 		String testStr = "{[<nl>, <NM>, <zr>, <PM>, <PL>, <FF>]}";
 		OneXOneTable rez = underTest.parseOneXOneTable(testStr);
 		assertTrue(rez.getTable().equals(OneXOneTable.defaultTable().getTable()));
@@ -69,7 +70,7 @@ public class TableParserTest {
 
 	@Test
 	public void OneXTwoTableWithoutPhi() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		String testStr = "{[<NL,NL>, <NM,NM>, <ZR,ZR>, <PM, PM>, <PL, PL>]}";
 		OneXTwoTable rez = underTest.parseOneXTwoTable(testStr);
 		assertTrue(rez.getTables().equals(OneXTwoTable.defaultTable().getTables()));
@@ -77,7 +78,7 @@ public class TableParserTest {
 
 	@Test
 	public void OneXTwoTableWithPhi() {
-		TableParser underTest = new TableParser(true);
+		FuzzyTableParser underTest = new FuzzyTableParser(true);
 		String testStr = "{[<NL,NL>, <NM,nm>, <ZR,ZR>, <PM, PM>, <PL, PL>, <FF, FF>]}";
 		OneXTwoTable rez = underTest.parseOneXTwoTable(testStr);
 		assertTrue(rez.getTables().equals(OneXTwoTable.defaultTable().getTables()));
@@ -93,7 +94,7 @@ public class TableParserTest {
 
 	@Test
 	public void TwoXOneTableWithoutPhiTets() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		TwoXOneTable rez = underTest.parseTwoXOneTable(twoXOneDefaultStringWithoutPhi);
 		assertTrue(rez.getTable().equals(TwoXOneTable.defaultTable().getTable()));
 	}
@@ -108,7 +109,7 @@ public class TableParserTest {
 
 	@Test
 	public void TwoXOneTableWithPhiTets() {
-		TableParser underTest = new TableParser(true);
+		FuzzyTableParser underTest = new FuzzyTableParser(true);
 		TwoXOneTable rez = underTest.parseTwoXOneTable(twoXOneDefaultStringWithtPhi);
 		assertTrue(rez.getTable().equals(TwoXOneTable.defaultTable().getTable()));
 	}
@@ -122,7 +123,7 @@ public class TableParserTest {
 
 	@Test
 	public void TwoXTwoTableWithoutPhiTets() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		TwoXTwoTable rez = underTest.parseTwoXTwoTable(twoXTwoDefaultStringWithoutPhi);
 		assertTrue(rez.getTables().equals(TwoXTwoTable.defaultTable().getTables()));
 	}
@@ -135,71 +136,71 @@ public class TableParserTest {
 	    " [<NM><ZR><PM><kacsa><PL>]" +
 	    " [<ZR><PM><PM><PL><PL>]}";
 
-	@Test(expected = TableParser.TablePareserExcetion.class)
+	@Test(expected = FuzzyTableParser.TablePareserExcetion.class)
 	public void TwoXOneTableWithoutError() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		underTest.parseTwoXOneTable(twoXTwoDefaultStringWithoutPhiIncorrect);
 	}
-	@Test(expected = TableParser.TablePareserExcetion.class)
+	@Test(expected = FuzzyTableParser.TablePareserExcetion.class)
 	public void notCorrectTableStarter() {
-		TableParser underTest = new TableParser();
+		FuzzyTableParser underTest = new FuzzyTableParser();
 		String testStr = "[<nl>, <NM>, <zr>, <PM>, <PL>]}";
 		underTest.parseOneXOneTable(testStr);
 	}
 
-	@Test(expected = TableParser.TablePareserExcetion.class)
+	@Test(expected = FuzzyTableParser.TablePareserExcetion.class)
 	public void notCorrectTableEnder() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		String testStr = "{[<nl>, <NM>, <zr>, <PM>, <PL>]";
 		underTest.parseOneXOneTable(testStr);
 	}
 
-	@Test(expected = TableParser.TablePareserExcetion.class)
+	@Test(expected = FuzzyTableParser.TablePareserExcetion.class)
 	public void notLineStarter() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		String testStr = "{{<nl>, <NM>, <zr>, <PM>, <PL>]}";
 		underTest.parseOneXOneTable(testStr);
 	}
 
-	@Test(expected = TableParser.TablePareserExcetion.class)
+	@Test(expected = FuzzyTableParser.TablePareserExcetion.class)
 	public void notLineEnder() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		String testStr = "{[<nl>, <NM>, <zr>, <PM>, <PL>}";
 		underTest.parseOneXOneTable(testStr);
 	}
 
-	@Test(expected = TableParser.TablePareserExcetion.class)
+	@Test(expected = FuzzyTableParser.TablePareserExcetion.class)
 	public void notCellStarter() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		String testStr = "{[<nl>, <NM>, zr>, <PM>, <PL>]}";
 		underTest.parseOneXOneTable(testStr);
 	}
 
-	@Test(expected = TableParser.TablePareserExcetion.class)
+	@Test(expected = FuzzyTableParser.TablePareserExcetion.class)
 	public void notCellEnder() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		String testStr = "{[<nl>, <NM>, <zr, <PM>, <PL>]}";
 		underTest.parseOneXOneTable(testStr);
 	}
 
-	@Test(expected = TableParser.TablePareserExcetion.class)
+	@Test(expected = FuzzyTableParser.TablePareserExcetion.class)
 	public void notFuzzyValue() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		String testStr = "{[<duck>, <NM>, <zr, <PM>, <PL>]}";
 		underTest.parseOneXOneTable(testStr);
 	}
 
 
-	@Test(expected = TableParser.TablePareserExcetion.class)
+	@Test(expected = FuzzyTableParser.TablePareserExcetion.class)
 	public void OneXTwo_incompleteCells() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		String testStr = "{[<NL>, <NM,NM>, <ZR,ZR>, <PM, PM>, <PL, PL>]}";
 		underTest.parseOneXTwoTable(testStr);
 	}
 
-	@Test(expected = TableParser.TablePareserExcetion.class)
+	@Test(expected = FuzzyTableParser.TablePareserExcetion.class)
 	public void OneXTwo_notAFuzzyValue() {
-		TableParser underTest = new TableParser(false);
+		FuzzyTableParser underTest = new FuzzyTableParser(false);
 		String testStr = "{[<NL,ImAmNotABug>, <NM,NM>, <ZR,ZR>, <PM, PM>, <PL, PL>]}";
 		underTest.parseOneXTwoTable(testStr);
 	}

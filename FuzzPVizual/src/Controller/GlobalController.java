@@ -7,6 +7,7 @@ import View.IView;
 
 public class GlobalController implements IGlobalController {
 
+  @SuppressWarnings("unused") // follows the pattern.. maybe used in the future
   private FuzzyPVizualModel model;
   private ArrayList<IView> views;
   private int currentlySelectedTransition;

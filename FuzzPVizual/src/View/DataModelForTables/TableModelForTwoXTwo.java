@@ -3,19 +3,22 @@ package View.DataModelForTables;
 import javax.swing.table.AbstractTableModel;
 
 import View.TableView;
+import config.IConfigurator;
 import core.FuzzyPetriLogic.FuzzyValue;
-import core.FuzzyPetriLogic.Tables.TwoXTwoTable;
+import core.common.generaltable.IGeneralTwoXTwoTable;
 
 public class TableModelForTwoXTwo extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1L;
-	private TwoXTwoTable myTable;
+  private IGeneralTwoXTwoTable myTable;
+  private IConfigurator<?, ?, ?, ?> iConfigurator;
 	private static String header = "inp";
 	private static String out_ch1 = " (out1)";
 	private static String out_ch2 = " (out2)";
 
-	public TableModelForTwoXTwo(TwoXTwoTable myTable) {
+  public TableModelForTwoXTwo(IGeneralTwoXTwoTable myTable, IConfigurator<?, ?, ?, ?> iConfigurator) {
 		this.myTable = myTable;
+    this.iConfigurator = iConfigurator;
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public class TableModelForTwoXTwo extends AbstractTableModel {
 	}
 
 	@Override
-	public Class getColumnClass(int columnIndex) {
+  public Class<String> getColumnClass(int columnIndex) {
 		return String.class;
 	}
 
@@ -55,9 +58,10 @@ public class TableModelForTwoXTwo extends AbstractTableModel {
 		FuzzyValue indexVal = FuzzyValue.values()[rowIndex];
 		int mapIndex = (columnIndex - 1) % 2;
 		if (columnIndex == 0) {
-			return indexVal.name();
+      return iConfigurator.getFuzzyToString().apply(indexVal);
 		}
 		FuzzyValue indexVal2 = FuzzyValue.values()[(columnIndex - 1) / 2];
-		return myTable.getTables().get(mapIndex).get(indexVal).get(indexVal2).name();
+    FuzzyValue val = myTable.getTables().get(mapIndex).get(indexVal).get(indexVal2);
+    return iConfigurator.getFuzzyToString().apply(val);
 	}
 }

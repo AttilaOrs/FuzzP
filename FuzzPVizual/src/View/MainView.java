@@ -17,17 +17,24 @@ import com.mxgraph.swing.mxGraphComponent;
 
 import Controller.IGlobalController;
 import Model.FuzzyPVizualModel;
+import core.common.AbstractPetriNet;
+import core.common.recoder.FullRecordable;
 import de.erichseifert.gral.ui.InteractivePanel;
 
-public class MainView extends JFrame {
+public class MainView<TTokenType extends FullRecordable<TTokenType>, TTableType, TOuTableType extends TTableType, TPetriNetType extends AbstractPetriNet<TTokenType, TTableType, TOuTableType>>
+    extends JFrame {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
   private static final boolean DefalutSaveOpenEnabled = false;
   private static final boolean DefailtDuzzyPLangEnabled = false;
 
   private boolean saveOpenEnabled;
   private boolean fuzzyPLangEnabled;
 
-	private FuzzyPVizualModel model;
+  private FuzzyPVizualModel<TTokenType, TTableType, TOuTableType, TPetriNetType> model;
 	private GraphView graphView;
 	private PlotView plotView;
 	private IGlobalController controller;
@@ -35,11 +42,13 @@ public class MainView extends JFrame {
 	private JTabbedPane tabbedPane;
 	private File lastFile;
 
-  public MainView(FuzzyPVizualModel model, IGlobalController controller) {
+  public MainView(FuzzyPVizualModel<TTokenType, TTableType, TOuTableType, TPetriNetType> model,
+      IGlobalController controller) {
     this(model, controller, DefalutSaveOpenEnabled, DefailtDuzzyPLangEnabled);
   }
 
-  public MainView(FuzzyPVizualModel model, IGlobalController controller, boolean saveOpenEnabled,
+  public MainView(FuzzyPVizualModel<TTokenType, TTableType, TOuTableType, TPetriNetType> model,
+      IGlobalController controller, boolean saveOpenEnabled,
       boolean fuzzyPLangEnabled) {
 		super("Fuzzy Petri Visualizer");
     this.saveOpenEnabled = saveOpenEnabled;
@@ -61,8 +70,7 @@ public class MainView extends JFrame {
 		tabbedPane.addTab("Plots", plotViewPanel);
 		tabbedPane.addTab("Fuzzy Tables", jp2);
 		tabbedPane.setBackground(Color.WHITE);
-		TableView tableView = new TableView(model, jp2);
-
+    TableView<TTableType> tableView = new TableView<TTableType>(model, jp2);
 		controller.addView(graphView);
 		controller.addView(plotView);
 		controller.addView(tableView);

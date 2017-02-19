@@ -10,7 +10,7 @@ import core.FuzzyPetriLogic.IFuzzyfier;
 import core.FuzzyPetriLogic.Executor.SynchronousFuzzyPetriExecutor;
 import core.FuzzyPetriLogic.Fuzzifiers.TriangleFuzzyfier;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
-import core.FuzzyPetriLogic.PetriNet.IFuzzyPetriBehaviourRecorder;
+import core.common.recoder.IGeneralPetriBehavoiurRecorder;
 
 public class FuzzyPetriNetSyncornousController {
   private Map<Integer, FuzzyDriver> inpuDrivers;
@@ -39,7 +39,7 @@ public class FuzzyPetriNetSyncornousController {
     simulator.resetSimulator();
   }
 
-  public void setRecorderForExecutor(IFuzzyPetriBehaviourRecorder recorder) {
+  public void setRecorderForExecutor(IGeneralPetriBehavoiurRecorder<FuzzyToken> recorder) {
     simulator.setRecorder(recorder);
   }
 

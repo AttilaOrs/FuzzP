@@ -4,16 +4,15 @@ import java.util.HashMap;
 import java.util.function.Consumer;
 
 import Main.FuzzyPVizualzer;
-import View.MainView;
-import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyDriver;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.Executor.AsyncronRunnableExecutor;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
 import core.FuzzyPetriLogic.Tables.OneXTwoTable;
 import core.FuzzyPetriLogic.Tables.TwoXOneTable;
+import core.common.recoder.FullRecorder;
 
 public class FirstOrederPidControl {
 	/*
@@ -61,7 +60,7 @@ public class FirstOrederPidControl {
 		FuzzyDriver userCommandInDriver = FuzzyDriver.createDriverFromMinMax(-0.6, +0.6);
 		FuzzyDriver controlOutDriver = FuzzyDriver.createDriverFromMinMax(-1.0, 1.0);
 
-		TableParser parser = new TableParser();
+		FuzzyTableParser parser = new FuzzyTableParser();
 		FuzzyPetriNet net = new FuzzyPetriNet();
 
 		int p0 = net.addPlace();
@@ -135,7 +134,7 @@ public class FirstOrederPidControl {
 		net.addArcFromPlaceToTransition(p14, t3, 0.2);
 
 		AsyncronRunnableExecutor executor = new AsyncronRunnableExecutor(net, period);
-		FullRecorder recorder = new FullRecorder();
+    FullRecorder<FuzzyToken> recorder = new FullRecorder<>();
 		executor.setRecorder(recorder);
 
 		(new Thread(plant)).start();
@@ -160,7 +159,7 @@ public class FirstOrederPidControl {
 		plant.stop();
 		executor.stop();
 
-		MainView mainView = FuzzyPVizualzer.visualize(net, recorder);
+    FuzzyPVizualzer.visualize(net, recorder);
 	}
 
   public static void main(String args[]) {

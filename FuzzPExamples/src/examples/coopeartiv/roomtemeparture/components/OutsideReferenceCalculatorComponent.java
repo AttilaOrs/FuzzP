@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyDriver;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.Executor.AsyncronRunnableExecutor;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
+import core.common.recoder.FullRecorder;
 import examples.coopeartiv.roomtemeparture.model.Plant;
 
 public class OutsideReferenceCalculatorComponent {
@@ -36,7 +36,7 @@ public class OutsideReferenceCalculatorComponent {
 
   private FuzzyDriver tankWaterTemeDriver;
 
-  private FullRecorder rec;
+  private FullRecorder<FuzzyToken> rec;
 
   private AsyncronRunnableExecutor execcutor;
 
@@ -52,7 +52,7 @@ public class OutsideReferenceCalculatorComponent {
             }
         });
             
-    rec = new FullRecorder();
+    rec = new FullRecorder<>();
     execcutor = new AsyncronRunnableExecutor(net, simPeriod);
     execcutor.setRecorder(rec);
   }
@@ -60,7 +60,7 @@ public class OutsideReferenceCalculatorComponent {
 
   private void buildPetrNet() {
     net = new FuzzyPetriNet();
-    TableParser parser = new TableParser();
+    FuzzyTableParser parser = new FuzzyTableParser();
     int p0 = net.addPlace();
     net.setInitialMarkingForPlace(p0, FuzzyToken.zeroToken());
     p1OustideTemInp = net.addInputPlace();
@@ -97,7 +97,7 @@ public class OutsideReferenceCalculatorComponent {
     return net;
   }
 
-  public FullRecorder getRecorder() {
+  public FullRecorder<FuzzyToken> getRecorder() {
     return rec;
   }
 }

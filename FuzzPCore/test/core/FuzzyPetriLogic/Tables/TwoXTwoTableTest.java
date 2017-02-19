@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import core.TableParser;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 
 public class TwoXTwoTableTest {
@@ -41,7 +41,7 @@ public class TwoXTwoTableTest {
 
   @Test
   public void intersting_table_test() {
-		TableParser parser = new TableParser(true);
+		FuzzyTableParser parser = new FuzzyTableParser(true);
 		TwoXTwoTable intersting = parser.parseTwoXTwoTable(fuzzTable);
     FuzzyToken firstToken = new FuzzyToken(0.0, 0.5, 0.0, 0.0, 0.5);
     FuzzyToken secondToken = new FuzzyToken(0.5, 0.0, 0.0, 0.5, 0.0);

@@ -15,6 +15,11 @@ import core.FuzzyPetriLogic.Tables.OneXOneTable;
 
 public class InvertorExample extends JFrame {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
+
   public InvertorExample() {
 
     Map<FuzzyValue, FuzzyValue> ruleMap = new HashMap<>();

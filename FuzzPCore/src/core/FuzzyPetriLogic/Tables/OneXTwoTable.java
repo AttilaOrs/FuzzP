@@ -11,8 +11,9 @@ import java.util.stream.Stream;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.FuzzyValue;
 import core.FuzzyPetriLogic.ITable;
+import core.common.generaltable.IGeneralOneXTwoTable;
 
-public class OneXTwoTable implements ITable {
+public class OneXTwoTable implements ITable, IGeneralOneXTwoTable {
 
 	public static OneXTwoTable defaultTable() {
 		EnumMap<FuzzyValue, FuzzyValue> valTable1 = new EnumMap<>(FuzzyValue.class);
@@ -61,6 +62,7 @@ public class OneXTwoTable implements ITable {
 		return rez.isPresent();
 	}
 
+  @Override
 	public List<Map<FuzzyValue, FuzzyValue>> getTables() {
 		List<Map<FuzzyValue, FuzzyValue>> toRet = new ArrayList<>();
 		toRet.add(valTable1);

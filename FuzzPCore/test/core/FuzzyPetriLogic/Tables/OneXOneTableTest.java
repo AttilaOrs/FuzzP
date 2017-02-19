@@ -7,15 +7,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import core.TableParser;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 
 public class OneXOneTableTest {
-	TableParser parserWithPhi;
+	FuzzyTableParser parserWithPhi;
 
   @Before
   public void setUp() throws Exception {
-		parserWithPhi = new TableParser(true);
+		parserWithPhi = new FuzzyTableParser(true);
   }
 
   @Test

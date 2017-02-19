@@ -2,7 +2,6 @@ package View;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -205,7 +204,6 @@ private void createTransitionsOnCanvas(Object parent) {
   }
 
 
-  private static DecimalFormat df = new DecimalFormat("#.##");
   private mxGraph graph;
   private mxGraphComponent graphComponent;
 

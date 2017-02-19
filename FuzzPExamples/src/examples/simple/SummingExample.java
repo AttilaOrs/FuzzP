@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import Main.Plotter;
-import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyDriver;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.Tables.TwoXOneTable;
 
@@ -24,7 +24,7 @@ public class SummingExample {
     // create a table from string: this is a shortcut
     // but you can do by construction by constructing the map,
 		// but this way it is easier
-		TableParser parser = new TableParser();
+		FuzzyTableParser parser = new FuzzyTableParser();
 
 		TwoXOneTable table = parser.parseTwoXOneTable(tableStr);
     // print out the table to see if it is everything OK

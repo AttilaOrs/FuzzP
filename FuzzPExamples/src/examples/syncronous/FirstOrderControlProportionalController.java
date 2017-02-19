@@ -8,14 +8,14 @@ import java.util.Map;
 import Main.FuzzyPVizualzer;
 import Main.Plotter;
 import View.MainView;
-import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyDriver;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.Controller.FuzzyPetriNetSyncornousController;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
 import core.FuzzyPetriLogic.Tables.OneXTwoTable;
+import core.common.recoder.FullRecorder;
 
 public class FirstOrderControlProportionalController {
 	/*
@@ -48,7 +48,7 @@ public class FirstOrderControlProportionalController {
 	    + " [<ZR,ZR><PM,PM><PL,PL><PL,PL><PL,PL>]}";
   
   public FirstOrderControlProportionalController() {
-		TableParser parser = new TableParser();
+		FuzzyTableParser parser = new FuzzyTableParser();
     FuzzyPetriNet net = new FuzzyPetriNet();
     
     int p0 = net.addPlace();
@@ -101,7 +101,7 @@ public class FirstOrderControlProportionalController {
 
     FuzzyPetriNetSyncornousController controller = new FuzzyPetriNetSyncornousController(inputDrivers, outputDriver,
         net);
-    FullRecorder recorder = new FullRecorder();
+    FullRecorder<FuzzyToken> recorder = new FullRecorder<>();
     controller.setRecorderForExecutor(recorder);
 
     FirstOrderSystem plant = new FirstOrderSystem(0.5, 0.7, 0.2, 0.3);

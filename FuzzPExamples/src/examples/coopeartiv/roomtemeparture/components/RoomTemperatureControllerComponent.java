@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import core.TableParser;
 import core.FuzzyPetriLogic.FuzzyDriver;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.Executor.AsyncronRunnableExecutor;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
+import core.common.recoder.FullRecorder;
 import examples.coopeartiv.roomtemeparture.model.Plant;
 
 public class RoomTemperatureControllerComponent {
@@ -37,7 +37,7 @@ public class RoomTemperatureControllerComponent {
 
   private FuzzyDriver temepartureDriver;
 
-  private FullRecorder rec;
+  private FullRecorder<FuzzyToken> rec;
 
   private AsyncronRunnableExecutor execcutor;
 
@@ -45,7 +45,7 @@ public class RoomTemperatureControllerComponent {
 
   public RoomTemperatureControllerComponent(Plant plant, long simPeriod) {
     net = new FuzzyPetriNet();
-    TableParser parser = new TableParser();
+    FuzzyTableParser parser = new FuzzyTableParser();
 
     int p0 = net.addPlace();
     net.setInitialMarkingForPlace(p0, FuzzyToken.zeroToken());
@@ -95,7 +95,7 @@ public class RoomTemperatureControllerComponent {
 
     temepartureDriver = FuzzyDriver.createDriverFromMinMax(-40, 40);
 
-    rec = new FullRecorder();
+    rec = new FullRecorder<>();
     execcutor = new AsyncronRunnableExecutor(net, simPeriod);
     execcutor.setRecorder(rec);
   }
@@ -119,7 +119,7 @@ public class RoomTemperatureControllerComponent {
     return net;
   }
 
-  public FullRecorder getRecorder() {
+  public FullRecorder<FuzzyToken> getRecorder() {
     return rec;
   }
 

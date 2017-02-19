@@ -7,8 +7,8 @@ import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
-import core.TableParser;
 import core.Drawable.TransitionPlaceNameStore;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 
 /**
@@ -30,7 +30,7 @@ public class MakerGenerator {
 	private String packageToPut;
 	private final FuzzyPetriNet net;
 	private final TransitionPlaceNameStore store;
-	private final TableParser p;
+	private final FuzzyTableParser p;
 	private String className;
 
 	public MakerGenerator(FuzzyPetriNet petriNet) {
@@ -41,7 +41,7 @@ public class MakerGenerator {
 		net = petriNet;
 		this.store = store;
 		this.packageToPut = packageToPut;
-		p = new TableParser(true);
+		p = new FuzzyTableParser(true);
 	}
 
 	public String getGeneratedClassName() {

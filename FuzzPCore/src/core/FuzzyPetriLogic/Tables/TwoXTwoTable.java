@@ -3,6 +3,7 @@ package core.FuzzyPetriLogic.Tables;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -10,8 +11,9 @@ import java.util.stream.Stream;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.FuzzyValue;
 import core.FuzzyPetriLogic.ITable;
+import core.common.generaltable.IGeneralTwoXTwoTable;
 
-public class TwoXTwoTable implements ITable {
+public class TwoXTwoTable implements ITable, IGeneralTwoXTwoTable {
 
 	Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> ruleTable1;
 	Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> ruleTable2;
@@ -76,7 +78,8 @@ public class TwoXTwoTable implements ITable {
 		return new TwoXTwoTable(ruleTable, ruleTable);
 	}
 
-	public ArrayList<Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>>> getTables() {
+  @Override
+  public List<Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>>> getTables() {
 		ArrayList<Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>>> toRet = new ArrayList<>();
 		toRet.add(ruleTable1);
 		toRet.add(ruleTable2);

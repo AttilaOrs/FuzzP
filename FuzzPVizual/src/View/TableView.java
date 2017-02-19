@@ -14,21 +14,21 @@ import View.DataModelForTables.TableModelForOneXOne;
 import View.DataModelForTables.TableModelForOneXTwo;
 import View.DataModelForTables.TableModelForTwoXOne;
 import View.DataModelForTables.TableModelForTwoXTwo;
-import core.FuzzyPetriLogic.ITable;
-import core.FuzzyPetriLogic.Tables.OneXOneTable;
-import core.FuzzyPetriLogic.Tables.OneXTwoTable;
-import core.FuzzyPetriLogic.Tables.TwoXOneTable;
-import core.FuzzyPetriLogic.Tables.TwoXTwoTable;
+import core.common.generaltable.IGeneralOneXOne;
+import core.common.generaltable.IGeneralOneXTwoTable;
+import core.common.generaltable.IGeneralTwoXOneTable;
+import core.common.generaltable.IGeneralTwoXTwoTable;
 
-public class TableView implements IView {
+public class TableView<TTableType> implements IView {
 
-	public static final boolean PHI_COLUMS_DISPLAY_ENABLED = false;
+  public static final boolean PHI_COLUMS_DISPLAY_ENABLED = true;
 
   private static final String no_selection = "Nothing is selected";
   private static final String TR_SELECT_PTTRN = "TTR_NR is selectd";
   private static final String TR_NR = "TR_NR";
 
-  private FuzzyPVizualModel model;
+  private FuzzyPVizualModel<?, TTableType, ?, ?> model;
+  @SuppressWarnings("unused") // follows the pattern... maybe used in future
   private IGlobalController controller;
   private JPanel myPanel;
 
@@ -38,38 +38,40 @@ public class TableView implements IView {
 
   private JScrollPane scrollPane;
 
-  public TableView(FuzzyPVizualModel model, JPanel myPanel) {
+
+  public TableView(FuzzyPVizualModel<?, TTableType, ?, ?> model, JPanel myPanel) {
     this.model = model;
     this.myPanel = myPanel;
     myPanel.setLayout(new BorderLayout());
     messageLabel = new JLabel();
     myPanel.add(messageLabel, BorderLayout.NORTH);
     messageLabel.setText(no_selection);
-
   }
 
   @Override
   public void transitionSelected(int trId) {
-    ITable tableToDisplay = model.getTableForTranition(trId);
+    System.out.println("real_id " + trId);
+    TTableType tableToDisplay = model.getTableForTranition(trId);
     currenltyDisplayedTransition = trId;
-    messageLabel.setText(TR_SELECT_PTTRN.replace(TR_NR, Integer.toString(trId)));
+    messageLabel.setText(TR_SELECT_PTTRN.replace(TR_NR, Integer.toString(trId)) +
+        model.getConfigurator().transitionCommentSupply().apply(trId));
     displayFuzzyLogicTable(tableToDisplay);
 
   }
 
-  private void displayFuzzyLogicTable(ITable tableToDisplay) {
+  private void displayFuzzyLogicTable(TTableType tableToDisplay) {
     TableModel table = null;
-    if (tableToDisplay instanceof OneXOneTable) {
-      table = new TableModelForOneXOne((OneXOneTable) tableToDisplay);
+    if (tableToDisplay instanceof IGeneralOneXOne) {
+      table = new TableModelForOneXOne((IGeneralOneXOne) tableToDisplay, model.getConfigurator());
     }
-    if (tableToDisplay instanceof OneXTwoTable) {
-      table = new TableModelForOneXTwo((OneXTwoTable) tableToDisplay);
+    if (tableToDisplay instanceof IGeneralOneXTwoTable) {
+      table = new TableModelForOneXTwo((IGeneralOneXTwoTable) tableToDisplay, model.getConfigurator());
     }
-    if (tableToDisplay instanceof TwoXOneTable) {
-      table = new TableModelForTwoXOne((TwoXOneTable) tableToDisplay);
+    if (tableToDisplay instanceof IGeneralTwoXOneTable) {
+      table = new TableModelForTwoXOne((IGeneralTwoXOneTable) tableToDisplay, model.getConfigurator());
     }
-    if (tableToDisplay instanceof TwoXTwoTable) {
-      table = new TableModelForTwoXTwo((TwoXTwoTable) tableToDisplay);
+    if (tableToDisplay instanceof IGeneralTwoXTwoTable) {
+      table = new TableModelForTwoXTwo((IGeneralTwoXTwoTable) tableToDisplay, model.getConfigurator());
     }
     JTable tableToDisp = new JTable(table);
     tableToDisp.setFillsViewportHeight(true);

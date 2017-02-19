@@ -5,10 +5,10 @@ import static java.lang.System.currentTimeMillis;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import core.FuzzyPetriLogic.ExecutableFuzzyPetriNet;
 import core.FuzzyPetriLogic.FuzzyToken;
+import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 
-public class AsyncronRunnableExecutor extends AbstractExecutor implements Runnable {
+public class AsyncronRunnableExecutor extends AbstractFuzzyExecutor implements Runnable {
 	private static final long precision = 2;
 	private long period;
 	private boolean stop;
@@ -17,11 +17,11 @@ public class AsyncronRunnableExecutor extends AbstractExecutor implements Runnab
 
 	ConcurrentLinkedQueue<Map<Integer, FuzzyToken>> inputsWaitingToProcess;
 
-	public AsyncronRunnableExecutor(ExecutableFuzzyPetriNet net, long period) {
+  public AsyncronRunnableExecutor(FuzzyPetriNet net, long period) {
 		this(net, true, period);
 	}
 
-	public AsyncronRunnableExecutor(ExecutableFuzzyPetriNet net, boolean enableChecking, long period) {
+  public AsyncronRunnableExecutor(FuzzyPetriNet net, boolean enableChecking, long period) {
 		super(net, enableChecking);
 		this.period = period;
 		stop = false;

@@ -1,17 +1,14 @@
 package examples.coopeartiv.roomtemeparture;
 
-import java.util.DoubleSummaryStatistics;
-import java.util.List;
 
 import Main.FuzzyPVizualzer;
 import Main.Plotter;
 import View.MainView;
+import examples.coopeartiv.roomtemeparture.components.HeaterTankControllerComponent;
 import examples.coopeartiv.roomtemeparture.components.OutsideReferenceCalculatorComponent;
 import examples.coopeartiv.roomtemeparture.components.RoomTemperatureControllerComponent;
-import examples.coopeartiv.roomtemeparture.components.HeaterTankControllerComponent;
 import examples.coopeartiv.roomtemeparture.model.Plant;
 import examples.coopeartiv.roomtemeparture.model.Scenario;
-import sun.java2d.pipe.SpanShapeRenderer.Simple;
 
 public class OutsideTermoMain {
   public static final long SIM_PERIOD = 10;

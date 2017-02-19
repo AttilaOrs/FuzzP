@@ -10,9 +10,9 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import FuzzyPLang.NetBuilder.HiearchicalIntermediateNet;
+import FuzzyPLang.NetBuilder.HiearchicalIntermediateFuzzyNet;
 import FuzzyPLang.NetBuilder.HierachicalBuilder;
-import FuzzyPLang.Visitor.Visitor;
+import FuzzyPLang.Visitor.FuzzyPLangVisitor;
 import FuzzyPLang.gen.FuzzyPLangLexer;
 import FuzzyPLang.gen.FuzzyPLangParser;
 import core.Drawable.TransitionPlaceNameStore;
@@ -20,85 +20,84 @@ import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 
 public class FuzzyPLang {
 
-	private FuzzyPetriNet builtNet;
-	private TransitionPlaceNameStore nameStrore;
-	private String errors;
+  private FuzzyPetriNet builtNet;
+  private TransitionPlaceNameStore nameStrore;
+  private String errors;
 
-	public FuzzyPLang() {
+  public FuzzyPLang() {
 
-	}
+  }
 
-	public void loadFile(String file) {
-		try {
-			InputStream stream = new FileInputStream(file);
-			createNet(stream);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Error with file reading " + file.toString());
-		}
-	}
+  public void loadFile(String file) {
+    try {
+      InputStream stream = new FileInputStream(file);
+      createNet(stream);
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException("Error with file reading " + file.toString());
+    }
+  }
 
-	public void loadFile(File file) {
-		try {
-			InputStream stream = new FileInputStream(file);
-			createNet(stream);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Error with file reading " + file.toString());
-		}
+  public void loadFile(File file) {
+    try {
+      InputStream stream = new FileInputStream(file);
+      createNet(stream);
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException("Error with file reading " + file.toString());
+    }
 
-	}
+  }
 
-	public void createNet(InputStream is) {
-		ANTLRInputStream stream;
-		try {
-			stream = new ANTLRInputStream(is);
-		} catch (IOException e) {
-			throw new RuntimeException("Error with file reading ");
-		}
-		FuzzyPLangLexer ll = new FuzzyPLangLexer(stream);
-		CommonTokenStream cms = new CommonTokenStream(ll);
-		FuzzyPLangParser parser = new FuzzyPLangParser(cms);
-		ParseTree parseTree = parser.prog();
-        Visitor vis = new Visitor();
-		vis.visit(parseTree);
-		HiearchicalIntermediateNet net = vis.getIntermeddiateNet();
-		HierachicalBuilder bld = new HierachicalBuilder(net);
-	
-        builtNet = bld.buildPetriNet(); 
-        nameStrore = bld.createNameStoreTransitionFullName();
-        errors = bld.getErrors();
-        System.err.println(">>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-        System.err.println(errors);
-        
-        
-       }
+  public void createNet(InputStream is) {
+    ANTLRInputStream stream;
+    try {
+      stream = new ANTLRInputStream(is);
+    } catch (IOException e) {
+      throw new RuntimeException("Error with file reading ");
+    }
+    FuzzyPLangLexer ll = new FuzzyPLangLexer(stream);
+    CommonTokenStream cms = new CommonTokenStream(ll);
+    FuzzyPLangParser parser = new FuzzyPLangParser(cms);
+    ParseTree parseTree = parser.prog();
+    FuzzyPLangVisitor vis = new FuzzyPLangVisitor();
+    vis.visit(parseTree);
+    HiearchicalIntermediateFuzzyNet net = vis.getIntermeddiateNet();
+    HierachicalBuilder bld = new HierachicalBuilder(net);
 
-	public FuzzyPetriNet getNet() {
-		return builtNet;
-	}
+    builtNet = bld.buildPetriNet();
+    nameStrore = bld.createNameStoreTransitionFullName();
+    errors = bld.getErrors();
+    System.err.println(">>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    System.err.println(errors);
 
-	public TransitionPlaceNameStore getNameStore() {
-		return nameStrore;
-	}
+  }
 
-	public String getErrors() {
-		return errors;
-	}
+  public FuzzyPetriNet getNet() {
+    return builtNet;
+  }
 
-	public static void main(String[] args) throws Exception {
+  public TransitionPlaceNameStore getNameStore() {
+    return nameStrore;
+  }
 
-        FuzzyPLang main = new FuzzyPLang();
-        if (args.length > 0) {
-            main.loadFile(args[0]);
-        } else {
-            main.createNet(System.in);
-        }
-        /*
-         * MakerGenerator makerGenerator = new MakerGenerator(main.getNet(),
-         * main.getNameStore(), "fuzzyP.exampleNets"); String res =
-         * (makerGenerator.createMaker("ConcurentGenerated"));
-         * System.err.println(main.getErrors()); System.out.println(res);
-         */
+  public String getErrors() {
+    return errors;
+  }
 
-	}
+  public static void main(String[] args) throws Exception {
+
+    FuzzyPLang main = new FuzzyPLang();
+    if (args.length > 0) {
+      main.loadFile(args[0]);
+    } else {
+      main.createNet(System.in);
+    }
+    /*
+     * MakerGenerator makerGenerator = new MakerGenerator(main.getNet(),
+     * main.getNameStore(), "fuzzyP.exampleNets"); String res =
+     * (makerGenerator.createMaker("ConcurentGenerated"));
+     * System.err.println(main.getErrors()); System.out.println(res);
+     */
+
+  }
 
 }

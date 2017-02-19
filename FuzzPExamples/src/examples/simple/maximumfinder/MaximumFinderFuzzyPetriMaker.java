@@ -1,6 +1,6 @@
 package examples.simple.maximumfinder;
 
-import core.TableParser;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 
 public class MaximumFinderFuzzyPetriMaker {
@@ -134,7 +134,7 @@ public class MaximumFinderFuzzyPetriMaker {
     "}";
 
 
-    private static TableParser parser = new TableParser(true);
+    private static FuzzyTableParser parser = new FuzzyTableParser(true);
 
     public MaximumFinderFuzzyPetriMaker (){
         net = new FuzzyPetriNet();

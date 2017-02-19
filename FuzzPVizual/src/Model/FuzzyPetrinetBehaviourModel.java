@@ -1,47 +1,36 @@
 package Model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 
-import core.FuzzyPetriLogic.FuzzyToken;
-import core.FuzzyPetriLogic.Fuzzifiers.TriangleFuzzyfier;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorderEvents.AbstarctTokenMovment;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorderEvents.IFullRecorderEvent;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorderEvents.TickFinsihed;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorderEvents.TokenFromPlaceToTransition;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorderEvents.TokenFromTransitionToPlace;
+import core.common.recoder.FullRecordable;
+import core.common.recoder.FullRecorder;
+import core.common.recoder.fullrecorderevents.AbstarctTokenMovment;
+import core.common.recoder.fullrecorderevents.IFullRecorderEvent;
+import core.common.recoder.fullrecorderevents.TickFinsihed;
+import core.common.recoder.fullrecorderevents.TokenFromPlaceToTransition;
+import core.common.recoder.fullrecorderevents.TokenFromTransitionToPlace;
 import de.erichseifert.gral.data.DataTable;
 
-public class FuzzyPetrinetBehaviourModel {
-	private static TriangleFuzzyfier defultFuzz = TriangleFuzzyfier.defaultFuzzyfier();
+public class FuzzyPetrinetBehaviourModel<TTokenType extends FullRecordable<TTokenType>> {
 
-	FullRecorder recorder;
+  FullRecorder<TTokenType> recorder;
 	List<List<IFullRecorderEvent>> eventsGroupedByTick;
 	HashMap<Integer, DataTable> placeDataChache;
 	HashMap<Integer, DataTable> inputDataCache;
 	HashMap<Integer, DataTable> outputDataCache;
+  private Function<TTokenType, Double> converter;
 
-	FuzzyPetrinetBehaviourModel(FullRecorder recorder) {
+  FuzzyPetrinetBehaviourModel(FullRecorder<TTokenType> recorder, Function<TTokenType, Double> converter) {
 		this.recorder = recorder;
-		makeTickGroups();
+    eventsGroupedByTick = recorder.eventGroupedByTicks();
 		placeDataChache = new HashMap<>();
 		inputDataCache = new HashMap<>();
 		outputDataCache = new HashMap<>();
+    this.converter = converter;
 	}
 
-	private void makeTickGroups() {
-		eventsGroupedByTick = new ArrayList<>();
-		int firstIndexOfTikc = 0;
-		for (int i = 0; i < recorder.getEvents().size(); i++) {
-			if (recorder.getEvents().get(i) instanceof TickFinsihed) {
-				eventsGroupedByTick.add(recorder.getEvents().subList(firstIndexOfTikc, i + 1));
-				firstIndexOfTikc = i + 1;
-			}
-		}
-
-	}
 
 	public DataTable getDataForPlace(int placeId) {
 		if (!placeDataChache.containsKey(placeId)) {
@@ -56,21 +45,21 @@ public class FuzzyPetrinetBehaviourModel {
 			for (int eventIndex = 0; eventIndex < eventsGroupedByTick.get(tickNr).size() - 1; eventIndex++) {
 				if (eventsGroupedByTick.get(tickNr).get(eventIndex) instanceof TokenFromTransitionToPlace
 						|| (eventsGroupedByTick.get(tickNr).get(eventIndex) instanceof TokenFromPlaceToTransition)) {
-					AbstarctTokenMovment event = (AbstarctTokenMovment) (eventsGroupedByTick.get(tickNr)
+          AbstarctTokenMovment<TTokenType> event = (AbstarctTokenMovment<TTokenType>) (eventsGroupedByTick.get(tickNr)
 							.get(eventIndex));
 					if (event.place == placeId) {
 						if (!event.token.isPhi()) {
 							double inTickPlace = ((double) eventIndex) / (eventsGroupedByTick.get(tickNr).size());
-							table.add(tickNr + inTickPlace, defultFuzz.defuzzify(event.token));
+              table.add(tickNr + inTickPlace, converter.apply(event.token));
 						}
 					}
 				}
 			}
 			int lastIndex = eventsGroupedByTick.get(tickNr).size() - 1;
-			TickFinsihed tickFinished = (TickFinsihed) eventsGroupedByTick.get(tickNr).get(lastIndex);
-			FuzzyToken tt = tickFinished.placeState.get(placeId);
+      TickFinsihed<TTokenType> tickFinished = (TickFinsihed<TTokenType>) eventsGroupedByTick.get(tickNr).get(lastIndex);
+      TTokenType tt = tickFinished.placeState.get(placeId);
 			if (!tt.isPhi()) {
-				table.add(tickNr + 1.0, defultFuzz.defuzzify(tt));
+        table.add(tickNr + 1.0, converter.apply(tt));
 			}
 
 		}

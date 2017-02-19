@@ -6,15 +6,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import core.TableParser;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 
 public class OneXTwoTableTest {
-	TableParser parser;
+	FuzzyTableParser parser;
 
   @Before
   public void setUp() throws Exception {
-		parser = new TableParser(true);
+		parser = new FuzzyTableParser(true);
   }
 
   @Test

@@ -4,14 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import Main.FuzzyPVizualzer;
-import core.TableParser;
 import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.FuzzyDriver;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.Executor.AsyncronRunnableExecutor;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
-import core.FuzzyPetriLogic.Tables.TwoXOneTable;
+import core.common.recoder.FullRecorder;
 
 public class LoopExample {
     public FuzzyPetriNet net;
@@ -40,7 +39,7 @@ public class LoopExample {
 
     public TransitionPlaceNameStore nameStore = new TransitionPlaceNameStore();
 
-    private static TableParser parser = new TableParser(true);
+    private static FuzzyTableParser parser = new FuzzyTableParser(true);
 
     public LoopExample (){
         net = new FuzzyPetriNet();
@@ -98,7 +97,7 @@ public class LoopExample {
     }
 
   public static String initail = "<0.82,0.1,0.08,0.0,0.0>";
-  public static double[] inps = new double[] { -0.25, -0.75 };
+  public static double[] inps = new double[] { -0.25, 0.78 };
 
   public static void main(String[] args) throws InterruptedException {
     LoopExample myMaker = new LoopExample();
@@ -108,7 +107,7 @@ public class LoopExample {
     });
 
     AsyncronRunnableExecutor executor = new AsyncronRunnableExecutor(myMaker.net, 20);
-    FullRecorder recorder = new FullRecorder();
+    FullRecorder<FuzzyToken> recorder = new FullRecorder<FuzzyToken>();
     executor.setRecorder(recorder);
     FuzzyDriver driver = FuzzyDriver.createDriverFromMinMax(-1.0, 1.0);
     (new Thread(executor)).start();
@@ -122,7 +121,7 @@ public class LoopExample {
     executor.stop();
 
     FuzzyPVizualzer.visualize(myMaker.net, recorder);
-    System.out.println(parser.createString(TwoXOneTable.defaultTable()));
+    System.out.println(recorder.makeStr());
 
   }
 

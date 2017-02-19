@@ -3,17 +3,20 @@ package View.DataModelForTables;
 import javax.swing.table.AbstractTableModel;
 
 import View.TableView;
+import config.IConfigurator;
 import core.FuzzyPetriLogic.FuzzyValue;
-import core.FuzzyPetriLogic.Tables.OneXTwoTable;
+import core.common.generaltable.IGeneralOneXTwoTable;
 
 public class TableModelForOneXTwo extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1L;
-	private OneXTwoTable myTable;
+  private IGeneralOneXTwoTable myTable;
+  private IConfigurator<?, ?, ?, ?> iConfigurator;
 	private static String[] header = new String[] { "inp", "out1", "out2" };
 
-	public TableModelForOneXTwo(OneXTwoTable myTable) {
+  public TableModelForOneXTwo(IGeneralOneXTwoTable myTable, IConfigurator<?, ?, ?, ?> iConfigurator) {
 		this.myTable = myTable;
+    this.iConfigurator = iConfigurator;
 	}
 
 	@Override
@@ -34,7 +37,7 @@ public class TableModelForOneXTwo extends AbstractTableModel {
 	}
 
 	@Override
-	public Class getColumnClass(int columnIndex) {
+  public Class<String> getColumnClass(int columnIndex) {
 		return String.class;
 	}
 
@@ -48,8 +51,9 @@ public class TableModelForOneXTwo extends AbstractTableModel {
 
 		FuzzyValue indexVal = FuzzyValue.values()[rowIndex];
 		if (columnIndex == 0) {
-			return indexVal.name();
+      return iConfigurator.getFuzzyToString().apply(indexVal);
 		}
-		return myTable.getTables().get(columnIndex - 1).get(indexVal).name();
+    FuzzyValue val = myTable.getTables().get(columnIndex - 1).get(indexVal);
+    return iConfigurator.getFuzzyToString().apply(val);
 	}
 }

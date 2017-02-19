@@ -3,130 +3,153 @@ package Model;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.function.Function;
 
 import FuzzyPLang.FuzzyPLangMain.FuzzyPLang;
 import FuzzyPetriNetToCode.MakerGenerator;
+import config.IConfigurator;
 import core.Drawable.DrawableNetWithExternalNames;
 import core.Drawable.TransitionPlaceNameStore;
-import core.FuzzyPetriLogic.ITable;
-import core.FuzzyPetriLogic.Fuzzifiers.TriangleFuzzyfier;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
-import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNetJsonSaver;
-import core.FuzzyPetriLogic.PetriNet.Recorders.FullRecorder;
+import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
+import core.common.AbstractPetriNet;
+import core.common.recoder.FullRecordable;
+import core.common.recoder.FullRecorder;
 import de.erichseifert.gral.data.DataTable;
 import main.ScenarioSaverLoader;
 import structure.DrawableNet;
 
-public class FuzzyPVizualModel {
+public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TTableType, TOuTableType extends TTableType, TPetriNetType extends AbstractPetriNet<TTokenType, TTableType, TOuTableType>> {
 
-	TriangleFuzzyfier defalutFuzzyfier = TriangleFuzzyfier.defaultFuzzyfier();
-	FuzzyPetriNet net;
-	FuzzyPetrinetBehaviourModel behavourModel;
-	DrawableNet drawableNet;
-	private FuzzyPLang lang;
-	private TransitionPlaceNameStore store;
+  TPetriNetType net;
+  FuzzyPetrinetBehaviourModel<TTokenType> behavourModel;
+  DrawableNet drawableNet;
+  private FuzzyPLang lang;
+  private TransitionPlaceNameStore store;
 
-	public FuzzyPVizualModel() {
-	}
 
-	public FuzzyPetriNet getNet() {
-		return net;
-	}
+  IConfigurator<TTokenType, TTableType, TOuTableType, TPetriNetType> myConfig;
+  Function<TPetriNetType, IConfigurator<TTokenType, TTableType, TOuTableType, TPetriNetType>> configFactory;
 
-	public void save(File file) {
-		ScenarioSaverLoader saver = new ScenarioSaverLoader();
-		saver.setPetriNet(net);
-		saver.setFullRec(behavourModel.recorder);
-		saver.save(file);
-	}
 
-	public void load(File selectedFile) {
-		ScenarioSaverLoader loader = new ScenarioSaverLoader();
-		loader.load(selectedFile);
-		setNet(loader.getPetriNet());
-		setFullRecorder(loader.getFullRec());
-	}
+  public FuzzyPVizualModel(
+      Function<TPetriNetType, IConfigurator<TTokenType, TTableType, TOuTableType, TPetriNetType>> configFactory) {
+    this.configFactory = configFactory;
+  }
 
-	public void saveToJava(File loadedFile) {
-		MakerGenerator gen = new MakerGenerator(net, getSore(), null);
-		String rez = gen.createMaker(loadedFile.getName().replaceFirst("[.][^.]+$", ""));
-		String path = loadedFile.getParentFile().toString();
-		String fileName = gen.getGeneratedClassName() + ".java";
-		System.out.println(path + File.separator + fileName);
-		File outFile = new File(path, fileName);
-		try {
-			PrintWriter writer = new PrintWriter(outFile);
-			writer.print(rez);
-			writer.flush();
-			writer.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+  public TPetriNetType getNet() {
+    return net;
+  }
 
-	}
+  public IConfigurator<TTokenType, TTableType, TOuTableType, TPetriNetType> getConfigurator() {
+    return myConfig;
+  }
 
-	private TransitionPlaceNameStore getSore() {
-		if (store == null) {
-			store = TransitionPlaceNameStore.createOrdinarNames(net);
-		}
-		return store;
-	}
+  public void save(File file) {
+    ScenarioSaverLoader<TPetriNetType, TTokenType> saver = new ScenarioSaverLoader<>(myConfig.getPetriClass());
+    saver.setPetriNet(net);
+    saver.setFullRec(behavourModel.recorder);
+    saver.save(file);
+  }
 
-	public void loadFuzzyPLang(File selectedFile) {
-		if (lang == null) {
-			lang = new FuzzyPLang();
-		}
-		lang.loadFile(selectedFile);
-		setNet(lang.getNet());
-		setDrawableNet(new DrawableNetWithExternalNames(lang.getNet(), lang.getNameStore()));
-		setFullRecorder(new FullRecorder());
-		setNameStore(lang.getNameStore());
-	}
+  public void load(File selectedFile) {
+    ScenarioSaverLoader<TPetriNetType, TTokenType> loader = new ScenarioSaverLoader<>(myConfig.getPetriClass());
+    loader.load(selectedFile, myConfig.getStringConverter());
+    setNet(loader.getPetriNet());
+    setFullRecorder(loader.getFullRec());
+  }
 
-    public void setNameStore(TransitionPlaceNameStore nameStore) {
-		this.store = nameStore;
-	}
-
-	public void setNet(FuzzyPetriNet net) {
-		this.net = net;
-	}
-
-	public void setDrawableNet(DrawableNet net) {
-		this.drawableNet = net;
-	}
-
-    public TransitionPlaceNameStore getNameStore() {
-        if (store == null) {
-            store = TransitionPlaceNameStore.createOrdinarNames(net);
-        }
-        return store;
+  public void saveToJava(File loadedFile) {
+    if (net instanceof FuzzyPetriNet) {
+      MakerGenerator gen = new MakerGenerator((FuzzyPetriNet) net, getSore(), null);
+      String rez = gen.createMaker(loadedFile.getName().replaceFirst("[.][^.]+$", ""));
+      String path = loadedFile.getParentFile().toString();
+      String fileName = gen.getGeneratedClassName() + ".java";
+      System.out.println(path + File.separator + fileName);
+      File outFile = new File(path, fileName);
+      try {
+        PrintWriter writer = new PrintWriter(outFile);
+        writer.print(rez);
+        writer.flush();
+        writer.close();
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+    } else {
+      throw new RuntimeException("Unsuported operation");
     }
 
-	public DrawableNet getDrowableNet() {
-		if (drawableNet == null) {
-            drawableNet = new DrawableNetWithExternalNames(net, getNameStore());
-		}
-		return drawableNet;
-	}
+  }
 
-	public void setFullRecorder(FullRecorder recorder) {
-		behavourModel = new FuzzyPetrinetBehaviourModel(recorder);
-	}
+  private TransitionPlaceNameStore getSore() {
+    if (store == null) {
+      store = TransitionPlaceNameStore.createOrdinarNames(net);
+    }
+    return store;
+  }
 
-	public DataTable getDataForPlace(int placeId) {
-		return behavourModel.getDataForPlace(placeId);
-	}
+  public void loadFuzzyPLang(File selectedFile) {
+    if (myConfig.getPetriClass().equals(FuzzyPetriNet.class)) {
+      if (lang == null) {
+        lang = new FuzzyPLang();
+      }
+      lang.loadFile(selectedFile);
+      setNet((TPetriNetType) lang.getNet());
+      setDrawableNet(new DrawableNetWithExternalNames(lang.getNet(), lang.getNameStore()));
+      setFullRecorder(new FullRecorder());
+      setNameStore(lang.getNameStore());
+    } else {
+      throw new RuntimeException("Unsupported operation");
+    }
+  }
 
-	public int getTickNr() {
-		return behavourModel.getTickNr();
-	}
+  public void setNameStore(TransitionPlaceNameStore nameStore) {
+    this.store = nameStore;
+  }
 
-	public ITable getTableForTranition(int trId) {
-		return net.getTableForTransition(trId);
-	}
+  public void setNet(TPetriNetType net) {
+    this.net = net;
+    myConfig = configFactory.apply(net);
+  }
+
+  public void setDrawableNet(DrawableNet net) {
+    this.drawableNet = net;
+  }
+
+  public TransitionPlaceNameStore getNameStore() {
+    if (store == null) {
+      store = TransitionPlaceNameStore.createOrdinarNames(net);
+    }
+    return store;
+  }
+
+  public DrawableNet getDrowableNet() {
+    if (drawableNet == null) {
+      drawableNet = myConfig.getDrawableNetFactory().apply(net, getNameStore());
+      // new DrawableNetWithExternalNames((FuzzyPetriNet) net, getNameStore());
+    }
+    return drawableNet;
+  }
+
+  public void setFullRecorder(FullRecorder<TTokenType> recorder) {
+    behavourModel = new FuzzyPetrinetBehaviourModel<>(recorder, myConfig.getDoubleConverter());
+  }
+
+  public DataTable getDataForPlace(int placeId) {
+    return behavourModel.getDataForPlace(placeId);
+  }
+
+  public int getTickNr() {
+    return behavourModel.getTickNr();
+  }
+
+  public TTableType getTableForTranition(int trId) {
+    return net.getTableForTransition(trId);
+  }
 
   public void savePetriJsonOnly(File selectedFile) {
-    FuzzyPetriNetJsonSaver.saveToJsonFile(net, selectedFile.getAbsolutePath());
+    PetriNetJsonSaver<TPetriNetType> tt = new PetriNetJsonSaver<>();
+    tt.save(net, selectedFile.getAbsolutePath());
   }
 
 }

@@ -1,0 +1,76 @@
+package core.UnifiedPetriLogic.tables;
+
+import java.util.Map;
+import java.util.function.BiFunction;
+
+import core.FuzzyPetriLogic.FuzzyDriver;
+import core.FuzzyPetriLogic.FuzzyToken;
+import core.FuzzyPetriLogic.FuzzyValue;
+import core.FuzzyPetriLogic.Tables.TwoXOneTable;
+import core.UnifiedPetriLogic.IContex;
+import core.UnifiedPetriLogic.IUnifiedTable;
+import core.UnifiedPetriLogic.UnifiedToken;
+import core.common.generaltable.IGeneralTwoXOneTable;
+
+public class UnifiedTwoXOneTable implements IUnifiedTable, IGeneralTwoXOneTable {
+
+  private final TwoXOneTable table;
+  private final Operator op;
+  private transient final FuzzyDriver defaultDriver = FuzzyDriver.createDriverFromMinMax(-1.0, 1.0);
+
+  public UnifiedTwoXOneTable(Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> rulaTabel, Operator op) {
+    this.op = op;
+    table = new TwoXOneTable(rulaTabel);
+  }
+
+  @Override
+  public UnifiedToken[] execute(UnifiedToken[] inputs, IContex ct) {
+    FuzzyToken tk1 = ct.fuzzyfieFirstInp(inputs[0]);
+    FuzzyToken tk2 = ct.fuzzyfieSecondInp(inputs[1]);
+
+    FuzzyToken[] fuzzyRez = table.execute(new FuzzyToken[] { tk1, tk2 });
+    Double rez = null;
+    if (op != Operator.None) {
+      rez = clac(inputs, Operator.opMap.get(op));
+    }
+    UnifiedToken utk = null;
+    if (rez == null) {
+      // can be null becaouse it was None, or becaouse of the two Phis
+      utk = ct.defuzzyfieFirstOutput(fuzzyRez[0]);
+    } else {
+      utk = new UnifiedToken(defaultDriver.defuzzify(fuzzyRez[0]) * rez);
+    }
+    return new UnifiedToken[] { utk };
+  }
+
+  @Override
+  public boolean executable(UnifiedToken[] inputs, IContex ct) {
+    FuzzyToken tk1 = ct.fuzzyfieFirstInp(inputs[0]);
+    FuzzyToken tk2 = ct.fuzzyfieSecondInp(inputs[1]);
+    return table.executable(new FuzzyToken[] { tk1, tk2 });
+  }
+
+  private Double clac(UnifiedToken[] tk, BiFunction<Double, Double, Double> f) {
+    if ((!tk[0].isPhi()) && (!tk[1].isPhi())) {
+      return f.apply(tk[0].getValue(), tk[1].getValue());
+    }
+    if (!tk[0].isPhi()) {
+      return tk[0].getValue();
+    }
+    if (!tk[1].isPhi()) {
+      return tk[1].getValue();
+    }
+    return null;
+
+  }
+
+  @Override
+  public Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> getTable() {
+    return table.getTable();
+  }
+
+  public Operator getOpertaor() {
+    return op;
+  }
+
+}

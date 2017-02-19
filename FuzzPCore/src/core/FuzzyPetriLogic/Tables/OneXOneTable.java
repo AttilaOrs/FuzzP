@@ -8,8 +8,9 @@ import java.util.stream.Stream;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.FuzzyValue;
 import core.FuzzyPetriLogic.ITable;
+import core.common.generaltable.IGeneralOneXOne;
 
-public class OneXOneTable implements ITable {
+public class OneXOneTable implements ITable, IGeneralOneXOne {
 
 	public static OneXOneTable defaultTable() {
 		EnumMap<FuzzyValue, FuzzyValue> valTable = new EnumMap<>(FuzzyValue.class);
@@ -42,6 +43,7 @@ public class OneXOneTable implements ITable {
 		}
 	}
 
+  @Override
 	public Map<FuzzyValue, FuzzyValue> getTable() {
 		return valTable;
 	}

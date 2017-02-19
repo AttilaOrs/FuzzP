@@ -1,7 +1,9 @@
 package core.FuzzyPetriLogic;
 
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 public enum FuzzyValue {
@@ -41,5 +43,34 @@ public enum FuzzyValue {
   public static Stream<FuzzyValue[]> getFuzzyValuePairsForindexing() {
     return FuzzyValue.inOrder.stream().flatMap(
         outerIndex -> FuzzyValue.inOrder.stream().map(innerIndex -> new FuzzyValue[] { outerIndex, innerIndex }));
+  }
+
+  private static final EnumMap<FuzzyValue, String> unifiedStr = new EnumMap<>(FuzzyValue.class);
+  static {
+    unifiedStr.put(NL, "-2");
+    unifiedStr.put(NM, "-1");
+    unifiedStr.put(ZR, "0");
+    unifiedStr.put(PM, "1");
+    unifiedStr.put(PL, "2");
+    unifiedStr.put(FF, "FF");
+
+  }
+
+  public String unifiedStr() {
+    String toREt = unifiedStr.get(this);
+    if(toREt.length() < 2) {
+      return " "+ toREt;
+    }
+    return toREt;
+  }
+
+  public static FuzzyValue parseUnifiedStr(String str) {
+    for (Entry<FuzzyValue, String> e : unifiedStr.entrySet()) {
+      if (e.getValue().equals(str.trim())) {
+        return e.getKey();
+      }
+    }
+    return null;
+
   }
 }

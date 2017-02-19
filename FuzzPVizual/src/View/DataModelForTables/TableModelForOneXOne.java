@@ -3,17 +3,20 @@ package View.DataModelForTables;
 import javax.swing.table.AbstractTableModel;
 
 import View.TableView;
+import config.IConfigurator;
 import core.FuzzyPetriLogic.FuzzyValue;
-import core.FuzzyPetriLogic.Tables.OneXOneTable;
+import core.common.generaltable.IGeneralOneXOne;
 
 public class TableModelForOneXOne extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1L;
-	private OneXOneTable myTable;
+  private IGeneralOneXOne myTable;
+  private IConfigurator<?, ?, ?, ?> iConfigurator;
 	private static String[] header = new String[] { "inp", "out" };
 
-	public TableModelForOneXOne(OneXOneTable myTable) {
+  public TableModelForOneXOne(IGeneralOneXOne myTable, IConfigurator<?, ?, ?, ?> iConfigurator) {
 		this.myTable = myTable;
+    this.iConfigurator = iConfigurator;
 	}
 
 	@Override
@@ -34,7 +37,7 @@ public class TableModelForOneXOne extends AbstractTableModel {
 	}
 
 	@Override
-	public Class getColumnClass(int columnIndex) {
+  public Class<String> getColumnClass(int columnIndex) {
 		return String.class;
 	}
 
@@ -48,9 +51,11 @@ public class TableModelForOneXOne extends AbstractTableModel {
 
 		FuzzyValue indexVal = FuzzyValue.values()[rowIndex];
 		if (columnIndex == 0) {
-			return indexVal.name();
+      return iConfigurator.getFuzzyToString().apply(indexVal);
 		}
-		return myTable.getTable().get(indexVal).name();
+    FuzzyValue val = myTable.getTable().get(indexVal);
+
+    return iConfigurator.getFuzzyToString().apply(val);
 
 	}
 

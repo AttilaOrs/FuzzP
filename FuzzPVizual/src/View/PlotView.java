@@ -50,6 +50,7 @@ public class PlotView implements IView {
   HashMap<Integer, DataSeries> placeSeries;
   HashMap<Integer, DataSeries> inputSeries;
   HashMap<Integer, DataSeries> outSeries;
+  @SuppressWarnings("unused")
   private IGlobalController controller;
 
   public PlotView(FuzzyPVizualModel mm) {
@@ -90,6 +91,7 @@ public class PlotView implements IView {
 
   @Override
   public void placeSelected(int plId) {
+    System.out.println("real place id " + plId);
     if (placeSeries.containsKey(plId)) {
       return; // place is already ploted
     }

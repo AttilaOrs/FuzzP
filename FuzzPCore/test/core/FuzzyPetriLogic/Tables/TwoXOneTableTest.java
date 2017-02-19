@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import core.TableParser;
+import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 
 public class TwoXOneTableTest {
@@ -43,7 +43,7 @@ public class TwoXOneTableTest {
 
   @Test
   public void changer_test() {
-		TableParser parser = new TableParser(true);
+		FuzzyTableParser parser = new FuzzyTableParser(true);
 		TwoXOneTable changer = parser.parseTwoXOneTable(changerStr);
     FuzzyToken phi = new FuzzyToken();
     FuzzyToken nonPhi = new FuzzyToken(1.0, 0.0, 0.0, 0.0, 0.0);
@@ -82,7 +82,7 @@ public class TwoXOneTableTest {
 	    " [<FF><FF><ZR><FF><FF><FF>]}";
   @Test
   public void direction_test() {
-		TableParser parser = new TableParser(true);
+		FuzzyTableParser parser = new FuzzyTableParser(true);
 		TwoXOneTable c = parser.parseTwoXOneTable(c_tets_str);
     FuzzyToken NLZR = new FuzzyToken(0.5, 0.0, 0.5, 0.0, 0.0);
     FuzzyToken PLPM = new FuzzyToken(0.0, 0.0, 0.0, 0.5, 0.5);

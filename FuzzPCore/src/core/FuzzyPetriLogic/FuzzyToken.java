@@ -6,7 +6,9 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class FuzzyToken {
+import core.common.recoder.FullRecordable;
+
+public class FuzzyToken implements FullRecordable<FuzzyToken> {
   private static final String SEPARATOR = ",";
   private static final String END = ">";
   private static final String STR = "<";
