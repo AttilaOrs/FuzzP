@@ -72,5 +72,9 @@ public class UnifiedTwoXOneTable implements IUnifiedTable, IGeneralTwoXOneTable 
   public Operator getOpertaor() {
     return op;
   }
+  
+  public static UnifiedTwoXOneTable defaultTable(){
+    return new UnifiedTwoXOneTable(TwoXOneTable.defaultTable().getTable(), Operator.None);
+  }
 
 }

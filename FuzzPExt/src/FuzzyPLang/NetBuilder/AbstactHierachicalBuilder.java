@@ -75,8 +75,7 @@ public abstract class AbstactHierachicalBuilder<TTokenType, TITable, TOutTable e
     declearions.put(new StaticScope(), interNet);
   }
 
-  private void generateRecursivlyTheDeclarationRefs(StaticScope curentStaticScape,
-      TIntermediateNet curentNet) {
+  private void generateRecursivlyTheDeclarationRefs(StaticScope curentStaticScape, TIntermediateNet curentNet) {
     for (String decSimpleName : curentNet.getDeclarations().keySet()) {
       StaticScope scope = curentStaticScape.cloneSubState();
       scope.addSub(decSimpleName);
@@ -123,6 +122,7 @@ public abstract class AbstactHierachicalBuilder<TTokenType, TITable, TOutTable e
       toRet.put(rr, curStaticScope.cloneSubState());
       if (curStaticScope.current()) {
         realInputPlaces.add(rr);
+        regisetrRealInput(curentInterNet, rr, inpPlaceName);
       }
       if (curentInterNet.getTokensAdded().containsKey(inpPlaceName)) {
         tokensPuttedInPlace.put(rr, curentInterNet.getTokensAdded().get(inpPlaceName));
@@ -153,6 +153,7 @@ public abstract class AbstactHierachicalBuilder<TTokenType, TITable, TOutTable e
     }
     return toRet;
   }
+
 
   protected TIntermediateNet findDeclaration(String value, StaticScope insatnceStaticScope) {
     if (declarationScopesName.containsKey(value)) {
@@ -220,8 +221,7 @@ public abstract class AbstactHierachicalBuilder<TTokenType, TITable, TOutTable e
 
   }
 
-  private void collecArcsRecursivily(StaticScope staticScope, DynamicScope dinScope,
-      TIntermediateNet currentNet) {
+  private void collecArcsRecursivily(StaticScope staticScope, DynamicScope dinScope, TIntermediateNet currentNet) {
     for (NodeRef[] arc : currentNet.getUnweigthedArc()) {
       NodeRef ref1 = arc[0].copyNodeRef();
       ref1.updateToFullDynScope(dinScope.cloneSubState());
@@ -325,6 +325,12 @@ public abstract class AbstactHierachicalBuilder<TTokenType, TITable, TOutTable e
   protected abstract Integer addInputPlace(TPetriNet toRet, NodeRef palceRef);
 
   protected abstract TPetriNet createNewPetriNet();
+  
+  protected abstract void regisetrRealInput(TIntermediateNet curentInterNet, NodeRef rr, String inpPlaceName);
+  
+  public boolean hasErrors(){
+    return errorFound;
+  }
 
   public String getErrors() {
     return errorLog.toString();
@@ -380,10 +386,8 @@ public abstract class AbstactHierachicalBuilder<TTokenType, TITable, TOutTable e
     }
   }
 
-
   private long countArcsWhich(Predicate<NodeRef[]> outgoingArcsFilter) {
-    return countSpecialArcsWhich(outgoingArcsFilter)
-        + unweigthedArcs.stream().filter(outgoingArcsFilter).count();
+    return countSpecialArcsWhich(outgoingArcsFilter) + unweigthedArcs.stream().filter(outgoingArcsFilter).count();
   }
 
   protected TITable findNamedTableForTransition(NodeRef trRef) {
@@ -401,6 +405,7 @@ public abstract class AbstactHierachicalBuilder<TTokenType, TITable, TOutTable e
     }
     return null;
   }
+
   private TITable findTable(String tableName, StaticScope staticScope) {
     if (tableDeclaration.containsKey(tableName)) {
 

@@ -26,7 +26,10 @@ doubleCellLine :'[' doubleCell  doubleCell  doubleCell  doubleCell  doubleCell '
 simpleCell : '<' fv '>' ;
 doubleCell : '<' fv ',' fv '>' ;
 
-fv: type=(NL|NM|ZR|PM|PL|FF) ;
+fv: fv_classic
+  | poz_neg_int
+   ;
+fv_classic : type=(NL|NM|ZR|PM|PL|FF ) ;
 
 op: type=(PLUS|MINUS|DIV|MULTI);
 
@@ -35,12 +38,17 @@ MINUS:'-';
 DIV:'/';
 MULTI:'*';
 
-NL: 'nl' |'NL' | '-2';
-NM: 'nm' |'NM' | '-1';
-ZR: 'zr' |'ZR' | '0';
-PM: 'pm' |'PM' | '1';
-PL: 'pl' |'PL' | '2';
+NL: 'nl' |'NL'  ;
+NM: 'nm' |'NM' ;
+ZR: 'zr' |'ZR' ;
+PM: 'pm' |'PM' ;
+PL: 'pl' |'PL' ;
 FF: 'ff' |'FF';
 
 ID: [a-zA-Z]+ ;
 WS :[ \t\r\n]+ -> skip;
+
+poz_neg_int : INT
+			| '-'INT
+			;
+INT : [0-9]+ ;

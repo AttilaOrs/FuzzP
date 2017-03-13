@@ -79,4 +79,9 @@ public class UnifiedTwoXTwoTable implements IUnifiedTable, IGeneralTwoXTwoTable 
     return op;
   }
 
+  public static UnifiedTwoXTwoTable defaultTable() {
+    TwoXTwoTable defFuzzTable = TwoXTwoTable.defaultTable();
+    return new UnifiedTwoXTwoTable(defFuzzTable.getTables().get(0), defFuzzTable.getTables().get(1), Operator.None);
+  }
+
 }

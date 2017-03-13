@@ -13,7 +13,7 @@ import core.FuzzyPetriLogic.Tables.OneXTwoTable;
 import core.FuzzyPetriLogic.Tables.TwoXOneTable;
 import core.FuzzyPetriLogic.Tables.TwoXTwoTable;
 
-public class HierachicalBuilder extends
+public class FuzzyHierachicalBuilder extends
     AbstactHierachicalBuilder<FuzzyToken, ITable, OneXOneTable, FuzzyPetriNet, HiearchicalIntermediateFuzzyNet> {
 
   List<NodeRef[]> weigthedArsc;
@@ -21,11 +21,11 @@ public class HierachicalBuilder extends
 
   private FuzzyPetriNetChecker checker;
 
-  public HierachicalBuilder(HiearchicalIntermediateFuzzyNet net) {
+  public FuzzyHierachicalBuilder(HiearchicalIntermediateFuzzyNet net) {
     this(net, false);
   }
 
-  public HierachicalBuilder(HiearchicalIntermediateFuzzyNet interNet, boolean strict) {
+  public FuzzyHierachicalBuilder(HiearchicalIntermediateFuzzyNet interNet, boolean strict) {
     super(interNet, strict);
     checker = new FuzzyPetriNetChecker();
     weigthedArsc = new ArrayList<>();
@@ -131,6 +131,11 @@ public class HierachicalBuilder extends
   @Override
   protected void addSimpleArcFromPlaceToTrans(Integer placeId, Integer trId, FuzzyPetriNet toRet) {
     toRet.addArcFromPlaceToTransition(placeId, trId, 1.0);
+  }
+
+  @Override
+  protected void regisetrRealInput(HiearchicalIntermediateFuzzyNet curentInterNet, NodeRef rr, String inpPlaceName) {
+    //does nothing
   }
 
 }

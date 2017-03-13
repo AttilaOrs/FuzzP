@@ -28,5 +28,9 @@ public class HiearchicalIntermediateUnifiedNet
       getDeclarations().get(subName).addInpPlace(sub, str, scale);
     }
   }
+  
+  public Double getInpScales(String inpPlaceName){
+	  return inpScale.get(inpPlaceName);
+  }
 
 }

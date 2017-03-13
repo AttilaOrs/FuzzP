@@ -12,6 +12,7 @@ import FuzzyPLang.NetBuilder.NodeRef;
 import FuzzyPLang.NetBuilder.StaticScope;
 import UnifiedPLang.gen.UnifiedPLangBaseVisitor;
 import UnifiedPLang.gen.UnifiedPLangParser;
+import UnifiedPLang.gen.UnifiedPLangParser.FvContext;
 import core.FuzzyPetriLogic.FuzzyValue;
 import core.UnifiedPetriLogic.tables.Operator;
 import core.UnifiedPetriLogic.tables.UnifiedOneXOneTable;
@@ -332,18 +333,36 @@ public class UnifiedPLangVisitor extends UnifiedPLangBaseVisitor<Boolean> {
 
   @Override
   public Boolean visitSimpleCell(UnifiedPLangParser.SimpleCellContext ctx) {
-    FuzzyValue fv = FuzzyValue.parseUnifiedStr(ctx.fv().type.getText());
+    FvContext myContex = ctx.fv();
+    FuzzyValue fv = makeFuzzyValue(myContex);
     firstLine.add(fv);
     return true;
   }
 
+  private FuzzyValue makeFuzzyValue(FvContext myContex) {
+    FuzzyValue fv = FuzzyValue.FF;
+    if(myContex.fv_classic()!=null){
+      System.out.println("classic not null");
+      fv = FuzzyValue.fromString(myContex.fv_classic().getText());
+    } else {
+      Integer i = Integer.parseInt(myContex.poz_neg_int().getText());
+      if(i*i >4 ){
+        throw new RuntimeException("Not valud fuzzy value " + myContex.poz_neg_int().getText());
+      }
+     fv = FuzzyValue.parseUnifiedStr((myContex.poz_neg_int().getText()));
+    }
+    return fv;
+  }
+
   @Override
   public Boolean visitDoubleCell(UnifiedPLangParser.DoubleCellContext ctx) {
-    FuzzyValue fv1 = FuzzyValue.parseUnifiedStr(ctx.fv(0).type.getText());
-    FuzzyValue fv2 = FuzzyValue.parseUnifiedStr(ctx.fv(1).type.getText());
+    FuzzyValue fv1 = makeFuzzyValue(ctx.fv(0));
+    FuzzyValue fv2 = makeFuzzyValue(ctx.fv(1));
     firstLine.add(fv1);
     secondLine.add(fv2);
     return true;
+    //  -no-listener -visitor -encoding UTF-8  -o gen/UnifiedPLang/gen  -package UnifiedPLang.gen
+    
   }
 
 }

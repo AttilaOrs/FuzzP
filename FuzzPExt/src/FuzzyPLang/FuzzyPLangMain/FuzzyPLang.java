@@ -11,7 +11,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import FuzzyPLang.NetBuilder.HiearchicalIntermediateFuzzyNet;
-import FuzzyPLang.NetBuilder.HierachicalBuilder;
+import FuzzyPLang.NetBuilder.FuzzyHierachicalBuilder;
 import FuzzyPLang.Visitor.FuzzyPLangVisitor;
 import FuzzyPLang.gen.FuzzyPLangLexer;
 import FuzzyPLang.gen.FuzzyPLangParser;
@@ -61,7 +61,7 @@ public class FuzzyPLang {
     FuzzyPLangVisitor vis = new FuzzyPLangVisitor();
     vis.visit(parseTree);
     HiearchicalIntermediateFuzzyNet net = vis.getIntermeddiateNet();
-    HierachicalBuilder bld = new HierachicalBuilder(net);
+    FuzzyHierachicalBuilder bld = new FuzzyHierachicalBuilder(net);
 
     builtNet = bld.buildPetriNet();
     nameStrore = bld.createNameStoreTransitionFullName();

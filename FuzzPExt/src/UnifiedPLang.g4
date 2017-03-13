@@ -45,11 +45,10 @@ tranzSpec : '[' ID ']'
 token : '<' number '>'
       | '<phi>'
       ;
-number : INT
-       | INT'.'INT
-       |'-'INT
-       |'-'INT.INT 
+number : poz_neg_int
+       | poz_neg_double
        ;
+
 
 COMMENT
    : '/*' .*? '*/' -> skip
@@ -58,5 +57,6 @@ COMMENT
 LINE_COMMENT
    : '//' .*? '\r'? '\n' -> skip
    ;
-
-INT : [0-9]+ ;
+poz_neg_double : INT.INT
+			   | '-'INT.INT
+			   ;			
