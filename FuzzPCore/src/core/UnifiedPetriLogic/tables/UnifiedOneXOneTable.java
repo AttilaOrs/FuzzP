@@ -1,5 +1,7 @@
 package core.UnifiedPetriLogic.tables;
 
+import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 import core.FuzzyPetriLogic.FuzzyToken;
@@ -38,6 +40,18 @@ public class UnifiedOneXOneTable implements IUnifiedTable, IGeneralOneXOne {
 
   public static UnifiedOneXOneTable defaultTable() {
     return new UnifiedOneXOneTable(OneXOneTable.defaultTable().getTable());
+  }
+
+  @Override
+  public IUnifiedTable myClone() {
+    Map<FuzzyValue, FuzzyValue> valtable = new EnumMap<>(FuzzyValue.class);
+    valtable.putAll(getTable());
+    return new UnifiedOneXOneTable(valtable);
+  }
+
+  @Override
+  public List<Double> deduceScale(List<Double> inpScales) {
+    return inpScales;
   }
 
 }

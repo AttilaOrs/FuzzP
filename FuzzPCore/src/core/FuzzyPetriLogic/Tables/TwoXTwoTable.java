@@ -91,4 +91,25 @@ public class TwoXTwoTable implements ITable, IGeneralTwoXTwoTable {
 		return FuzzyValue.getFuzzyValuePairsForindexing()
 		    .flatMap(ls -> Arrays.asList(ruleTable1.get(ls[0]).get(ls[1]), ruleTable2.get(ls[0]).get(ls[1])).stream());
 	}
+
+  public TwoXTwoTable myClone() {
+    EnumMap<FuzzyValue, Map<FuzzyValue, FuzzyValue>> temp = new EnumMap<>(FuzzyValue.class);
+    for (FuzzyValue outIndex : ruleTable1.keySet()) {
+      EnumMap<FuzzyValue, FuzzyValue> inner = new EnumMap<>(FuzzyValue.class);
+      for (FuzzyValue inertIndex : ruleTable1.get(outIndex).keySet()) {
+        inner.put(inertIndex, ruleTable1.get(outIndex).get(inertIndex));
+      }
+      temp.put(outIndex, inner);
+    }
+    EnumMap<FuzzyValue, Map<FuzzyValue, FuzzyValue>> temp2 = new EnumMap<>(FuzzyValue.class);
+    for (FuzzyValue outIndex : ruleTable2.keySet()) {
+      EnumMap<FuzzyValue, FuzzyValue> inner = new EnumMap<>(FuzzyValue.class);
+      for (FuzzyValue inertIndex : ruleTable2.get(outIndex).keySet()) {
+        inner.put(inertIndex, ruleTable2.get(outIndex).get(inertIndex));
+      }
+      temp2.put(outIndex, inner);
+    }
+
+    return new TwoXTwoTable(temp, temp2);
+  }
 }

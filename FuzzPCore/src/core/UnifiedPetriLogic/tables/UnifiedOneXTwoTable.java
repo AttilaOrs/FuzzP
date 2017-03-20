@@ -1,5 +1,7 @@
 package core.UnifiedPetriLogic.tables;
 
+import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +44,20 @@ public class UnifiedOneXTwoTable implements IUnifiedTable, IGeneralOneXTwoTable 
   public static IUnifiedTable defaultTable() {
     OneXTwoTable rr = OneXTwoTable.defaultTable();
     return new UnifiedOneXTwoTable(rr.getTables().get(0), rr.getTables().get(1));
+  }
+
+  @Override
+  public IUnifiedTable myClone() {
+    Map<FuzzyValue, FuzzyValue> tableOne = new EnumMap<>(FuzzyValue.class);
+    tableOne.putAll(getTables().get(0));
+    Map<FuzzyValue, FuzzyValue> tableTwo = new EnumMap<>(FuzzyValue.class);
+    tableTwo.putAll(getTables().get(1));
+    return new UnifiedOneXTwoTable(tableOne, tableTwo);
+  }
+
+  @Override
+  public List<Double> deduceScale(List<Double> inpScales) {
+    return Arrays.asList(inpScales.get(0), inpScales.get(0));
   }
 
 }

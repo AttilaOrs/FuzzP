@@ -1,5 +1,7 @@
 package core.UnifiedPetriLogic.tables;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
@@ -75,6 +77,22 @@ public class UnifiedTwoXOneTable implements IUnifiedTable, IGeneralTwoXOneTable 
   
   public static UnifiedTwoXOneTable defaultTable(){
     return new UnifiedTwoXOneTable(TwoXOneTable.defaultTable().getTable(), Operator.None);
+  }
+
+  public static UnifiedTwoXOneTable defaultTableWithOp(Operator op) {
+    return new UnifiedTwoXOneTable(TwoXOneTable.defaultTable().getTable(), op);
+  }
+
+  @Override
+  public IUnifiedTable myClone() {
+    TwoXOneTable cloneTable = table.myClone();
+    return new UnifiedTwoXOneTable(cloneTable.getTable(), op);
+  }
+
+  @Override
+  public List<Double> deduceScale(List<Double> inpScales) {
+    Double rr = op.deduceScale(inpScales);
+    return Arrays.asList(rr);
   }
 
 }
