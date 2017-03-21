@@ -132,6 +132,7 @@ public abstract class AbstactHierachicalBuilder<TTokenType, TITable, TOutTable e
     for (String normalPlace : curentInterNet.getPlaces()) {
       NodeRef rr = new NodeRef(normalPlace, curentDynamicScope.cloneSubState());
       toRet.put(rr, curStaticScope.cloneSubState());
+      registerNormalPlace(curentInterNet, rr, normalPlace);
       if (curentInterNet.getTokensAdded().containsKey(normalPlace)) {
         tokensPuttedInPlace.put(rr, curentInterNet.getTokensAdded().get(normalPlace));
       }
@@ -153,6 +154,7 @@ public abstract class AbstactHierachicalBuilder<TTokenType, TITable, TOutTable e
     }
     return toRet;
   }
+
 
 
   protected TIntermediateNet findDeclaration(String value, StaticScope insatnceStaticScope) {
@@ -439,4 +441,5 @@ public abstract class AbstactHierachicalBuilder<TTokenType, TITable, TOutTable e
 
   protected abstract void extactSpecailArcs(DynamicScope dinScope, TIntermediateNet currentNet);
 
+  protected abstract void registerNormalPlace(TIntermediateNet curentInterNet, NodeRef rr, String normalPlace);
 }

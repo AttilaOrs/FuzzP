@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
-
 import core.UnifiedPetriLogic.IUnifiedTable;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedPetriNetChecker;
@@ -17,7 +16,7 @@ import core.UnifiedPetriLogic.tables.UnifiedTwoXTwoTable;
 public class UnifiedHierachicalBuilder extends AbstactHierachicalBuilder<UnifiedToken, IUnifiedTable, UnifiedOneXOneTable, UnifiedPetriNet, HiearchicalIntermediateUnifiedNet> {
 
 	private UnifiedPetriNetChecker checker;
-	private Map<NodeRef, Double> scaleForRealInp;
+	private Map<NodeRef, Double> scaleForPlaces;
 
   public UnifiedHierachicalBuilder(HiearchicalIntermediateUnifiedNet interNet) {
 		this(interNet, false);
@@ -30,10 +29,21 @@ public class UnifiedHierachicalBuilder extends AbstactHierachicalBuilder<Unified
 
   @Override
   protected void regisetrRealInput(HiearchicalIntermediateUnifiedNet curentInterNet, NodeRef rr, String inpPlaceName) {
-    if(scaleForRealInp == null){
-      scaleForRealInp = new HashMap<>();
+    if(scaleForPlaces == null){
+      scaleForPlaces = new HashMap<>();
     }
-    scaleForRealInp.put(rr,curentInterNet.getInpScales(inpPlaceName));
+    scaleForPlaces.put(rr,curentInterNet.getScales(inpPlaceName));
+  }
+
+  @Override
+  protected void registerNormalPlace(HiearchicalIntermediateUnifiedNet curentInterNet, NodeRef rr, String normalPlace) {
+    if (scaleForPlaces == null) {
+      scaleForPlaces = new HashMap<>();
+    }
+    if (curentInterNet.getScales(normalPlace) != null) {
+      scaleForPlaces.put(rr, curentInterNet.getScales(normalPlace));
+    }
+
   }
   
 	@Override
@@ -50,6 +60,9 @@ public class UnifiedHierachicalBuilder extends AbstactHierachicalBuilder<Unified
 
 	@Override
 	protected Integer addPlace(UnifiedPetriNet toRet, NodeRef palceRef) {
+    if (scaleForPlaces.containsKey(palceRef)) {
+      return toRet.addPlace(scaleForPlaces.get(palceRef));
+    }
 	  return toRet.addPlace(-1.0);
 	}
 
@@ -65,7 +78,7 @@ public class UnifiedHierachicalBuilder extends AbstactHierachicalBuilder<Unified
 
 	@Override
 	protected Integer addInputPlace(UnifiedPetriNet toRet, NodeRef palceRef) {
-		return toRet.addInputPlace(scaleForRealInp.get(palceRef));
+		return toRet.addInputPlace(scaleForPlaces.get(palceRef));
 	}
 
 	@Override

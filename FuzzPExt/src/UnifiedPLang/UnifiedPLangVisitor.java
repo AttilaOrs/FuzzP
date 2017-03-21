@@ -96,12 +96,49 @@ public class UnifiedPLangVisitor extends UnifiedPLangBaseVisitor<Boolean> {
     addArcIfPossible(name);
     return true;
   }
+  /*
+   * @Override public Boolean visitPlace(UnifiedPLangParser.PlaceContext ctx) {
+   * String name = "P" + ctx.INT(); if (dynamicScope.current()) {
+   * intermediateNet.addPlace(staticScope.cloneSubState(), name); }
+   * addArcIfPossible(name); return true; }
+   */
 
   @Override
-  public Boolean visitPlace(UnifiedPLangParser.PlaceContext ctx) {
+  public Boolean visitSmallpWithoutNumber(UnifiedPLangParser.SmallpWithoutNumberContext ctx) {
+    String name = "P" + ctx.INT(); if (dynamicScope.current()) {
+    intermediateNet.addPlace(staticScope.cloneSubState(), name); }
+    addArcIfPossible(name);
+    return true;
+  }
+
+  @Override
+  public Boolean visitBigPWithoutNumber(UnifiedPLangParser.BigPWithoutNumberContext ctx) {
     String name = "P" + ctx.INT();
     if (dynamicScope.current()) {
       intermediateNet.addPlace(staticScope.cloneSubState(), name);
+    }
+    addArcIfPossible(name);
+    return true;
+  }
+
+
+  @Override
+  public Boolean visitBigPWithNumber(UnifiedPLangParser.BigPWithNumberContext ctx) {
+    String name = "P" + ctx.INT();
+    double scale = Double.parseDouble(ctx.number().getText());
+    if (dynamicScope.current()) {
+      intermediateNet.addPlaceWithScale(staticScope.cloneSubState(), name, scale);
+    }
+    addArcIfPossible(name);
+    return true;
+  }
+
+  @Override
+  public Boolean visitSmallPWithNumber(UnifiedPLangParser.SmallPWithNumberContext ctx) {
+    String name = "P" + ctx.INT();
+    double scale = Double.parseDouble(ctx.number().getText());
+    if (dynamicScope.current()) {
+      intermediateNet.addPlaceWithScale(staticScope.cloneSubState(), name, scale);
     }
     addArcIfPossible(name);
     return true;

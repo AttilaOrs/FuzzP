@@ -72,11 +72,33 @@ public interface UnifiedPLangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInpPlace(UnifiedPLangParser.InpPlaceContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UnifiedPLangParser#place}.
+	 * Visit a parse tree produced by the {@code smallpWithoutNumber}
+	 * labeled alternative in {@link UnifiedPLangParser#place}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPlace(UnifiedPLangParser.PlaceContext ctx);
+	T visitSmallpWithoutNumber(UnifiedPLangParser.SmallpWithoutNumberContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code bigPWithoutNumber}
+	 * labeled alternative in {@link UnifiedPLangParser#place}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBigPWithoutNumber(UnifiedPLangParser.BigPWithoutNumberContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code bigPWithNumber}
+	 * labeled alternative in {@link UnifiedPLangParser#place}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBigPWithNumber(UnifiedPLangParser.BigPWithNumberContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code smallPWithNumber}
+	 * labeled alternative in {@link UnifiedPLangParser#place}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSmallPWithNumber(UnifiedPLangParser.SmallPWithNumberContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UnifiedPLangParser#tranz}.
 	 * @param ctx the parse tree

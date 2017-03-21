@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -13,6 +14,8 @@ import FuzzyPLang.NetBuilder.UnifiedHierachicalBuilder;
 import UnifiedPLang.gen.UnifiedPLangLexer;
 import UnifiedPLang.gen.UnifiedPLangParser;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
+import core.UnifiedPetriLogic.DrawableUnifiedPetriNet;
+import core.UnifiedPetriLogic.ScaleDeducer;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import dotDrawer.PetriDotDrawerVerical;
 
@@ -49,8 +52,19 @@ public class UnifiedPLang {
       System.out.println("");
       System.out.println("No error found");
     }
+
+    UnifiedPetriNet scaled = ScaleDeducer.deduceScale(net);
+    List<Integer> uu = ScaleDeducer.unscaledPlaces(scaled);
+    if (uu.isEmpty()) {
+      System.out.println("All scales deduced");
+    } else {
+      System.out.println("Unable to deduce scales of " + uu);
+    }
+
     PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<>();
-    saver.save(net, "simple.json");
+    saver.save(scaled, "simple.json");
+    PetriDotDrawerVerical dd = new PetriDotDrawerVerical(new DrawableUnifiedPetriNet(scaled));
+    dd.makeImage("simple");
     
 
   }

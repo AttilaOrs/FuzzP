@@ -27,8 +27,10 @@ inpPlace : 'iP' INT '('number ')'
          | 'ip' INT  '(' number ')'
          ;
 
-place : 'P' INT
-         | 'p' INT
+place : 'P' INT #smallpWithoutNumber
+         | 'p' INT #bigPWithoutNumber
+         | 'P' INT '(' number ')' #bigPWithNumber
+         | 'p' INT '(' number ')' #smallPWithNumber
          ;
 tranz : 't' INT tranzSpec?
       | 'T' INT tranzSpec?

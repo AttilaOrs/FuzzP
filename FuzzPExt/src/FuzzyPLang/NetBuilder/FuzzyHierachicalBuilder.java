@@ -138,4 +138,10 @@ public class FuzzyHierachicalBuilder extends
     //does nothing
   }
 
+  @Override
+  protected void registerNormalPlace(HiearchicalIntermediateFuzzyNet curentInterNet, NodeRef rr, String normalPlace) {
+    // does nothing
+
+  }
+
 }
