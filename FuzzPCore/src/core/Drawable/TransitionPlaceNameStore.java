@@ -77,4 +77,24 @@ public class TransitionPlaceNameStore {
     return store;
   }
 
+  public static TransitionPlaceNameStore createSimplerOrdinarNames(AbstractPetriNet<?, ?, ?> net) {
+    TransitionPlaceNameStore store = new TransitionPlaceNameStore();
+    IntStream.range(0, net.getNrOfPlaces()).filter(net::isInputPlace)
+        .forEach(id -> store.addPlaceName(id, "iP" + id));
+    IntStream.range(0, net.getNrOfPlaces()).filter(((IntPredicate) net::isInputPlace).negate())
+        .forEach(id -> store.addPlaceName(id, "P" + id));
+    IntStream.range(0, net.getNrOfTransition()).filter(net::isOuputTransition)
+        .forEach(trId -> store.addTransitionName(trId, "oT" + trId));
+    IntStream.range(0, net.getNrOfTransition()).filter(((IntPredicate) net::isOuputTransition).negate())
+        .filter(((IntPredicate) net::hasTransitionDelay).negate())
+        .forEach(trId -> store.addTransitionName(trId, "T" + trId));
+    IntStream.range(0, net.getNrOfTransition()).filter(((IntPredicate) net::isOuputTransition).negate())
+        .filter(tr -> net.getDelayForTransition(tr) > 0)
+        .forEach(trId -> store.addTransitionName(trId, "T" + trId + "_d" + net.getDelayForTransition(trId)));
+    IntStream.range(0, net.getNrOfTransition()).filter(((IntPredicate) net::isOuputTransition).negate())
+        .filter(tr -> net.getDelayMultiplierForTransition(tr) > 0.0)
+        .forEach(trId -> store.addTransitionName(trId, "T" + trId + "_vd"));
+    return store;
+  }
+
 }

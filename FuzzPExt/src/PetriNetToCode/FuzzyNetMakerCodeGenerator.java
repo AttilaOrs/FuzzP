@@ -14,7 +14,7 @@ import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 /**
  * Created by ors.kilyen on 10/6/2016.
  */
-public class FuzzyMakerGenerator {
+public class FuzzyNetMakerCodeGenerator {
 	private static final String MakerTemplateGroupFile = "FuzzyPetriNetMakerTemplate.stg";
 	private static final String MakerTemplate = "fuzPetriTemplate";
 	public static final String PACKAGE = "package";
@@ -33,11 +33,11 @@ public class FuzzyMakerGenerator {
 	private final FuzzyTableParser p;
 	private String className;
 
-	public FuzzyMakerGenerator(FuzzyPetriNet petriNet) {
+	public FuzzyNetMakerCodeGenerator(FuzzyPetriNet petriNet) {
 		this(petriNet, TransitionPlaceNameStore.createOrdinarNames(petriNet), null);
 	}
 
-	public FuzzyMakerGenerator(FuzzyPetriNet petriNet, TransitionPlaceNameStore store, String packageToPut) {
+	public FuzzyNetMakerCodeGenerator(FuzzyPetriNet petriNet, TransitionPlaceNameStore store, String packageToPut) {
 		net = petriNet;
 		this.store = store;
 		this.packageToPut = packageToPut;

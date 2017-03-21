@@ -1,6 +1,15 @@
 
-separator = {[<-2><1><2><1><2>]};
+sub Cuzz {
+	iP0(1.0)-> t0 -> P1 -> t1[1] -> p2(2.0) -> t0;
+	p2 <= <1.0>;
+	t1-> p3 -> oT4;
+}
 
-iP0(2.0) -> t0[separator] -> p1 -> ot1; 
+cOne = new Cuzz;
+cTwo = new Cuzz;
 
-p1 <= <2.0>;
+iP0(1.0) -> t1 -> cOne.iP0(1.0);
+iP1(1.0) -> t1 -> cTwo.iP0(1.0);
+
+cOne.oT4 -> P2 -> oT0;
+cTwo.oT4 -> P3 -> oT1;

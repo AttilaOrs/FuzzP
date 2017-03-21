@@ -11,8 +11,10 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import FuzzyPLang.NetBuilder.HiearchicalIntermediateUnifiedNet;
 import FuzzyPLang.NetBuilder.UnifiedHierachicalBuilder;
+import PetriNetToCode.UnifiedNetMakerCodeGenerator;
 import UnifiedPLang.gen.UnifiedPLangLexer;
 import UnifiedPLang.gen.UnifiedPLangParser;
+import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.DrawableUnifiedPetriNet;
 import core.UnifiedPetriLogic.ScaleDeducer;
@@ -65,6 +67,9 @@ public class UnifiedPLang {
     saver.save(scaled, "simple.json");
     PetriDotDrawerVerical dd = new PetriDotDrawerVerical(new DrawableUnifiedPetriNet(scaled));
     dd.makeImage("simple");
+    UnifiedNetMakerCodeGenerator gen = new UnifiedNetMakerCodeGenerator(scaled, "Simple",
+        TransitionPlaceNameStore.createSimplerOrdinarNames(scaled));
+    System.out.println(gen.generateMaker());
     
 
   }
