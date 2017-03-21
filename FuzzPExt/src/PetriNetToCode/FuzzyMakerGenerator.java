@@ -1,4 +1,4 @@
-package FuzzyPetriNetToCode;
+package PetriNetToCode;
 
 import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
@@ -14,7 +14,7 @@ import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 /**
  * Created by ors.kilyen on 10/6/2016.
  */
-public class MakerGenerator {
+public class FuzzyMakerGenerator {
 	private static final String MakerTemplateGroupFile = "FuzzyPetriNetMakerTemplate.stg";
 	private static final String MakerTemplate = "fuzPetriTemplate";
 	public static final String PACKAGE = "package";
@@ -33,11 +33,11 @@ public class MakerGenerator {
 	private final FuzzyTableParser p;
 	private String className;
 
-	public MakerGenerator(FuzzyPetriNet petriNet) {
+	public FuzzyMakerGenerator(FuzzyPetriNet petriNet) {
 		this(petriNet, TransitionPlaceNameStore.createOrdinarNames(petriNet), null);
 	}
 
-	public MakerGenerator(FuzzyPetriNet petriNet, TransitionPlaceNameStore store, String packageToPut) {
+	public FuzzyMakerGenerator(FuzzyPetriNet petriNet, TransitionPlaceNameStore store, String packageToPut) {
 		net = petriNet;
 		this.store = store;
 		this.packageToPut = packageToPut;

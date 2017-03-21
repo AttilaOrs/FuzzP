@@ -96,12 +96,6 @@ public class UnifiedPLangVisitor extends UnifiedPLangBaseVisitor<Boolean> {
     addArcIfPossible(name);
     return true;
   }
-  /*
-   * @Override public Boolean visitPlace(UnifiedPLangParser.PlaceContext ctx) {
-   * String name = "P" + ctx.INT(); if (dynamicScope.current()) {
-   * intermediateNet.addPlace(staticScope.cloneSubState(), name); }
-   * addArcIfPossible(name); return true; }
-   */
 
   @Override
   public Boolean visitSmallpWithoutNumber(UnifiedPLangParser.SmallpWithoutNumberContext ctx) {

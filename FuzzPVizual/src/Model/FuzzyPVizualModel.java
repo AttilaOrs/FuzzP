@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.util.function.Function;
 
 import FuzzyPLang.FuzzyPLangMain.FuzzyPLang;
-import FuzzyPetriNetToCode.MakerGenerator;
+import PetriNetToCode.FuzzyMakerGenerator;
 import config.IConfigurator;
 import core.Drawable.DrawableNetWithExternalNames;
 import core.Drawable.TransitionPlaceNameStore;
@@ -61,7 +61,7 @@ public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TT
 
   public void saveToJava(File loadedFile) {
     if (net instanceof FuzzyPetriNet) {
-      MakerGenerator gen = new MakerGenerator((FuzzyPetriNet) net, getSore(), null);
+      FuzzyMakerGenerator gen = new FuzzyMakerGenerator((FuzzyPetriNet) net, getSore(), null);
       String rez = gen.createMaker(loadedFile.getName().replaceFirst("[.][^.]+$", ""));
       String path = loadedFile.getParentFile().toString();
       String fileName = gen.getGeneratedClassName() + ".java";
