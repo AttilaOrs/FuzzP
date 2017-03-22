@@ -1,0 +1,62 @@
+unifiedPetriTemplate(netName, inpPlaces, places, initalMarking, outTrans, delayTrans) ::= <<
+
+import core.Drawable.TransitionPlaceNameStore;
+import core.UnifiedPetriLogic.UnifiedPetriNet;
+import core.UnifiedPetriLogic.UnifiedTableParser;
+import core.UnifiedPetriLogic.UnifiedToken;
+
+public class <netName:className()> {
+  UnifiedPetriNet net ;
+  /*input places */
+  public int <inpPlaces:{x |<x.id>};  separator=", " > ;
+  /*ordinary places */
+  public int <places:{x |<x.id>};  separator=", " > ;
+  /* ouput transitions */
+  public int <outTrans:{x |<x.id>};  separator=", " > ;
+  /* table for out transitions */
+  <outTrans:{tr |String <tr:tableName()> = "<tr.table>";};separator="\n" >
+  /* simple transitions */
+  public int <delayTrans:{x |<x.id>};  separator=", " > ;
+  /* table for out transitions */
+  <delayTrans:{tr |String <tr:tableName()> = "<tr.table>";};separator="\n" >
+  
+  
+  public TransitionPlaceNameStore nameStore = new TransitionPlaceNameStore();
+  UnifiedTableParser parser = new UnifiedTableParser(true);
+    
+  public <netName:className()>(){
+    this.net = new UnifiedPetriNet(); 
+    addPlaces();
+    addTransitions();
+    putInitialMarking();
+  }
+  
+  private void addPlaces(){
+    <inpPlaces:addInpPlace();separator="\n" >
+    <places:addPlace();separator="\n" >
+    <inpPlaces:addPlaceToNameStore();separator="\n" >
+    <places:addPlaceToNameStore();separator="\n" >
+  }
+  
+  private void addTransitions(){
+    <outTrans:addOutTransition();separator="\n" >
+    <outTrans:addTrnToNameStore();separator="\n" >
+    <delayTrans:addDelayTransition();separator="\n" >
+    <delayTrans:addTrnToNameStore();separator="\n" >
+  }
+  
+  private void putInitialMarking(){
+    <initalMarking:addInitMarking();separator="\n" >
+  }
+  
+}
+>>
+className(netName) ::= "<netName>UnifiedPetriMaker"
+tableName(tr) ::="<tr.id>_tableStr"
+
+addInpPlace(ip) ::= "<ip.id> = net.addInputPlace(<ip.scale>);"
+addPlace(p) ::="<p.id> = net.addPlace(<p.scale>);"
+addPlaceToNameStore(p) ::="nameStore.addPlaceName(<p.id>, \"<p.id>\" );"
+addInitMarking(init) ::="net.setInitialMarkingForPlace(<init.place>, new UnifiedToken(<init.token>));"
+addOutTransition(tr) ::= "<tr.id> =  net.addOuputTransition(parser.parseOneXOneTable(<tr:tableName()>));"
+addTrnToNameStore(tr) ::="nameStore.addTransitionName(<tr.id>, \"<tr.id>\" );"
