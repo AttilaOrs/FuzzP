@@ -60,6 +60,7 @@ public class UnifiedPetriNetCloner {
 
   private void createPlaces() {
     for (int placeId = 0; placeId < source.getNrOfPlaces(); placeId++) {
+
       double scale = source.getScale(placeId);
       if (newScale != null) {
         scale = newScale.get(placeId);
@@ -69,6 +70,7 @@ public class UnifiedPetriNetCloner {
       } else {
         aim.addPlace(scale);
       }
+      aim.setInitialMarkingForPlace(placeId, source.getInitialMarkingForPlace(placeId));
     }
   }
 

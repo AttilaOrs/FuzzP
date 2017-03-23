@@ -20,6 +20,25 @@ public class UnifiedTableParser {
 		this(false);
 	}
 
+  public IUnifiedTable parseTable(String strToParse) {
+    List<String> ls = splitToCellsContent(strToParse);
+    if (!ls.get(0).contains(",")) {
+      if (ls.size() < 10) {
+        return parseOneXOneTable(strToParse);
+      }
+      {
+        return parseTwoXOneTable(strToParse);
+      }
+    } else {
+      if (ls.size() < 10) {
+        return parseOneXTwoTable(strToParse);
+      } else {
+        return parseTwoXTwoTable(strToParse);
+      }
+
+    }
+  }
+
   public UnifiedTableParser(boolean phiIsRequired) {
 		this.phiIsRequired = phiIsRequired;
 	}

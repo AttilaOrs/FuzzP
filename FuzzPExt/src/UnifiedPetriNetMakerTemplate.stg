@@ -1,4 +1,4 @@
-unifiedPetriTemplate(netName, inpPlaces, places, initalMarking, outTrans, delayTrans) ::= <<
+unifiedPetriTemplate(netName, inpPlaces, places, initalMarking, outTrans, delayTrans, multiTrans, placeToTrans, transToPlace ) ::= <<
 
 import core.Drawable.TransitionPlaceNameStore;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
@@ -11,15 +11,18 @@ public class <netName:className()> {
   public int <inpPlaces:{x |<x.id>};  separator=", " > ;
   /*ordinary places */
   public int <places:{x |<x.id>};  separator=", " > ;
-  /* ouput transitions */
+  /* output transitions */
   public int <outTrans:{x |<x.id>};  separator=", " > ;
   /* table for out transitions */
   <outTrans:{tr |String <tr:tableName()> = "<tr.table>";};separator="\n" >
-  /* simple transitions */
+  /* simple delay transitions */
   public int <delayTrans:{x |<x.id>};  separator=", " > ;
-  /* table for out transitions */
+  /* table for delay transitions */
   <delayTrans:{tr |String <tr:tableName()> = "<tr.table>";};separator="\n" >
-  
+  /* variable delay transitions */
+  public int <multiTrans:{x |<x.id>};  separator=", " > ;
+  /* table for variable delay */
+  <multiTrans:{tr |String <tr:tableName()> = "<tr.table>";};separator="\n" >
   
   public TransitionPlaceNameStore nameStore = new TransitionPlaceNameStore();
   UnifiedTableParser parser = new UnifiedTableParser(true);
@@ -28,6 +31,7 @@ public class <netName:className()> {
     this.net = new UnifiedPetriNet(); 
     addPlaces();
     addTransitions();
+    addArcs();
     putInitialMarking();
   }
   
@@ -43,6 +47,13 @@ public class <netName:className()> {
     <outTrans:addTrnToNameStore();separator="\n" >
     <delayTrans:addDelayTransition();separator="\n" >
     <delayTrans:addTrnToNameStore();separator="\n" >
+    <multiTrans:addMultiTransition();separator="\n" >
+    <multiTrans:addTrnToNameStore();separator="\n" >
+  }
+  
+  private addArcs(){
+    <placeToTrans:addArcFromPlaceToTrans(); separator="\n">
+    <transToPlace:addArcFromTransToPlace(); separator="\n">
   }
   
   private void putInitialMarking(){
@@ -60,3 +71,7 @@ addPlaceToNameStore(p) ::="nameStore.addPlaceName(<p.id>, \"<p.id>\" );"
 addInitMarking(init) ::="net.setInitialMarkingForPlace(<init.place>, new UnifiedToken(<init.token>));"
 addOutTransition(tr) ::= "<tr.id> =  net.addOuputTransition(parser.parseOneXOneTable(<tr:tableName()>));"
 addTrnToNameStore(tr) ::="nameStore.addTransitionName(<tr.id>, \"<tr.id>\" );"
+addDelayTransition(tr) ::= "<tr.id> = net.addTransition(<tr.delay>, parser.parseTable(<tr:tableName()>));"
+addMultiTransition(tr) ::= "<tr.id> = net.addTransitionVariableDelay(<tr.multi>, parser.parseTable(<tr:tableName()>));"
+addArcFromPlaceToTrans(pp) ::= "net.addArcFromPlaceToTransition(<pp.place>, <pp.trans>);"
+addArcFromTransToPlace(pp) ::= "net.addArcFromTransitionToPlace(<pp.trans>, <pp.place>);"

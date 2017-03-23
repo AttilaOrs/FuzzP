@@ -20,6 +20,9 @@ public class UnifiedNetMakerCodeGenerator {
   private static final String INITAL_MARKING_PLACE_TOKEN = "initalMarking.{place, token}";
   private static final String OUT_TRANS_ID_TABLE = "outTrans.{id, table}";
   private static final String TRANS_ID_TABLE_DELAY = "delayTrans.{id, table, delay}";
+  private static final String TRANS_ID_TABLE_MULTI = "multiTrans.{id, table, multi}";
+  private static final String PLACE_TO_TRANS = "placeToTrans.{trans, place}";
+  private static final String TRANS_TO_PLACE = "transToPlace.{trans, place}";
 
   private UnifiedPetriNet net;
   private String netName;
@@ -55,9 +58,23 @@ public class UnifiedNetMakerCodeGenerator {
         .forEach(tr -> template.addAggr(TRANS_ID_TABLE_DELAY, nameStore.getTransitionName(tr),
             FuzzyNetMakerCodeGenerator.makeJavaLike(parser.createString(net.getTableForTransition(tr))),
             net.getDelayForTransition(tr)));
-    // TODO create general tabel parse
-    // TODO add two types of transitions
-    // TODO resolve inital marking bug
+
+    IntStream.range(0, net.getNrOfTransition())
+        .filter(tr -> (!net.isOuputTransition(tr)) && (net.getDelayMultiplierForTransition(tr)) != 0.0)
+        .forEach(tr -> template.addAggr(TRANS_ID_TABLE_MULTI, nameStore.getTransitionName(tr),
+            FuzzyNetMakerCodeGenerator.makeJavaLike(parser.createString(net.getTableForTransition(tr))),
+            net.getDelayMultiplierForTransition(tr)));
+    
+    for (int trId = 0; trId < net.getNrOfTransition(); trId++) {
+      for (Integer placeId : net.getOutputPlacesForTransition(trId)) {
+        template.addAggr(TRANS_TO_PLACE,
+            nameStore.getTransitionName(trId), nameStore.getPlaceName(placeId));
+      }
+      for (Integer placeId : net.getPlacesNeededForTransition(trId)) {
+        template.addAggr(PLACE_TO_TRANS,
+            nameStore.getTransitionName(trId), nameStore.getPlaceName(placeId));
+      }
+    }
 
 
     return template.render();
