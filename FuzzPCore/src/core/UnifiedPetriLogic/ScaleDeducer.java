@@ -20,7 +20,7 @@ public class ScaleDeducer {
   }
 
   public static List<Integer> unscaledPlaces(UnifiedPetriNet petri) {
-    return IntStream.range(0, petri.getNrOfPlaces()).filter(plId -> petri.getScale(plId) <= 0.0)
+    return IntStream.range(0, petri.getNrOfPlaces()).filter(plId -> petri.getScale(plId) < 0.0)
         .mapToObj(i -> i).collect(toList());
 
   }
@@ -50,6 +50,8 @@ public class ScaleDeducer {
           List<Double> inpScales = preOfTransition.stream().map(plId -> currentIdea.get(plId).scale).collect(toList());
           List<Double> outputScales = table.deduceScale(inpScales);
           for (int index = 0; index < postOfTransition.size(); index++) {
+            // System.out.println(postOfTransition.size() ==
+            // outputScales.size());
             boolean thisSame = currentIdea.get(postOfTransition.get(index)).setClueIfNotSame(outputScales.get(index));
             noChanage &= thisSame;
             int currentIdeadUpdated = currentIdea.get(postOfTransition.get(index)).updated;
@@ -69,7 +71,7 @@ public class ScaleDeducer {
     for (int placeId = 0; placeId < net.getNrOfPlaces(); placeId++) {
       double scale = net.getScale(placeId);
       if (net.isInputPlace(placeId)) {
-        if (scale <= 0.0) {
+        if (scale < 0.0) {
           System.err.println(placeId + " is input place but does not hase scale");
           scale = 0.0;
         }

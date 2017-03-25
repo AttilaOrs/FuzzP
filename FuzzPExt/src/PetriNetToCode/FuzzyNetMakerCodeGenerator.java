@@ -101,6 +101,9 @@ public class FuzzyNetMakerCodeGenerator {
 		if (tableString.contains("\n")) {
 			String newStr = tableString.replace("{", "{\"+\n").replace("[", "\t\"[").replace("]", "]\"+//").replace("}",
 					"\"}");
+			if(newStr.contains("@")){
+        newStr = newStr.replace("\n{", "{");
+			}
 
 			return newStr;
 		}

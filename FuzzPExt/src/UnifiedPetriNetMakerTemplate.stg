@@ -1,4 +1,4 @@
-unifiedPetriTemplate(netName, inpPlaces, places, initalMarking, outTrans, delayTrans, multiTrans, placeToTrans, transToPlace ) ::= <<
+unifiedPetriTemplate(netName, inpPlaces, places, initalMarking, outTrans, delayTrans, multiTrans, placeToTrans, transToPlace, multiTransExists ) ::= <<
 
 import core.Drawable.TransitionPlaceNameStore;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
@@ -19,10 +19,12 @@ public class <netName:className()> {
   public int <delayTrans:{x |<x.id>};  separator=", " > ;
   /* table for delay transitions */
   <delayTrans:{tr |String <tr:tableName()> = "<tr.table>";};separator="\n" >
+  <if(multiTransExists)>
   /* variable delay transitions */
   public int <multiTrans:{x |<x.id>};  separator=", " > ;
   /* table for variable delay */
   <multiTrans:{tr |String <tr:tableName()> = "<tr.table>";};separator="\n" >
+  <endif>
   
   public TransitionPlaceNameStore nameStore = new TransitionPlaceNameStore();
   UnifiedTableParser parser = new UnifiedTableParser(true);
@@ -51,7 +53,7 @@ public class <netName:className()> {
     <multiTrans:addTrnToNameStore();separator="\n" >
   }
   
-  private addArcs(){
+  private void addArcs(){
     <placeToTrans:addArcFromPlaceToTrans(); separator="\n">
     <transToPlace:addArcFromTransToPlace(); separator="\n">
   }

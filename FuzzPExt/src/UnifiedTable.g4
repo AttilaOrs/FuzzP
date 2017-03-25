@@ -6,13 +6,13 @@ tableDcl
     : ID '=' '{' simpleCellLine '}'  #OneXOneTable
     | ID '=' '{' doubleCellLine '}'  #OneXTwoTable
     | ID '=' '{' simpleCellLine simpleCellLine simpleCellLine simpleCellLine simpleCellLine '}' #TwoXOneWithoutPhi
-    | ID '=' '@'op'@ {' simpleCellLine simpleCellLine simpleCellLine simpleCellLine simpleCellLine '}' #TwoXOneWithoutPhiWithOp
+    | ID '=' '@'op'@' '{' simpleCellLine simpleCellLine simpleCellLine simpleCellLine simpleCellLine '}' #TwoXOneWithoutPhiWithOp
     | ID '=' '{' simpleCellLine simpleCellLine simpleCellLine simpleCellLine simpleCellLine simpleCellLine'}' #TwoXOneWithPhi
-    | ID '=' '@'op'@ {' simpleCellLine simpleCellLine simpleCellLine simpleCellLine simpleCellLine simpleCellLine'}' #TwoXOneWithPhiWithOp
+    | ID '=' '@'op'@' '{' simpleCellLine simpleCellLine simpleCellLine simpleCellLine simpleCellLine simpleCellLine'}' #TwoXOneWithPhiWithOp
     | ID '=' '{' doubleCellLine doubleCellLine doubleCellLine doubleCellLine doubleCellLine '}' #TwoXTwoWithoutPhi
-    | ID '=' '@'op'@ {' doubleCellLine doubleCellLine doubleCellLine doubleCellLine doubleCellLine '}' #TwoXTwoWithoutPhiWithOp
+    | ID '=' '@'op'@' '{' doubleCellLine doubleCellLine doubleCellLine doubleCellLine doubleCellLine '}' #TwoXTwoWithoutPhiWithOp
     | ID '=' '{' doubleCellLine doubleCellLine doubleCellLine doubleCellLine doubleCellLine doubleCellLine'}' #TwoXTwoWithPhi
-    | ID '=' '@'op'@ {' doubleCellLine doubleCellLine doubleCellLine doubleCellLine doubleCellLine doubleCellLine'}' #TwoXTwoWithPhiWithOp
+    | ID '=' '@'op'@' '{' doubleCellLine doubleCellLine doubleCellLine doubleCellLine doubleCellLine doubleCellLine'}' #TwoXTwoWithPhiWithOp
     ;
 
 simpleCellLine :'[' simpleCell  simpleCell  simpleCell  simpleCell  simpleCell ']'

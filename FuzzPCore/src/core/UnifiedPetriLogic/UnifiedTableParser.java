@@ -66,7 +66,7 @@ public class UnifiedTableParser {
 
     String temp = createTabeStrFromLines(lines);
     if (table.getOpertaor() != Operator.None) {
-      temp = "@" + table.getOpertaor().getSign() + "@\n" + temp;
+      temp = "@" + table.getOpertaor().getSign() + "@ " + temp;
     }
     return temp;
 

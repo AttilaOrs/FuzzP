@@ -17,6 +17,7 @@ import UnifiedPLang.gen.UnifiedPLangParser;
 import core.Drawable.TransitionPlaceNameStore;
 import core.UnifiedPetriLogic.ScaleDeducer;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
+import core.UnifiedPetriLogic.UnifiedPetriNetChecker;
 
 public class UnifiedPLang {
 
@@ -65,8 +66,17 @@ public class UnifiedPLang {
       System.out.println("");
       System.out.println("No error found");
     }
-
+    UnifiedPetriNetChecker checker = new UnifiedPetriNetChecker();
+    if (checker.checkPetriNet(net)) {
+      System.out.println("No erros found at checking");
+    } else {
+      System.err.println(">>>>>>>>>>>>>>>>>>erros during checking net buiding: <<<<<<<<<<<<<<<<<<<");
+      System.err.println(checker.getErrorMsg());
+      erros += checker.getErrorMsg();
+    }
     UnifiedPetriNet scaled = ScaleDeducer.deduceScale(net);
+    
+
     List<Integer> uu = ScaleDeducer.unscaledPlaces(scaled);
     if (uu.isEmpty()) {
       System.out.println("All scales deduced");
