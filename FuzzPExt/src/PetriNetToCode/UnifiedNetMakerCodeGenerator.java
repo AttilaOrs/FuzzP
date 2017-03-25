@@ -28,6 +28,7 @@ public class UnifiedNetMakerCodeGenerator {
   private String netName;
   private TransitionPlaceNameStore nameStore;
   private UnifiedTableParser parser;
+  private String className;
 
   public UnifiedNetMakerCodeGenerator(UnifiedPetriNet net, String netName, TransitionPlaceNameStore nameStore) {
     this.net = net;
@@ -75,11 +76,17 @@ public class UnifiedNetMakerCodeGenerator {
             nameStore.getTransitionName(trId), nameStore.getPlaceName(placeId));
       }
     }
-
+    ST classNameTemplate = group.getInstanceOf("className");
+    classNameTemplate.add(NET_NAME, netName);
+    className = classNameTemplate.render();
 
     return template.render();
-
   }
+
+  public String getClassName() {
+    return className;
+  }
+
 
 
 }

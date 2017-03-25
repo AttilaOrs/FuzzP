@@ -1,5 +1,6 @@
 package UnifiedPLang;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,27 +12,36 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import FuzzyPLang.NetBuilder.HiearchicalIntermediateUnifiedNet;
 import FuzzyPLang.NetBuilder.UnifiedHierachicalBuilder;
-import PetriNetToCode.UnifiedNetMakerCodeGenerator;
 import UnifiedPLang.gen.UnifiedPLangLexer;
 import UnifiedPLang.gen.UnifiedPLangParser;
 import core.Drawable.TransitionPlaceNameStore;
-import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
-import core.UnifiedPetriLogic.DrawableUnifiedPetriNet;
 import core.UnifiedPetriLogic.ScaleDeducer;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
-import dotDrawer.PetriDotDrawerVerical;
 
 public class UnifiedPLang {
 
-  public static void main(String[] args) throws FileNotFoundException {
+  private UnifiedPetriNet rezNet;
+  private TransitionPlaceNameStore nameStrore;
+  private String erros;
 
-    InputStream stream = new FileInputStream("simple.upn");
-    createNet(stream);
-
+  public UnifiedPLang() {
+    erros = "";
 
   }
 
-  private static void createNet(InputStream is) {
+  public UnifiedPetriNet getRezNet() {
+    return rezNet;
+  }
+
+  public TransitionPlaceNameStore getNameStrore() {
+    return nameStrore;
+  }
+
+  public String getErros() {
+    return erros;
+  }
+
+  public void createNet(InputStream is) {
     ANTLRInputStream stream;
     try {
       stream = new ANTLRInputStream(is);
@@ -50,6 +60,7 @@ public class UnifiedPLang {
       System.err.println("");
       System.err.println(">>>>>>>>>>>>>>>>>>erros during Petri net buiding: <<<<<<<<<<<<<<<<<<<");
       System.err.println(bld.getErrors());
+      erros += bld.getErrors();
     } else {
       System.out.println("");
       System.out.println("No error found");
@@ -61,16 +72,48 @@ public class UnifiedPLang {
       System.out.println("All scales deduced");
     } else {
       System.out.println("Unable to deduce scales of " + uu);
+      erros += "Unable to deduce scales of " + uu + "\n";
     }
 
-    PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<>();
-    saver.save(scaled, "simple.json");
-    PetriDotDrawerVerical dd = new PetriDotDrawerVerical(new DrawableUnifiedPetriNet(scaled));
-    dd.makeImage("simple");
-    UnifiedNetMakerCodeGenerator gen = new UnifiedNetMakerCodeGenerator(scaled, "Simple",
-        TransitionPlaceNameStore.createSimplerOrdinarNames(scaled));
-    System.out.println(gen.generateMaker());
-    
+    /*
+     * PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<>();
+     * saver.save(scaled, "simple.json"); PetriDotDrawerVerical dd = new
+     * PetriDotDrawerVerical(new DrawableUnifiedPetriNet(scaled));
+     * dd.makeImage("simple"); UnifiedNetMakerCodeGenerator gen = new
+     * UnifiedNetMakerCodeGenerator(scaled, "Simple",
+     * TransitionPlaceNameStore.createSimplerOrdinarNames(scaled));
+     * System.out.println(gen.generateMaker());
+     */
+    rezNet = scaled;
+    nameStrore = TransitionPlaceNameStore.createSimplerOrdinarNames(scaled);
+
+
+  }
+
+  public void loadFile(String file) {
+    try {
+      InputStream stream = new FileInputStream(file);
+      createNet(stream);
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException("Error with file reading " + file.toString());
+    }
+  }
+
+  public void loadFile(File file) {
+    try {
+      InputStream stream = new FileInputStream(file);
+      createNet(stream);
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException("Error with file reading " + file.toString());
+    }
+
+  }
+
+  public static void main(String[] args) throws FileNotFoundException {
+
+    InputStream stream = new FileInputStream("simple.upn");
+    UnifiedPLang plang = new UnifiedPLang();
+    plang.createNet(stream);
 
   }
 

@@ -7,11 +7,15 @@ import java.util.function.Function;
 
 import FuzzyPLang.FuzzyPLangMain.FuzzyPLang;
 import PetriNetToCode.FuzzyNetMakerCodeGenerator;
+import PetriNetToCode.UnifiedNetMakerCodeGenerator;
+import UnifiedPLang.UnifiedPLang;
 import config.IConfigurator;
 import core.Drawable.DrawableNetWithExternalNames;
 import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
+import core.UnifiedPetriLogic.DrawableUnifiedPetriNet;
+import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.common.AbstractPetriNet;
 import core.common.recoder.FullRecordable;
 import core.common.recoder.FullRecorder;
@@ -24,7 +28,6 @@ public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TT
   TPetriNetType net;
   FuzzyPetrinetBehaviourModel<TTokenType> behavourModel;
   DrawableNet drawableNet;
-  private FuzzyPLang lang;
   private TransitionPlaceNameStore store;
 
 
@@ -60,11 +63,22 @@ public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TT
   }
 
   public void saveToJava(File loadedFile) {
+    String rez = "";
+    String path = loadedFile.getParentFile().toString();
+    String fileName = "";
+    String netName =loadedFile.getName().replaceFirst("[.][^.]+$", "") ;
+
     if (net instanceof FuzzyPetriNet) {
       FuzzyNetMakerCodeGenerator gen = new FuzzyNetMakerCodeGenerator((FuzzyPetriNet) net, getSore(), null);
-      String rez = gen.createMaker(loadedFile.getName().replaceFirst("[.][^.]+$", ""));
-      String path = loadedFile.getParentFile().toString();
-      String fileName = gen.getGeneratedClassName() + ".java";
+      rez = gen.createMaker(netName);
+      fileName = gen.getGeneratedClassName() + ".java";
+    } else {
+      
+      UnifiedNetMakerCodeGenerator gen = new UnifiedNetMakerCodeGenerator((UnifiedPetriNet) net, netName,
+          TransitionPlaceNameStore.createSimplerOrdinarNames(net));
+      rez = gen.generateMaker();
+      fileName = gen.getClassName() + ".java";
+    }
       System.out.println(path + File.separator + fileName);
       File outFile = new File(path, fileName);
       try {
@@ -75,9 +89,6 @@ public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TT
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
-    } else {
-      throw new RuntimeException("Unsuported operation");
-    }
 
   }
 
@@ -90,16 +101,20 @@ public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TT
 
   public void loadFuzzyPLang(File selectedFile) {
     if (myConfig.getPetriClass().equals(FuzzyPetriNet.class)) {
-      if (lang == null) {
-        lang = new FuzzyPLang();
-      }
+      FuzzyPLang lang = new FuzzyPLang();
       lang.loadFile(selectedFile);
       setNet((TPetriNetType) lang.getNet());
       setDrawableNet(new DrawableNetWithExternalNames(lang.getNet(), lang.getNameStore()));
       setFullRecorder(new FullRecorder());
       setNameStore(lang.getNameStore());
     } else {
-      throw new RuntimeException("Unsupported operation");
+      UnifiedPLang lang = new UnifiedPLang();
+      lang.loadFile(selectedFile);
+      UnifiedPetriNet rezNet = lang.getRezNet();
+      setNet((TPetriNetType) rezNet);
+      setDrawableNet(new DrawableUnifiedPetriNet(rezNet));
+      setFullRecorder(new FullRecorder<>());
+      setNameStore(TransitionPlaceNameStore.createOrdinarNames(rezNet));
     }
   }
 
