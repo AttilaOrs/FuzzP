@@ -12,6 +12,10 @@ public interface IContex {
 
   UnifiedToken defuzzyfieSecondOuput(FuzzyToken tk);
 
+  UnifiedToken createScaleMamiximexForFirstOutput(Double d);
+
+  UnifiedToken createScaleMamiximexForSecondOuput(Double d);
+
 
 
 }

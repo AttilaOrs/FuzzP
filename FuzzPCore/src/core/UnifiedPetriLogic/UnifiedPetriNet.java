@@ -103,6 +103,16 @@ public class UnifiedPetriNet extends AbstractPetriNet<UnifiedToken, IUnifiedTabl
       return outDrivers.get(1).convert(tk);
     }
 
+    @Override
+    public UnifiedToken createScaleMamiximexForFirstOutput(Double d) {
+      return outDrivers.get(0).createMaxedScale(d);
+    }
+
+    @Override
+    public UnifiedToken createScaleMamiximexForSecondOuput(Double d) {
+      return outDrivers.get(1).createMaxedScale(d);
+    }
+
   }
 
 }

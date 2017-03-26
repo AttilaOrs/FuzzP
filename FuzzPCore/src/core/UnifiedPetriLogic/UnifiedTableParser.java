@@ -21,7 +21,7 @@ public class UnifiedTableParser {
 	}
 
   public IUnifiedTable parseTable(String strToParse) {
-    List<String> ls = splitToCellsContent(strToParse);
+    List<String> ls = splitToCellsContent(deleteOperatorStr(strToParse));
     if (!ls.get(0).contains(",")) {
       if (ls.size() < 10) {
         return parseOneXOneTable(strToParse);

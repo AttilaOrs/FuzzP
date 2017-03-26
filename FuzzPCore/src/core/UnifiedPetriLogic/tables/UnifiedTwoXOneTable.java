@@ -40,7 +40,7 @@ public class UnifiedTwoXOneTable implements IUnifiedTable, IGeneralTwoXOneTable 
       // can be null becaouse it was None, or becaouse of the two Phis
       utk = ct.defuzzyfieFirstOutput(fuzzyRez[0]);
     } else {
-      utk = new UnifiedToken(defaultDriver.defuzzify(fuzzyRez[0]) * rez);
+      utk = ct.createScaleMamiximexForFirstOutput(defaultDriver.defuzzify(fuzzyRez[0]) * rez);
     }
     return new UnifiedToken[] { utk };
   }

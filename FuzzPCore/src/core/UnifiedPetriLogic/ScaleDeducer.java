@@ -76,7 +76,7 @@ public class ScaleDeducer {
           scale = 0.0;
         }
         currentIdea.put(placeId, new PlaceScale(true, true, scale, 0));
-      } else if (scale > 0.0) {
+      } else if (scale >= 0.0) {
         currentIdea.put(placeId, new PlaceScale(true, true, scale, 0));
       } else if (!net.getInitialMarkingForPlace(placeId).isPhi()) {
         Double initToken = net.getInitialMarkingForPlace(placeId).getValue();

@@ -30,6 +30,8 @@ public class UnifiedTwoXTwoTable implements IUnifiedTable, IGeneralTwoXTwoTable 
   public UnifiedToken[] execute(UnifiedToken[] inputs, IContex ct) {
     FuzzyToken tk1 = ct.fuzzyfieFirstInp(inputs[0]);
     FuzzyToken tk2 = ct.fuzzyfieSecondInp(inputs[1]);
+    System.out.println(tk1.shortString());
+    System.out.println(tk2.shortString());
 
     FuzzyToken[] fuzzyRez = table.execute(new FuzzyToken[] { tk1, tk2 });
     Double rez = null;
@@ -43,8 +45,8 @@ public class UnifiedTwoXTwoTable implements IUnifiedTable, IGeneralTwoXTwoTable 
       utk1 = ct.defuzzyfieFirstOutput(fuzzyRez[0]);
       utk2 = ct.defuzzyfieSecondOuput(fuzzyRez[1]);
     } else {
-      utk1 = new UnifiedToken(defaultDriver.defuzzify(fuzzyRez[0]) * rez);
-      utk2 = new UnifiedToken(defaultDriver.defuzzify(fuzzyRez[0]) * rez);
+      utk1 = ct.createScaleMamiximexForFirstOutput(defaultDriver.defuzzify(fuzzyRez[0]) * rez);
+      utk2 = ct.createScaleMamiximexForSecondOuput(defaultDriver.defuzzify(fuzzyRez[0]) * rez);
     }
     return new UnifiedToken[] { utk1, utk2 };
   }

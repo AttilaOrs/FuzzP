@@ -74,6 +74,10 @@ public class UnifiedPLang {
       System.err.println(checker.getErrorMsg());
       erros += checker.getErrorMsg();
     }
+    for (int i = 0; i < net.getNrOfPlaces(); i++) {
+      System.out.println(i + " " + net.getScale(i));
+
+    }
     UnifiedPetriNet scaled = ScaleDeducer.deduceScale(net);
     
 

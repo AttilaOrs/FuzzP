@@ -48,11 +48,11 @@ public class MultiRecorder<TokenType> implements IGeneralPetriBehavoiurRecorder<
 
   @Override
   public void ouputTransitionFired(int trId, TokenType tk) {
-    recoredrs.forEach(r -> ouputTransitionFired(trId, tk));
+    recoredrs.forEach(r -> r.ouputTransitionFired(trId, tk));
   }
 
   @Override
   public void inputPuttedInPlace(int placeId, TokenType tk) {
-    recoredrs.forEach(r -> inputPuttedInPlace(placeId, tk));
+    recoredrs.forEach(r -> r.inputPuttedInPlace(placeId, tk));
   }
 }

@@ -9,6 +9,7 @@ import Controller.GlobalController;
 import Model.FuzzyPVizualModel;
 import View.MainView;
 import config.UnifiedConfigurator;
+import core.Drawable.TransitionPlaceNameStore;
 import core.UnifiedPetriLogic.IUnifiedTable;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedTableParser;
@@ -108,7 +109,22 @@ public class UnifiedVizualizer {
     model.setNet(petriNet);
     model.setFullRecorder(rec);
     return model;
+  }
 
+  public static void visualize(UnifiedPetriNet net, FullRecorder<UnifiedToken> rec,
+      TransitionPlaceNameStore nameStore) {
+    FuzzyPVizualModel<UnifiedToken, IUnifiedTable, UnifiedOneXOneTable, UnifiedPetriNet> model = new FuzzyPVizualModel<>(
+        UnifiedConfigurator::new);
+    model.setNet(net);
+    model.setFullRecorder(rec);
+    model.setNameStore(nameStore);
+    GlobalController controller = new GlobalController(model);
+    MainView<UnifiedToken, IUnifiedTable, UnifiedOneXOneTable, UnifiedPetriNet> frame = new MainView<>(model,
+        controller, true, true);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setSize(800, 600);
+    frame.setResizable(true);
+    frame.setVisible(true);
 
   }
 
