@@ -53,11 +53,11 @@ public class LaneUnifiedPetriMaker {
   }
 
   private void addPlaces(){
-    iP2 = net.addInputPlace(30.0);
-    iP3 = net.addInputPlace(30.0);
+    iP2 = net.addInputPlace(50.0);
+    iP3 = net.addInputPlace(50.0);
     iP4 = net.addInputPlace(0.0);
-    P0 = net.addPlace(30.0);
-    P1 = net.addPlace(30.0);
+    P0 = net.addPlace(50.0);
+    P1 = net.addPlace(50.0);
     nameStore.addPlaceName(iP2, "iP2" );
     nameStore.addPlaceName(iP3, "iP3" );
     nameStore.addPlaceName(iP4, "iP4" );

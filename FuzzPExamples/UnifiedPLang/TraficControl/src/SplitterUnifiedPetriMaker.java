@@ -65,14 +65,14 @@ public class SplitterUnifiedPetriMaker {
 
   private void addPlaces(){
     iP6 = net.addInputPlace(1.0);
-    iP9 = net.addInputPlace(30.0);
+    iP9 = net.addInputPlace(50.0);
     P0 = net.addPlace(1.0);
     P1 = net.addPlace(1.0);
-    P2 = net.addPlace(30.0);
-    P3 = net.addPlace(30.0);
-    P4 = net.addPlace(30.0);
+    P2 = net.addPlace(50.0);
+    P3 = net.addPlace(50.0);
+    P4 = net.addPlace(50.0);
     P5 = net.addPlace(1.0);
-    P7 = net.addPlace(30.0);
+    P7 = net.addPlace(50.0);
     P8 = net.addPlace(1.0);
     P10 = net.addPlace(1.0);
     nameStore.addPlaceName(iP6, "iP6" );
