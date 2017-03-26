@@ -373,7 +373,6 @@ public class UnifiedPLangVisitor extends UnifiedPLangBaseVisitor<Boolean> {
   private FuzzyValue makeFuzzyValue(FvContext myContex) {
     FuzzyValue fv = FuzzyValue.FF;
     if(myContex.fv_classic()!=null){
-      System.out.println("classic not null");
       fv = FuzzyValue.fromString(myContex.fv_classic().getText());
     } else {
       Integer i = Integer.parseInt(myContex.poz_neg_int().getText());
