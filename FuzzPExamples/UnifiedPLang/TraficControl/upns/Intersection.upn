@@ -1,0 +1,86 @@
+
+adder = @+@ {
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	};
+	
+substact = @-@ {
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	}; 
+	
+copy = {
+	[<-2,-2><-1,-1><0,0><1,1><2,2>]
+	[<-2,-2><-1,-1><0,0><1,1><2,2>]
+	[<-2,-2><-1,-1><0,0><1,1><2,2>]
+	[<-2,-2><-1,-1><0,0><1,1><2,2>]
+	[<-2,-2><-1,-1><0,0><1,1><2,2>]
+	};
+copySecond = {
+	[<-2,-2><-2,-2><-2,-2><-2,-2><-2,-2>]
+	[<-1,-1><-1,-1><-1,-1><-1,-1><-1,-1>]
+	[< 0, 0>< 0, 0>< 0, 0>< 0, 0>< 0, 0>]
+	[< 1, 1>< 1, 1>< 1, 1>< 1, 1>< 1, 1>]
+	[< 2, 2>< 2, 2>< 2, 2>< 2, 2>< 2, 2>]
+	};
+
+multipiler = @*@ {
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	};
+	
+constantTable = {
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><-2,-2>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><-1,-1>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>< 0, 0>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>< 1, 1>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>< 2, 2>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+	};
+	
+sub Lane {
+	P0(30.0)->t0->P0;
+	iP3(0.0)->t0[copySecond]->P4->oT3; //iP3 is for demand 
+	iP1(30)->t1->P0->t1[adder]; // iP1 is for u_i  (number of machines enetered)
+	P0->t2[substact];
+	iP2(30)->t2->P0; //iP2 is for e_i (number of machines leava) 
+	p0 <= <0.0>;
+}	
+
+sub Splitter {
+	P9(1.0)->t7[constantTable]->P10(1.0)->t3[substact];
+	P10->t7->P9;      
+
+	iP0(1.0)->t0->p2->t2[multipiler];
+			  t0->p3->t3->p7(1.0)->t4[multipiler];
+			 
+	iP1(30)->t1->p4->t2->p6->oT5;
+			 t1->p5->t4->p8->oT6;
+			 
+	P9<= <1.0>;
+}
+
+iLaneOne = new Lane;
+iLaneTwo = new Lane;
+iLaneThree = new Lane;
+iLaneFour = new Lane;
+
+oLaneOne =new Lane;
+oLaneTwo =new Lane;
+oLaneThree =new Lane;
+oLaneFour =new Lane;
+
+
+
+
+
+

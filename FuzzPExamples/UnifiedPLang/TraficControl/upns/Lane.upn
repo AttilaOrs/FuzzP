@@ -14,14 +14,14 @@ substact = @-@ {
 	[<2><2><2><2><2>]
 	}; 
 	
-copy = {
+copySecond = {
 	[<-2,-2><-1,-1><0,0><1,1><2,2>]
 	[<-2,-2><-1,-1><0,0><1,1><2,2>]
 	[<-2,-2><-1,-1><0,0><1,1><2,2>]
 	[<-2,-2><-1,-1><0,0><1,1><2,2>]
 	[<-2,-2><-1,-1><0,0><1,1><2,2>]
 	};
-copySecond = {
+copyFirst = {
 	[<-2,-2><-2,-2><-2,-2><-2,-2><-2,-2>]
 	[<-1,-1><-1,-1><-1,-1><-1,-1><-1,-1>]
 	[< 0, 0>< 0, 0>< 0, 0>< 0, 0>< 0, 0>]
@@ -30,7 +30,7 @@ copySecond = {
 	};
 
 P0(50.0)->t0->P0;
-iP3(0.0)->t0[copySecond]->P4->oT3; //iP3 is for demand 
+iP3(0.0)->t0[copyFirst]->P4->oT3; //iP3 is for demand 
 iP1(50.0)->t1->P0->t1[adder]; // iP1 is for u_i  (number of machines enetered)
 P0->t2[substact];
 iP2(50)->t2->P0; //iP2 is for e_i (number of machines leava) 
