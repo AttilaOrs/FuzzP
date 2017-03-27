@@ -30,8 +30,6 @@ public class UnifiedTwoXTwoTable implements IUnifiedTable, IGeneralTwoXTwoTable 
   public UnifiedToken[] execute(UnifiedToken[] inputs, IContex ct) {
     FuzzyToken tk1 = ct.fuzzyfieFirstInp(inputs[0]);
     FuzzyToken tk2 = ct.fuzzyfieSecondInp(inputs[1]);
-    System.out.println(tk1.shortString());
-    System.out.println(tk2.shortString());
 
     FuzzyToken[] fuzzyRez = table.execute(new FuzzyToken[] { tk1, tk2 });
     Double rez = null;

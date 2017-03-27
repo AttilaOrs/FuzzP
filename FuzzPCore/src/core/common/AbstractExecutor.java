@@ -13,7 +13,6 @@ import core.common.recoder.IGeneralPetriBehavoiurRecorder;
 
 public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenType>, TTableType, TOutTable extends TTableType, TPetriNet extends AbstractPetriNet<TTokenType, TTableType, TOutTable>> {
 
-  public static final int MAX_LOOP_STEP = 40;
 
   protected TPetriNet myNet;
   public List<TTokenType> stateOfPlaces;
@@ -100,7 +99,7 @@ public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenT
     boolean happendSomthing = true;
     ArrayList<Integer> currentOrderOfTransitions = new ArrayList<>();
     currentOrderOfTransitions.addAll(orderOfTransition);
-    while (happendSomthing && loopCntr < MAX_LOOP_STEP) {
+    while (happendSomthing && loopCntr < orderOfTransition.size() * 2) {
       happendSomthing = false;
       loopCntr++;
       for (int trListIndex = 0; trListIndex < currentOrderOfTransitions.size(); trListIndex++) {
