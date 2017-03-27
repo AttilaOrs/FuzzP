@@ -23,6 +23,7 @@ t1->P6->t7[copySecond]->P7(50)->t8;
 P8(50)->t7->P8;
 
 P8 <= <20>;
+P0 <= <0>;
 
 t8->p9->oT9; //demand to read lane info
 t8->p10->t10;

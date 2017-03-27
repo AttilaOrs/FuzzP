@@ -304,7 +304,22 @@ public abstract class AbstactHierachicalBuilder<TTokenType, TITable, TOutTable e
       } else if (trIDs.containsKey(arc[0]) && placeIDs.containsKey(arc[1])) {
         toRet.addArcFromTransitionToPlace(trIDs.get(arc[0]), placeIDs.get(arc[1]));
       } else {
-        error("You cannot have ARCs between a transition (" + arc[0] + ") and place  (" + arc[1] + ") \n");
+        boolean firstFound = trIDs.containsKey(arc[0]) || placeIDs.containsKey(arc[0]);
+        boolean secondFounf = trIDs.containsKey(arc[1]) || placeIDs.containsKey(arc[1]);
+        if(firstFound && secondFounf){
+          error("You cannot have ARCs between a transition (" + arc[0] + ") and place  (" + arc[1] + ") \n");
+        } else if ((!firstFound) && (!secondFounf)){
+          error("You cannot have ARCs between a transition (" + arc[0] + ") and place  (" + arc[1] + ") \n"+
+                arc[0] +" Not found, probaby mistyped \n"+
+                arc[1] +" Not found, probaby mistyped \n");
+        } else if(!firstFound){
+          error("You cannot have ARCs between a transition (" + arc[0] + ") and place  (" + arc[1] + ") \n"+
+                arc[0] +" Not found, probaby mistyped \n");
+        } else {
+          error("You cannot have ARCs between a transition (" + arc[0] + ") and place  (" + arc[1] + ") \n"+
+                arc[1] +" Not found, probaby mistyped \n");
+        }
+        
       }
     }
 

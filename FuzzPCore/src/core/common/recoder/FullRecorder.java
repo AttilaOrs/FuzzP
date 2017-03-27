@@ -130,6 +130,7 @@ public class FullRecorder<TokenType extends FullRecordable<TokenType>>
     HashMap<Integer, TokenType> toPut = new HashMap<>();
     for (IFullRecorderEvent event : eventList) {
       if (event instanceof InputPuttedInPlace) {
+        @SuppressWarnings("unchecked")
         InputPuttedInPlace<TokenType> casted = (InputPuttedInPlace<TokenType>) event;
         toPut.put(casted.placeId, casted.token.myClone());
       }
