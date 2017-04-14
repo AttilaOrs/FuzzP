@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.FuzzyValue;
-import core.UnifiedPetriLogic.DrawableUnifiedPetriNet;
+import core.UnifiedPetriLogic.DrawableUnifiedPetriNetWithExternalNames;
 import core.UnifiedPetriLogic.IUnifiedTable;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -49,7 +49,7 @@ public class UnifiedConfigurator implements
 
   @Override
   public BiFunction<UnifiedPetriNet, TransitionPlaceNameStore, DrawableNet> getDrawableNetFactory() {
-    return (upn, tps) -> new DrawableUnifiedPetriNet(upn);
+    return (upn, tps) -> new DrawableUnifiedPetriNetWithExternalNames(upn, tps);
   }
 
   @Override

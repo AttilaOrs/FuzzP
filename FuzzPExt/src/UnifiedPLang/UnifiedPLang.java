@@ -85,18 +85,8 @@ public class UnifiedPLang {
       erros += "Unable to deduce scales of " + uu + "\n";
     }
 
-    /*
-     * PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<>();
-     * saver.save(scaled, "simple.json"); PetriDotDrawerVerical dd = new
-     * PetriDotDrawerVerical(new DrawableUnifiedPetriNet(scaled));
-     * dd.makeImage("simple"); UnifiedNetMakerCodeGenerator gen = new
-     * UnifiedNetMakerCodeGenerator(scaled, "Simple",
-     * TransitionPlaceNameStore.createSimplerOrdinarNames(scaled));
-     * System.out.println(gen.generateMaker());
-     */
     rezNet = scaled;
-    nameStrore = TransitionPlaceNameStore.createSimplerOrdinarNames(scaled);
-
+    nameStrore = bld.createNameStoreTransitionFullName();
 
   }
 

@@ -14,7 +14,7 @@ import core.Drawable.DrawableNetWithExternalNames;
 import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
-import core.UnifiedPetriLogic.DrawableUnifiedPetriNet;
+import core.UnifiedPetriLogic.DrawableUnifiedPetriNetWithExternalNames;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.common.AbstractPetriNet;
 import core.common.recoder.FullRecordable;
@@ -75,7 +75,7 @@ public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TT
     } else {
       
       UnifiedNetMakerCodeGenerator gen = new UnifiedNetMakerCodeGenerator((UnifiedPetriNet) net, netName,
-          TransitionPlaceNameStore.createSimplerOrdinarNames(net));
+          getNameStore());
       rez = gen.generateMaker();
       fileName = gen.getClassName() + ".java";
     }
@@ -112,9 +112,9 @@ public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TT
       lang.loadFile(selectedFile);
       UnifiedPetriNet rezNet = lang.getRezNet();
       setNet((TPetriNetType) rezNet);
-      setDrawableNet(new DrawableUnifiedPetriNet(rezNet));
+      setDrawableNet(new DrawableUnifiedPetriNetWithExternalNames(rezNet, lang.getNameStrore()));
       setFullRecorder(new FullRecorder<>());
-      setNameStore(TransitionPlaceNameStore.createOrdinarNames(rezNet));
+      setNameStore(lang.getNameStrore());
     }
   }
 
@@ -141,7 +141,6 @@ public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TT
   public DrawableNet getDrowableNet() {
     if (drawableNet == null) {
       drawableNet = myConfig.getDrawableNetFactory().apply(net, getNameStore());
-      // new DrawableNetWithExternalNames((FuzzyPetriNet) net, getNameStore());
     }
     return drawableNet;
   }

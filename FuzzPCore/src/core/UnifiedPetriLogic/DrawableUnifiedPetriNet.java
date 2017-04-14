@@ -58,6 +58,10 @@ public class DrawableUnifiedPetriNet implements DrawableNet {
 
   @Override
   public String getTransitionName(int transitionId) {
+    return "T" + transitionId + getOpString(transitionId);
+  }
+
+  protected String getOpString(int transitionId) {
     IUnifiedTable ww = myNet.getTableForTransition(transitionId);
     String opStr = "";
     if(ww instanceof UnifiedTwoXOneTable  ){
@@ -66,7 +70,7 @@ public class DrawableUnifiedPetriNet implements DrawableNet {
     if(ww instanceof UnifiedTwoXTwoTable ) {
       opStr = " " +((UnifiedTwoXTwoTable)ww).getOpertaor().getSign();
     }
-    return "T" + transitionId + opStr;
+    return opStr;
   }
 
   @Override
