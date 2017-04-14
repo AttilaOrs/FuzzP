@@ -87,4 +87,14 @@ public class DrawableFuzzyPetriNet implements DrawableNet {
 		return Stream.concat(getTransitionPlaceArcs(), getPlaceTransitinArc());
 	}
 
+  @Override
+  public String getPlaceFullText(int placeId) {
+    return getPlaceName(placeId);
+  }
+
+  @Override
+  public String getTransitionFullText(int placeId) {
+    return getTransitionName(placeId);
+  }
+
 }

@@ -50,11 +50,14 @@ public class GraphView implements IView {
   ArrayList<mxCell> transitionCells;
   ArrayList<mxCell> palceCells;
   ArrayList<mxCell> edgeCells;
-  private FuzzyPVizualModel model;
+  FuzzyPVizualModel vizualModel;
   private IGlobalController controller;
 
+  private mxGraph graph;
+  private mxGraphComponent graphComponent;
+
   public GraphView(FuzzyPVizualModel model) {
-    this.model = model;
+    this.vizualModel = model;
     initalizeCellHolders();
   }
 
@@ -74,13 +77,14 @@ public class GraphView implements IView {
     graphComponent.refresh();
   }
   public mxGraphComponent createGraphComponent() {
-    graph = new mxGraph();
+    graph = new SpecificMxGraph();
     createMxGraph();
     graphComponent = new mxGraphComponent(graph);
     graphComponent.setDragEnabled(false);
     graphComponent.setEnabled(false);
     graphComponent.setWheelScrollingEnabled(true);
     graphComponent.getGraphHandler().setMoveEnabled(false);
+    graphComponent.setToolTips(true);
 
 
     graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
@@ -130,7 +134,7 @@ public class GraphView implements IView {
 
 
   private void createArcOnCanvas(Object parent) {
-    model.getDrowableNet().getArcs().forEach(arc -> {
+    vizualModel.getDrowableNet().getArcs().forEach(arc -> {
       if (arc.arcFromPlaceToTransition) {
         String id = EDGE_PL_TO_TR_PTTRN.replace(TR_NR, Integer.toString(arc.transitionId)).replace(PL_NR,
             Integer.toString(arc.placeId));
@@ -150,9 +154,9 @@ public class GraphView implements IView {
   }
 
 private void createPlacesOnCanvas(Object parent) {
-    for (int i = 0; i < model.getDrowableNet().getNrOfPlaces(); i++) {
+    for (int i = 0; i < vizualModel.getDrowableNet().getNrOfPlaces(); i++) {
         mxCell plCell = (mxCell) graph.insertVertex(parent, PL_ID_PTTRN.replace(PL_NR, Integer.toString(i)),
-          model.getDrowableNet().getPlaceName(i), 0, 0, BIG_SIZE, BIG_SIZE, placeStyle(i));
+          vizualModel.getDrowableNet().getPlaceName(i), 0, 0, BIG_SIZE, BIG_SIZE, placeStyle(i));
         graph.getCellGeometry(plCell).setOffset(new mxPoint(new mxPoint(0, +BIG_SIZE / 10)));
         palceCells.add(plCell);
       }
@@ -160,30 +164,36 @@ private void createPlacesOnCanvas(Object parent) {
 
 
 private void createTransitionsOnCanvas(Object parent) {
-    for (int i = 0; i < model.getDrowableNet().getNrOfTransition(); i++) {
+    for (int i = 0; i < vizualModel.getDrowableNet().getNrOfTransition(); i++) {
 
         mxCell trCell = (mxCell) graph.insertVertex(parent, TR_ID_PTTRN.replace(TR_NR, Integer.toString(i)),
-          model.getDrowableNet().getTransitionName(i), 0, 0, SMALL_SIZE, BIG_SIZE, transitionStyle(i) );
+          vizualModel.getDrowableNet().getTransitionName(i), 0, 0, SMALL_SIZE, BIG_SIZE, transitionStyle(i) );
         graph.getCellGeometry(trCell).setOffset(new mxPoint(0, BIG_SIZE - SMALL_SIZE));
         transitionCells.add(trCell);
       }
 }
 
   private void elementIsClicked(String id, boolean selectioOrDeselect) {
-    String placeIdStrater = PL_ID_PTTRN.replace(PL_NR, "");
-    String transitionStarter = TR_ID_PTTRN.replace(TR_NR, "");
-    if (id.startsWith(placeIdStrater)) {
+    if (cellIsPlace(id)) {
       publishPlaceSelection(id, selectioOrDeselect);
     }
-    if (id.startsWith(transitionStarter)) {
+    if (cellIsTransition(id)) {
       publishTransitionSelection(id, selectioOrDeselect);
     }
+  }
 
+  boolean cellIsPlace(String id) {
+    String placeIdStrater = PL_ID_PTTRN.replace(PL_NR, "");
+    return id.startsWith(placeIdStrater);
+  }
+
+  boolean cellIsTransition(String id) {
+    String transitionStarter = TR_ID_PTTRN.replace(TR_NR, "");
+    return id.startsWith(transitionStarter);
   }
 
   private void publishTransitionSelection(String id, boolean selectioOrDeselect) {
-    String transitionStarter = TR_ID_PTTRN.replace(TR_NR, "");
-    int trId = Integer.parseInt(id.replace(transitionStarter, ""));
+    int trId = extratTransitionId(id);
     if (selectioOrDeselect) {
       controller.transitionSelectionRequest(trId);
     } else {
@@ -192,10 +202,13 @@ private void createTransitionsOnCanvas(Object parent) {
 
   }
 
+  int extratTransitionId(String id) {
+    String transitionStarter = TR_ID_PTTRN.replace(TR_NR, "");
+    return Integer.parseInt(id.replace(transitionStarter, ""));
+  }
 
   private void publishPlaceSelection(String id, boolean selectioOrDeselect) {
-    String placeIdStrater = PL_ID_PTTRN.replace(PL_NR, "");
-    int plnr = Integer.parseInt(id.replace(placeIdStrater, ""));
+    int plnr = extractPlaceId(id);
     if (selectioOrDeselect) {
       controller.placeSelectionReqiest(plnr);
     } else {
@@ -203,9 +216,12 @@ private void createTransitionsOnCanvas(Object parent) {
     }
   }
 
+  int extractPlaceId(String id) {
+    String placeIdStrater = PL_ID_PTTRN.replace(PL_NR, "");
+    int plnr = Integer.parseInt(id.replace(placeIdStrater, ""));
+    return plnr;
+  }
 
-  private mxGraph graph;
-  private mxGraphComponent graphComponent;
 
 
 
@@ -291,19 +307,40 @@ private void createTransitionsOnCanvas(Object parent) {
   }
   
 private String placeStyle(int i) {
-	return (model.getDrowableNet().isInputPlace(i))?PLACE_STYLE_INP : PLACE_STYLE;
+	return (vizualModel.getDrowableNet().isInputPlace(i))?PLACE_STYLE_INP : PLACE_STYLE;
 }
 
 private String placeStyleSelection(int i) {
-	return (model.getDrowableNet().isInputPlace(i))?PLACE_STYLE_SELECTED_INP : PLACE_STYLE_SELECTED;
+	return (vizualModel.getDrowableNet().isInputPlace(i))?PLACE_STYLE_SELECTED_INP : PLACE_STYLE_SELECTED;
 }
 
 private String transitionStyle(int trId){
-	return (model.getDrowableNet().isOuputTransition(trId))?TRANSITION_STYLE_OUT : TRANSITION_STYLE;
+	return (vizualModel.getDrowableNet().isOuputTransition(trId))?TRANSITION_STYLE_OUT : TRANSITION_STYLE;
 }
 
 private String transitionStyleSelection(int trId){
-	return (model.getDrowableNet().isOuputTransition(trId))?TRANSITION_STYLE_SELECTED_OUT : TRANSITION_STYLE_SELECTED;
+	return (vizualModel.getDrowableNet().isOuputTransition(trId))?TRANSITION_STYLE_SELECTED_OUT : TRANSITION_STYLE_SELECTED;
 }
+
+  private class SpecificMxGraph extends mxGraph {
+
+    @Override
+    public
+    String getToolTipForCell(Object obj) {
+      if (obj instanceof mxCell) {
+        String cellId = ((mxCell) obj).getId();
+        if (cellIsPlace(cellId)) {
+          return vizualModel.getDrowableNet().getPlaceFullText(extractPlaceId(cellId));
+        }
+        if (cellIsTransition(cellId)) {
+          return vizualModel.getDrowableNet().getTransitionFullText(extratTransitionId(cellId));
+        }
+
+      }
+      return super.getToolTipForCell(obj);
+    }
+
+
+  }
 
 }

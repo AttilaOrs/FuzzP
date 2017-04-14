@@ -17,7 +17,20 @@ public class DrawableUnifiedPetriNetWithExternalNames extends DrawableUnifiedPet
   
   @Override
   public String getTransitionName(int transitionId) {
+    String fullName = getFullName(transitionId);
+    if (fullName.length() > 6) {
+      return "T" + transitionId + " " + getOpString(transitionId);
+    }
+    return fullName;
+  }
+
+  private String getFullName(int transitionId) {
     return myNameStore.getTransitionName(transitionId) + getOpString(transitionId);
+  }
+
+  @Override
+  public String getTransitionFullText(int transitionId) {
+    return myNameStore.getTransitionName(transitionId) + "\n" + getOpString(transitionId);
   }
 
 }

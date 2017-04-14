@@ -18,6 +18,10 @@ public interface DrawableNet {
 
   String getTransitionName(int transitionId);
 
+  String getPlaceFullText(int placeId);
+
+  String getTransitionFullText(int placeId);
+
   void setReprezentInitialMarking(boolean reprezentInitialMarking);
 
   public static class Arc {

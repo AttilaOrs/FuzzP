@@ -79,4 +79,14 @@ public class DrawableUnifiedPetriNet implements DrawableNet {
 
   }
 
+  @Override
+  public String getPlaceFullText(int placeId) {
+    return getPlaceName(placeId) + "\n(" + myNet.getScale(placeId) + ")";
+  }
+
+  @Override
+  public String getTransitionFullText(int placeId) {
+    return getTransitionName(placeId);
+  }
+
 }
