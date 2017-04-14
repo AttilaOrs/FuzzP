@@ -4,10 +4,12 @@ import java.util.Map;
 
 import Main.UnifiedVizualizer;
 import core.FuzzyPetriLogic.PetriNet.DebuggerRecorder;
+import core.UnifiedPetriLogic.DrawableUnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.common.recoder.FullRecorder;
 import core.common.recoder.MultiRecorder;
+import dotDrawer.PetriDotDrawerVerical;
 
 public class VehicleCalcMain {
   
@@ -34,6 +36,8 @@ public class VehicleCalcMain {
     }
 
     UnifiedVizualizer.visualize(maker.net, fullRec, maker.nameStore);
+    PetriDotDrawerVerical vertical = new PetriDotDrawerVerical(new DrawableUnifiedPetriNet(maker.net));
+    vertical.makeImage("vehicleCalc");
     
     
   }
