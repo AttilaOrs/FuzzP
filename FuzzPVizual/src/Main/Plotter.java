@@ -1,5 +1,6 @@
 package Main;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -74,9 +75,10 @@ public class Plotter {
       DataSeries ds = convertToDataSeries(key);
       plot.add(ds);
       LineRenderer render = new DefaultLineRenderer2D();
-      render.setColor(PlotView.lineColors.get(cntr));
+      Color color = PlotView.lineColors.get(cntr % PlotView.lineColors.size());
+      render.setColor(color);
       plot.setLineRenderers(ds, render);
-      plot.getPointRenderers(ds).get(0).setColor(PlotView.pointColors.get(cntr));
+      plot.getPointRenderers(ds).get(0).setColor(color);
       plot.getPointRenderers(ds).get(0).setShape(PlotView.pointShape);
       cntr++;
 

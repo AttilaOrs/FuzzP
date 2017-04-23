@@ -1,4 +1,5 @@
 
+
 adder = @+@ {
 	[<2><2><2><2><2>]
 	[<2><2><2><2><2>]
@@ -64,14 +65,6 @@ minFinderCopyer = {
 	[<-2,-2><-1,-1>< 0, 0>< 1, 1>< 2, 2><ff,ff>]
 	[<ff,-2><ff,-1><ff, 0><ff, 1><ff, 2><ff,ff>]
 	};
-minFinderCopyerTry = {
-	[<-2,-2><-2,-2><-2, 0><-2,-2><-2,-2><ff,-2>]
-	[<-2,-1><-1,-1><-1,-1><-1,-1><-1,-1><ff,-1>]
-	[<-2, 0><-1, 0>< 0, 0>< 0, 0>< 0, 0><ff, 0>]
-	[<-2, 1><-1, 1>< 0, 1>< 1, 1>< 1, 1><ff, 1>]
-	[<-2, 2><-1, 2>< 0, 2>< 1, 2>< 2, 2><ff, 2>]
-	[<ff, 0><ff, 0><ff, 0><ff, 0><ff, 0><ff,ff>]
-	};
 copySecond = {
 	[<-2,-2><-1,-1><0,0><1,1><2,2>]
 	[<-2,-2><-1,-1><0,0><1,1><2,2>]
@@ -80,13 +73,19 @@ copySecond = {
 	[<-2,-2><-1,-1><0,0><1,1><2,2>]
 	};
 	
-
-
+copyFirst = {
+	[<-2,-2><-2,-2><-2,-2><-2,-2><-2,-2>]
+	[<-1,-1><-1,-1><-1,-1><-1,-1><-1,-1>]
+	[< 0, 0>< 0, 0>< 0, 0>< 0, 0>< 0, 0>]
+	[< 1, 1>< 1, 1>< 1, 1>< 1, 1>< 1, 1>]
+	[< 2, 2>< 2, 2>< 2, 2>< 2, 2>< 2, 2>]
+	};
+	
 sub QuterInter {
 
 	sub Lane {
 		P0(50.0)->t0->P0;
-		iP3(0.0)->t0[copySecond]->P4->oT3; //iP3 is for demand 
+		iP3(0.0)->t0[copyFirst]->P4->oT3; //iP3 is for demand 
 		iP1(50)->t1->P0->t1[adder]; // iP1 is for u_i  (number of machines enetered)
 		P0->t2[substact];
 		iP2(50)->t2->P0; //iP2 is for e_i (number of machines leava) 
@@ -119,7 +118,7 @@ sub QuterInter {
 
 		t8->p9->oT9; //demand to read lane info
 		t8->p10->t10;
-		iP11(50)->t10[minFinderCopyerTry]; //iP11 for the actual value of lane
+		iP11(50)->t10[minFinderCopyer]; //iP11 for the actual value of lane
 		t10->p12->oT13;// oT13 for the actual value 
 		t10->p13->oT14; // oT14 for actual value of lane
 	}
@@ -168,23 +167,62 @@ iP9(50.0) -> t9 -> qTwo.iP2(50); // inp machines for lane 2
 iP10(50.0) -> t10 -> qThree.iP2(50); // inp machines for lane 3
 iP11(50.0) -> t11 -> qFour.iP2(50); // inp machines for lane 4
 
-qOne.oT1  -> p20 -> t20[adderNonExclusive] -> p30 -> oT3;
+
+qOne.oT3 -> p40 -> oT5; //machines in input lane 1
+qTwo.oT3 -> p41 -> oT6; //machines in input lane 2
+qThree.oT3 -> p42 -> oT7; //machines in input lane 3
+qFour.oT3 -> p43 -> oT8; // machines in input lane 4
+
+sub OuptutQuarter{
+	sub Lane {
+		P0(50.0)->t0->P0;
+		iP3(0.0)->t0[copySecond]->P4->oT3; //iP3 is for demand 
+		iP1(50)->t1->P0->t1[adder]; // iP1 is for u_i  (number of machines enetered)
+		P0->t2[substact];
+		iP2(50)->t2->P0; //iP2 is for e_i (number of machines leava) 
+		p0 <= <10.0>;
+	}	
+	
+	lane = new Lane;
+	
+	iP0(50.0) -> t10 -> lane.iP2(50) ;//iP0 is for exiting cars
+                 t10 -> lane.iP3(0) ; // for request as well
+	iP1(50.0) -> t1 -> lane.iP1(50) ; // iP1 is for entering cars
+	
+	P0(50.0) -> t2 -> P0;
+	            t2 -> P1;
+	P1 -> t3[substact]-> P2(50.0) -> oT0;
+	lane.oT3 -> p3 -> t3;
+	P0(50) <= <20.0>;
+	                
+}
+
+outLaneOne = new OuptutQuarter;
+outLaneTwo = new OuptutQuarter;
+outLaneThree = new OuptutQuarter;
+outLaneFour = new OuptutQuarter;
+
+
+qOne.oT1  -> p20 -> t20[adderNonExclusive] -> outLaneThree.iP1(50.0);
 qTwo.oT2  -> p21 -> t20;
 
-qTwo.oT1 -> p22 -> t21[adderNonExclusive] -> p31 -> oT4;
+qTwo.oT1 -> p22 -> t21[adderNonExclusive] -> outLaneFour.iP1(50.0);
 qThree.oT2-> p23 -> t21;
 
-qThree.oT1 -> p24 -> t22[adderNonExclusive] -> p32 -> oT1;
+qThree.oT1 -> p24 -> t22[adderNonExclusive] -> outLaneOne.iP1(50.0);
 qFour.oT2  -> p25 -> t22;
 
 
-qFour.oT1 -> p26 -> t23[adderNonExclusive] -> p33 -> oT2;
+qFour.oT1 -> p26 -> t23[adderNonExclusive] ->  outLaneTwo.iP1(50.0);;
 qOne.oT2  -> p27 -> t23;
 
-qOne.oT3 -> p40 -> oT5;
-qTwo.oT3 -> p41 -> oT6;
-qThree.oT3 -> p42 -> oT7;
-qFour.oT3 -> p43 -> oT8;
+iP12(50) -> t200 -> outLaneOne.iP0(50); //iP12 is for outgoing machines in lane one
+iP13(50) -> t201 -> outLaneTwo.iP0(50); //iP13 is for outgoing machines in lane one
+iP14(50) -> t202 -> outLaneThree.iP0(50); //iP14 is for outgoing machines in lane one
+iP15(50) -> t203 -> outLaneFour.iP0(50); //iP15 is for outgoing machines in lane one
 
-
+outLaneOne.oT0 -> P50 -> oT10; // current machines in out lane 1
+outLaneTwo.oT0 -> P51 -> oT11; // current machines in out lane 2
+outLaneThree.oT0 -> P52 -> oT12; // current machines in out lane 3
+outLaneFour.oT0 -> P53 -> oT13; // current machines in out lane 4
 
