@@ -90,10 +90,7 @@ public class UnifiedPetriNet extends AbstractPetriNet<UnifiedToken, IUnifiedTabl
     @Override
     public UnifiedToken defuzzyfieFirstOutput(FuzzyToken tk) {
       if (outDrivers.isEmpty()) {
-        if (defaultConv == null) {
-          defaultConv = TokenConverter.defaultConverter();
-        }
-        return defaultConv.convert(tk);
+        return inpDrivers.get(0).convert(tk);
       }
       return outDrivers.get(0).convert(tk);
     }

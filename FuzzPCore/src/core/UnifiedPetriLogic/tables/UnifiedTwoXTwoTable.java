@@ -43,8 +43,16 @@ public class UnifiedTwoXTwoTable implements IUnifiedTable, IGeneralTwoXTwoTable 
       utk1 = ct.defuzzyfieFirstOutput(fuzzyRez[0]);
       utk2 = ct.defuzzyfieSecondOuput(fuzzyRez[1]);
     } else {
-      utk1 = ct.createScaleMamiximexForFirstOutput(defaultDriver.defuzzify(fuzzyRez[0]) * rez);
-      utk2 = ct.createScaleMamiximexForSecondOuput(defaultDriver.defuzzify(fuzzyRez[0]) * rez);
+      if (!fuzzyRez[0].isPhi()) {
+        utk1 = ct.createScaleMamiximexForFirstOutput(defaultDriver.defuzzify(fuzzyRez[0]) * rez);
+      } else {
+        utk1 = new UnifiedToken();
+      }
+      if (!fuzzyRez[1].isPhi()) {
+        utk2 = ct.createScaleMamiximexForSecondOuput(defaultDriver.defuzzify(fuzzyRez[1]) * rez);
+      } else {
+        utk2 = new UnifiedToken();
+      }
     }
     return new UnifiedToken[] { utk1, utk2 };
   }
