@@ -66,7 +66,7 @@ public class UnifiedPetriNet extends AbstractPetriNet<UnifiedToken, IUnifiedTabl
 
 
 
-  static class MyContext implements IContex {
+  public static class MyContext implements IContex {
     List<TokenConverter> inpDrivers, outDrivers;
 
 

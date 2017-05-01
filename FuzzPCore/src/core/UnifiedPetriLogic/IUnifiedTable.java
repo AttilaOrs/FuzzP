@@ -12,4 +12,5 @@ public interface IUnifiedTable {
 
   List<Double> deduceScale(List<Double> inpScales);
 
+
 }

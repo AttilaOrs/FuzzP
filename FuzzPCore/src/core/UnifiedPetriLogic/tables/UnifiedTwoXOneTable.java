@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import core.FuzzyPetriLogic.FuzzyDriver;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.FuzzyValue;
 import core.FuzzyPetriLogic.Tables.TwoXOneTable;
@@ -14,11 +13,10 @@ import core.UnifiedPetriLogic.IUnifiedTable;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.common.generaltable.IGeneralTwoXOneTable;
 
-public class UnifiedTwoXOneTable implements IUnifiedTable, IGeneralTwoXOneTable {
+public class UnifiedTwoXOneTable extends AbstractTable implements IGeneralTwoXOneTable {
 
   private final TwoXOneTable table;
   private final Operator op;
-  private transient final FuzzyDriver defaultDriver = FuzzyDriver.createDriverFromMinMax(-1.0, 1.0);
 
   public UnifiedTwoXOneTable(Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> rulaTabel, Operator op) {
     this.op = op;
@@ -40,7 +38,7 @@ public class UnifiedTwoXOneTable implements IUnifiedTable, IGeneralTwoXOneTable 
       // can be null becaouse it was None, or becaouse of the two Phis
       utk = ct.defuzzyfieFirstOutput(fuzzyRez[0]);
     } else {
-      utk = ct.createScaleMamiximexForFirstOutput(defaultDriver.defuzzify(fuzzyRez[0]) * rez);
+      utk = ct.createScaleMamiximexForFirstOutput(defaultDriver().defuzzify(fuzzyRez[0]) * rez);
     }
     return new UnifiedToken[] { utk };
   }

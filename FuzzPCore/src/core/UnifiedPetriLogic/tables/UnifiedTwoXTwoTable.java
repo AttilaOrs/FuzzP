@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import core.FuzzyPetriLogic.FuzzyDriver;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.FuzzyValue;
 import core.FuzzyPetriLogic.Tables.TwoXTwoTable;
@@ -14,17 +13,17 @@ import core.UnifiedPetriLogic.IUnifiedTable;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.common.generaltable.IGeneralTwoXTwoTable;
 
-public class UnifiedTwoXTwoTable implements IUnifiedTable, IGeneralTwoXTwoTable {
+public class UnifiedTwoXTwoTable extends AbstractTable implements IGeneralTwoXTwoTable {
 
   private final TwoXTwoTable table;
   private final Operator op;
-  private transient final FuzzyDriver defaultDriver = FuzzyDriver.createDriverFromMinMax(-1.0, 1.0);
 
   public UnifiedTwoXTwoTable(Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> ruleTable1,
       Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> ruleTable2, Operator op) {
     table = new TwoXTwoTable(ruleTable1, ruleTable2);
     this.op = op;
   }
+
 
   @Override
   public UnifiedToken[] execute(UnifiedToken[] inputs, IContex ct) {
@@ -44,12 +43,12 @@ public class UnifiedTwoXTwoTable implements IUnifiedTable, IGeneralTwoXTwoTable 
       utk2 = ct.defuzzyfieSecondOuput(fuzzyRez[1]);
     } else {
       if (!fuzzyRez[0].isPhi()) {
-        utk1 = ct.createScaleMamiximexForFirstOutput(defaultDriver.defuzzify(fuzzyRez[0]) * rez);
+        utk1 = ct.createScaleMamiximexForFirstOutput(defaultDriver().defuzzify(fuzzyRez[0]) * rez);
       } else {
         utk1 = new UnifiedToken();
       }
       if (!fuzzyRez[1].isPhi()) {
-        utk2 = ct.createScaleMamiximexForSecondOuput(defaultDriver.defuzzify(fuzzyRez[1]) * rez);
+        utk2 = ct.createScaleMamiximexForSecondOuput(defaultDriver().defuzzify(fuzzyRez[1]) * rez);
       } else {
         utk2 = new UnifiedToken();
       }
@@ -104,5 +103,6 @@ public class UnifiedTwoXTwoTable implements IUnifiedTable, IGeneralTwoXTwoTable 
     Double d = op.deduceScale(inpScales);
     return Arrays.asList(d, d);
   }
+
 
 }
