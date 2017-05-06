@@ -7,7 +7,7 @@ import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 
 public class AsyncrounousThreadlessExecutor extends AbstractFuzzyExecutor {
 
-	private boolean initalTick = true;;
+  private boolean initalTick = true;
 
   public AsyncrounousThreadlessExecutor(FuzzyPetriNet net) {
 		super(net);

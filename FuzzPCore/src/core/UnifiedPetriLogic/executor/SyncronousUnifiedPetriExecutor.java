@@ -11,6 +11,10 @@ public class SyncronousUnifiedPetriExecutor extends UnifiedAbstactExecutor {
     super(net);
   }
 
+  public SyncronousUnifiedPetriExecutor(UnifiedPetriNet net, boolean enableChecking) {
+    super(net, enableChecking);
+  }
+
 
   public void runTick(Map<Integer, UnifiedToken> inputs) {
     setInputPlacesWithToken(inputs);
