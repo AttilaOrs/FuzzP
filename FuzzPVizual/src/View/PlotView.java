@@ -52,6 +52,8 @@ public class PlotView implements IView {
   HashMap<Integer, DataSeries> outSeries;
   @SuppressWarnings("unused")
   private IGlobalController controller;
+  private double nowMax;
+  private double nowMin;
 
   public PlotView(FuzzyPVizualModel mm) {
     model = mm;
@@ -83,6 +85,10 @@ public class PlotView implements IView {
     plot.setLegendLocation(Location.EAST);
     plot.getLegend().setBorderStroke(null);
     plot.getLegend().setBackground(null);
+    plot.getAxis(XYPlot.AXIS_Y).setMax(1.15);
+    plot.getAxis(XYPlot.AXIS_Y).setMin(-0.15);
+    nowMax = 1.15;
+    nowMin = -0.15;
   }
 
   public InteractivePanel getInteractivePanel() {
@@ -93,14 +99,29 @@ public class PlotView implements IView {
   public void placeSelected(int plId) {
     System.out.println("real place id " + plId);
     if (placeSeries.containsKey(plId)) {
-      return; // place is already ploted
+      return; // place is already plotted
     }
     String name = model.getNameStore().getPlaceName(plId);
     DataTable data = model.getDataForPlace(plId);
     DataSeries ss = addToPlotWithName(name, data);
 
     placeSeries.put(plId, ss);
+    updateYAxes(plId);
 
+  }
+
+  private void updateYAxes(Integer placeId) {
+    double theoryMax = model.getMaxForPlace(placeId);
+    double theoryMin = model.getMinForPlace(placeId);
+    double plus = (theoryMax - theoryMin) / 20.0;
+    if (nowMax < theoryMax + plus) {
+      nowMax = theoryMax + plus;
+    }
+    if (nowMin > theoryMin - plus) {
+      nowMin = theoryMin - plus;
+    }
+    plot.getAxis(XYPlot.AXIS_Y).setMax(nowMax);
+    plot.getAxis(XYPlot.AXIS_Y).setMin(nowMin);
   }
 
   private DataSeries addToPlotWithName(String name, DataTable data) {
@@ -145,16 +166,16 @@ public class PlotView implements IView {
   public void reset() {
     for (Integer plId : placeSeries.keySet()) {
       plot.remove(placeSeries.get(plId));
-      placeSeries.remove(plId);
     }
     for (Integer inpID : inputSeries.keySet()) {
       plot.remove(inputSeries.get(inpID));
-      inputSeries.remove(inpID);
     }
     for (Integer outId : outSeries.keySet()) {
       plot.remove(outSeries.get(outId));
-      outSeries.remove(outId);
     }
+    placeSeries.clear();
+    inputSeries.clear();
+    outSeries.clear();
     interativePane.repaint();
 
   }

@@ -18,18 +18,31 @@ public class FuzzyPetrinetBehaviourModel<TTokenType extends FullRecordable<TToke
   FullRecorder<TTokenType> recorder;
 	List<List<IFullRecorderEvent>> eventsGroupedByTick;
 	HashMap<Integer, DataTable> placeDataChache;
-	HashMap<Integer, DataTable> inputDataCache;
-	HashMap<Integer, DataTable> outputDataCache;
+  HashMap<Integer, double[]> maxMinForPlace;
   private Function<TTokenType, Double> converter;
 
   FuzzyPetrinetBehaviourModel(FullRecorder<TTokenType> recorder, Function<TTokenType, Double> converter) {
 		this.recorder = recorder;
     eventsGroupedByTick = recorder.eventGroupedByTicks();
 		placeDataChache = new HashMap<>();
-		inputDataCache = new HashMap<>();
-		outputDataCache = new HashMap<>();
+    maxMinForPlace = new HashMap<>();
     this.converter = converter;
 	}
+
+  public double getMinForPlace(Integer placeId) {
+    if (!maxMinForPlace.containsKey(placeId)) {
+      buildChacheForPlace(placeId);
+    }
+    return maxMinForPlace.get(placeId)[1];
+  }
+
+  public double getMaxForPlace(Integer placeId) {
+    if (!maxMinForPlace.containsKey(placeId)) {
+      buildChacheForPlace(placeId);
+    }
+    return maxMinForPlace.get(placeId)[0];
+  }
+
 
 
 	public DataTable getDataForPlace(int placeId) {
@@ -39,8 +52,10 @@ public class FuzzyPetrinetBehaviourModel<TTokenType extends FullRecordable<TToke
 		return placeDataChache.get(placeId);
 	}
 
-	private void buildChacheForPlace(int placeId) {
+  private void buildChacheForPlace(Integer placeId) {
 		DataTable table = new DataTable(Double.class, Double.class);
+    double max = Double.MIN_VALUE;
+    double min = Double.MAX_VALUE;
 		for (int tickNr = 0; tickNr < eventsGroupedByTick.size(); tickNr++) {
 			for (int eventIndex = 0; eventIndex < eventsGroupedByTick.get(tickNr).size() - 1; eventIndex++) {
 				if (eventsGroupedByTick.get(tickNr).get(eventIndex) instanceof TokenFromTransitionToPlace
@@ -50,7 +65,10 @@ public class FuzzyPetrinetBehaviourModel<TTokenType extends FullRecordable<TToke
 					if (event.place == placeId) {
 						if (!event.token.isPhi()) {
 							double inTickPlace = ((double) eventIndex) / (eventsGroupedByTick.get(tickNr).size());
-              table.add(tickNr + inTickPlace, converter.apply(event.token));
+              Double actualValue = converter.apply(event.token);
+              table.add(tickNr + inTickPlace, actualValue);
+              max = (max < actualValue) ? actualValue : max;
+              min = (min > actualValue) ? actualValue : min;
 						}
 					}
 				}
@@ -64,6 +82,8 @@ public class FuzzyPetrinetBehaviourModel<TTokenType extends FullRecordable<TToke
 
 		}
 		placeDataChache.put(placeId, table);
+    maxMinForPlace.put(placeId,
+        new double[] { (max != Double.MIN_VALUE) ? max : 0.0, (min != Double.MAX_VALUE) ? min : 0.0 });
 	}
 
 	public int getTickNr() {

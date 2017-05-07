@@ -133,8 +133,12 @@ public class MainView<TTokenType extends FullRecordable<TTokenType>, TTableType,
 			JMenu fileMenu = new JMenu("FuzzyPLang");
 			JMenuItem refresh = new JMenuItem("Refresh");
 			refresh.addActionListener(ac -> {
+        if (lastFile != null) {
 				model.loadFuzzyPLang(lastFile);
 				controller.globalModelUpdate();
+        } else {
+          System.out.println("Nothing to refreash");
+        }
 			});
 			KeyStroke keyStrokeToRefrash = KeyStroke.getKeyStroke("shift R");
 			refresh.setAccelerator(keyStrokeToRefrash);

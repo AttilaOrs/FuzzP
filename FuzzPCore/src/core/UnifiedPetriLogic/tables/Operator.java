@@ -43,7 +43,7 @@ public enum Operator {
     case PLUS:
       return inpScales.get(0) + inpScales.get(1);
     case MINUS:
-      return inpScales.get(0) - inpScales.get(1);
+      return inpScales.get(0) + inpScales.get(1);
     case MULT:
       return inpScales.get(0) * inpScales.get(1);
     case DIV:

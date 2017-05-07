@@ -149,9 +149,18 @@ public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TT
     behavourModel = new FuzzyPetrinetBehaviourModel<>(recorder, myConfig.getDoubleConverter());
   }
 
-  public DataTable getDataForPlace(int placeId) {
+  public DataTable getDataForPlace(Integer placeId) {
     return behavourModel.getDataForPlace(placeId);
   }
+
+  public double getMaxForPlace(Integer placeId) {
+    return behavourModel.getMaxForPlace(placeId);
+  }
+
+  public double getMinForPlace(Integer placeId) {
+    return behavourModel.getMinForPlace(placeId);
+  }
+
 
   public int getTickNr() {
     return behavourModel.getTickNr();
