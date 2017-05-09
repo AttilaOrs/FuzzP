@@ -1,4 +1,4 @@
-package plant;
+
 
 import core.Drawable.TransitionPlaceNameStore;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
