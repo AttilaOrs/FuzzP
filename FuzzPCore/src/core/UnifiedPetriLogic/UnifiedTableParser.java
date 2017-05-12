@@ -277,9 +277,10 @@ public class UnifiedTableParser {
   }
 
   private List<String> splitToCellsContent(String strToParse) {
+    strToParse = strToParse.trim();
     if (!(strToParse.startsWith("{") && strToParse.endsWith("}"))) {
       throw new TablePareserExcetion(
-          "Table not defined:: a table string should start with { and should and with }");
+          "Table not defined:: a table string should start with { and should and with } " + strToParse);
     }
     String bareaTable = strToParse.replace("{", "").replace("}", "");
     String[] lines = bareaTable.split("\\[");

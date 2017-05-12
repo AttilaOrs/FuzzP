@@ -23,6 +23,9 @@ public class RoomMain {
       if (i % 120 * 10 == 50) {
         inp.put(maker.iP3, new UnifiedToken(0.0)); // close
       }
+      if (i > 60 * 30) {
+        inp.put(maker.iP4, new UnifiedToken(40.0));
+      }
 
       exec.runTick(inp);
     }
