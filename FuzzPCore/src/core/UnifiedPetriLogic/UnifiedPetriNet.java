@@ -11,7 +11,8 @@ import core.FuzzyPetriLogic.FuzzyToken;
 import core.UnifiedPetriLogic.tables.UnifiedOneXOneTable;
 import core.common.AbstractPetriNet;
 
-public class UnifiedPetriNet extends AbstractPetriNet<UnifiedToken, IUnifiedTable, UnifiedOneXOneTable> {
+public class UnifiedPetriNet extends AbstractPetriNet<UnifiedToken, IUnifiedTable, UnifiedOneXOneTable>
+    implements ReadableUnifiedPetriNet {
 
   private transient HashMap<Integer, IContex> storedContexts;
   protected List<Double> scaleForPlace;

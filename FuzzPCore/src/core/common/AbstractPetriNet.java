@@ -96,6 +96,14 @@ public abstract class AbstractPetriNet<PetriTokenType, ITableType, OutTable exte
     actionsForOuptutTransirions.get(ouputTransitionId).add(action);
   }
 
+  public void addArcFromTransitionToPlace(int transition, int place) {
+    if (fromTransToPlace.size() > transition) {
+      fromTransToPlace.get(transition).add(place);
+    } else {
+      throw new RuntimeException("No transition with nr " + transition + " exists.");
+    }
+  }
+
   public int getNrOfPlaces() {
     return placeCntr;
   }
@@ -140,20 +148,23 @@ public abstract class AbstractPetriNet<PetriTokenType, ITableType, OutTable exte
     return fromPlaceToTrans.get(placeId);
   }
 
+  public List<Integer> getTransitinsBeforePlace(Integer placeId) {
+    List<Integer> toRet = new ArrayList<>();
+    for (Integer trId = 0; trId < getNrOfTransition(); trId++) {
+      List<Integer> outPlaces = getOutputPlacesForTransition(trId);
+      if (outPlaces.contains(placeId)) {
+        toRet.add(trId);
+      }
+    }
+    return toRet;
+  }
+
   public List<Consumer<PetriTokenType>> getActionsForOuputTransition(int trId) {
     return actionsForOuptutTransirions.get(trId);
   }
 
   public ITableType getTableForTransition(int trId) {
     return tableForTransition.get(trId);
-  }
-
-  public void addArcFromTransitionToPlace(int transition, int place) {
-    if (fromTransToPlace.size() > transition) {
-      fromTransToPlace.get(transition).add(place);
-    } else {
-      throw new RuntimeException("No transition with nr " + transition + " exists.");
-    }
   }
 
   public Double getDelayMultiplierForTransition(int trId) {

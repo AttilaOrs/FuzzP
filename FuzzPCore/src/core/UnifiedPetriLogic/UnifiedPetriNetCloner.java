@@ -6,27 +6,27 @@ import core.UnifiedPetriLogic.tables.UnifiedOneXOneTable;
 
 public class UnifiedPetriNetCloner {
 
-  public static UnifiedPetriNet cloneUnifiedPetriNet(UnifiedPetriNet source) {
+  public static UnifiedPetriNet cloneUnifiedPetriNet(ReadableUnifiedPetriNet source) {
     return (new UnifiedPetriNetCloner(source)).aim;
   }
 
-  public static UnifiedPetriNet cloneUnifiedPetriNetWithModifiedScale(UnifiedPetriNet source,
+  public static UnifiedPetriNet cloneUnifiedPetriNetWithModifiedScale(ReadableUnifiedPetriNet source,
       Map<Integer, Double> newScale) {
     return (new UnifiedPetriNetCloner(source, newScale, null)).aim;
   }
 
-  public static UnifiedPetriNet cloneUnifiedPetriNetWithModifiedTabler(UnifiedPetriNet source,
+  public static UnifiedPetriNet cloneUnifiedPetriNetWithModifiedTabler(ReadableUnifiedPetriNet source,
       Map<Integer, IUnifiedTable> newTable) {
     return (new UnifiedPetriNetCloner(source, null, newTable)).aim;
   }
 
-  private UnifiedPetriNet source;
+  private ReadableUnifiedPetriNet source;
   private UnifiedPetriNet aim;
   private Map<Integer, Double> newScale;
   private Map<Integer, IUnifiedTable> newTable;
 
 
-  private UnifiedPetriNetCloner(UnifiedPetriNet source, Map<Integer, Double> newScale,
+  private UnifiedPetriNetCloner(ReadableUnifiedPetriNet source, Map<Integer, Double> newScale,
       Map<Integer, IUnifiedTable> newTables) {
     this.source = source;
     this.aim = new UnifiedPetriNet();
@@ -37,7 +37,7 @@ public class UnifiedPetriNetCloner {
     addArcs();
   }
 
-  private UnifiedPetriNetCloner(UnifiedPetriNet source) {
+  private UnifiedPetriNetCloner(ReadableUnifiedPetriNet source) {
     this(source, null, null);
   }
 
