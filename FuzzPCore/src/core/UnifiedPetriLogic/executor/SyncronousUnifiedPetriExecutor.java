@@ -2,16 +2,16 @@ package core.UnifiedPetriLogic.executor;
 
 import java.util.Map;
 
-import core.UnifiedPetriLogic.UnifiedPetriNet;
+import core.UnifiedPetriLogic.ReadableUnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 
 public class SyncronousUnifiedPetriExecutor extends UnifiedAbstactExecutor {
 
-  public SyncronousUnifiedPetriExecutor(UnifiedPetriNet net) {
+  public SyncronousUnifiedPetriExecutor(ReadableUnifiedPetriNet net) {
     super(net);
   }
 
-  public SyncronousUnifiedPetriExecutor(UnifiedPetriNet net, boolean enableChecking) {
+  public SyncronousUnifiedPetriExecutor(ReadableUnifiedPetriNet net, boolean enableChecking) {
     super(net, enableChecking);
   }
 

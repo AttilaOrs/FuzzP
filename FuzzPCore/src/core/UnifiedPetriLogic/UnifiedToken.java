@@ -23,6 +23,7 @@ public class UnifiedToken implements FullRecordable<UnifiedToken> {
     return val;
   }
 
+  @Override
   public boolean isPhi() {
     return isPhi;
   }
@@ -46,6 +47,7 @@ public class UnifiedToken implements FullRecordable<UnifiedToken> {
     }
   }
 
+  @Override
   public UnifiedToken unite(UnifiedToken unifiedToken) {
     if (this.isPhi && unifiedToken.isPhi) {
       return new UnifiedToken();
@@ -71,6 +73,31 @@ public class UnifiedToken implements FullRecordable<UnifiedToken> {
       return new UnifiedToken();
     }
     
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof UnifiedToken)) {
+      return false;
+    }
+    UnifiedToken ut = (UnifiedToken) o;
+    if (ut.isPhi() && this.isPhi()) {
+      return true; // both of the, are phi
+    }
+    if (ut.isPhi() || this.isPhi()) {
+      return false; // only one of them is phi
+    }
+    // non of them is phi
+    return ut.getValue().equals(this.getValue());
+  }
+
+  @Override
+  public int hashCode() {
+    if (isPhi()) {
+      return 1;
+    }
+    return 39 * getValue().hashCode();
+
   }
 
 

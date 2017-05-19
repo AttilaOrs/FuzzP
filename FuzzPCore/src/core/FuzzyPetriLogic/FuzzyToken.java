@@ -77,10 +77,12 @@ public class FuzzyToken implements FullRecordable<FuzzyToken> {
     return fuzzyValues[FuzzyValue.indexOf(val)];
   }
 
+  @Override
   public boolean isPhi() {
     return this.phi;
   }
 
+  @Override
   public FuzzyToken unite(FuzzyToken ff) {
     if (isPhi() && ff.isPhi()) {
       return new FuzzyToken();
@@ -100,6 +102,7 @@ public class FuzzyToken implements FullRecordable<FuzzyToken> {
     return toRet;
   }
 
+  @Override
   public FuzzyToken myClone() {
     if (!phi) {
       double[] ll = Arrays.copyOf(fuzzyValues, fuzzyValues.length);
@@ -111,6 +114,7 @@ public class FuzzyToken implements FullRecordable<FuzzyToken> {
 
   static NumberFormat formatter = new DecimalFormat("#0.00");
 
+  @Override
   public String shortString() {
     if (isPhi()) {
       return PHI;
@@ -126,6 +130,32 @@ public class FuzzyToken implements FullRecordable<FuzzyToken> {
       return stb.toString();
 
     }
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof FuzzyToken)) {
+      return false;
+    }
+    FuzzyToken ft = (FuzzyToken) o;
+    if (ft.isPhi() && this.isPhi()) {
+      return true; // both of the, are phi
+    }
+    if (ft.isPhi() || this.isPhi()) {
+      return false; // only one of them is phi
+    }
+    // non of them is phi
+    return Arrays.equals(this.fuzzyValues, ft.fuzzyValues);
+  }
+
+  @Override
+  public int hashCode() {
+    if (isPhi()) {
+      return 1;
+    }
+    return Arrays.hashCode(fuzzyValues);
+
   }
 
   public Stream<FuzzyValue> getNonZeroValues() {

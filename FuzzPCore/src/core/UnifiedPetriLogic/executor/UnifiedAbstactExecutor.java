@@ -1,22 +1,22 @@
 package core.UnifiedPetriLogic.executor;
 
 import core.UnifiedPetriLogic.IUnifiedTable;
-import core.UnifiedPetriLogic.UnifiedPetriNet;
+import core.UnifiedPetriLogic.ReadableUnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedPetriNetChecker;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.tables.UnifiedOneXOneTable;
 import core.common.AbstractExecutor;
 
 public abstract class UnifiedAbstactExecutor
-    extends AbstractExecutor<UnifiedToken, IUnifiedTable, UnifiedOneXOneTable, UnifiedPetriNet> {
+    extends AbstractExecutor<UnifiedToken, IUnifiedTable, UnifiedOneXOneTable, ReadableUnifiedPetriNet> {
 
 
 
-  public UnifiedAbstactExecutor(UnifiedPetriNet net, boolean enablechecking) {
+  public UnifiedAbstactExecutor(ReadableUnifiedPetriNet net, boolean enablechecking) {
     super(net, enablechecking);
   }
 
-  public UnifiedAbstactExecutor(UnifiedPetriNet net) {
+  public UnifiedAbstactExecutor(ReadableUnifiedPetriNet net) {
     super(net, true);
   }
 

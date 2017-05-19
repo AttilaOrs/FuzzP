@@ -3,17 +3,17 @@ package core.FuzzyPetriLogic.Executor;
 import java.util.Map;
 
 import core.FuzzyPetriLogic.FuzzyToken;
-import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
+import core.FuzzyPetriLogic.ReadableFuzzyPetriNet;
 
 public class AsyncrounousThreadlessExecutor extends AbstractFuzzyExecutor {
 
   private boolean initalTick = true;
 
-  public AsyncrounousThreadlessExecutor(FuzzyPetriNet net) {
+  public AsyncrounousThreadlessExecutor(ReadableFuzzyPetriNet net) {
 		super(net);
 	}
 
-  public AsyncrounousThreadlessExecutor(FuzzyPetriNet net, boolean checkEnabled) {
+  public AsyncrounousThreadlessExecutor(ReadableFuzzyPetriNet net, boolean checkEnabled) {
 		super(net, checkEnabled);
 	}
 

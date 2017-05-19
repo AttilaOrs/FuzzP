@@ -19,7 +19,7 @@ public abstract class AbstractPetriNetChecker<PetriTokenType, ITableType, oneOon
     potentialErrors = "";
   }
 
-  public boolean checkPetriNet(AbstractPetriNet<PetriTokenType, ITableType, oneOone> net) {
+  public boolean checkPetriNet(ReadableAbstactPetriNet<PetriTokenType, ITableType, oneOone> net) {
     potentialErrors = "";
     boolean tablesCorrect = checkTables(net);
     return tablesCorrect;
@@ -29,7 +29,7 @@ public abstract class AbstractPetriNetChecker<PetriTokenType, ITableType, oneOon
     return potentialErrors;
   }
 
-  private boolean checkTables(AbstractPetriNet<PetriTokenType, ITableType, oneOone> net) {
+  private boolean checkTables(ReadableAbstactPetriNet<PetriTokenType, ITableType, oneOone> net) {
 
     boolean correct = true;
     for (int trIndex = 0; trIndex < net.getNrOfTransition(); trIndex++) {

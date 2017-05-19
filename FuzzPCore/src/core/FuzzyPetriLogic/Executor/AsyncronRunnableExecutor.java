@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import core.FuzzyPetriLogic.FuzzyToken;
-import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
+import core.FuzzyPetriLogic.ReadableFuzzyPetriNet;
 
 public class AsyncronRunnableExecutor extends AbstractFuzzyExecutor implements Runnable {
 	private static final long precision = 2;
@@ -17,11 +17,11 @@ public class AsyncronRunnableExecutor extends AbstractFuzzyExecutor implements R
 
 	ConcurrentLinkedQueue<Map<Integer, FuzzyToken>> inputsWaitingToProcess;
 
-  public AsyncronRunnableExecutor(FuzzyPetriNet net, long period) {
+  public AsyncronRunnableExecutor(ReadableFuzzyPetriNet net, long period) {
 		this(net, true, period);
 	}
 
-  public AsyncronRunnableExecutor(FuzzyPetriNet net, boolean enableChecking, long period) {
+  public AsyncronRunnableExecutor(ReadableFuzzyPetriNet net, boolean enableChecking, long period) {
 		super(net, enableChecking);
 		this.period = period;
 		stop = false;

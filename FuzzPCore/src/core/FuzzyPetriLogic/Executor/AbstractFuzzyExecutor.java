@@ -2,23 +2,24 @@ package core.FuzzyPetriLogic.Executor;
 
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.ITable;
+import core.FuzzyPetriLogic.ReadableFuzzyPetriNet;
 import core.FuzzyPetriLogic.Fuzzifiers.TriangleFuzzyfier;
-import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNetChecker;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
 import core.common.AbstractExecutor;
 
-public abstract class AbstractFuzzyExecutor extends AbstractExecutor<FuzzyToken, ITable, OneXOneTable, FuzzyPetriNet> {
+public abstract class AbstractFuzzyExecutor
+    extends AbstractExecutor<FuzzyToken, ITable, OneXOneTable, ReadableFuzzyPetriNet> {
 
 
   private TriangleFuzzyfier defultFuzzificator = TriangleFuzzyfier.withBorderVales(-1.0, -0.5, 0.0, 0.5, 1.0);
 
 
-  public AbstractFuzzyExecutor(FuzzyPetriNet net, boolean enablechecking) {
+  public AbstractFuzzyExecutor(ReadableFuzzyPetriNet net, boolean enablechecking) {
     super(net, enablechecking);
   }
 
-  public AbstractFuzzyExecutor(FuzzyPetriNet net) {
+  public AbstractFuzzyExecutor(ReadableFuzzyPetriNet net) {
     super(net, true);
   }
 

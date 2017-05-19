@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import core.common.recoder.FullRecordable;
 import core.common.recoder.IGeneralPetriBehavoiurRecorder;
 
-public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenType>, TTableType, TOutTable extends TTableType, TPetriNet extends AbstractPetriNet<TTokenType, TTableType, TOutTable>> {
+public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenType>, TTableType, TOutTable extends TTableType, TPetriNet extends ReadableAbstactPetriNet<TTokenType, TTableType, TOutTable>> {
 
 
   protected TPetriNet myNet;

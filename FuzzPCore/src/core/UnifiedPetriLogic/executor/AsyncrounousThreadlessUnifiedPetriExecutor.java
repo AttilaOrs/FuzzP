@@ -2,6 +2,7 @@ package core.UnifiedPetriLogic.executor;
 
 import java.util.Map;
 
+import core.UnifiedPetriLogic.ReadableUnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 
@@ -13,7 +14,7 @@ public class AsyncrounousThreadlessUnifiedPetriExecutor extends UnifiedAbstactEx
     super(net);
   }
 
-  public AsyncrounousThreadlessUnifiedPetriExecutor(UnifiedPetriNet net, boolean checkEnabled) {
+  public AsyncrounousThreadlessUnifiedPetriExecutor(ReadableUnifiedPetriNet net, boolean checkEnabled) {
     super(net, checkEnabled);
   }
 

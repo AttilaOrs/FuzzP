@@ -3,6 +3,7 @@ package core.FuzzyPetriLogic.Executor;
 import java.util.Map;
 
 import core.FuzzyPetriLogic.FuzzyToken;
+import core.FuzzyPetriLogic.ReadableFuzzyPetriNet;
 import core.FuzzyPetriLogic.PetriNet.FuzzyPetriNet;
 
 public class SynchronousFuzzyPetriExecutor extends AbstractFuzzyExecutor {
@@ -11,7 +12,7 @@ public class SynchronousFuzzyPetriExecutor extends AbstractFuzzyExecutor {
 		super(net);
 	}
 
-  public SynchronousFuzzyPetriExecutor(FuzzyPetriNet net, boolean enablechecking) {
+  public SynchronousFuzzyPetriExecutor(ReadableFuzzyPetriNet net, boolean enablechecking) {
 		super(net, enablechecking);
 	}
 

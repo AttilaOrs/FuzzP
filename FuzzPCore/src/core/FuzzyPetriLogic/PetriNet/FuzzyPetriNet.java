@@ -5,10 +5,11 @@ import java.util.Map;
 
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.ITable;
+import core.FuzzyPetriLogic.ReadableFuzzyPetriNet;
 import core.FuzzyPetriLogic.Tables.OneXOneTable;
 import core.common.AbstractPetriNet;
 
-public class FuzzyPetriNet extends AbstractPetriNet<FuzzyToken, ITable, OneXOneTable>
+public class FuzzyPetriNet extends AbstractPetriNet<FuzzyToken, ITable, OneXOneTable> implements ReadableFuzzyPetriNet
 {
 
   private Map<Integer, Map<Integer, Double>> weights;
@@ -20,6 +21,7 @@ public class FuzzyPetriNet extends AbstractPetriNet<FuzzyToken, ITable, OneXOneT
   }
 
 
+  @Override
   public int addPlace() {
     int toRet = super.addPlace();
     weights.put(toRet, new HashMap<>());

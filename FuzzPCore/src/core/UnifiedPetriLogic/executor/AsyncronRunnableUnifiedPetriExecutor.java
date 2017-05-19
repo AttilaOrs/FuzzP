@@ -5,7 +5,7 @@ import static java.lang.System.currentTimeMillis;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import core.UnifiedPetriLogic.UnifiedPetriNet;
+import core.UnifiedPetriLogic.ReadableUnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 
 public class AsyncronRunnableUnifiedPetriExecutor extends UnifiedAbstactExecutor implements Runnable {
@@ -16,11 +16,11 @@ public class AsyncronRunnableUnifiedPetriExecutor extends UnifiedAbstactExecutor
   private boolean firstTick;
   ConcurrentLinkedQueue<Map<Integer, UnifiedToken>> inputsWaitingToProcess;
 
-  public AsyncronRunnableUnifiedPetriExecutor(UnifiedPetriNet net, long period) {
+  public AsyncronRunnableUnifiedPetriExecutor(ReadableUnifiedPetriNet net, long period) {
     this(net, period, true);
   }
 
-  public AsyncronRunnableUnifiedPetriExecutor(UnifiedPetriNet net, long period, boolean enableChecking) {
+  public AsyncronRunnableUnifiedPetriExecutor(ReadableUnifiedPetriNet net, long period, boolean enableChecking) {
     super(net, enableChecking);
     this.period = period;
     stop = false;

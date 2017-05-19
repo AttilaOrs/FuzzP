@@ -7,7 +7,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class AbstractPetriNet<PetriTokenType, ITableType, OutTable extends ITableType> {
+public abstract class AbstractPetriNet<PetriTokenType, ITableType, OutTable extends ITableType>
+    implements ReadableAbstactPetriNet<PetriTokenType, ITableType, OutTable> {
 
   protected List<Integer> delayForTransition;
   protected List<Double> delayMulitiperForTransition;
@@ -104,50 +105,62 @@ public abstract class AbstractPetriNet<PetriTokenType, ITableType, OutTable exte
     }
   }
 
+  @Override
   public int getNrOfPlaces() {
     return placeCntr;
   }
 
+  @Override
   public int getNrOfTransition() {
     return transitionCntr;
   }
 
+  @Override
   public boolean isInputPlace(int placeID) {
     return isInputPlaces.get(placeID);
   }
 
+  @Override
   public List<Integer> getPlacesNeededForTransition(int trId) {
     return placesNeededForTrans.get(trId);
   }
 
+  @Override
   public List<Integer> getOutputTransitions() {
     return new ArrayList<>(actionsForOuptutTransirions.keySet());
   }
 
+  @Override
   public int getDelayForTransition(int trId) {
     return delayForTransition.get(trId);
   }
 
+  @Override
   public boolean hasTransitionDelay(int trId) {
     return !(delayForTransition.get(trId) == 0 && delayMulitiperForTransition.get(trId) == 0.0);
   }
 
+  @Override
   public List<Integer> getOutputPlacesForTransition(int trId) {
     return this.fromTransToPlace.get(trId);
   }
 
+  @Override
   public boolean isOuputTransition(int trId) {
     return this.isOutputTransition.get(trId);
   }
 
+  @Override
   public PetriTokenType getInitialMarkingForPlace(int plId) {
     return initialMarkingOfThePlaces.get(plId);
   }
 
+  @Override
   public List<Integer> getTransitionAfterPlace(int placeId) {
     return fromPlaceToTrans.get(placeId);
   }
 
+  @Override
   public List<Integer> getTransitinsBeforePlace(Integer placeId) {
     List<Integer> toRet = new ArrayList<>();
     for (Integer trId = 0; trId < getNrOfTransition(); trId++) {
@@ -159,14 +172,17 @@ public abstract class AbstractPetriNet<PetriTokenType, ITableType, OutTable exte
     return toRet;
   }
 
+  @Override
   public List<Consumer<PetriTokenType>> getActionsForOuputTransition(int trId) {
     return actionsForOuptutTransirions.get(trId);
   }
 
+  @Override
   public ITableType getTableForTransition(int trId) {
     return tableForTransition.get(trId);
   }
 
+  @Override
   public Double getDelayMultiplierForTransition(int trId) {
     return this.delayMulitiperForTransition.get(trId);
   }
