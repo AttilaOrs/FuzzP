@@ -75,7 +75,7 @@ public class ScaleDeducerTest {
     net.addArcFromPlaceToTransition(p4, ot2);
 
     UnifiedPetriNet newNet = ScaleDeducer.deduceScale(net);
-    assertTrue(ScaleDeducer.unscaledPlaces(newNet).size() == 2);
+    assertTrue(ScaleDeducer.unscaledPlaces(newNet).size() == 0);
   }
 
   @Test
@@ -122,7 +122,7 @@ public class ScaleDeducerTest {
 
     UnifiedPetriNet fixedScalesNet = ScaleDeducer.deduceScale(net);
 
-    assertTrue(ScaleDeducer.unscaledPlaces(fixedScalesNet).size() == 3);
+    assertTrue(ScaleDeducer.unscaledPlaces(fixedScalesNet).size() == 0);
   }
   
   @Test
