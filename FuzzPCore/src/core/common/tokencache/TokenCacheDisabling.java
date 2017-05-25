@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.PriorityQueue;
 
-public class TokenCache<TokenType> implements ITokenCache<TokenType> {
-  
+public class TokenCacheDisabling<TokenType> implements ITokenCache<TokenType> {
+
   private static final int MAX_CACHED = 10;
 
   private final PriorityQueue<TokenCacheEntry<TokenType>> entryQueue;
@@ -16,22 +16,28 @@ public class TokenCache<TokenType> implements ITokenCache<TokenType> {
   private int callCntr;
   private final int maxCached;
   private Comparator<TokenCacheEntry<?>> cmp;
+  private int lastReplaced;
+  private boolean disableCache;
 
-  public TokenCache() {
+  public TokenCacheDisabling() {
     this(MAX_CACHED);
   }
 
-
-  public TokenCache(int maxCached) {
+  public TokenCacheDisabling(int maxCached) {
     entryQueue = new PriorityQueue<>(maxCached, new TokenCacheEntry.DefaultComparator());
     cacheMap = new HashMap<>(maxCached);
     callCntr = 0;
     this.maxCached = maxCached;
     cmp = new TokenCacheEntry.DefaultComparator();
+    lastReplaced = 0;
+    disableCache = false;
   }
 
   @Override
   public Optional<TokenType[]> getCached(TokenType[] inp) {
+    if (disableCache) {
+      return Optional.empty();
+    }
     TokenCacheKey<TokenType> key = new TokenCacheKey<>(inp);
     if (cacheMap.containsKey(key)) {
       TokenCacheEntry<TokenType> entry = cacheMap.get(key);
@@ -46,6 +52,9 @@ public class TokenCache<TokenType> implements ITokenCache<TokenType> {
 
   @Override
   public void addRezultToCache(TokenType[] inp, TokenType[] out) {
+    if (disableCache) {
+      return;
+    }
     callCntr++;
     TokenCacheKey<TokenType> key = new TokenCacheKey<>(inp);
     TokenCacheEntry<TokenType> entry = new TokenCacheEntry<>(callCntr, out, key);
@@ -61,23 +70,22 @@ public class TokenCache<TokenType> implements ITokenCache<TokenType> {
         entryQueue.remove(pp);
         cacheMap.remove(pp.getKey());
         putBoth(key, entry);
-      } else {
+        lastReplaced++;
+        if (lastReplaced > maxCached) {
+          disableCache = true;
+        }
       }
     }
 
-
   }
-
 
   private void putBoth(TokenCacheKey<TokenType> key, TokenCacheEntry<TokenType> entry) {
     entryQueue.add(entry);
     cacheMap.put(key, entry);
   }
 
-
   public IntSummaryStatistics getUsageStats() {
     return entryQueue.stream().mapToInt(e -> e.getAllCalled()).summaryStatistics();
-
   }
 
 }

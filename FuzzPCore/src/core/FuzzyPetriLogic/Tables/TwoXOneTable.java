@@ -63,7 +63,7 @@ public class TwoXOneTable implements ITable, IGeneralTwoXOneTable {
 		FuzzyToken inp2 = inps[1];
 		Optional<?> rez = inp1.getNonZeroValues()
 		    .flatMap(fv -> inp2.getNonZeroValues().map(fv2 -> new FuzzyValue[] { fv, fv2 }))
-		    .filter(fvAr -> ruleTable.get(((FuzzyValue[]) fvAr)[0]).get(((FuzzyValue[]) fvAr)[1]) != FuzzyValue.FF)
+		    .filter(fvAr -> ruleTable.get(fvAr[0]).get(fvAr[1]) != FuzzyValue.FF)
 		    .findAny();
 		return rez.isPresent();
 	}
@@ -105,4 +105,40 @@ public class TwoXOneTable implements ITable, IGeneralTwoXOneTable {
 		}
 
 	}
+
+  @Override
+  public boolean maybeExecutable(boolean[] inps) {
+    ITable.inpCheck(inps, 2);
+    boolean inp1 = inps[0];
+    boolean inp2 = inps[1];
+    if (!inp1 && inp1 == inp2) {
+      return ruleTable.get(FuzzyValue.FF).get(FuzzyValue.FF) != FuzzyValue.FF;
+    }
+    if (!inp1) {
+      for (FuzzyValue index : FuzzyValue.inOrderWithoutPhi) {
+        if (ruleTable.get(FuzzyValue.FF).get(index) != FuzzyValue.FF) {
+          return true;
+        }
+      }
+      return false;
+
+    }
+    if (!inp2) {
+      for(FuzzyValue index : FuzzyValue.inOrderWithoutPhi){
+        if (ruleTable.get(index).get(FuzzyValue.FF) != FuzzyValue.FF) {
+          return true;
+        }
+      }
+      return false;
+    }
+    for (FuzzyValue col : FuzzyValue.inOrderWithoutPhi) {
+      for (FuzzyValue row : FuzzyValue.inOrderWithoutPhi) {
+        if (ruleTable.get(col).get(row) != FuzzyValue.FF) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 }

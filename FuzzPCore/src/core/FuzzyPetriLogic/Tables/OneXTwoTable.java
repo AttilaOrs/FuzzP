@@ -74,4 +74,19 @@ public class OneXTwoTable implements ITable, IGeneralOneXTwoTable {
 	public Stream<FuzzyValue> cellsOneByOne() {
 		return FuzzyValue.inOrder.stream().flatMap(fv -> Arrays.asList(valTable1.get(fv), valTable2.get(fv)).stream());
 	}
+
+  @Override
+  public boolean maybeExecutable(boolean[] inps) {
+    ITable.inpCheck(inps, 1);
+    if (!inps[0]) {
+      return valTable1.get(FuzzyValue.FF) != FuzzyValue.FF || valTable2.get(FuzzyValue.FF) != FuzzyValue.FF;
+    }
+
+    for (FuzzyValue index : FuzzyValue.inOrderWithoutPhi) {
+      if (valTable1.get(index) != FuzzyValue.FF || valTable2.get(index) != FuzzyValue.FF) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

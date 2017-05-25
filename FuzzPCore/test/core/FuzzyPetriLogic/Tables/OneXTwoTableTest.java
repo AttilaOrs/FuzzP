@@ -1,6 +1,7 @@
 package core.FuzzyPetriLogic.Tables;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -71,7 +72,35 @@ public class OneXTwoTableTest {
     assertTrue(res.length == 2);
     assertEquals("<phi>", res[0].shortString());
     assertEquals("<0.00,0.00,1.00,0.00,0.00>", res[1].shortString());
+  }
+
+  @Test
+  public void never_executable() {
+    OneXTwoTable tableOnlyPhi = parser.parseOneXTwoTable("{[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]}");
+    FuzzyToken ll = new FuzzyToken(0.1, 0.2, 0.3, 0.35, 0.05);
+    assertFalse(tableOnlyPhi.executable(new FuzzyToken[] { ll }));
+    FuzzyToken phi = new FuzzyToken();
+    assertFalse(tableOnlyPhi.executable(new FuzzyToken[] { phi }));
 
   }
 
+  @Test
+  public void maybe_executable() {
+    OneXTwoTable table = parser.parseOneXTwoTable("{[<FF,FF><FF,FF><FF,FF><FF,FF><PL,FF><FF,FF>]}");
+    assertTrue(table.maybeExecutable(new boolean[] { true }));
+    assertFalse(table.maybeExecutable(new boolean[] { false }));
+
+    OneXTwoTable tableOtherChannel = parser.parseOneXTwoTable("{[<FF,FF><FF,FF><FF,FF><FF,FF><FF,PL><FF,FF>]}");
+    assertTrue(tableOtherChannel.maybeExecutable(new boolean[] { true }));
+    assertFalse(tableOtherChannel.maybeExecutable(new boolean[] { false }));
+
+    OneXTwoTable tableOnlyPhi = parser.parseOneXTwoTable("{[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]}");
+    assertFalse(tableOnlyPhi.maybeExecutable(new boolean[] { true }));
+    assertFalse(tableOnlyPhi.maybeExecutable(new boolean[] { false }));
+
+    OneXTwoTable tablePhiColomHasValues = parser.parseOneXTwoTable("{[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><ZR,FF>]}");
+    assertFalse(tablePhiColomHasValues.maybeExecutable(new boolean[] { true }));
+    assertTrue(tablePhiColomHasValues.maybeExecutable(new boolean[] { false }));
+
+  }
 }

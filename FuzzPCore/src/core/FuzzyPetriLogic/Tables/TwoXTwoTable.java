@@ -55,9 +55,9 @@ public class TwoXTwoTable implements ITable, IGeneralTwoXTwoTable {
 		FuzzyToken inp2 = inps[1];
 		Optional<?> rez = inp1.getNonZeroValues()
 		    .flatMap(fv -> inp2.getNonZeroValues().map(fv2 -> new FuzzyValue[] { fv, fv2 }))
-		    .map(fvAr -> (ruleTable1.get((((FuzzyValue[]) fvAr)[0])).get(((FuzzyValue[]) fvAr)[1]) != FuzzyValue.FF)
-		        ? ruleTable1.get(((FuzzyValue[]) fvAr)[0]).get(((FuzzyValue[]) fvAr)[1])
-		        : ruleTable2.get(((FuzzyValue[]) fvAr)[0]).get(((FuzzyValue[]) fvAr)[1]))
+		    .map(fvAr -> (ruleTable1.get((fvAr[0])).get(fvAr[1]) != FuzzyValue.FF)
+		        ? ruleTable1.get(fvAr[0]).get(fvAr[1])
+		        : ruleTable2.get(fvAr[0]).get(fvAr[1]))
 		    .filter(fv -> fv != FuzzyValue.FF).findAny();
 		return rez.isPresent();
 	}
@@ -91,6 +91,44 @@ public class TwoXTwoTable implements ITable, IGeneralTwoXTwoTable {
 		return FuzzyValue.getFuzzyValuePairsForindexing()
 		    .flatMap(ls -> Arrays.asList(ruleTable1.get(ls[0]).get(ls[1]), ruleTable2.get(ls[0]).get(ls[1])).stream());
 	}
+
+  @Override
+  public boolean maybeExecutable(boolean[] inps) {
+    ITable.inpCheck(inps, 2);
+    boolean inp1 = inps[0];
+    boolean inp2 = inps[1];
+    if (!inp1 && inp1 == inp2) {
+      return ruleTable1.get(FuzzyValue.FF).get(FuzzyValue.FF) != FuzzyValue.FF
+          || ruleTable2.get(FuzzyValue.FF).get(FuzzyValue.FF) != FuzzyValue.FF;
+    }
+    if (!inp1) {
+      for (FuzzyValue index : FuzzyValue.inOrderWithoutPhi) {
+        if (ruleTable1.get(FuzzyValue.FF).get(index) != FuzzyValue.FF
+            || ruleTable2.get(FuzzyValue.FF).get(index) != FuzzyValue.FF) {
+          return true;
+        }
+      }
+      return false;
+    }
+    if (!inp2) {
+      for (FuzzyValue index : FuzzyValue.inOrderWithoutPhi) {
+        if (ruleTable1.get(index).get(FuzzyValue.FF) != FuzzyValue.FF
+            || ruleTable2.get(index).get(FuzzyValue.FF) != FuzzyValue.FF) {
+          return true;
+        }
+      }
+      return false;
+    }
+    for (FuzzyValue col : FuzzyValue.inOrderWithoutPhi) {
+      for (FuzzyValue row : FuzzyValue.inOrderWithoutPhi) {
+        if (ruleTable1.get(col).get(row) != FuzzyValue.FF || ruleTable2.get(col).get(row) != FuzzyValue.FF) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 
   public TwoXTwoTable myClone() {
     EnumMap<FuzzyValue, Map<FuzzyValue, FuzzyValue>> temp = new EnumMap<>(FuzzyValue.class);

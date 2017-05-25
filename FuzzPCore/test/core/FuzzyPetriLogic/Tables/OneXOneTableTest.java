@@ -74,6 +74,17 @@ public class OneXOneTableTest {
     assertTrue(otherTable.executable(new FuzzyToken[] { new FuzzyToken() }));
     assertFalse(otherTable.executable(new FuzzyToken[] { new FuzzyToken(0.5, 0.0, 0.5, 0.0, 0.0) }));
     assertTrue(otherTable.executable(new FuzzyToken[] { new FuzzyToken(0.3, 0.3, 0.0, 0.0, 0.0) }));
+  }
+
+  @Test
+  public void maybe_executable() {
+    OneXOneTable onlyOne = parserWithPhi.parseOneXOneTable("{[<FF><FF><FF><ZR><FF><FF>]}");
+    assertTrue(onlyOne.maybeExecutable(new boolean[] { true }));
+    assertFalse(onlyOne.maybeExecutable(new boolean[] { false }));
+
+    OneXOneTable onlyPhi = parserWithPhi.parseOneXOneTable("{[<FF><FF><FF><FF><FF><ZR>]}");
+    assertFalse(onlyPhi.maybeExecutable(new boolean[] { true }));
+    assertTrue(onlyPhi.maybeExecutable(new boolean[] { false }));
 
   }
 

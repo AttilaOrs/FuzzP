@@ -4,12 +4,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import core.FuzzyPetriLogic.FuzzyTableParser;
 import core.FuzzyPetriLogic.FuzzyToken;
 
 public class TwoXOneTableTest {
+
+  private FuzzyTableParser parser;
+
+  @Before
+  public void setUp() {
+    parser = new FuzzyTableParser(true);
+  }
+
 
   @Test
   public void default_test() {
@@ -43,7 +52,6 @@ public class TwoXOneTableTest {
 
   @Test
   public void changer_test() {
-		FuzzyTableParser parser = new FuzzyTableParser(true);
 		TwoXOneTable changer = parser.parseTwoXOneTable(changerStr);
     FuzzyToken phi = new FuzzyToken();
     FuzzyToken nonPhi = new FuzzyToken(1.0, 0.0, 0.0, 0.0, 0.0);
@@ -67,11 +75,6 @@ public class TwoXOneTableTest {
 		assertTrue(changer.executable(new FuzzyToken[] { phi, phi }));
   }
 
-	String c_test = "PL, PM, ZR, FF, FF, FF "
-	    + ",PM, PM, ZR, FF, FF, FF,"
-	    + "FF, FF, ZR, FF, FF, ZR,"
-	    + "FF, FF, ZR, NM, NM, FF,"
-	    + "FF, FF, ZR, NM, NL, FF,FF, FF, ZR, FF, FF, FF";
 
 	String c_tets_str = "" +
 	    "{[<PL><PM><ZR><FF><FF><FF>]" +
@@ -82,7 +85,6 @@ public class TwoXOneTableTest {
 	    " [<FF><FF><ZR><FF><FF><FF>]}";
   @Test
   public void direction_test() {
-		FuzzyTableParser parser = new FuzzyTableParser(true);
 		TwoXOneTable c = parser.parseTwoXOneTable(c_tets_str);
     FuzzyToken NLZR = new FuzzyToken(0.5, 0.0, 0.5, 0.0, 0.0);
     FuzzyToken PLPM = new FuzzyToken(0.0, 0.0, 0.0, 0.5, 0.5);
@@ -91,6 +93,74 @@ public class TwoXOneTableTest {
     assertTrue(c.executable(new FuzzyToken[] { PLPM, NLZR }));
 		assertFalse(c.executable(new FuzzyToken[] { new FuzzyToken(), new FuzzyToken() }));
 		assertTrue(c.executable(new FuzzyToken[] { FuzzyToken.zeroToken(), new FuzzyToken() }));
+  }
+
+  String phi_everywhere = "" +
+      "{[<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]}";
+
+  String phi_everywhere_except_phi_colom = "" +
+      "{[<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><ZR>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]}";
+
+  String phi_everywhere_except_phi_row = "" +
+      "{[<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><ZR><FF>]}";
+
+  String phi_everywhere_except_phi_corner = "" +
+      "{[<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><ZR>]}";
+
+  String phi_everywhere_except_midle = "" +
+      "{[<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><ZR><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]" +
+      " [<FF><FF><FF><FF><FF><FF>]}";
+
+  @Test
+  public void maybe_executable() {
+    TwoXOneTable c = parser.parseTwoXOneTable(phi_everywhere);
+    assertFalse(c.maybeExecutable(new boolean[] { true, true }));
+    assertFalse(c.maybeExecutable(new boolean[] { true, false }));
+    assertFalse(c.maybeExecutable(new boolean[] { false, true }));
+    assertFalse(c.maybeExecutable(new boolean[] { false, false }));
+
+    c = parser.parseTwoXOneTable(phi_everywhere_except_phi_colom);
+    assertFalse(c.maybeExecutable(new boolean[] { true, true }));
+    assertTrue(c.maybeExecutable(new boolean[] { true, false }));
+    assertFalse(c.maybeExecutable(new boolean[] { false, true }));
+    assertFalse(c.maybeExecutable(new boolean[] { false, false }));
+
+    c = parser.parseTwoXOneTable(phi_everywhere_except_phi_row);
+    assertFalse(c.maybeExecutable(new boolean[] { true, true }));
+    assertFalse(c.maybeExecutable(new boolean[] { true, false }));
+    assertTrue(c.maybeExecutable(new boolean[] { false, true }));
+    assertFalse(c.maybeExecutable(new boolean[] { false, false }));
+
+    c = parser.parseTwoXOneTable(phi_everywhere_except_midle);
+    assertTrue(c.maybeExecutable(new boolean[] { true, true }));
+    assertFalse(c.maybeExecutable(new boolean[] { true, false }));
+    assertFalse(c.maybeExecutable(new boolean[] { false, true }));
+    assertFalse(c.maybeExecutable(new boolean[] { false, false }));
+
   }
 
 }

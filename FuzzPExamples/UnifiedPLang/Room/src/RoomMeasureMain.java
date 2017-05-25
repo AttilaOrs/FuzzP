@@ -11,11 +11,11 @@ public class RoomMeasureMain {
   public static void main(String[] args) {
 
     long start = System.currentTimeMillis();
-    for (int x = 0; x < 1; x++) {
+    for (int x = 0; x < 30; x++) {
 
       RoomModelUnifiedPetriMaker maker = new RoomModelUnifiedPetriMaker();
       UnifiedPetrinetCacheTableResultWrapper wp = new UnifiedPetrinetCacheTableResultWrapper(maker.net,
-          () -> new TokenCache<>(5));
+          () -> new TokenCache<>(15));
       SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(wp, false);
       for (int i = 0; i < 60 * 60; i++) {
         Map<Integer, UnifiedToken> inp = new HashMap<>();
@@ -34,13 +34,9 @@ public class RoomMeasureMain {
         exec.runTick(inp);
 
       }
-      wp.printStats();
+      // wp.printStats();
     }
     long end = System.currentTimeMillis();
     System.out.println((end - start) / 30);
-    System.out.println(TokenCache._YES);
-    System.out.println(TokenCache._d_ADD);
-    System.out.println(TokenCache._c_ADD);
-    System.out.println(TokenCache._n_ADD);
   }
 }

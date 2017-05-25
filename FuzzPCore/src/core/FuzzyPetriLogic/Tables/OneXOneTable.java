@@ -76,4 +76,18 @@ public class OneXOneTable implements ITable, IGeneralOneXOne {
 		return FuzzyValue.inOrder.stream().map(fv -> valTable.get(fv));
 	}
 
+  @Override
+  public boolean maybeExecutable(boolean[] inps) {
+    ITable.inpCheck(inps, 1);
+    if (!inps[0]) {
+      return valTable.get(FuzzyValue.FF) != FuzzyValue.FF;
+    }
+
+    for (FuzzyValue index : FuzzyValue.inOrderWithoutPhi) {
+      if (valTable.get(index) != FuzzyValue.FF)
+        return true;
+    }
+    return false;
+  }
+
 }
