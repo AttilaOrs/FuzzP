@@ -2,11 +2,14 @@ package core.FuzzyPetriLogic;
 
 import java.util.stream.Stream;
 
-public interface ITable {
+import core.common.generaltable.IGeneralTable;
+
+public interface ITable extends IGeneralTable {
   public FuzzyToken[] execute(FuzzyToken[] inps);
 
   public boolean executable(FuzzyToken[] inps);
 
+  @Override
   public boolean maybeExecutable(boolean[] inps);
 
   public Stream<FuzzyValue> cellsOneByOne();

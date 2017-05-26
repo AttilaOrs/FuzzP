@@ -17,13 +17,14 @@ import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.DrawableUnifiedPetriNetWithExternalNames;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.common.AbstractPetriNet;
+import core.common.generaltable.IGeneralTable;
 import core.common.recoder.FullRecordable;
 import core.common.recoder.FullRecorder;
 import de.erichseifert.gral.data.DataTable;
 import main.ScenarioSaverLoader;
 import structure.DrawableNet;
 
-public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TTableType, TOuTableType extends TTableType, TPetriNetType extends AbstractPetriNet<TTokenType, TTableType, TOuTableType>> {
+public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TTableType extends IGeneralTable, TOuTableType extends TTableType, TPetriNetType extends AbstractPetriNet<TTokenType, TTableType, TOuTableType>> {
 
   TPetriNetType net;
   FuzzyPetrinetBehaviourModel<TTokenType> behavourModel;

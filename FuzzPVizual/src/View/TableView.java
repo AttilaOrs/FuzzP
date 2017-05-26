@@ -16,10 +16,11 @@ import View.DataModelForTables.TableModelForTwoXOne;
 import View.DataModelForTables.TableModelForTwoXTwo;
 import core.common.generaltable.IGeneralOneXOne;
 import core.common.generaltable.IGeneralOneXTwoTable;
+import core.common.generaltable.IGeneralTable;
 import core.common.generaltable.IGeneralTwoXOneTable;
 import core.common.generaltable.IGeneralTwoXTwoTable;
 
-public class TableView<TTableType> implements IView {
+public class TableView<TTableType extends IGeneralTable> implements IView {
 
   public static final boolean PHI_COLUMS_DISPLAY_ENABLED = true;
 

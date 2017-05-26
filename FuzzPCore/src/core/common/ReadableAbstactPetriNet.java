@@ -3,7 +3,9 @@ package core.common;
 import java.util.List;
 import java.util.function.Consumer;
 
-public interface ReadableAbstactPetriNet<PetriTokenType, ITableType, OutTable extends ITableType> {
+import core.common.generaltable.IGeneralTable;
+
+public interface ReadableAbstactPetriNet<PetriTokenType, ITableType extends IGeneralTable, OutTable extends ITableType> {
 
   public int getNrOfPlaces();
 

@@ -10,8 +10,9 @@ import java.util.function.Predicate;
 
 import core.Drawable.TransitionPlaceNameStore;
 import core.common.AbstractPetriNet;
+import core.common.generaltable.IGeneralTable;
 
-public abstract class AbstactHierachicalBuilder<TTokenType, TITable, TOutTable extends TITable, TPetriNet extends AbstractPetriNet<TTokenType, TITable, TOutTable>, TIntermediateNet extends AbstactHierachicalIntermediateNet<TITable, TIntermediateNet>> {
+public abstract class AbstactHierachicalBuilder<TTokenType, TITable extends IGeneralTable, TOutTable extends TITable, TPetriNet extends AbstractPetriNet<TTokenType, TITable, TOutTable>, TIntermediateNet extends AbstactHierachicalIntermediateNet<TITable, TIntermediateNet>> {
 
   protected TIntermediateNet interNet;
   protected boolean strict;

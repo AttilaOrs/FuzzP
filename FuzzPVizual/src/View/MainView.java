@@ -18,10 +18,11 @@ import com.mxgraph.swing.mxGraphComponent;
 import Controller.IGlobalController;
 import Model.FuzzyPVizualModel;
 import core.common.AbstractPetriNet;
+import core.common.generaltable.IGeneralTable;
 import core.common.recoder.FullRecordable;
 import de.erichseifert.gral.ui.InteractivePanel;
 
-public class MainView<TTokenType extends FullRecordable<TTokenType>, TTableType, TOuTableType extends TTableType, TPetriNetType extends AbstractPetriNet<TTokenType, TTableType, TOuTableType>>
+public class MainView<TTokenType extends FullRecordable<TTokenType>, TTableType extends IGeneralTable, TOuTableType extends TTableType, TPetriNetType extends AbstractPetriNet<TTokenType, TTableType, TOuTableType>>
     extends JFrame {
 
   /**

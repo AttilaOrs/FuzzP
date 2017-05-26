@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class AbstractPetriNet<PetriTokenType, ITableType, OutTable extends ITableType>
+import core.common.generaltable.IGeneralTable;
+
+public abstract class AbstractPetriNet<PetriTokenType, ITableType extends IGeneralTable, OutTable extends ITableType>
     implements ReadableAbstactPetriNet<PetriTokenType, ITableType, OutTable> {
 
   protected List<Integer> delayForTransition;

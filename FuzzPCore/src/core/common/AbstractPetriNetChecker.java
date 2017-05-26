@@ -2,7 +2,9 @@ package core.common;
 
 import java.util.stream.Collectors;
 
-public abstract class AbstractPetriNetChecker<PetriTokenType, ITableType, oneOone extends ITableType, oneOtwo extends ITableType, twoOone extends ITableType, twoOtwo extends ITableType> {
+import core.common.generaltable.IGeneralTable;
+
+public abstract class AbstractPetriNetChecker<PetriTokenType, ITableType extends IGeneralTable, oneOone extends ITableType, oneOtwo extends ITableType, twoOone extends ITableType, twoOtwo extends ITableType> {
 
   String potentialErrors;
   Class<oneOone> oneOoneClazz;

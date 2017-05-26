@@ -2,7 +2,9 @@ package core.UnifiedPetriLogic;
 
 import java.util.List;
 
-public interface IUnifiedTable {
+import core.common.generaltable.IGeneralTable;
+
+public interface IUnifiedTable extends IGeneralTable {
 
   UnifiedToken[] execute(UnifiedToken[] inputs, IContex ct);
 
@@ -12,6 +14,7 @@ public interface IUnifiedTable {
 
   List<Double> deduceScale(List<Double> inpScales);
 
+  @Override
   boolean maybeExecutable(boolean[] ar);
 
 

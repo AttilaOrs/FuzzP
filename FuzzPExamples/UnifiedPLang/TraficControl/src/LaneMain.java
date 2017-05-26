@@ -1,6 +1,9 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import Main.UnifiedVizualizer;
 import core.FuzzyPetriLogic.PetriNet.DebuggerRecorder;
@@ -32,6 +35,27 @@ public class LaneMain {
       exec.runTick(inp);
     }
     UnifiedVizualizer.visualize(maker.net, fullRec, maker.nameStore);
+  }
+
+  public List<Map<Integer, UnifiedToken>> createInput() {
+    LaneUnifiedPetriMaker maker = new LaneUnifiedPetriMaker();
+    List<Map<Integer, UnifiedToken>> toRet = new ArrayList<>();
+    Random rnd = new Random();
+    for (int tick = 0; tick < 200; tick++) {
+      Map<Integer, UnifiedToken> inp = new HashMap<>();
+      // input of machines
+      if (tick % 10 < 5) {
+        inp.put(maker.iP3, new UnifiedToken((double) (10 - tick % 10)));
+      } else {
+        inp.put(maker.iP2, new UnifiedToken((double) (10 - tick % 10)));
+      }
+      if (tick % 7 == 0) {
+        inp.put(maker.iP4, new UnifiedToken(0.0));
+      }
+      toRet.add(inp);
+    }
+    return toRet;
+
   }
 
 }

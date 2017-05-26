@@ -3,26 +3,34 @@ package core.common;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import core.common.generaltable.IGeneralTable;
 import core.common.recoder.FullRecordable;
 import core.common.recoder.IGeneralPetriBehavoiurRecorder;
 
-public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenType>, TTableType, TOutTable extends TTableType, TPetriNet extends ReadableAbstactPetriNet<TTokenType, TTableType, TOutTable>> {
+public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenType>, TTableType extends IGeneralTable, TOutTable extends TTableType, TPetriNet extends ReadableAbstactPetriNet<TTokenType, TTableType, TOutTable>> {
 
+  public static final boolean DEFALT_EANBLE_CACHE = true;
+  public static boolean OLD_VERSION = false; // left here only for measuremnt
+
+  private final boolean enableCache;
 
   protected TPetriNet myNet;
   public List<TTokenType> stateOfPlaces;
   public List<Integer> delayStateOfTransitions;
   protected List<TTokenType[]> valueHoldInTransitions;
   public List<Integer> orderOfTransition;
+  private Map<StateCacheEntry, List<Integer>> cache;
 
   protected IGeneralPetriBehavoiurRecorder<TTokenType> recorder;
 
-  public AbstractExecutor(TPetriNet net, boolean enablechecking) {
+  public AbstractExecutor(TPetriNet net, boolean enablechecking, boolean enableChache) {
 		this.myNet = net;
 		intilazeOrder();
 		resetSimulator();
@@ -30,7 +38,13 @@ public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenT
 		if (enablechecking) {
       checkPetriNet();
 		}
-
+    this.enableCache = enableChache;
+    if (enableChache) {
+      cache = new HashMap<>();
+    }
+	}
+  public AbstractExecutor(TPetriNet net, boolean enablechecking) {
+    this(net, enablechecking, DEFALT_EANBLE_CACHE);
 	}
 
   public TPetriNet getNet() {
@@ -94,7 +108,7 @@ public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenT
 
   }
 
-  protected void executeFirableTransitions() {
+  private void executeFirableTransitionsOld() {
     int loopCntr = 0; // overcome infinite loop in the system
     boolean happendSomthing = true;
     ArrayList<Integer> currentOrderOfTransitions = new ArrayList<>();
@@ -115,6 +129,40 @@ public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenT
       }
     }
   }
+
+  protected void executeFirableTransitions() {
+    if (OLD_VERSION) {
+      executeFirableTransitionsOld();
+      return;
+    }
+    int loopCntr = 0; // overcome infinite loop in the system
+    boolean happendSomthing = true;
+    while (happendSomthing && loopCntr < orderOfTransition.size() * 2) {
+      happendSomthing = false;
+      loopCntr++;
+      for (Integer currentTrans : possibleToExecute()) {
+        if (fireable(currentTrans)) {
+          happendSomthing = true;
+          startFire(currentTrans);
+          break;
+        }
+      }
+    }
+  }
+
+  protected List<Integer> possibleToExecute() {
+    if (enableCache) {
+      return possibleToExecuteBasedOnCache();
+    }
+    List<Integer> toRet = new ArrayList<Integer>();
+    for (Integer trId : orderOfTransition) {
+      if (fireable(trId)) {
+        toRet.add(trId);
+      }
+    }
+    return toRet;
+  }
+
 
   protected void setInputPlacesWithToken(Map<Integer, TTokenType> inputs) {
     if (inputs != null) {
@@ -226,4 +274,57 @@ public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenT
     recorder.tokenPuttedInPlaceFromTransition(plID, trId, tToken);
 
   }
+
+  private static class StateCacheEntry {
+    final boolean[] state;
+
+    public StateCacheEntry(boolean[] state) {
+      this.state = state;
+    }
+
+    @Override
+    public int hashCode() {
+      return Arrays.hashCode(state);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o instanceof StateCacheEntry) {
+        return Arrays.equals(state, ((StateCacheEntry) o).state);
+      }
+      return false;
+    }
+
+    @Override
+    public String toString() {
+      return "CE" + Arrays.toString(state);
+    }
+
+  }
+
+  protected List<Integer> possibleToExecuteBasedOnCache() {
+    boolean[] st = new boolean[stateOfPlaces.size()];
+    for (int i = 0; i < stateOfPlaces.size(); i++) {
+      st[i] = !stateOfPlaces.get(i).isPhi();
+    }
+    StateCacheEntry cacheEntry = new StateCacheEntry(st);
+    if (!cache.containsKey(cacheEntry)) {
+
+      // build up
+      List<Integer> maybeRunnableTransitions = new ArrayList<>();
+      for (Integer trIdIndex : orderOfTransition) {
+        List<Integer> inpPlaces = myNet.getPlacesNeededForTransition(trIdIndex);
+        boolean[] maybeInps = new boolean[inpPlaces.size()];
+        for (int i = 0; i < inpPlaces.size(); i++) {
+          maybeInps[i] = st[inpPlaces.get(i)];
+        }
+        if (myNet.getTableForTransition(trIdIndex).maybeExecutable(maybeInps)) {
+          maybeRunnableTransitions.add(trIdIndex);
+        }
+      }
+      cache.put(cacheEntry, maybeRunnableTransitions);
+    }
+    return cache.get(cacheEntry);
+  }
+
 }
