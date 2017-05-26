@@ -144,7 +144,6 @@ public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenT
         if (fireable(currentTrans)) {
           happendSomthing = true;
           startFire(currentTrans);
-          break;
         }
       }
     }

@@ -40,10 +40,19 @@ public class MeasureMain {
     RoomModelUnifiedPetriMaker roomMaker = new RoomModelUnifiedPetriMaker();
     RoomStateUnifiedPetriMaker roomStateMaker = new RoomStateUnifiedPetriMaker();
     ControllerUnifiedPetriMaker controllerMaker = new ControllerUnifiedPetriMaker();
+    PosNegDeciderMaker posNegDecMaker = new PosNegDeciderMaker();
+    LargeSmallerExampleMaker largerSmallerMaker = new LargeSmallerExampleMaker();
+    TwoLoopsExampleMaker twoLoopsMaker = new TwoLoopsExampleMaker();
+    VariableFinishLoopExampleMaker variableMaker = new VariableFinishLoopExampleMaker();
+    InhibitorArcExampleMaker inhibMaker = new InhibitorArcExampleMaker();
 
     UnifiedPetriNet[] nets = new UnifiedPetriNet[] { maxFinderMaker.net, interSectionMaker.net, laneMaker.net,
-        roomMaker.net, roomStateMaker.net, controllerMaker.net };
-    String[] names = new String[] { "max", "inter", "lane", "room", "roomState", "controller" };
+        roomMaker.net, roomStateMaker.net, controllerMaker.net, posNegDecMaker.net, largerSmallerMaker.net,
+        twoLoopsMaker.net, variableMaker.net, inhibMaker.net };
+
+    String[] names = new String[] { "max", "inter", "lane", "room", "roomState", "controller", "posNegDec",
+        "largerSmaller", "twoLoops", "variable", "inhib" };
+
     List<Supplier<List<Map<Integer, UnifiedToken>>>> sups = new ArrayList<>();
     sups.add(MaxFinderTryOutMain::createInput);
     sups.add(IntersectionMain::createInput);
@@ -51,6 +60,11 @@ public class MeasureMain {
     sups.add(RoomMain::createInpForRoom);
     sups.add(RoomStateMain::createInpForRoom);
     sups.add(ControllerMain::createInp);
+    sups.add(PosNegDeciderMain::createInput);
+    sups.add(LargerSmallerExampleMain::createInput);
+    sups.add(TwoLoopsExampleMain::createInput);
+    sups.add(VariableFinishLoopExamplMain::createInput);
+    sups.add(IntersectionMain::createInput);
 
 
     for (int i = 0; i < nets.length; i++) {
