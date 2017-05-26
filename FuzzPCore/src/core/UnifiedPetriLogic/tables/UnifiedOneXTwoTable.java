@@ -37,6 +37,7 @@ public class UnifiedOneXTwoTable implements IUnifiedTable, IGeneralOneXTwoTable 
     return table.executable(new FuzzyToken[] { tk1 });
   }
 
+  @Override
   public List<Map<FuzzyValue, FuzzyValue>> getTables() {
     return table.getTables();
   }
@@ -58,6 +59,11 @@ public class UnifiedOneXTwoTable implements IUnifiedTable, IGeneralOneXTwoTable 
   @Override
   public List<Double> deduceScale(List<Double> inpScales) {
     return Arrays.asList(inpScales.get(0), inpScales.get(0));
+  }
+
+  @Override
+  public boolean maybeExecutable(boolean[] ar) {
+    return table.maybeExecutable(ar);
   }
 
 }

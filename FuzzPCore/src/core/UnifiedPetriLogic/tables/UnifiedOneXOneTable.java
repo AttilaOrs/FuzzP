@@ -54,4 +54,9 @@ public class UnifiedOneXOneTable implements IUnifiedTable, IGeneralOneXOne {
     return inpScales;
   }
 
+  @Override
+  public boolean maybeExecutable(boolean[] ar) {
+    return table.maybeExecutable(ar);
+  }
+
 }

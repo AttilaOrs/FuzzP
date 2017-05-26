@@ -48,4 +48,9 @@ public class WrappedUnifiedTable implements IUnifiedTable {
     return cache;
   }
 
+  @Override
+  public boolean maybeExecutable(boolean[] ar) {
+    return original.maybeExecutable(ar);
+  }
+
 }

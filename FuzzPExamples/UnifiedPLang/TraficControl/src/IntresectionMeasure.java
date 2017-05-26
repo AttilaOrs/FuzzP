@@ -13,7 +13,7 @@ public class IntresectionMeasure {
       IntersectionUnifiedPetriMaker maker = new IntersectionUnifiedPetriMaker();
       UnifiedPetrinetCacheTableResultWrapper wrp = new UnifiedPetrinetCacheTableResultWrapper(maker.net,
           () -> new TokenCacheDisabling<>(15));
-      SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(wrp, false);
+      SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(maker.net, false);
 
       for (int i = 0; i < 60; i++) {
         Map<Integer, UnifiedToken> inp = new HashMap<>();

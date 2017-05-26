@@ -105,4 +105,9 @@ public class UnifiedTwoXTwoTable extends AbstractTable implements IGeneralTwoXTw
   }
 
 
+  @Override
+  public boolean maybeExecutable(boolean[] ar) {
+    return table.maybeExecutable(ar);
+  }
+
 }

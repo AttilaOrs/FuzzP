@@ -12,5 +12,7 @@ public interface IUnifiedTable {
 
   List<Double> deduceScale(List<Double> inpScales);
 
+  boolean maybeExecutable(boolean[] ar);
+
 
 }

@@ -93,4 +93,9 @@ public class UnifiedTwoXOneTable extends AbstractTable implements IGeneralTwoXOn
     return Arrays.asList(rr);
   }
 
+  @Override
+  public boolean maybeExecutable(boolean[] ar) {
+    return table.maybeExecutable(ar);
+  }
+
 }
