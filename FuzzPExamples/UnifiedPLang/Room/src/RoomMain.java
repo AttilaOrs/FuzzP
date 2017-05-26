@@ -39,7 +39,7 @@ public class RoomMain {
 
   }
 
-  public List<Map<Integer, UnifiedToken>> createInpForRoom() {
+  public static List<Map<Integer, UnifiedToken>> createInpForRoom() {
     RoomModelUnifiedPetriMaker maker = new RoomModelUnifiedPetriMaker();
     List<Map<Integer, UnifiedToken>> toRet = new ArrayList<>();
     Random rnd = new Random();

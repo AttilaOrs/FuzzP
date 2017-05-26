@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import Main.UnifiedVizualizer;
@@ -22,6 +24,18 @@ public class MaxFinderTryOutMain {
 
     }
     UnifiedVizualizer.visualize(maker.net, rec, maker.nameStore);
+  }
+
+  public static List<Map<Integer, UnifiedToken>> createInput() {
+    MaxTableTryOutUnifiedPetriMaker maker = new MaxTableTryOutUnifiedPetriMaker();
+    List<Map<Integer, UnifiedToken>> toRet = new ArrayList<>();
+    for (int i = 0; i < 1000; i++) {
+      Map<Integer, UnifiedToken> inp = new HashMap<>();
+      inp.put(maker.iP1, new UnifiedToken(Math.sin(i / 10.0)));
+      inp.put(maker.iP2, new UnifiedToken(Math.cos(i / 10.0)));
+      toRet.add(inp);
+    }
+    return toRet;
 
   }
 

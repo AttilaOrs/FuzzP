@@ -1,4 +1,4 @@
-package core.FuzzyPetriLogic.PetriNet;
+package core.common.recoder;
 
 import java.util.List;
 import java.util.stream.Collectors;

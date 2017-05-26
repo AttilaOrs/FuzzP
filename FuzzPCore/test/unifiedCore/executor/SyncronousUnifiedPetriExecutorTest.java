@@ -10,13 +10,13 @@ import java.util.stream.IntStream;
 
 import org.junit.Before;
 
-import core.FuzzyPetriLogic.PetriNet.DebuggerRecorder;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedTableParser;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.tables.UnifiedOneXOneTable;
 import core.UnifiedPetriLogic.tables.UnifiedOneXTwoTable;
+import core.common.recoder.DebuggerRecorder;
 import core.common.recoder.FullRecorder;
 
 public class SyncronousUnifiedPetriExecutorTest {

@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Random;
 
 import Main.UnifiedVizualizer;
-import core.FuzzyPetriLogic.PetriNet.DebuggerRecorder;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
+import core.common.recoder.DebuggerRecorder;
 import core.common.recoder.FullRecorder;
 import core.common.recoder.MultiRecorder;
 
@@ -37,7 +37,7 @@ public class LaneMain {
     UnifiedVizualizer.visualize(maker.net, fullRec, maker.nameStore);
   }
 
-  public List<Map<Integer, UnifiedToken>> createInput() {
+  public static List<Map<Integer, UnifiedToken>> createInput() {
     LaneUnifiedPetriMaker maker = new LaneUnifiedPetriMaker();
     List<Map<Integer, UnifiedToken>> toRet = new ArrayList<>();
     Random rnd = new Random();

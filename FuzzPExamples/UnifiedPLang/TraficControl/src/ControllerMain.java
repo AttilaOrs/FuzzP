@@ -31,7 +31,7 @@ public class ControllerMain {
     UnifiedVizualizer.visualize(maker.net, fullRec, maker.nameStore);
   }
 
-  public List<Map<Integer, UnifiedToken>> createInpForRoom() {
+  public static List<Map<Integer, UnifiedToken>> createInp() {
     ControllerUnifiedPetriMaker maker = new ControllerUnifiedPetriMaker();
     List<Map<Integer, UnifiedToken>> toRet = new ArrayList<>();
     Random rnd = new Random();
