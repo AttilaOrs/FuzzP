@@ -64,7 +64,7 @@ public class MeasureMain {
     sups.add(LargerSmallerExampleMain::createInput);
     sups.add(TwoLoopsExampleMain::createInput);
     sups.add(VariableFinishLoopExamplMain::createInput);
-    sups.add(IntersectionMain::createInput);
+    sups.add(InhibitorArcsExampleMain::createInput);
 
 
     for (int i = 0; i < nets.length; i++) {
@@ -89,7 +89,7 @@ public class MeasureMain {
             AbstractExecutor.OLD_VERSION = false;
             return new SyncronousUnifiedPetriExecutor(net, false, true);
           }, name + "_runc"));
-      int[] cc = new int[] { 5, 10, 15 };
+      int[] cc = new int[] { 2, 5, 10, 15, 20, 25, 30 };
       for (int c : cc) {
         confs.add(new Configuration(sup,
             () -> {
@@ -140,7 +140,7 @@ public class MeasureMain {
 
   }
 
-  static final int TRY = 10;
+  static final int TRY = 100;
 
   public static void main(String[] args) {
     Map<String, List<Long>> results = new HashMap<>();

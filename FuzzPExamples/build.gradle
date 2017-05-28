@@ -6,7 +6,7 @@ apply plugin: 'eclipse'
 
 version=getVersionName()
 
-sourceSets.main.java.srcDirs = ['src','UnifiedPLang/Room/src', 'UnifiedPLang/TraficControl/src' ]
+sourceSets.main.java.srcDirs = ['src','UnifiedPLang/Room/src', 'UnifiedPLang/TraficControl/src','UnifiedPLang/test/src' ]
 mainClassName = "MeasureMain"
 project.ext.set("allJvmArgs", ["-Xms=1024m", "-Xmx=3000m"])
 
