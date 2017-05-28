@@ -100,6 +100,10 @@ public class UnifiedToken implements FullRecordable<UnifiedToken> {
 
   }
 
+  public static UnifiedToken zero() {
+    return new UnifiedToken(0.0);
+  }
+
 
 
 }
