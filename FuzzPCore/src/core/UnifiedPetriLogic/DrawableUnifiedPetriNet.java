@@ -8,11 +8,20 @@ import core.UnifiedPetriLogic.tables.UnifiedTwoXTwoTable;
 import structure.DrawableNet;
 
 public class DrawableUnifiedPetriNet implements DrawableNet {
+  public static final boolean DEFAULT_DRAW_SCALE = true;
+
 
   UnifiedPetriNet myNet;
 
+  private boolean drawScale;
+
   public DrawableUnifiedPetriNet(UnifiedPetriNet upn) {
+    this(upn, DEFAULT_DRAW_SCALE);
+  }
+
+  public DrawableUnifiedPetriNet(UnifiedPetriNet upn, boolean drawScale) {
     myNet = upn;
+    this.drawScale = drawScale;
   }
 
   @Override
@@ -53,7 +62,11 @@ public class DrawableUnifiedPetriNet implements DrawableNet {
 
   @Override
   public String getPlaceName(int placeId) {
+    if (drawScale) {
     return "P" + placeId + "(" + myNet.getScale(placeId) + ")";
+    } else {
+      return "P" + placeId;
+    }
   }
 
   @Override

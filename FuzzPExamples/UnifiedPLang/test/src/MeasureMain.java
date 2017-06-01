@@ -34,6 +34,67 @@ public class MeasureMain {
 
   static final List<Configuration> confs = new ArrayList<>();
   static {
+    
+    MaxTableTryOutUnifiedPetriMaker maxFinderMaker = new MaxTableTryOutUnifiedPetriMaker();
+    IntersectionUnifiedPetriMaker interSectionMaker = new IntersectionUnifiedPetriMaker();
+    LaneUnifiedPetriMaker laneMaker = new LaneUnifiedPetriMaker();
+    RoomModelUnifiedPetriMaker roomMaker = new RoomModelUnifiedPetriMaker();
+    RoomStateUnifiedPetriMaker roomStateMaker = new RoomStateUnifiedPetriMaker();
+    ControllerUnifiedPetriMaker controllerMaker = new ControllerUnifiedPetriMaker();
+    PosNegDeciderMaker posNegDecMaker = new PosNegDeciderMaker();
+    LargeSmallerExampleMaker largerSmallerMaker = new LargeSmallerExampleMaker();
+    TwoLoopsExampleMaker twoLoopsMaker = new TwoLoopsExampleMaker();
+    VariableFinishLoopExampleMaker variableMaker = new VariableFinishLoopExampleMaker();
+    InhibitorArcExampleMaker inhibMaker = new InhibitorArcExampleMaker();
+
+    UnifiedPetriNet[] nets = new UnifiedPetriNet[] { maxFinderMaker.net, interSectionMaker.net, laneMaker.net,
+        roomMaker.net, roomStateMaker.net, controllerMaker.net, posNegDecMaker.net, largerSmallerMaker.net,
+        twoLoopsMaker.net, variableMaker.net, inhibMaker.net };
+
+    String[] names = new String[] { "max", "inter", "lane", "room", "roomState", "controller", "posNegDec",
+        "largerSmaller", "twoLoops", "variable", "inhib" };
+
+    List<Supplier<List<Map<Integer, UnifiedToken>>>> sups = new ArrayList<>();
+    sups.add(MaxFinderTryOutMain::createInput);
+    sups.add(IntersectionMain::createInput);
+    sups.add(LaneMain::createInput);
+    sups.add(RoomMain::createInpForRoom);
+    sups.add(RoomStateMain::createInpForRoom);
+    sups.add(ControllerMain::createInp);
+    sups.add(PosNegDeciderMain::createInput);
+    sups.add(LargerSmallerExampleMain::createInput);
+    sups.add(TwoLoopsExampleMain::createInput);
+    sups.add(VariableFinishLoopExamplMain::createInput);
+    sups.add(InhibitorArcsExampleMain::createInput);
+
+    for (int i = 0; i < nets.length; i++) {
+      UnifiedPetriNet net = nets[i];
+      String name = names[i];
+      Supplier<List<Map<Integer, UnifiedToken>>> sup = sups.get(i);
+
+      confs.add(new Configuration(sup,
+          () -> {
+            AbstractExecutor.OLD_VERSION = false;
+            return new SyncronousUnifiedPetriExecutor(net, false, false);
+          }, name + "_simple"));
+
+      confs.add(new Configuration(sup,
+          () -> {
+            AbstractExecutor.OLD_VERSION = true;
+            return new SyncronousUnifiedPetriExecutor(net, false, false);
+          }, name + "_old"));
+
+      confs.add(new Configuration(sup,
+          () -> {
+            AbstractExecutor.OLD_VERSION = false;
+            return new SyncronousUnifiedPetriExecutor(net, false, true);
+          }, name + "_runc"));
+    }
+  }
+
+
+  static final List<Configuration> confsBig = new ArrayList<>();
+  static {
     MaxTableTryOutUnifiedPetriMaker maxFinderMaker = new MaxTableTryOutUnifiedPetriMaker();
     IntersectionUnifiedPetriMaker interSectionMaker = new IntersectionUnifiedPetriMaker();
     LaneUnifiedPetriMaker laneMaker = new LaneUnifiedPetriMaker();
@@ -72,40 +133,40 @@ public class MeasureMain {
       String name = names[i];
       Supplier<List<Map<Integer, UnifiedToken>>> sup = sups.get(i);
 
-      confs.add(new Configuration(sup,
+      confsBig.add(new Configuration(sup,
           () -> {
             AbstractExecutor.OLD_VERSION = false;
             return new SyncronousUnifiedPetriExecutor(net, false, false);
           }, name + "_simple"));
 
-      confs.add(new Configuration(sup,
+      confsBig.add(new Configuration(sup,
           () -> {
             AbstractExecutor.OLD_VERSION = true;
             return new SyncronousUnifiedPetriExecutor(net, false, false);
           }, name + "_old"));
 
-      confs.add(new Configuration(sup,
+      confsBig.add(new Configuration(sup,
           () -> {
             AbstractExecutor.OLD_VERSION = false;
             return new SyncronousUnifiedPetriExecutor(net, false, true);
           }, name + "_runc"));
       int[] cc = new int[] { 2, 5, 10, 15, 20, 25, 30 };
       for (int c : cc) {
-        confs.add(new Configuration(sup,
+        confsBig.add(new Configuration(sup,
             () -> {
               AbstractExecutor.OLD_VERSION = false;
               return new SyncronousUnifiedPetriExecutor(new UnifiedPetrinetCacheTableResultWrapper(net,
                   () -> new TokenCache<>(c)), false, false);
             }, name + "_simple_C" + c));
 
-        confs.add(new Configuration(sup,
+        confsBig.add(new Configuration(sup,
             () -> {
               AbstractExecutor.OLD_VERSION = true;
               return new SyncronousUnifiedPetriExecutor(new UnifiedPetrinetCacheTableResultWrapper(net,
                   () -> new TokenCache<>(c)), false, false);
             }, name + "_old_C" + c));
 
-        confs.add(new Configuration(sup,
+        confsBig.add(new Configuration(sup,
             () -> {
               AbstractExecutor.OLD_VERSION = false;
               return new SyncronousUnifiedPetriExecutor(new UnifiedPetrinetCacheTableResultWrapper(net,
@@ -114,21 +175,21 @@ public class MeasureMain {
 
       }
       for (int c : cc) {
-        confs.add(new Configuration(sup,
+        confsBig.add(new Configuration(sup,
             () -> {
               AbstractExecutor.OLD_VERSION = false;
               return new SyncronousUnifiedPetriExecutor(new UnifiedPetrinetCacheTableResultWrapper(net,
                   () -> new TokenCacheDisabling<>(c)), false, false);
             }, name + "_simple_CD" + c));
 
-        confs.add(new Configuration(sup,
+        confsBig.add(new Configuration(sup,
             () -> {
               AbstractExecutor.OLD_VERSION = true;
               return new SyncronousUnifiedPetriExecutor(new UnifiedPetrinetCacheTableResultWrapper(net,
                   () -> new TokenCacheDisabling<>(c)), false, false);
             }, name + "_old_CD" + c));
 
-        confs.add(new Configuration(sup,
+        confsBig.add(new Configuration(sup,
             () -> {
               AbstractExecutor.OLD_VERSION = false;
               return new SyncronousUnifiedPetriExecutor(new UnifiedPetrinetCacheTableResultWrapper(net,
@@ -145,7 +206,7 @@ public class MeasureMain {
   public static void main(String[] args) {
     Map<String, List<Long>> results = new HashMap<>();
     for (int i = 0; i < TRY; i++) {
-      for (Configuration conf : confs) {
+      for (Configuration conf : confsBig) {
         List<Map<Integer, UnifiedToken>> inps = conf.inp.get();
         SyncronousUnifiedPetriExecutor executor = conf.executor.get();
         long start = System.nanoTime();
@@ -161,7 +222,7 @@ public class MeasureMain {
       System.out.println("set " + i + " terminated");
 
     }
-    saveToFileResults(results, "all.txt");
+    saveToFileResults(results, "all_revisted.txt");
 
   }
 

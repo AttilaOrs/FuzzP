@@ -111,20 +111,14 @@ public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenT
   private void executeFirableTransitionsOld() {
     int loopCntr = 0; // overcome infinite loop in the system
     boolean happendSomthing = true;
-    ArrayList<Integer> currentOrderOfTransitions = new ArrayList<>();
-    currentOrderOfTransitions.addAll(orderOfTransition);
     while (happendSomthing && loopCntr < orderOfTransition.size() * 2) {
       happendSomthing = false;
       loopCntr++;
-      for (int trListIndex = 0; trListIndex < currentOrderOfTransitions.size(); trListIndex++) {
-        int currentTrans = currentOrderOfTransitions.get(trListIndex);
+      for (int trListIndex = 0; trListIndex < orderOfTransition.size(); trListIndex++) {
+        int currentTrans = orderOfTransition.get(trListIndex);
         if (fireable(currentTrans)) {
           happendSomthing = true;
-          // overcame allways executable transitions
-          currentOrderOfTransitions.remove(trListIndex);
-          currentOrderOfTransitions.add(currentTrans);
           startFire(currentTrans);
-          break;
         }
       }
     }
@@ -153,13 +147,7 @@ public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenT
     if (enableCache) {
       return possibleToExecuteBasedOnCache();
     }
-    List<Integer> toRet = new ArrayList<Integer>();
-    for (Integer trId : orderOfTransition) {
-      if (fireable(trId)) {
-        toRet.add(trId);
-      }
-    }
-    return toRet;
+    return anticipatedlyExecutable(simplifiedMarking());
   }
 
 
@@ -302,28 +290,37 @@ public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenT
   }
 
   protected List<Integer> possibleToExecuteBasedOnCache() {
-    boolean[] st = new boolean[stateOfPlaces.size()];
-    for (int i = 0; i < stateOfPlaces.size(); i++) {
-      st[i] = !stateOfPlaces.get(i).isPhi();
-    }
+    boolean[] st = simplifiedMarking();
     StateCacheEntry cacheEntry = new StateCacheEntry(st);
     if (!cache.containsKey(cacheEntry)) {
 
       // build up
-      List<Integer> maybeRunnableTransitions = new ArrayList<>();
-      for (Integer trIdIndex : orderOfTransition) {
-        List<Integer> inpPlaces = myNet.getPlacesNeededForTransition(trIdIndex);
-        boolean[] maybeInps = new boolean[inpPlaces.size()];
-        for (int i = 0; i < inpPlaces.size(); i++) {
-          maybeInps[i] = st[inpPlaces.get(i)];
-        }
-        if (myNet.getTableForTransition(trIdIndex).maybeExecutable(maybeInps)) {
-          maybeRunnableTransitions.add(trIdIndex);
-        }
-      }
+      List<Integer> maybeRunnableTransitions = anticipatedlyExecutable(st);
       cache.put(cacheEntry, maybeRunnableTransitions);
     }
     return cache.get(cacheEntry);
+  }
+  private boolean[] simplifiedMarking() {
+    boolean[] st = new boolean[stateOfPlaces.size()];
+    for (int i = 0; i < stateOfPlaces.size(); i++) {
+      st[i] = !stateOfPlaces.get(i).isPhi();
+    }
+    return st;
+  }
+
+  private List<Integer> anticipatedlyExecutable(boolean[] st) {
+    List<Integer> maybeRunnableTransitions = new ArrayList<>();
+    for (Integer trIdIndex : orderOfTransition) {
+      List<Integer> inpPlaces = myNet.getPlacesNeededForTransition(trIdIndex);
+      boolean[] maybeInps = new boolean[inpPlaces.size()];
+      for (int i = 0; i < inpPlaces.size(); i++) {
+        maybeInps[i] = st[inpPlaces.get(i)];
+      }
+      if (myNet.getTableForTransition(trIdIndex).maybeExecutable(maybeInps)) {
+        maybeRunnableTransitions.add(trIdIndex);
+      }
+    }
+    return maybeRunnableTransitions;
   }
 
 }
