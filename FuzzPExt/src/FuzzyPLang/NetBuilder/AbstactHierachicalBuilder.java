@@ -289,8 +289,9 @@ public abstract class AbstactHierachicalBuilder<TTokenType, TITable extends IGen
         TOutTable table = getOutTransitionTable(trRef);
         trIDs.put(trRef, toRet.addOuputTransition(table));
       } else {
+        int delay = getDelay(trRef);
         TITable table = getTransitionTable(trRef);
-        trIDs.put(trRef, toRet.addTransition(getDelay(trRef), table));
+        trIDs.put(trRef, toRet.addTransition(delay, table));
 
       }
     }
@@ -370,8 +371,10 @@ public abstract class AbstactHierachicalBuilder<TTokenType, TITable extends IGen
   protected int getDelay(NodeRef trRef) {
     TIntermediateNet net = declearions.get(staticScopeOfTransitions.get(trRef));
     if (net.getDelayMap().containsKey(trRef.getNodeName())) {
-      return net.getDelayMap().get(trRef.getNodeName());
+      Integer t = net.getDelayMap().get(trRef.getNodeName());
+      return t;
     }
+
     return 0;
   }
 

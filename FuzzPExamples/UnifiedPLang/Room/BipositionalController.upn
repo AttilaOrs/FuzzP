@@ -1,0 +1,106 @@
+
+minus = @-@ {
+	[<2,2><2,2><2,2><2,2><2,2>]
+	[<2,2><2,2><2,2><2,2><2,2>]
+	[<2,2><2,2><2,2><2,2><2,2>]
+	[<2,2><2,2><2,2><2,2><2,2>]
+	[<2,2><2,2><2,2><2,2><2,2>]
+	};
+	
+adder = @+@ {
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	};
+	
+reader = {
+	[<-2><-1>< 0>< 1>< 2>]
+	[<-2><-1>< 0>< 1>< 2>]
+	[<-2><-1>< 0>< 1>< 2>]
+	[<-2><-1>< 0>< 1>< 2>]
+	[<-2><-1>< 0>< 1>< 2>]
+	};
+	
+consCopyTable = {
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><-2,-2>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><-1,-1>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>< 0, 0>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>< 1, 1>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>< 2, 2>]
+	};
+	
+
+deciderTable = {
+	[<-2,ff><-1,ff><0,0><ff,1><ff,2>]
+	};
+
+
+ifPositiveTable = {
+	[<ff><ff><ff><0><0>]
+	};
+	
+ifNegativeTable = {
+	[<0><0><ff><ff><ff>]
+	};
+	
+allwaysEnablesTable = {
+	[<0><0><0><0><0><0>]
+	};
+	
+
+sub Splitter {
+	iP0(100.0) -> t0[deciderTable] -> P1(100) -> oT0;
+	t0 -> P2(100) -> oT1;
+}
+sub Differ{
+	P0(100) -> t0 -> P1 -> t1->P2(100) -> oT0;
+	t1 -> P3(100) -> t2[1] -> P0;
+	iP0(100) -> t0[reader] ; 
+	iP1(100) -> t1[minus] ;
+	P0 <= <0.0>;
+}
+
+sub EventStarter {
+	P1(100) -> t1[consCopyTable] -> P2(100) -> t0[adder]; 
+	iP0(100) -> t10 -> P10 ->t0;
+	t1 -> P1;
+	P2 -> t1;
+	P1 <= <10>;
+	t0 -> P3(100) -> t2[ifNegativeTable]-> p4 ->oT0; 
+	P3 ->t11[allwaysEnablesTable,1] ->P12 -> t10;
+	p3 <= <0.0>;
+	
+}
+
+sub EventStopper {
+	P1(100) -> t1[consCopyTable] -> P2(100) -> t0[adder]; 
+	iP0(100) -> t10 -> P10 ->t0;
+	t1 -> P1;
+	P2 -> t1;
+	P1 <= <-10>;
+	t0 -> P3(100) -> t2[ifPositiveTable]-> p4 ->oT0; 
+	P3 ->t11[allwaysEnablesTable,1] ->P12 -> t10;
+	p3 <= <0.0>;
+}
+
+df = new Differ;
+sp = new Splitter;
+start = new EventStarter;
+stop = new EventStopper ;
+
+iP0(100) -> t0 -> df.iP0(100.0);
+iP1(100) -> t1 -> df.iP1(100.0); //reference
+df.oT0 -> sp.iP0(100.0);
+sp.oT0 -> start.iP0(100);
+sp.oT1 -> stop.iP0(100);
+
+start.oT0 -> P0 -> oT0;
+stop.oT0 -> P1 -> oT1;
+
+
+ 
+
+
+

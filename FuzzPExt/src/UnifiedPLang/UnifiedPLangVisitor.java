@@ -162,6 +162,7 @@ public class UnifiedPLangVisitor extends UnifiedPLangBaseVisitor<Boolean> {
 
   @Override
   public Boolean visitTranzSpec(UnifiedPLangParser.TranzSpecContext ctx) {
+
     if (ctx.ID() != null) {
       intermediateNet.setNamedTableForTransition(staticScope.cloneSubState(), prevNode.getNodeName(),
           ctx.ID().getText());

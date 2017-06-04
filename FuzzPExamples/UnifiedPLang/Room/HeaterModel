@@ -1,0 +1,66 @@
+
+table = {
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><-2,-2>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><-1,-1>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>< 0, 0>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>< 1, 1>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>< 2, 2>]
+	};
+	
+minus = @-@ {
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	};
+	
+multi = @*@ {
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	};
+	
+adder = @+@ {
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	};
+
+inv = {[< 0>< 0>< 0><-1><-2>]};
+	
+P0(100) ->  t0 -> P1;
+
+p0 <= <67.0>; //inital temp
+
+//constant copy for theoretical room temp
+P2(100) -> t1[table] -> P3(100);
+t1->p2;
+p3->t1;
+P2 <=  <23.0> ; // theoretical room temp
+
+P1 -> t3[minus] -> P5(100) -> t4[inv] -> P6;
+P3 -> t3;
+
+//constant copy for theoretical spontain drop
+
+P7(1.0) -> t5[table] -> P8(1.0);
+t5->P7;
+P8->t5;
+P7 <=  <0.00026> ; // heater drop constant
+
+P8 -> t6[multi] -> P9;
+P6 -> t6;
+
+
+t0 -> p10 -> t7[adder] -> P11(100) -> t8 -> P0 ;
+P9 -> t7;
+
+t8 -> p12 -> oT0;
+
+
+
