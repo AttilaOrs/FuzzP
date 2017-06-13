@@ -1,0 +1,25 @@
+digraph G{ 
+ rankdir=LR; 
+
+subgraph palce { 
+ graph [shape=circle,color=gray];node [shape=circle,fixedsize=true,width=0.4];
+"iP0";"P12";"P1 ●";"P2";"P3 ●";"P4";"P10";}
+subgraph transitions{ 
+ node [style=filled fillcolor=black shape=rect height=0.6 width=0.05 ];
+t0[label=""xlabel=<<FONT POINT-SIZE='15'> oT0</FONT>>];t1[label=""xlabel=<<FONT POINT-SIZE='15'> T10 </FONT>>];t2[label=""xlabel=<<FONT POINT-SIZE='15'> T11</FONT>>];t3[label=""xlabel=<<FONT POINT-SIZE='15'> T0 +</FONT>>];t4[label=""xlabel=<<FONT POINT-SIZE='15'> T1 </FONT>>];t5[label=""xlabel=<<FONT POINT-SIZE='15'> T2</FONT>>];}
+t1->"P10";
+t2->"P12";
+t3->"P3 ●";
+t4->"P2";
+t4->"P1 ●";
+t5->"P4";
+"iP0"->t1;
+"P12"->t1;
+"P1 ●"->t4;
+"P2"->t3;
+"P2"->t4;
+"P3 ●"->t2;
+"P3 ●"->t5;
+"P4"->t0;
+"P10"->t3;
+}

@@ -3,6 +3,7 @@ package core.UnifiedPetriLogic;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import core.Drawable.TransitionPlaceNameStore;
 import core.UnifiedPetriLogic.tables.UnifiedTwoXOneTable;
 import core.UnifiedPetriLogic.tables.UnifiedTwoXTwoTable;
 import structure.DrawableNet;
@@ -16,12 +17,17 @@ public class DrawableUnifiedPetriNet implements DrawableNet {
   private boolean drawScale;
 
   public DrawableUnifiedPetriNet(UnifiedPetriNet upn) {
-    this(upn, DEFAULT_DRAW_SCALE);
+    this(upn, DEFAULT_DRAW_SCALE, null);
   }
 
-  public DrawableUnifiedPetriNet(UnifiedPetriNet upn, boolean drawScale) {
+  TransitionPlaceNameStore nameStore;
+
+  private boolean reprezentInitialMarking;
+
+  public DrawableUnifiedPetriNet(UnifiedPetriNet upn, boolean drawScale, TransitionPlaceNameStore nameStore) {
     myNet = upn;
     this.drawScale = drawScale;
+    this.nameStore = nameStore;
   }
 
   @Override
@@ -62,16 +68,26 @@ public class DrawableUnifiedPetriNet implements DrawableNet {
 
   @Override
   public String getPlaceName(int placeId) {
-    if (drawScale) {
-    return "P" + placeId + "(" + myNet.getScale(placeId) + ")";
-    } else {
-      return "P" + placeId;
+    String name = "P" + placeId;
+    if (nameStore != null) {
+      name = nameStore.getPlaceName(placeId);
     }
-  }
+    if (drawScale) {
+      name += "(" + myNet.getScale(placeId) + ")";
+    }
+    if (reprezentInitialMarking) {
+      name += ((!myNet.getInitialMarkingForPlace(placeId).isPhi()) ? " \u25CF" : "");
+    }
+    return name;
+    }
 
   @Override
   public String getTransitionName(int transitionId) {
-    return "T" + transitionId + getOpString(transitionId);
+    String name = "T" + transitionId;
+    if (nameStore != null) {
+      name = nameStore.getTransitionName(transitionId);
+    }
+    return name + getOpString(transitionId);
   }
 
   protected String getOpString(int transitionId) {
@@ -88,7 +104,8 @@ public class DrawableUnifiedPetriNet implements DrawableNet {
 
   @Override
   public void setReprezentInitialMarking(boolean reprezentInitialMarking) {
-    // nothin
+    this.reprezentInitialMarking = reprezentInitialMarking;
+
 
   }
 

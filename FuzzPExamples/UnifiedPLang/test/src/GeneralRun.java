@@ -20,9 +20,12 @@ public class GeneralRun {
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(wrapper, false, true);
     FullRecorder<UnifiedToken> fullRec = new FullRecorder<>();
     exec.setRecorder(fullRec);
+    long start = System.nanoTime();
     for (Map<Integer, UnifiedToken> inp : inps) {
       exec.runTick(inp);
     }
+    long end = System.nanoTime();
+    // System.out.println((end - start) / inps.size());
     UnifiedVizualizer.visualize(net, fullRec, names);
 
 

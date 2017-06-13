@@ -22,10 +22,10 @@ public class RoomMain {
       Map<Integer, UnifiedToken> inp = new HashMap<>();
 
       inp.put(maker.iP1, new UnifiedToken(10.0)); // outside temp
-      if (i % 120 * 10 == 10) {
+      if (i % (120 * 10) == 10) {
         inp.put(maker.iP2, new UnifiedToken(0.0)); // open
       }
-      if (i % 120 * 10 == 50) {
+      if (i % (120 * 10) == 100) {
         inp.put(maker.iP3, new UnifiedToken(0.0)); // close
       }
       if (i > 60 * 30) {
@@ -37,7 +37,8 @@ public class RoomMain {
 
     UnifiedVizualizer.visualize(maker.net, fullRec, maker.nameStore);
 
-    PetriDotDrawerVerical vv = new PetriDotDrawerVerical(new DrawableUnifiedPetriNet(maker.net, false));
+    PetriDotDrawerVerical vv = new PetriDotDrawerVerical(
+        new DrawableUnifiedPetriNet(maker.net, false, maker.nameStore));
     vv.makeImage("room");
 
 
@@ -53,10 +54,10 @@ public class RoomMain {
 
       inp.put(maker.iP1, new UnifiedToken(10.0 + rnd.nextDouble() * 10.0)); // outside
                                                                             // temp
-      if (i % 120 * 10 == 10) {
+      if (i % 120 * 100 == 10) {
         inp.put(maker.iP2, new UnifiedToken(0.0)); // open
       }
-      if (i % 120 * 10 == 50) {
+      if (i % 120 * 100 == 1000) {
         inp.put(maker.iP3, new UnifiedToken(0.0)); // close
       }
       if (i > 60 * 30) {
