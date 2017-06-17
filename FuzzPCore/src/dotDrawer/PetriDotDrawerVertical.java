@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 import structure.DrawableNet;
 
-public class PetriDotDrawerVerical extends PetriDotDrawer {
+public class PetriDotDrawerVertical extends PetriDotDrawer {
 
-  public PetriDotDrawerVerical(DrawableNet ll) {
+  public PetriDotDrawerVertical(DrawableNet ll) {
     super(ll);
     super.setDotConfig(new DotConfigVertical());
   }

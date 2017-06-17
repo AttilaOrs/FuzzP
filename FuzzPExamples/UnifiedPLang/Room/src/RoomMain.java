@@ -9,7 +9,7 @@ import core.UnifiedPetriLogic.DrawableUnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.common.recoder.FullRecorder;
-import dotDrawer.PetriDotDrawerVerical;
+import dotDrawer.PetriDotDrawerVertical;
 
 public class RoomMain {
   public static void main(String[] args) {
@@ -37,7 +37,7 @@ public class RoomMain {
 
     UnifiedVizualizer.visualize(maker.net, fullRec, maker.nameStore);
 
-    PetriDotDrawerVerical vv = new PetriDotDrawerVerical(
+    PetriDotDrawerVertical vv = new PetriDotDrawerVertical(
         new DrawableUnifiedPetriNet(maker.net, false, maker.nameStore));
     vv.makeImage("room");
 
