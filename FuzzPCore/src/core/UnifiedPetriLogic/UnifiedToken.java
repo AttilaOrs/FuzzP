@@ -38,6 +38,11 @@ public class UnifiedToken implements FullRecordable<UnifiedToken> {
   }
 
   @Override
+  public String toString() {
+    return shortString();
+  }
+
+  @Override
   public UnifiedToken myClone() {
     if (isPhi) {
       return new UnifiedToken();

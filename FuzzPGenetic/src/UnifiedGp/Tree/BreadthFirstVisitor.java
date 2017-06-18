@@ -1,6 +1,6 @@
 package UnifiedGp.Tree;
 
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.Queue;
 
 public class BreadthFirstVisitor<TType, TSubnodeType> extends AbstractVisitor<TType, TSubnodeType> {
@@ -11,8 +11,9 @@ public class BreadthFirstVisitor<TType, TSubnodeType> extends AbstractVisitor<TT
     super(costumizer);
   }
 
+  @Override
   public void visit(INode<TType> root) {
-    queue = new LinkedList<>();
+    queue = new ArrayDeque<>();
     queue.add(root);
     while (!queue.isEmpty()) {
       INode<TType> p = queue.poll();

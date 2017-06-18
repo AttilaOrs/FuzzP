@@ -1,6 +1,11 @@
 package UnifiedGp.Tree.Visitors;
 
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import UnifiedGp.ScaleProvider;
@@ -9,20 +14,50 @@ import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.VisitorCostumizer;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
+import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.SubnodeTypeMarker;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
+import core.UnifiedPetriLogic.UnifiedTableParser;
 import core.UnifiedPetriLogic.tables.UnifiedOneXOneTable;
 import core.UnifiedPetriLogic.tables.UnifiedOneXTwoTable;
 import core.UnifiedPetriLogic.tables.UnifiedTwoXOneTable;
+import core.UnifiedPetriLogic.tables.UnifiedTwoXTwoTable;
 
 public class ToPetriNet {
+  private static final UnifiedTableParser parser = new UnifiedTableParser(true);
+
+  public final static String inputTransmitterTwoXOneStr = "{" +
+      "[<-2><-2><-2><-2><-2><-2>]" + //
+      "[<-1><-1><-1><-1><-1><-1>]" + //
+      "[< 0>< 0>< 0>< 0>< 0>< 0>]" + //
+      "[< 1>< 1>< 1>< 1>< 1>< 1>]" + //
+      "[< 2>< 2>< 2>< 2>< 2>< 2>]" + //
+      "[<FF><FF><FF><FF><FF><FF>]" + //
+      "}";
+  public final static String inputTransmitterTwoXTwoStr = "{" +
+      "[<-2,-2><-2,-2><-2,-2><-2,-2><-2,-2><-2,-2>]" + //
+      "[<-1,-1><-1,-1><-1,-1><-1,-1><-1,-1><-1,-1>]" + //
+      "[< 0, 0>< 0, 0>< 0, 0>< 0, 0>< 0, 0>< 0, 0>]" + //
+      "[< 1, 1>< 1, 1>< 1, 1>< 1, 1>< 1, 1>< 1, 1>]" + //
+      "[< 2, 2>< 2, 2>< 2, 2>< 2, 2>< 2, 2>< 2, 2>]" + //
+      "[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]" + //
+      "}";
+
+
+  private static final UnifiedTwoXTwoTable inputTransmitterTwoXTwo = parser
+      .parseTwoXTwoTable(inputTransmitterTwoXTwoStr);
+  private static final UnifiedTwoXOneTable inputTransmitterTwoXOne = parser
+      .parseTwoXOneTable(inputTransmitterTwoXOneStr);
 
   private VisitorCostumizer<NodeType, SubnodeTypeMarker> cosutimzer;
   private BreadthFirstVisitor<NodeType, SubnodeTypeMarker> visitor;
   private UnifiedPetriNet netToMake;
   private Queue<int[]> placesBetween;
   private ScaleProvider scaleProvider;
+  private Map<Integer, List<Integer>> placesWaitingForInputs;
+  private Map<Integer, Integer> inpNameInpPlace;
+  
 
   public ToPetriNet(ScaleProvider scaleProvider) {
     this.scaleProvider = scaleProvider;
@@ -32,17 +67,50 @@ public class ToPetriNet {
     cosutimzer.registerOperatorConsumer(NodeType.Selc, this::selcVisit);
     cosutimzer.registerOperatorConsumer(NodeType.Conc, this::concVisit);
     cosutimzer.registerLeafConsumer(NodeType.Delay, this::delayVisit);
+    cosutimzer.registerLeafConsumer(NodeType.Inp, this::inpVisit);
     visitor = new BreadthFirstVisitor<>(cosutimzer);
   }
 
   public UnifiedPetriNet toNet(IInnerNode<NodeType> type) {
     netToMake = new UnifiedPetriNet();
-    placesBetween = new LinkedList<>();
+    placesBetween = new ArrayDeque<>();
+    placesWaitingForInputs = new HashMap<>();
     int firstPlace = netToMake.addPlace(scaleProvider.defaultScale());
     int lastPlace = netToMake.addPlace(scaleProvider.defaultScale());
     placesBetween.add(new int[] { firstPlace, lastPlace });
     visitor.visit(type);
+    resolveInputs();
     return netToMake;
+  }
+
+  private void resolveInputs() {
+    inpNameInpPlace = new HashMap<>();
+    for (Integer inputNr : placesWaitingForInputs.keySet()) {
+      int realInput = netToMake.addInputPlace(scaleProvider.getScaleForInp(inputNr));
+      inpNameInpPlace.put(inputNr, realInput);
+      int lastPlace = realInput;
+      Iterator<Integer> it = placesWaitingForInputs.get(inputNr).iterator();
+      while (it.hasNext()) {
+        Integer placeToPut = it.next();
+        if (it.hasNext()) {
+          int newLastPlace = netToMake.addPlace(scaleProvider.getScaleForInp(inputNr));
+          int tr = netToMake.addTransition(0, inputTransmitterTwoXTwo);
+          netToMake.addArcFromPlaceToTransition(lastPlace, tr);
+          netToMake.addArcFromPlaceToTransition(placeToPut, tr);
+          netToMake.addArcFromTransitionToPlace(tr, placeToPut);
+          netToMake.addArcFromTransitionToPlace(tr, newLastPlace);
+          lastPlace = newLastPlace;
+        } else {
+          int tr = netToMake.addTransition(0, inputTransmitterTwoXOne);
+          netToMake.addArcFromPlaceToTransition(lastPlace, tr);
+          netToMake.addArcFromPlaceToTransition(placeToPut, tr);
+          netToMake.addArcFromTransitionToPlace(tr, placeToPut);
+        }
+      }
+
+
+    }
+
   }
 
   private Boolean seqVisit(INode<NodeType> seqNode) {
@@ -99,6 +167,28 @@ public class ToPetriNet {
     return Boolean.TRUE;
   }
 
+  private Boolean inpVisit(INode<NodeType> ss) {
+    InputLeaf inputLeaf = (InputLeaf) ss;
+    int[] between = placesBetween.poll();
+    Integer inpTr = netToMake.addTransition(0, inputLeaf.getSubtype().table.myClone());
+    int inpPlace = netToMake.addPlace(scaleProvider.getScaleForInp(inputLeaf.inpNr()));
 
+    netToMake.addArcFromPlaceToTransition(inpPlace, inpTr);
+    netToMake.addArcFromPlaceToTransition(between[0], inpTr);
+    netToMake.addArcFromTransitionToPlace(inpTr, between[1]);
+
+    registerInpPlace(inputLeaf.inpNr(), inpPlace);
+    return Boolean.TRUE;
+  }
+
+  private void registerInpPlace(int inpNr, int inpPlace) {
+    placesWaitingForInputs.putIfAbsent(inpNr, new ArrayList<>());
+    placesWaitingForInputs.get(inpNr).add(inpPlace);
+  }
+
+  public Map<Integer, Integer> getInpNrToINpPlace() {
+    return inpNameInpPlace;
+
+  }
 
 }

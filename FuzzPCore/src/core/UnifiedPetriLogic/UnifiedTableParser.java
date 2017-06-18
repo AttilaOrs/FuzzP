@@ -14,6 +14,11 @@ import core.UnifiedPetriLogic.tables.UnifiedTwoXTwoTable;
 
 public class UnifiedTableParser {
 
+  public static UnifiedTwoXOneTable parseUnifiedTwoXOneTable(String st) {
+    UnifiedTableParser parser = new UnifiedTableParser(true);
+    return parser.parseTwoXOneTable(st);
+  }
+
   private boolean phiIsRequired;
 
   public UnifiedTableParser() {
