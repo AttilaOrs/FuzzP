@@ -10,4 +10,8 @@ public class ScaleProvider {
     return 1.0;
   }
 
+  public Double getScaleForOut(int inpNr) {
+    return 1.0;
+  }
+
 }

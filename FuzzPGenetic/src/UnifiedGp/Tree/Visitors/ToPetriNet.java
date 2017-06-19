@@ -16,6 +16,7 @@ import UnifiedGp.Tree.VisitorCostumizer;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
 import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
+import UnifiedGp.Tree.Nodes.OutputLeaf;
 import UnifiedGp.Tree.Nodes.SubnodeTypeMarker;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedTableParser;
@@ -56,7 +57,10 @@ public class ToPetriNet {
   private Queue<int[]> placesBetween;
   private ScaleProvider scaleProvider;
   private Map<Integer, List<Integer>> placesWaitingForInputs;
+  private Map<Integer, List<Integer>> placesWaitingForOuputs;
   private Map<Integer, Integer> inpNameInpPlace;
+  private Map<Integer, Integer> outNrToOutTr;
+
   
 
   public ToPetriNet(ScaleProvider scaleProvider) {
@@ -68,19 +72,44 @@ public class ToPetriNet {
     cosutimzer.registerOperatorConsumer(NodeType.Conc, this::concVisit);
     cosutimzer.registerLeafConsumer(NodeType.Delay, this::delayVisit);
     cosutimzer.registerLeafConsumer(NodeType.Inp, this::inpVisit);
+    cosutimzer.registerLeafConsumer(NodeType.Out, this::outVisit);
     visitor = new BreadthFirstVisitor<>(cosutimzer);
   }
 
-  public UnifiedPetriNet toNet(IInnerNode<NodeType> type) {
+  public PetriConversationResult toNet(IInnerNode<NodeType> type) {
     netToMake = new UnifiedPetriNet();
     placesBetween = new ArrayDeque<>();
     placesWaitingForInputs = new HashMap<>();
+    placesWaitingForOuputs = new HashMap<>();
     int firstPlace = netToMake.addPlace(scaleProvider.defaultScale());
     int lastPlace = netToMake.addPlace(scaleProvider.defaultScale());
     placesBetween.add(new int[] { firstPlace, lastPlace });
     visitor.visit(type);
     resolveInputs();
-    return netToMake;
+    resolveOutputs();
+    return new PetriConversationResult(netToMake, inpNameInpPlace, outNrToOutTr);
+  }
+
+  private void resolveOutputs() {
+    outNrToOutTr = new HashMap<>();
+    for (Integer outNr : placesWaitingForOuputs.keySet()) {
+      int realOuputTransition = netToMake.addOuputTransition(UnifiedOneXOneTable.defaultTable());
+      outNrToOutTr.put(outNr, realOuputTransition);
+      List<Integer> places = placesWaitingForOuputs.get(outNr);
+      for (int i = 0; i < places.size(); i++) {
+        Integer currentPlace = places.get(i);
+        if (i == places.size() - 1) {
+          netToMake.addArcFromPlaceToTransition(currentPlace, realOuputTransition);
+        } else {
+          Integer nextPlace = places.get(i + 1);
+          int intermedateTr = netToMake.addTransition(0, UnifiedOneXOneTable.defaultTable());
+          netToMake.addArcFromPlaceToTransition(currentPlace, intermedateTr);
+          netToMake.addArcFromTransitionToPlace(intermedateTr, nextPlace);
+        }
+      }
+
+    }
+
   }
 
   private void resolveInputs() {
@@ -186,9 +215,24 @@ public class ToPetriNet {
     placesWaitingForInputs.get(inpNr).add(inpPlace);
   }
 
-  public Map<Integer, Integer> getInpNrToINpPlace() {
-    return inpNameInpPlace;
+  private Boolean outVisit(INode<NodeType> ss) {
+    OutputLeaf outLeaf = (OutputLeaf) ss;
+    int[] between = placesBetween.poll();
+    int outTr = netToMake.addTransition(0, outLeaf.getSubtype().table.myClone());
+    int outPlace = netToMake.addPlace(scaleProvider.getScaleForOut(outLeaf.outNr()));
 
+    netToMake.addArcFromPlaceToTransition(between[0], outTr);
+    netToMake.addArcFromTransitionToPlace(outTr, outPlace);
+    netToMake.addArcFromTransitionToPlace(outTr, between[1]);
+    regisetrOutPlace(outLeaf.outNr(), outPlace);
+
+    return Boolean.TRUE;
   }
+
+  private void regisetrOutPlace(int outNr, int outPlace) {
+    placesWaitingForOuputs.putIfAbsent(outNr, new ArrayList<>());
+    placesWaitingForOuputs.get(outNr).add(outPlace);
+  }
+
 
 }

@@ -19,6 +19,12 @@ public class UnifiedTableParser {
     return parser.parseTwoXOneTable(st);
   }
 
+  public static UnifiedOneXTwoTable parseUnifiedOneXTwoTable(String st) {
+    UnifiedTableParser parser = new UnifiedTableParser(true);
+    return parser.parseOneXTwoTable(st);
+
+  }
+
   private boolean phiIsRequired;
 
   public UnifiedTableParser() {

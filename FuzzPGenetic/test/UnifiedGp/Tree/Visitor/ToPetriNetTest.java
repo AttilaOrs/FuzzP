@@ -1,6 +1,7 @@
 package UnifiedGp.Tree.Visitor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -19,6 +20,9 @@ import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.InputType;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.Operator;
+import UnifiedGp.Tree.Nodes.OutType;
+import UnifiedGp.Tree.Nodes.OutputLeaf;
+import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -79,7 +83,7 @@ public class ToPetriNetTest {
 
   @Test
   public void seq_test() {
-    UnifiedPetriNet ll = toNet.toNet(simpleSeq());
+    UnifiedPetriNet ll = toNet.toNet(simpleSeq()).net;
     assertTrue(ll.getNrOfPlaces() == 3);
     assertTrue(ll.getNrOfTransition() == 2);
     assertTrue(ll.getTransitinsBeforePlace(0).size() == 0);
@@ -91,7 +95,7 @@ public class ToPetriNetTest {
 
   @Test
   public void selct_tes() {
-    UnifiedPetriNet ll = toNet.toNet(simpleSelec());
+    UnifiedPetriNet ll = toNet.toNet(simpleSelec()).net;
     assertTrue(ll.getNrOfPlaces() == 2);
     assertTrue(ll.getNrOfTransition() == 2);
     assertTrue(ll.getTransitinsBeforePlace(0).size() == 0);
@@ -102,7 +106,7 @@ public class ToPetriNetTest {
 
   @Test
   public void conc_test() {
-    UnifiedPetriNet ll = toNet.toNet(simpleConc());
+    UnifiedPetriNet ll = toNet.toNet(simpleConc()).net;
     assertTrue(ll.getNrOfPlaces() == 6);
     assertTrue(ll.getNrOfTransition() == 4);
     assertTrue(ll.getTransitinsBeforePlace(0).size() == 0);
@@ -113,7 +117,7 @@ public class ToPetriNetTest {
 
   @Test
   public void loop_test() {
-    UnifiedPetriNet ll = toNet.toNet(simpleLoop());
+    UnifiedPetriNet ll = toNet.toNet(simpleLoop()).net;
     assertTrue(ll.getNrOfPlaces() == 2);
     assertTrue(ll.getNrOfTransition() == 2);
     assertTrue(ll.getTransitinsBeforePlace(0).size() == 1);
@@ -124,7 +128,7 @@ public class ToPetriNetTest {
 
   @Test
   public void complex_test() {
-    UnifiedPetriNet ll = toNet.toNet(complex());
+    UnifiedPetriNet ll = toNet.toNet(complex()).net;
     assertTrue(ll.getNrOfPlaces() == 7);
     assertTrue(ll.getNrOfTransition() == 7);
   }
@@ -143,7 +147,7 @@ public class ToPetriNetTest {
 
   @Test
   public void simpleInput_structureTest() {
-    UnifiedPetriNet ll = toNet.toNet(simpleInput());
+    UnifiedPetriNet ll = toNet.toNet(simpleInput()).net;
     assertTrue(ll.getNrOfPlaces() == 5);
     assertTrue(ll.getNrOfTransition() == 3);
     assertEquals(ll.getPlacesNeededForTransition(0), Arrays.asList(3, 0));
@@ -152,21 +156,20 @@ public class ToPetriNetTest {
 
   @Test
   public void sameInputTwoTimes_structureTest() {
-    UnifiedPetriNet ll = toNet.toNet(sameInpuTwoTimes());
+    UnifiedPetriNet ll = toNet.toNet(sameInpuTwoTimes()).net;
     assertTrue(ll.getNrOfPlaces() == 7);
     assertTrue(ll.getNrOfTransition() == 4);
   }
 
   @Test
   public void simpleInput_behavourTest() {
-    UnifiedPetriNet ll = toNet.toNet(simpleInput());
-    Map<Integer, Integer> nameMap = toNet.getInpNrToINpPlace();
-    ll.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
+    PetriConversationResult rez = toNet.toNet(simpleInput());
+    rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
     FullRecorder<UnifiedToken> fullRec = new FullRecorder<>();
-    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(ll);
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
     exec.setRecorder(fullRec);
     Map<Integer, UnifiedToken> inp = new HashMap<>();
-    inp.put(nameMap.get(0), new UnifiedToken(1.0));
+    inp.put(rez.inpNrToInpPlace.get(0), new UnifiedToken(1.0));
     exec.runTick(inp);
     List<IFullRecorderEvent> e = fullRec.eventGroupedByTicks().get(0);
     TickFinsihed<UnifiedToken> tickFinished = (TickFinsihed<UnifiedToken>) e.get(e.size() - 1);
@@ -175,18 +178,82 @@ public class ToPetriNetTest {
 
   @Test
   public void sameInputTwoTimes_behaviourTest() {
-    UnifiedPetriNet ll = toNet.toNet(sameInpuTwoTimes());
-    Map<Integer, Integer> nameMap = toNet.getInpNrToINpPlace();
-    ll.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
+    PetriConversationResult rez = toNet.toNet(sameInpuTwoTimes());
+    rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
     FullRecorder<UnifiedToken> fullRec = new FullRecorder<>();
-    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(ll);
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
     exec.setRecorder(fullRec);
     Map<Integer, UnifiedToken> inp = new HashMap<>();
-    inp.put(nameMap.get(0), new UnifiedToken(1.0));
+    inp.put(rez.inpNrToInpPlace.get(0), new UnifiedToken(1.0));
     exec.runTick(inp);
     List<IFullRecorderEvent> e = fullRec.eventGroupedByTicks().get(0);
     TickFinsihed<UnifiedToken> tickFinished = (TickFinsihed<UnifiedToken>) e.get(e.size() - 1);
     assertTrue(tickFinished.getPlaceState().get(1).equals(new UnifiedToken(1.0)));
+  }
+
+  private IInnerNode<NodeType> simpleInputOuput() {
+    InputLeaf inp = new InputLeaf(InputType.ReaderBlocking, 0);
+    OutputLeaf d = new OutputLeaf(0, OutType.Copy);
+    return new Operator(NodeType.Seq, inp, d);
+  }
+
+  @Test
+  public void simpleInputOuput_structureTest() {
+    PetriConversationResult rez = toNet.toNet(simpleInputOuput());
+    assertTrue(rez.net.getNrOfPlaces() == 6);
+    assertTrue(rez.net.getNrOfTransition() == 4);
+    assertTrue(IntStream.range(0, rez.net.getNrOfPlaces()).filter(i -> rez.net.isInputPlace(i)).count() == 1);
+    assertTrue(IntStream.range(0, rez.net.getNrOfTransition()).filter(i -> rez.net.isOuputTransition(i)).count() == 1);
+  }
+
+  Double sipleInputOuput_behavoirTest = null;
+  @Test
+  public void sipleInputOuput_behavoirTest() {
+    PetriConversationResult rez = toNet.toNet(simpleInputOuput());
+    rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
+    rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(0), t -> sipleInputOuput_behavoirTest = t.getValue());
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
+    Map<Integer, UnifiedToken> inp = new HashMap<>();
+    inp.put(rez.inpNrToInpPlace.get(0), new UnifiedToken(1.0));
+    exec.runTick(inp);
+    assertEquals((Double) 1.0, sipleInputOuput_behavoirTest);
+  }
+
+
+  private IInnerNode<NodeType> complexInputOuptNet() {
+    InputLeaf inp = new InputLeaf(InputType.ReaderBlocking, 0);
+    OutputLeaf o1 = new OutputLeaf(0, OutType.Copy);
+    OutputLeaf o2 = new OutputLeaf(0, OutType.Copy);
+    DelayLeaf d1 = new DelayLeaf(1);
+    DelayLeaf d2 = new DelayLeaf(2);
+    Operator seq1 = new Operator(NodeType.Seq, d1, o1);
+    Operator seq2 = new Operator(NodeType.Seq, d2, o2);
+    Operator conc = new Operator(NodeType.Conc, seq1, seq2);
+
+    return new Operator(NodeType.Seq, inp, conc);
+  }
+
+  Double complexInputOuputnet_behavoirTest = null;
+
+  @Test
+  public void complexInputOuputnet_behavoirTest() {
+    PetriConversationResult rez = toNet.toNet(complexInputOuptNet());
+
+    rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
+    rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(0), t -> complexInputOuputnet_behavoirTest = t.getValue());
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
+    Map<Integer, UnifiedToken> inp = new HashMap<>();
+    inp.put(rez.inpNrToInpPlace.get(0), new UnifiedToken(1.0));
+    exec.runTick(inp);
+    assertNull(complexInputOuputnet_behavoirTest);
+    inp.clear();
+    exec.runTick(inp);
+    assertEquals((Double) 1.0, complexInputOuputnet_behavoirTest);
+    complexInputOuputnet_behavoirTest = null;
+    exec.runTick(inp);
+    assertEquals((Double) 1.0, complexInputOuputnet_behavoirTest);
+
+
   }
 
 }

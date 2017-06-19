@@ -2,7 +2,7 @@
 .classpath
 .project
 /lib/
-.txt
-.png
+*.txt
+*.png
 /Scenatio.json
 /test.svg
