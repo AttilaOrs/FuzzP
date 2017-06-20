@@ -16,11 +16,13 @@ import UnifiedGp.Tree.VisitorCostumizer;
 import UnifiedGp.Tree.Nodes.BlockLeaf;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
 import UnifiedGp.Tree.Nodes.InputLeaf;
+import UnifiedGp.Tree.Nodes.MemoryLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
 import UnifiedGp.Tree.Nodes.SubnodeTypeMarker;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedTableParser;
+import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.tables.UnifiedOneXOneTable;
 import core.UnifiedPetriLogic.tables.UnifiedOneXTwoTable;
 import core.UnifiedPetriLogic.tables.UnifiedTwoXOneTable;
@@ -75,6 +77,7 @@ public class ToPetriNet {
     cosutimzer.registerLeafConsumer(NodeType.Inp, this::inpVisit);
     cosutimzer.registerLeafConsumer(NodeType.Out, this::outVisit);
     cosutimzer.registerLeafConsumer(NodeType.Block, this::blockVisit);
+    cosutimzer.registerLeafConsumer(NodeType.Memory, this::memoryVisit);
     visitor = new BreadthFirstVisitor<>(cosutimzer);
   }
 
@@ -240,6 +243,31 @@ public class ToPetriNet {
     int blokcTransition = netToMake.addTransition(0, BlockLeaf.table.myClone());
     netToMake.addArcFromPlaceToTransition(between[0], blokcTransition);
     netToMake.addArcFromTransitionToPlace(blokcTransition, between[0]);
+    return Boolean.TRUE;
+  }
+  
+  private Boolean memoryVisit(INode<NodeType> ss) {
+    MemoryLeaf mem = (MemoryLeaf) ss;
+    int[] between = placesBetween.poll();
+    if(mem.getMemNr() <= 0){
+      int tr = netToMake.addTransition(0, UnifiedOneXOneTable.defaultTable());
+      netToMake.addArcFromPlaceToTransition(between[0], tr);
+      netToMake.addArcFromTransitionToPlace(tr, between[1]);
+    } else {
+      int lastPlace = between[0];
+      for(int i= 0; i < mem.getMemNr();i++){
+        int tr = netToMake.addTransition(1, UnifiedOneXOneTable.defaultTable());
+        int newPlace = netToMake.addPlace(scaleProvider.defaultScale());
+        netToMake.addArcFromPlaceToTransition(lastPlace, tr);
+        netToMake.addArcFromTransitionToPlace(tr, newPlace);
+        netToMake.setInitialMarkingForPlace(newPlace, new UnifiedToken(0.0));
+        lastPlace = newPlace;
+      }
+      int tr = netToMake.addTransition(0, UnifiedOneXOneTable.defaultTable());
+      netToMake.addArcFromPlaceToTransition(lastPlace, tr);
+      netToMake.addArcFromTransitionToPlace(tr, between[1]);
+      
+    }
     return Boolean.TRUE;
   }
 
