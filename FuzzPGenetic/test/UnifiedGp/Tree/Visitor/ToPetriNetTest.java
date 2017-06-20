@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import UnifiedGp.ScaleProvider;
 import UnifiedGp.Tree.IInnerNode;
+import UnifiedGp.Tree.Nodes.BlockLeaf;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
 import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.InputType;
@@ -252,8 +253,27 @@ public class ToPetriNetTest {
     complexInputOuputnet_behavoirTest = null;
     exec.runTick(inp);
     assertEquals((Double) 1.0, complexInputOuputnet_behavoirTest);
-
-
   }
 
+  private IInnerNode<NodeType> blockedNet() {
+    BlockLeaf bl = new BlockLeaf();
+    OutputLeaf o = new OutputLeaf(0, OutType.Copy);
+    return new Operator(NodeType.Seq, bl, o);
+  }
+  
+  Double blockedNet_behavoirTest = Double.MIN_VALUE;
+  
+  @Test
+  public void blockedNet_behavoirTest() {
+    PetriConversationResult rez = toNet.toNet(blockedNet());
+    rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
+    rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(0), t -> blockedNet_behavoirTest = t.getValue());
+    
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
+    Map<Integer, UnifiedToken> inp = new HashMap<>();
+    exec.runTick(inp);
+    
+    assertEquals((Double)Double.MIN_VALUE, blockedNet_behavoirTest);
+  }
+  
 }

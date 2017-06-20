@@ -13,6 +13,7 @@ import UnifiedGp.Tree.BreadthFirstVisitor;
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.VisitorCostumizer;
+import UnifiedGp.Tree.Nodes.BlockLeaf;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
 import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
@@ -73,6 +74,7 @@ public class ToPetriNet {
     cosutimzer.registerLeafConsumer(NodeType.Delay, this::delayVisit);
     cosutimzer.registerLeafConsumer(NodeType.Inp, this::inpVisit);
     cosutimzer.registerLeafConsumer(NodeType.Out, this::outVisit);
+    cosutimzer.registerLeafConsumer(NodeType.Block, this::blockVisit);
     visitor = new BreadthFirstVisitor<>(cosutimzer);
   }
 
@@ -220,12 +222,11 @@ public class ToPetriNet {
     int[] between = placesBetween.poll();
     int outTr = netToMake.addTransition(0, outLeaf.getSubtype().table.myClone());
     int outPlace = netToMake.addPlace(scaleProvider.getScaleForOut(outLeaf.outNr()));
-
+    
     netToMake.addArcFromPlaceToTransition(between[0], outTr);
     netToMake.addArcFromTransitionToPlace(outTr, outPlace);
     netToMake.addArcFromTransitionToPlace(outTr, between[1]);
     regisetrOutPlace(outLeaf.outNr(), outPlace);
-
     return Boolean.TRUE;
   }
 
@@ -234,5 +235,12 @@ public class ToPetriNet {
     placesWaitingForOuputs.get(outNr).add(outPlace);
   }
 
+  private Boolean blockVisit(INode<NodeType> ss) {
+    int[] between = placesBetween.poll();
+    int blokcTransition = netToMake.addTransition(0, BlockLeaf.table.myClone());
+    netToMake.addArcFromPlaceToTransition(between[0], blokcTransition);
+    netToMake.addArcFromTransitionToPlace(blokcTransition, between[0]);
+    return Boolean.TRUE;
+  }
 
 }

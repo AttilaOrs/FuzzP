@@ -22,7 +22,11 @@ public class UnifiedTableParser {
   public static UnifiedOneXTwoTable parseUnifiedOneXTwoTable(String st) {
     UnifiedTableParser parser = new UnifiedTableParser(true);
     return parser.parseOneXTwoTable(st);
-
+  }
+  
+  public static UnifiedOneXOneTable parseUnifiedOneXOneTable(String st) {
+    UnifiedTableParser parser = new UnifiedTableParser(true);
+    return parser.parseOneXOneTable(st);
   }
 
   private boolean phiIsRequired;

@@ -56,7 +56,6 @@ public class Scenario {
 
   public int getLength() {
     return values.size();
-
   }
 
   public double[] getValuesForTick(int i) {
