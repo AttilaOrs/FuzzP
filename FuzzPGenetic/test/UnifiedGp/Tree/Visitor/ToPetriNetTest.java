@@ -16,6 +16,7 @@ import org.junit.Test;
 import UnifiedGp.ScaleProvider;
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.Nodes.BlockLeaf;
+import UnifiedGp.Tree.Nodes.ConstantLeaf;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
 import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.InputType;
@@ -319,5 +320,36 @@ public class ToPetriNetTest {
     exec.runTick(inp);
     assertEquals((Double) 0.25, memoryNet_behavoirTest);
   }
+  
+  private IInnerNode<NodeType> constantNet() {
+    ConstantLeaf constantLeaf  = new ConstantLeaf(0.13);
+    OutputLeaf o = new OutputLeaf(0,OutType.Copy);
+    Operator seq1 = new Operator(NodeType.Seq, constantLeaf, o);
+    DelayLeaf d = new DelayLeaf(1);
+    return new Operator(NodeType.Loop, seq1, d);
+  }
+  
+  Double constantNet_behavourTest =  null;
+  @Test
+  public void constantNet_behavourTest(){
+    
+    PetriConversationResult rez = toNet.toNet(constantNet());
+    rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
+    rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(0), t -> constantNet_behavourTest = t.getValue());
+    
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
+    Map<Integer, UnifiedToken> inp = new HashMap<>();
+    
+    exec.runTick(inp);
+    assertEquals((Double) 0.13, constantNet_behavourTest);
+    constantNet_behavourTest = null;
+    exec.runTick(inp);
+    assertEquals((Double) 0.13, constantNet_behavourTest);
+    
+    
+    
+    
+  }
+  
   
 }

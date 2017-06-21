@@ -14,6 +14,7 @@ import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.VisitorCostumizer;
 import UnifiedGp.Tree.Nodes.BlockLeaf;
+import UnifiedGp.Tree.Nodes.ConstantLeaf;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
 import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.MemoryLeaf;
@@ -78,6 +79,7 @@ public class ToPetriNet {
     cosutimzer.registerLeafConsumer(NodeType.Out, this::outVisit);
     cosutimzer.registerLeafConsumer(NodeType.Block, this::blockVisit);
     cosutimzer.registerLeafConsumer(NodeType.Memory, this::memoryVisit);
+    cosutimzer.registerLeafConsumer(NodeType.Const, this::constantVisit);
     visitor = new BreadthFirstVisitor<>(cosutimzer);
   }
 
@@ -268,6 +270,28 @@ public class ToPetriNet {
       netToMake.addArcFromTransitionToPlace(tr, between[1]);
       
     }
+    return Boolean.TRUE;
+  }
+  
+  private Boolean constantVisit(INode<NodeType> ss ){
+    ConstantLeaf l = (ConstantLeaf) ss;
+    int[] between = placesBetween.poll();
+    int constPlace = netToMake.addInputPlace(scaleProvider.defaultScale());
+    netToMake.setInitialMarkingForPlace(constPlace, new UnifiedToken(l.getConsValue()));
+    int intermedaitePlace = netToMake.addPlace(scaleProvider.defaultScale());
+    int copyTr = netToMake.addTransition(0, ConstantLeaf.copyTable.myClone());
+    netToMake.addArcFromPlaceToTransition(constPlace,copyTr );
+    netToMake.addArcFromPlaceToTransition(intermedaitePlace,copyTr );
+    
+    netToMake.addArcFromTransitionToPlace(copyTr, constPlace);
+    netToMake.addArcFromTransitionToPlace(copyTr, intermedaitePlace);
+    
+    int recive = netToMake.addTransition(0, ConstantLeaf.recieveTable.myClone()) ;
+    
+    netToMake.addArcFromPlaceToTransition(intermedaitePlace, recive);
+    netToMake.addArcFromPlaceToTransition(between[0], recive);
+    netToMake.addArcFromTransitionToPlace(recive, between[1]);
+    
     return Boolean.TRUE;
   }
 
