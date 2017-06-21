@@ -3,12 +3,12 @@ package UnifiedGp.Tree.Nodes;
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.INode;
 
-public class Operator implements IInnerNode<NodeType> {
+public class InnerNode implements IInnerNode<NodeType> {
 
   NodeType myType;
   INode<NodeType> fi, se;
 
-  public Operator(NodeType myType, INode<NodeType> fi, INode<NodeType> se) {
+  public InnerNode(NodeType myType, INode<NodeType> fi, INode<NodeType> se) {
     this.myType = myType;
     this.fi = fi;
     this.se = se;

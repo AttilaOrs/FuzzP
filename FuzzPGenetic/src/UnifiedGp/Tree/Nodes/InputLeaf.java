@@ -1,12 +1,35 @@
 package UnifiedGp.Tree.Nodes;
 
 import UnifiedGp.Tree.ILeaf;
+import core.UnifiedPetriLogic.UnifiedTableParser;
+import core.UnifiedPetriLogic.tables.UnifiedTwoXOneTable;
+import core.UnifiedPetriLogic.tables.UnifiedTwoXTwoTable;
 
 public class InputLeaf implements ILeaf<NodeType, InputType> {
 
 
   private final InputType type;
   private final int inpNr;
+  private final static String inputTransmitterTwoXTwoStr = "{" +
+  "[<-2,-2><-2,-2><-2,-2><-2,-2><-2,-2><-2,-2>]" + //
+  "[<-1,-1><-1,-1><-1,-1><-1,-1><-1,-1><-1,-1>]" + //
+  "[< 0, 0>< 0, 0>< 0, 0>< 0, 0>< 0, 0>< 0, 0>]" + //
+  "[< 1, 1>< 1, 1>< 1, 1>< 1, 1>< 1, 1>< 1, 1>]" + //
+  "[< 2, 2>< 2, 2>< 2, 2>< 2, 2>< 2, 2>< 2, 2>]" + //
+  "[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]" + //
+  "}";
+  private final static String inputTransmitterTwoXOneStr = "{" +
+  "[<-2><-2><-2><-2><-2><-2>]" + //
+  "[<-1><-1><-1><-1><-1><-1>]" + //
+  "[< 0>< 0>< 0>< 0>< 0>< 0>]" + //
+  "[< 1>< 1>< 1>< 1>< 1>< 1>]" + //
+  "[< 2>< 2>< 2>< 2>< 2>< 2>]" + //
+  "[<FF><FF><FF><FF><FF><FF>]" + //
+  "}";
+  public static final UnifiedTwoXOneTable inputTransmitterTwoXOne = UnifiedTableParser
+      .parseUnifiedTwoXOneTable(inputTransmitterTwoXOneStr);
+  public static final UnifiedTwoXTwoTable inputTransmitterTwoXTwo = UnifiedTableParser
+      .parseUnifiedTwoXTwoTable(inputTransmitterTwoXTwoStr);
 
   public InputLeaf(InputType type, int inpNr) {
     this.type = type;

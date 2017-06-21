@@ -81,6 +81,10 @@ public class UnifiedTwoXOneTable extends AbstractTable implements IGeneralTwoXOn
     return new UnifiedTwoXOneTable(TwoXOneTable.defaultTable().getTable(), op);
   }
 
+  public static UnifiedTwoXOneTable onlyOp(Operator op) {
+    return new UnifiedTwoXOneTable(TwoXOneTable.onlyPositiveLarge().getTable(), op);
+  }
+
   @Override
   public IUnifiedTable myClone() {
     TwoXOneTable cloneTable = table.myClone();

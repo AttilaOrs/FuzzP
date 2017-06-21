@@ -18,11 +18,11 @@ import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.Nodes.BlockLeaf;
 import UnifiedGp.Tree.Nodes.ConstantLeaf;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
+import UnifiedGp.Tree.Nodes.InnerNode;
 import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.InputType;
 import UnifiedGp.Tree.Nodes.MemoryLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
-import UnifiedGp.Tree.Nodes.Operator;
 import UnifiedGp.Tree.Nodes.OutType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
@@ -46,28 +46,28 @@ public class ToPetriNetTest {
   IInnerNode<NodeType> simpleSeq() {
     DelayLeaf d1 = new DelayLeaf(1);
     DelayLeaf d2 = new DelayLeaf(2);
-    Operator seq = new Operator(NodeType.Seq, d1, d2);
+    InnerNode seq = new InnerNode(NodeType.Seq, d1, d2);
     return seq;
   }
 
   IInnerNode<NodeType> simpleSelec() {
     DelayLeaf d1 = new DelayLeaf(1);
     DelayLeaf d2 = new DelayLeaf(2);
-    Operator seq = new Operator(NodeType.Selc, d1, d2);
+    InnerNode seq = new InnerNode(NodeType.Selc, d1, d2);
     return seq;
   }
 
   IInnerNode<NodeType> simpleConc() {
     DelayLeaf d1 = new DelayLeaf(1);
     DelayLeaf d2 = new DelayLeaf(2);
-    Operator seq = new Operator(NodeType.Conc, d1, d2);
+    InnerNode seq = new InnerNode(NodeType.Conc, d1, d2);
     return seq;
   }
 
   IInnerNode<NodeType> simpleLoop() {
     DelayLeaf d1 = new DelayLeaf(1);
     DelayLeaf d2 = new DelayLeaf(2);
-    Operator seq = new Operator(NodeType.Loop, d1, d2);
+    InnerNode seq = new InnerNode(NodeType.Loop, d1, d2);
     return seq;
   }
 
@@ -77,10 +77,10 @@ public class ToPetriNetTest {
     DelayLeaf d3 = new DelayLeaf(3);
     DelayLeaf d4 = new DelayLeaf(4);
     DelayLeaf d5 = new DelayLeaf(4);
-    Operator seq = new Operator(NodeType.Seq, d1, d2);
-    Operator select = new Operator(NodeType.Selc, d3, d4);
-    Operator conc = new Operator(NodeType.Conc, seq, select);
-    Operator loop = new Operator(NodeType.Loop, conc, d5);
+    InnerNode seq = new InnerNode(NodeType.Seq, d1, d2);
+    InnerNode select = new InnerNode(NodeType.Selc, d3, d4);
+    InnerNode conc = new InnerNode(NodeType.Conc, seq, select);
+    InnerNode loop = new InnerNode(NodeType.Loop, conc, d5);
     return loop;
   }
 
@@ -139,13 +139,13 @@ public class ToPetriNetTest {
   private IInnerNode<NodeType> simpleInput() {
     InputLeaf inp = new InputLeaf(InputType.ReaderBlocking, 0);
     DelayLeaf d = new DelayLeaf(0);
-    return new Operator(NodeType.Seq, inp, d);
+    return new InnerNode(NodeType.Seq, inp, d);
   }
 
   private IInnerNode<NodeType> sameInpuTwoTimes() {
     InputLeaf inp1 = new InputLeaf(InputType.ReaderBlocking, 0);
     InputLeaf inp2 = new InputLeaf(InputType.ReaderBlocking, 0);
-    return new Operator(NodeType.Seq, inp1, inp2);
+    return new InnerNode(NodeType.Seq, inp1, inp2);
   }
 
   @Test
@@ -197,7 +197,7 @@ public class ToPetriNetTest {
   private IInnerNode<NodeType> simpleInputOuput() {
     InputLeaf inp = new InputLeaf(InputType.ReaderBlocking, 0);
     OutputLeaf d = new OutputLeaf(0, OutType.Copy);
-    return new Operator(NodeType.Seq, inp, d);
+    return new InnerNode(NodeType.Seq, inp, d);
   }
 
   @Test
@@ -229,11 +229,11 @@ public class ToPetriNetTest {
     OutputLeaf o2 = new OutputLeaf(0, OutType.Copy);
     DelayLeaf d1 = new DelayLeaf(1);
     DelayLeaf d2 = new DelayLeaf(2);
-    Operator seq1 = new Operator(NodeType.Seq, d1, o1);
-    Operator seq2 = new Operator(NodeType.Seq, d2, o2);
-    Operator conc = new Operator(NodeType.Conc, seq1, seq2);
+    InnerNode seq1 = new InnerNode(NodeType.Seq, d1, o1);
+    InnerNode seq2 = new InnerNode(NodeType.Seq, d2, o2);
+    InnerNode conc = new InnerNode(NodeType.Conc, seq1, seq2);
 
-    return new Operator(NodeType.Seq, inp, conc);
+    return new InnerNode(NodeType.Seq, inp, conc);
   }
 
   Double complexInputOuputnet_behavoirTest = null;
@@ -260,7 +260,7 @@ public class ToPetriNetTest {
   private IInnerNode<NodeType> blockedNet() {
     BlockLeaf bl = new BlockLeaf();
     OutputLeaf o = new OutputLeaf(0, OutType.Copy);
-    return new Operator(NodeType.Seq, bl, o);
+    return new InnerNode(NodeType.Seq, bl, o);
   }
   
   Double blockedNet_behavoirTest = Double.MIN_VALUE;
@@ -281,10 +281,10 @@ public class ToPetriNetTest {
     InputLeaf inp = new InputLeaf(InputType.ReaderBlocking, 0);
     MemoryLeaf mem = new MemoryLeaf(2);
     OutputLeaf o = new OutputLeaf(0,OutType.Copy);
-    Operator seq1 = new Operator(NodeType.Seq, inp, mem);
-    Operator seq2 = new Operator(NodeType.Seq, seq1, o);
+    InnerNode seq1 = new InnerNode(NodeType.Seq, inp, mem);
+    InnerNode seq2 = new InnerNode(NodeType.Seq, seq1, o);
     DelayLeaf d = new DelayLeaf(0);
-    return new Operator(NodeType.Loop, seq2, d);
+    return new InnerNode(NodeType.Loop, seq2, d);
   }
   
   Double memoryNet_behavoirTest = null;
@@ -294,7 +294,7 @@ public class ToPetriNetTest {
     PetriConversationResult rez = toNet.toNet(memoryNet());
     rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
     rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(0), t -> memoryNet_behavoirTest = t.getValue());
-    
+
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
     
     Map<Integer, UnifiedToken> inp = new HashMap<>();
@@ -324,9 +324,9 @@ public class ToPetriNetTest {
   private IInnerNode<NodeType> constantNet() {
     ConstantLeaf constantLeaf  = new ConstantLeaf(0.13);
     OutputLeaf o = new OutputLeaf(0,OutType.Copy);
-    Operator seq1 = new Operator(NodeType.Seq, constantLeaf, o);
+    InnerNode seq1 = new InnerNode(NodeType.Seq, constantLeaf, o);
     DelayLeaf d = new DelayLeaf(1);
-    return new Operator(NodeType.Loop, seq1, d);
+    return new InnerNode(NodeType.Loop, seq1, d);
   }
   
   Double constantNet_behavourTest =  null;
@@ -345,11 +345,38 @@ public class ToPetriNetTest {
     constantNet_behavourTest = null;
     exec.runTick(inp);
     assertEquals((Double) 0.13, constantNet_behavourTest);
-    
-    
-    
-    
   }
   
+  private IInnerNode<NodeType> mathNet() {
+    InputLeaf i = new InputLeaf(InputType.ReaderBlocking, 0);
+    ConstantLeaf cons = new ConstantLeaf(0.5);
+    InnerNode n = new InnerNode(NodeType.Multiply, i, cons);
+    OutputLeaf o = new OutputLeaf(0, OutType.Copy);
+    InnerNode seq = new InnerNode(NodeType.Seq, n, o);
+    ConstantLeaf cons2 = new ConstantLeaf(0.1);
+    InnerNode add = new InnerNode(NodeType.Add, seq, cons2);
+    OutputLeaf o2 = new OutputLeaf(1, OutType.Copy);
+    return new InnerNode(NodeType.Seq, add, o2);
+  }
   
+  Double mathNet_beahvoiurTest_out1 = null;
+  Double mathNet_beahvoiurTest_out2 = null;
+
+  @Test
+  public void mathNet_beahvoiurTest() {
+
+    PetriConversationResult rez = toNet.toNet(mathNet());
+    rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
+    rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(0), t -> mathNet_beahvoiurTest_out1 = t.getValue());
+    rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(1), t -> mathNet_beahvoiurTest_out2 = t.getValue());
+
+
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
+    Map<Integer, UnifiedToken> inp = new HashMap<>();
+    inp.put(rez.inpNrToInpPlace.get(0), new UnifiedToken(0.12));
+    exec.runTick(inp);
+    assertEquals((Double) 0.06, mathNet_beahvoiurTest_out1);
+    assertEquals((Double) 0.16, mathNet_beahvoiurTest_out2);
+  }
+
 }

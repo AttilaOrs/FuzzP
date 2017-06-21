@@ -29,6 +29,22 @@ public class TwoXOneTable implements ITable, IGeneralTwoXOneTable {
 		return new TwoXOneTable(ruleTable);
 	}
 
+  public static TwoXOneTable onlyPositiveLarge() {
+    EnumMap<FuzzyValue, Map<FuzzyValue, FuzzyValue>> ruleTable = new EnumMap<>(FuzzyValue.class);
+    for (int i = 0; i < FuzzyValue.inOrder.size(); i++) {
+      EnumMap<FuzzyValue, FuzzyValue> tempRulaTable = new EnumMap<>(FuzzyValue.class);
+      for (int q = 0; q < FuzzyValue.inOrder.size(); q++) {
+        tempRulaTable.put(FuzzyValue.inOrder.get(q), FuzzyValue.PL);
+      }
+      ruleTable.put(FuzzyValue.inOrder.get(i), tempRulaTable);
+    }
+    for (FuzzyValue fv : FuzzyValue.inOrder) {
+      ruleTable.get(fv).put(FuzzyValue.FF, FuzzyValue.FF);
+      ruleTable.get(FuzzyValue.FF).put(fv, FuzzyValue.FF);
+    }
+    return new TwoXOneTable(ruleTable);
+  }
+
   protected Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> ruleTable;
 
 	public TwoXOneTable(Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> rulaTabel) {

@@ -16,44 +16,20 @@ import UnifiedGp.Tree.VisitorCostumizer;
 import UnifiedGp.Tree.Nodes.BlockLeaf;
 import UnifiedGp.Tree.Nodes.ConstantLeaf;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
+import UnifiedGp.Tree.Nodes.InnerNode;
 import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.MemoryLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
 import UnifiedGp.Tree.Nodes.SubnodeTypeMarker;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
-import core.UnifiedPetriLogic.UnifiedTableParser;
 import core.UnifiedPetriLogic.UnifiedToken;
+import core.UnifiedPetriLogic.tables.Operator;
 import core.UnifiedPetriLogic.tables.UnifiedOneXOneTable;
 import core.UnifiedPetriLogic.tables.UnifiedOneXTwoTable;
 import core.UnifiedPetriLogic.tables.UnifiedTwoXOneTable;
-import core.UnifiedPetriLogic.tables.UnifiedTwoXTwoTable;
 
 public class ToPetriNet {
-  private static final UnifiedTableParser parser = new UnifiedTableParser(true);
-
-  public final static String inputTransmitterTwoXOneStr = "{" +
-      "[<-2><-2><-2><-2><-2><-2>]" + //
-      "[<-1><-1><-1><-1><-1><-1>]" + //
-      "[< 0>< 0>< 0>< 0>< 0>< 0>]" + //
-      "[< 1>< 1>< 1>< 1>< 1>< 1>]" + //
-      "[< 2>< 2>< 2>< 2>< 2>< 2>]" + //
-      "[<FF><FF><FF><FF><FF><FF>]" + //
-      "}";
-  public final static String inputTransmitterTwoXTwoStr = "{" +
-      "[<-2,-2><-2,-2><-2,-2><-2,-2><-2,-2><-2,-2>]" + //
-      "[<-1,-1><-1,-1><-1,-1><-1,-1><-1,-1><-1,-1>]" + //
-      "[< 0, 0>< 0, 0>< 0, 0>< 0, 0>< 0, 0>< 0, 0>]" + //
-      "[< 1, 1>< 1, 1>< 1, 1>< 1, 1>< 1, 1>< 1, 1>]" + //
-      "[< 2, 2>< 2, 2>< 2, 2>< 2, 2>< 2, 2>< 2, 2>]" + //
-      "[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]" + //
-      "}";
-
-
-  private static final UnifiedTwoXTwoTable inputTransmitterTwoXTwo = parser
-      .parseTwoXTwoTable(inputTransmitterTwoXTwoStr);
-  private static final UnifiedTwoXOneTable inputTransmitterTwoXOne = parser
-      .parseTwoXOneTable(inputTransmitterTwoXOneStr);
 
   private VisitorCostumizer<NodeType, SubnodeTypeMarker> cosutimzer;
   private BreadthFirstVisitor<NodeType, SubnodeTypeMarker> visitor;
@@ -66,7 +42,6 @@ public class ToPetriNet {
   private Map<Integer, Integer> outNrToOutTr;
 
   
-
   public ToPetriNet(ScaleProvider scaleProvider) {
     this.scaleProvider = scaleProvider;
     cosutimzer = new VisitorCostumizer<>();
@@ -74,6 +49,8 @@ public class ToPetriNet {
     cosutimzer.registerOperatorConsumer(NodeType.Loop, this::loopVisit);
     cosutimzer.registerOperatorConsumer(NodeType.Selc, this::selcVisit);
     cosutimzer.registerOperatorConsumer(NodeType.Conc, this::concVisit);
+    cosutimzer.registerOperatorConsumer(NodeType.Add, this::concVisit);
+    cosutimzer.registerOperatorConsumer(NodeType.Multiply, this::concVisit);
     cosutimzer.registerLeafConsumer(NodeType.Delay, this::delayVisit);
     cosutimzer.registerLeafConsumer(NodeType.Inp, this::inpVisit);
     cosutimzer.registerLeafConsumer(NodeType.Out, this::outVisit);
@@ -130,14 +107,14 @@ public class ToPetriNet {
         Integer placeToPut = it.next();
         if (it.hasNext()) {
           int newLastPlace = netToMake.addPlace(scaleProvider.getScaleForInp(inputNr));
-          int tr = netToMake.addTransition(0, inputTransmitterTwoXTwo);
+          int tr = netToMake.addTransition(0, InputLeaf.inputTransmitterTwoXTwo);
           netToMake.addArcFromPlaceToTransition(lastPlace, tr);
           netToMake.addArcFromPlaceToTransition(placeToPut, tr);
           netToMake.addArcFromTransitionToPlace(tr, placeToPut);
           netToMake.addArcFromTransitionToPlace(tr, newLastPlace);
           lastPlace = newLastPlace;
         } else {
-          int tr = netToMake.addTransition(0, inputTransmitterTwoXOne);
+          int tr = netToMake.addTransition(0, InputLeaf.inputTransmitterTwoXOne);
           netToMake.addArcFromPlaceToTransition(lastPlace, tr);
           netToMake.addArcFromPlaceToTransition(placeToPut, tr);
           netToMake.addArcFromTransitionToPlace(tr, placeToPut);
@@ -174,7 +151,8 @@ public class ToPetriNet {
     return Boolean.TRUE;
   }
 
-  private Boolean concVisit(INode<NodeType> loopNode) {
+  private Boolean concVisit(INode<NodeType> conc) {
+    InnerNode op = (InnerNode) conc;
     int[] between = placesBetween.poll();
     int enterTr = netToMake.addTransition(0, UnifiedOneXTwoTable.defaultTable());
     netToMake.addArcFromPlaceToTransition(between[0], enterTr);
@@ -185,13 +163,27 @@ public class ToPetriNet {
 
     int exitPlaceOne = netToMake.addPlace(scaleProvider.defaultScale());
     int exitPlaceTwo = netToMake.addPlace(scaleProvider.defaultScale());
-    int exitTr = netToMake.addTransition(0, UnifiedTwoXOneTable.defaultTable());
+    int exitTr = netToMake.addTransition(0, getEndTableFor(op));
     netToMake.addArcFromTransitionToPlace(exitTr, between[1]);
     netToMake.addArcFromPlaceToTransition(exitPlaceOne, exitTr);
     netToMake.addArcFromPlaceToTransition(exitPlaceTwo, exitTr);
     placesBetween.add(new int[] { enterPlaceOne, exitPlaceOne });
     placesBetween.add(new int[] { enterPlaceTwo, exitPlaceTwo });
     return Boolean.TRUE;
+  }
+
+  private UnifiedTwoXOneTable getEndTableFor(InnerNode op) {
+    switch (op.getType()){
+    case Conc:
+      return UnifiedTwoXOneTable.defaultTable();
+    case Add:
+      return UnifiedTwoXOneTable.onlyOp(Operator.PLUS);
+    case Multiply:
+      return UnifiedTwoXOneTable.onlyOp(Operator.MULT);
+    default:
+      break;
+    }
+    throw new RuntimeException("Error at ToPetriNet");
   }
 
   private Boolean delayVisit(INode<NodeType> ss) {
@@ -244,7 +236,7 @@ public class ToPetriNet {
     int[] between = placesBetween.poll();
     int blokcTransition = netToMake.addTransition(0, BlockLeaf.table.myClone());
     netToMake.addArcFromPlaceToTransition(between[0], blokcTransition);
-    netToMake.addArcFromTransitionToPlace(blokcTransition, between[0]);
+    netToMake.addArcFromTransitionToPlace(blokcTransition, between[1]);
     return Boolean.TRUE;
   }
   
@@ -276,7 +268,7 @@ public class ToPetriNet {
   private Boolean constantVisit(INode<NodeType> ss ){
     ConstantLeaf l = (ConstantLeaf) ss;
     int[] between = placesBetween.poll();
-    int constPlace = netToMake.addInputPlace(scaleProvider.defaultScale());
+    int constPlace = netToMake.addPlace(scaleProvider.defaultScale());
     netToMake.setInitialMarkingForPlace(constPlace, new UnifiedToken(l.getConsValue()));
     int intermedaitePlace = netToMake.addPlace(scaleProvider.defaultScale());
     int copyTr = netToMake.addTransition(0, ConstantLeaf.copyTable.myClone());
