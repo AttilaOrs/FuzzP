@@ -13,6 +13,9 @@ import java.util.stream.IntStream;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
+
+import Main.UnifiedVizualizer;
 import UnifiedGp.ScaleProvider;
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.Nodes.BlockLeaf;
@@ -22,15 +25,19 @@ import UnifiedGp.Tree.Nodes.InnerNode;
 import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.InputType;
 import UnifiedGp.Tree.Nodes.MemoryLeaf;
+import UnifiedGp.Tree.Nodes.NegateLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.OutType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
+import core.Drawable.TransitionPlaceNameStore;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
+import core.common.recoder.DebuggerRecorder;
 import core.common.recoder.FullRecorder;
+import core.common.recoder.MultiRecorder;
 import core.common.recoder.fullrecorderevents.IFullRecorderEvent;
 import core.common.recoder.fullrecorderevents.TickFinsihed;
 
@@ -370,7 +377,6 @@ public class ToPetriNetTest {
     rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(0), t -> mathNet_beahvoiurTest_out1 = t.getValue());
     rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(1), t -> mathNet_beahvoiurTest_out2 = t.getValue());
 
-
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
     Map<Integer, UnifiedToken> inp = new HashMap<>();
     inp.put(rez.inpNrToInpPlace.get(0), new UnifiedToken(0.12));
@@ -378,5 +384,40 @@ public class ToPetriNetTest {
     assertEquals((Double) 0.06, mathNet_beahvoiurTest_out1);
     assertEquals((Double) 0.16, mathNet_beahvoiurTest_out2);
   }
+  
+  
+  private static IInnerNode<NodeType> negateNet() {
+    InputLeaf l = new InputLeaf(InputType.ReaderBlocking, 0);
+    NegateLeaf neg = new NegateLeaf();
+    OutputLeaf out = new OutputLeaf(0, OutType.Copy);
+    InnerNode node = new InnerNode(NodeType.Seq, l, neg);
+    return  new InnerNode(NodeType.Seq, node, out);
+  }
+  
+  Double negate_beahvoiurTest = null;
+  
+  @Test
+  public void negate_beahvoiurTest() {
+    PetriConversationResult rez = toNet.toNet(negateNet());
+    rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
+    rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(0), t -> negate_beahvoiurTest = t.getValue());
+    
+    DebuggerRecorder<UnifiedToken> rec = new DebuggerRecorder<>();
+    FullRecorder<UnifiedToken> full = new FullRecorder<>();
+    MultiRecorder<UnifiedToken> tk = new MultiRecorder<>(Arrays.asList(rec, full));
+    
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
+    exec.setRecorder(full);
+    Map<Integer, UnifiedToken> inp = new HashMap<>();
+    inp.put(rez.inpNrToInpPlace.get(0), new UnifiedToken(0.12));
+    exec.runTick(inp);
+    
+    
+    assertTrue( Math.abs(negate_beahvoiurTest + 0.12) < 0.000000001 );
+    
+  }
+
+
+  
 
 }

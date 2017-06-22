@@ -19,9 +19,11 @@ import UnifiedGp.Tree.Nodes.DelayLeaf;
 import UnifiedGp.Tree.Nodes.InnerNode;
 import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.MemoryLeaf;
+import UnifiedGp.Tree.Nodes.NegateLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
 import UnifiedGp.Tree.Nodes.SubnodeTypeMarker;
+import core.UnifiedPetriLogic.IUnifiedTable;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.tables.Operator;
@@ -54,7 +56,8 @@ public class ToPetriNet {
     cosutimzer.registerLeafConsumer(NodeType.Delay, this::delayVisit);
     cosutimzer.registerLeafConsumer(NodeType.Inp, this::inpVisit);
     cosutimzer.registerLeafConsumer(NodeType.Out, this::outVisit);
-    cosutimzer.registerLeafConsumer(NodeType.Block, this::blockVisit);
+    cosutimzer.registerLeafConsumer(NodeType.Block, this::simpleVisit);
+    cosutimzer.registerLeafConsumer(NodeType.Negate, this::simpleVisit);
     cosutimzer.registerLeafConsumer(NodeType.Memory, this::memoryVisit);
     cosutimzer.registerLeafConsumer(NodeType.Const, this::constantVisit);
     visitor = new BreadthFirstVisitor<>(cosutimzer);
@@ -232,12 +235,21 @@ public class ToPetriNet {
     placesWaitingForOuputs.get(outNr).add(outPlace);
   }
 
-  private Boolean blockVisit(INode<NodeType> ss) {
+  private Boolean simpleVisit(INode<NodeType> ss) {
     int[] between = placesBetween.poll();
-    int blokcTransition = netToMake.addTransition(0, BlockLeaf.table.myClone());
+    int blokcTransition = netToMake.addTransition(0, getTaleForSimpleNode(ss.getType()));
     netToMake.addArcFromPlaceToTransition(between[0], blokcTransition);
     netToMake.addArcFromTransitionToPlace(blokcTransition, between[1]);
     return Boolean.TRUE;
+  }
+
+  private IUnifiedTable getTaleForSimpleNode(NodeType nodeType) {
+    switch(nodeType){
+      case Block: return  BlockLeaf.table.myClone();
+      case Negate : return NegateLeaf.table.myClone();
+      default : break;
+    }
+    throw new RuntimeException(" there is a problem ToPetriNet");
   }
   
   private Boolean memoryVisit(INode<NodeType> ss) {
