@@ -60,6 +60,7 @@ public class ToPetriNet {
     cosutimzer.registerLeafConsumer(NodeType.Negate, this::simpleVisit);
     cosutimzer.registerLeafConsumer(NodeType.Memory, this::memoryVisit);
     cosutimzer.registerLeafConsumer(NodeType.Const, this::constantVisit);
+    cosutimzer.registerLeafConsumer(NodeType.Inv, this::invVisit);
     visitor = new BreadthFirstVisitor<>(cosutimzer);
   }
 
@@ -296,6 +297,25 @@ public class ToPetriNet {
     netToMake.addArcFromPlaceToTransition(between[0], recive);
     netToMake.addArcFromTransitionToPlace(recive, between[1]);
     
+    return Boolean.TRUE;
+  }
+
+  private Boolean invVisit(INode<NodeType> ss) {
+    int[] between = placesBetween.poll();
+    int enterTr = netToMake.addTransition(0, UnifiedOneXTwoTable.defaultTable());
+    netToMake.addArcFromPlaceToTransition(between[0], enterTr);
+    int enterPlaceOne = netToMake.addPlace(scaleProvider.defaultScale());
+    int enterPlaceTwo = netToMake.addPlace(scaleProvider.defaultScale());
+    netToMake.addArcFromTransitionToPlace(enterTr, enterPlaceOne);
+    netToMake.addArcFromTransitionToPlace(enterTr, enterPlaceTwo);
+
+    int exitPlaceOne = netToMake.addPlace(scaleProvider.defaultScale());
+    int exitTr = netToMake.addTransition(0, UnifiedTwoXOneTable.onlyOp(Operator.DIV));
+    netToMake.addArcFromTransitionToPlace(exitTr, between[1]);
+    netToMake.addArcFromPlaceToTransition(exitPlaceOne, exitTr);
+    netToMake.addArcFromPlaceToTransition(enterPlaceTwo, exitTr);
+    placesBetween.add(new int[] { enterPlaceOne, exitPlaceOne });
+    this.constantVisit(new ConstantLeaf(1.0));
     return Boolean.TRUE;
   }
 

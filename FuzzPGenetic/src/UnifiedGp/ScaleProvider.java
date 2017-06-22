@@ -1,17 +1,11 @@
 package UnifiedGp;
 
-public class ScaleProvider {
+public interface ScaleProvider {
 
-  public double defaultScale() {
-    return 1.0;
-  }
+  public double defaultScale();
 
-  public Double getScaleForInp(int inpNr) {
-    return 1.0;
-  }
+  public Double getScaleForInp(int inpNr);
 
-  public Double getScaleForOut(int inpNr) {
-    return 1.0;
-  }
+  public Double getScaleForOut(int inpNr);
 
 }

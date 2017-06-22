@@ -13,9 +13,6 @@ import java.util.stream.IntStream;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
-
-import Main.UnifiedVizualizer;
 import UnifiedGp.ScaleProvider;
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.Nodes.BlockLeaf;
@@ -24,6 +21,7 @@ import UnifiedGp.Tree.Nodes.DelayLeaf;
 import UnifiedGp.Tree.Nodes.InnerNode;
 import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.InputType;
+import UnifiedGp.Tree.Nodes.InversionLeaf;
 import UnifiedGp.Tree.Nodes.MemoryLeaf;
 import UnifiedGp.Tree.Nodes.NegateLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
@@ -31,13 +29,10 @@ import UnifiedGp.Tree.Nodes.OutType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
-import core.Drawable.TransitionPlaceNameStore;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
-import core.common.recoder.DebuggerRecorder;
 import core.common.recoder.FullRecorder;
-import core.common.recoder.MultiRecorder;
 import core.common.recoder.fullrecorderevents.IFullRecorderEvent;
 import core.common.recoder.fullrecorderevents.TickFinsihed;
 
@@ -47,7 +42,24 @@ public class ToPetriNetTest {
 
   @Before
   public void before() {
-    toNet = new ToPetriNet(new ScaleProvider());
+    toNet = new ToPetriNet(new ScaleProvider() {
+
+      @Override
+      public double defaultScale() {
+        return 2.0;
+      }
+
+      @Override
+      public Double getScaleForInp(int inpNr) {
+        return 2.0;
+      }
+
+      @Override
+      public Double getScaleForOut(int inpNr) {
+        return 2.0;
+      }
+
+    });
   }
 
   IInnerNode<NodeType> simpleSeq() {
@@ -386,7 +398,7 @@ public class ToPetriNetTest {
   }
   
   
-  private static IInnerNode<NodeType> negateNet() {
+  private IInnerNode<NodeType> negateNet() {
     InputLeaf l = new InputLeaf(InputType.ReaderBlocking, 0);
     NegateLeaf neg = new NegateLeaf();
     OutputLeaf out = new OutputLeaf(0, OutType.Copy);
@@ -402,12 +414,8 @@ public class ToPetriNetTest {
     rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
     rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(0), t -> negate_beahvoiurTest = t.getValue());
     
-    DebuggerRecorder<UnifiedToken> rec = new DebuggerRecorder<>();
-    FullRecorder<UnifiedToken> full = new FullRecorder<>();
-    MultiRecorder<UnifiedToken> tk = new MultiRecorder<>(Arrays.asList(rec, full));
     
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
-    exec.setRecorder(full);
     Map<Integer, UnifiedToken> inp = new HashMap<>();
     inp.put(rez.inpNrToInpPlace.get(0), new UnifiedToken(0.12));
     exec.runTick(inp);
@@ -418,6 +426,32 @@ public class ToPetriNetTest {
   }
 
 
+  private static IInnerNode<NodeType> inverseNet() {
+    InputLeaf l = new InputLeaf(InputType.ReaderBlocking, 0);
+    InversionLeaf neg = new InversionLeaf();
+    OutputLeaf out = new OutputLeaf(0, OutType.Copy);
+    InnerNode node = new InnerNode(NodeType.Seq, l, neg);
+    return new InnerNode(NodeType.Seq, node, out);
+  }
   
+  Double inverseBehavour_test = null;
+
+  @Test
+  public void inverseBehavour_test() {
+
+    PetriConversationResult rez = toNet.toNet(inverseNet());
+    rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
+    rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(0), t -> inverseBehavour_test = t.getValue());
+
+    Map<Integer, UnifiedToken> inp = new HashMap<>();
+    inp.put(rez.inpNrToInpPlace.get(0), new UnifiedToken(2.0));
+    exec.runTick(inp);
+
+    assertTrue(Math.abs(inverseBehavour_test - 0.5) < 0.00000000001);
+
+  }
+
+
 
 }
