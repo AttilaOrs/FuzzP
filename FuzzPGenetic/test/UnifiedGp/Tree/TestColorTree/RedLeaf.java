@@ -2,7 +2,7 @@ package UnifiedGp.Tree.TestColorTree;
 
 import UnifiedGp.Tree.ILeaf;
 
-public class RedLeaf implements ILeaf<Color, SubColorRed>, HasNumber {
+public class RedLeaf implements ILeaf<Color>, HasNumber {
   SubColorRed subColor;
   int nr;
 
@@ -16,7 +16,6 @@ public class RedLeaf implements ILeaf<Color, SubColorRed>, HasNumber {
     return Color.RED;
   }
 
-  @Override
   public SubColorRed getSubtype() {
     return subColor;
   }

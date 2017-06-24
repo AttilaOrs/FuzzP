@@ -2,11 +2,11 @@ package UnifiedGp.Tree;
 
 import java.util.Stack;
 
-public class DepthFirstPostOrderVisitor<TType, TSubnodeType> extends AbstractVisitor<TType, TSubnodeType> {
+public class DepthFirstPostOrderVisitor<TType> extends AbstractVisitor<TType> {
 
   Stack<INode<TType>> myStack;
 
-  public DepthFirstPostOrderVisitor(VisitorCostumizer<TType, TSubnodeType> costumizer) {
+  public DepthFirstPostOrderVisitor(VisitorCostumizer<TType> costumizer) {
     super(costumizer);
   }
 

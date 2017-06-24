@@ -4,7 +4,7 @@ import UnifiedGp.Tree.ILeaf;
 import core.UnifiedPetriLogic.UnifiedTableParser;
 import core.UnifiedPetriLogic.tables.UnifiedOneXOneTable;
 
-public class NegateLeaf implements ILeaf<NodeType, NegateType>{
+public class NegateLeaf implements ILeaf<NodeType> {
 
   private static final String tableStr = "{[< 2>< 1>< 0><-1><-2><FF>]}";
   public static final UnifiedOneXOneTable table = UnifiedTableParser.parseUnifiedOneXOneTable(tableStr);
@@ -14,9 +14,5 @@ public class NegateLeaf implements ILeaf<NodeType, NegateType>{
     return NodeType.Negate;
   }
 
-  @Override
-  public NegateType getSubtype() {
-    return NegateType.Simple;
-  }
 
 }

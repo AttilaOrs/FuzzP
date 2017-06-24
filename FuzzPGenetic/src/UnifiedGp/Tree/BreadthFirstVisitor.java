@@ -3,11 +3,11 @@ package UnifiedGp.Tree;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-public class BreadthFirstVisitor<TType, TSubnodeType> extends AbstractVisitor<TType, TSubnodeType> {
+public class BreadthFirstVisitor<TType> extends AbstractVisitor<TType> {
 
   private Queue<INode<TType>> queue;
 
-  public BreadthFirstVisitor(VisitorCostumizer<TType, TSubnodeType> costumizer) {
+  public BreadthFirstVisitor(VisitorCostumizer<TType> costumizer) {
     super(costumizer);
   }
 

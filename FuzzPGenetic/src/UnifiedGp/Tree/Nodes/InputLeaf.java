@@ -5,7 +5,7 @@ import core.UnifiedPetriLogic.UnifiedTableParser;
 import core.UnifiedPetriLogic.tables.UnifiedTwoXOneTable;
 import core.UnifiedPetriLogic.tables.UnifiedTwoXTwoTable;
 
-public class InputLeaf implements ILeaf<NodeType, InputType> {
+public class InputLeaf implements ILeaf<NodeType> {
 
 
   private final InputType type;
@@ -41,7 +41,6 @@ public class InputLeaf implements ILeaf<NodeType, InputType> {
     return NodeType.Inp;
   }
 
-  @Override
   public InputType getSubtype() {
     return type;
   }

@@ -23,7 +23,6 @@ import UnifiedGp.Tree.Nodes.MemoryLeaf;
 import UnifiedGp.Tree.Nodes.NegateLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
-import UnifiedGp.Tree.Nodes.SubnodeTypeMarker;
 import core.UnifiedPetriLogic.IUnifiedTable;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -34,8 +33,8 @@ import core.UnifiedPetriLogic.tables.UnifiedTwoXOneTable;
 
 public class ToPetriNet {
 
-  private VisitorCostumizer<NodeType, SubnodeTypeMarker> cosutimzer;
-  private BreadthFirstVisitor<NodeType, SubnodeTypeMarker> visitor;
+  private VisitorCostumizer<NodeType> cosutimzer;
+  private BreadthFirstVisitor<NodeType> visitor;
   private UnifiedPetriNet netToMake;
   private Queue<int[]> placesBetween;
   private ScaleProvider scaleProvider;

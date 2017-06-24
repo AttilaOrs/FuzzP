@@ -1,8 +1,7 @@
 package UnifiedGp.Tree;
 
-public interface ILeaf<TType, TSubtype> extends INode<TType> {
+public interface ILeaf<TType> extends INode<TType> {
 
-  TSubtype getSubtype();
 
   @Override
   default public boolean isLeaf() {

@@ -1,5 +1,5 @@
 package UnifiedGp.Tree.TestColorTree;
 
-public enum SubColorRed implements Marker {
+public enum SubColorRed {
   RED_GREEN, RED_RED
 }

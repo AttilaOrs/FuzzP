@@ -2,7 +2,7 @@ package UnifiedGp.Tree.Nodes;
 
 import UnifiedGp.Tree.ILeaf;
 
-public class DelayLeaf implements ILeaf<NodeType, DelaySubtype> {
+public class DelayLeaf implements ILeaf<NodeType> {
 
   private final int delay;
 
@@ -13,11 +13,6 @@ public class DelayLeaf implements ILeaf<NodeType, DelaySubtype> {
   @Override
   public NodeType getType() {
     return NodeType.Delay;
-  }
-
-  @Override
-  public DelaySubtype getSubtype() {
-    return DelaySubtype.SimpleDelay;
   }
 
   public int getDelay() {

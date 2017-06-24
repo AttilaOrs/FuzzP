@@ -5,7 +5,7 @@ import core.UnifiedPetriLogic.UnifiedTableParser;
 import core.UnifiedPetriLogic.tables.UnifiedTwoXOneTable;
 import core.UnifiedPetriLogic.tables.UnifiedTwoXTwoTable;
 
-public class ConstantLeaf implements ILeaf<NodeType, ConstantSubType>{
+public class ConstantLeaf implements ILeaf<NodeType> {
   
   private final double consValue;
   
@@ -22,10 +22,6 @@ public class ConstantLeaf implements ILeaf<NodeType, ConstantSubType>{
     return NodeType.Const;
   }
 
-  @Override
-  public ConstantSubType getSubtype() {
-    return ConstantSubType.Const;
-  }
   
   private final static String copyTableStr = "{"+
   	"[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><-2,-2>]"+//

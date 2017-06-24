@@ -3,11 +3,11 @@ package UnifiedGp.Tree;
 import java.util.Optional;
 import java.util.function.Function;
 
-public abstract class AbstractVisitor<TType, TSubnodeType> {
+public abstract class AbstractVisitor<TType> {
 
-  final private VisitorCostumizer<TType, TSubnodeType> costumizer;
+  final private VisitorCostumizer<TType> costumizer;
 
-  public AbstractVisitor(VisitorCostumizer<TType, TSubnodeType> costumizer) {
+  public AbstractVisitor(VisitorCostumizer<TType> costumizer) {
     this.costumizer = costumizer;
   }
 
@@ -21,11 +21,6 @@ public abstract class AbstractVisitor<TType, TSubnodeType> {
       }
     } else {
       Optional<Function<INode<TType>, Boolean>> l = costumizer.getLeafConsumer(p.getType());
-      if (l.isPresent()) {
-        l.get().apply(p);
-      }
-      ILeaf<TType, ? extends TSubnodeType> leaf = (ILeaf<TType, ? extends TSubnodeType>) p;
-      l = costumizer.getSubLeafConsumer(leaf.getType(), leaf.getSubtype());
       if (l.isPresent()) {
         l.get().apply(p);
       }

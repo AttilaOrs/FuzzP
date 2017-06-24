@@ -11,7 +11,6 @@ import UnifiedGp.Tree.TestColorTree.Color;
 import UnifiedGp.Tree.TestColorTree.ColoredInnerNode;
 import UnifiedGp.Tree.TestColorTree.GreenLeaf;
 import UnifiedGp.Tree.TestColorTree.HasNumber;
-import UnifiedGp.Tree.TestColorTree.Marker;
 import UnifiedGp.Tree.TestColorTree.RedLeaf;
 import UnifiedGp.Tree.TestColorTree.SubColorGreen;
 import UnifiedGp.Tree.TestColorTree.SubColorRed;
@@ -53,42 +52,33 @@ public class BreadthFirstVisitorTest {
 
   @Test
   public void simpleFulTree_visitsEverythingInOrder() {
-    VisitorCostumizer<Color, Marker> costum = new VisitorCostumizer<>();
+    VisitorCostumizer<Color> costum = new VisitorCostumizer<>();
     costum.registerOperatorConsumer(Color.GREEN, appenderAlwwaysTrue);
     costum.registerOperatorConsumer(Color.YELOW, appenderAlwwaysTrue);
     costum.registerOperatorConsumer(Color.RED, appenderAlwwaysTrue);
     costum.registerLeafConsumer(Color.GREEN, appenderAlwwaysTrue);
     costum.registerLeafConsumer(Color.YELOW, appenderAlwwaysTrue);
     costum.registerLeafConsumer(Color.RED, appenderAlwwaysTrue);
-    BreadthFirstVisitor<Color, Marker> bfv = new BreadthFirstVisitor<>(costum);
+    BreadthFirstVisitor<Color> bfv = new BreadthFirstVisitor<>(costum);
     bfv.visit(simpleFullTree);
     assertEquals("1 2 3 4 5 6 7 ", bld.toString());
   }
 
   @Test
   public void simpleFulTree_notVisitIfReturnsFalse() {
-    VisitorCostumizer<Color, Marker> costum = new VisitorCostumizer<>();
+    VisitorCostumizer<Color> costum = new VisitorCostumizer<>();
     costum.registerOperatorConsumer(Color.GREEN, appenderAlwwaysTrue);
     costum.registerOperatorConsumer(Color.YELOW, appenderAlwwaysTrue);
     costum.registerOperatorConsumer(Color.RED, appenderAlwwaysFalse);
     costum.registerLeafConsumer(Color.GREEN, appenderAlwwaysTrue);
     costum.registerLeafConsumer(Color.YELOW, appenderAlwwaysTrue);
     costum.registerLeafConsumer(Color.RED, appenderAlwwaysTrue);
-    BreadthFirstVisitor<Color, Marker> bfv = new BreadthFirstVisitor<>(costum);
+    BreadthFirstVisitor<Color> bfv = new BreadthFirstVisitor<>(costum);
     bfv.visit(simpleFullTree);
     assertEquals("1 2 3 6 7 ", bld.toString());
   }
 
 
-  @Test
-  public void simpleFulTree_findsSubtype() {
-    VisitorCostumizer<Color, Marker> costum = new VisitorCostumizer<>();
-    costum.registerLeafSubConsumer(Color.RED, SubColorRed.RED_RED, appenderAlwwaysTrue);
-    costum.registerLeafSubConsumer(Color.GREEN, SubColorGreen.GREEN_RED, appenderAlwwaysTrue);
-    BreadthFirstVisitor<Color, Marker> bfv = new BreadthFirstVisitor<>(costum);
-    bfv.visit(simpleFullTree);
-    assertEquals("4 6 ", bld.toString());
-  }
 
 
 }
