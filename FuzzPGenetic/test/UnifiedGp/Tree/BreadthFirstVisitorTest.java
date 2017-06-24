@@ -81,4 +81,23 @@ public class BreadthFirstVisitorTest {
 
 
 
+  @Test
+  public void simpleFulTree_visitsEverythingInOrderPredicate() {
+    VisitorCostumizer<Color> costum = new VisitorCostumizer<>();
+    costum.registerPredicatedConsumer(p -> true, l -> bld.append(((HasNumber) l).getMyNr()).append(" "));
+    BreadthFirstVisitor<Color> bfv = new BreadthFirstVisitor<>(costum);
+    bfv.visit(simpleFullTree);
+    assertEquals("1 2 3 4 5 6 7 ", bld.toString());
+  }
+
+  @Test
+  public void simpleFulTree_visitsOddInOrderPredicate() {
+    VisitorCostumizer<Color> costum = new VisitorCostumizer<>();
+    costum.registerPredicatedConsumer(p -> ((HasNumber) p).getMyNr() % 2 == 1,
+        l -> bld.append(((HasNumber) l).getMyNr()).append(" "));
+    BreadthFirstVisitor<Color> bfv = new BreadthFirstVisitor<>(costum);
+    bfv.visit(simpleFullTree);
+    assertEquals("1 3 5 7 ", bld.toString());
+  }
+
 }

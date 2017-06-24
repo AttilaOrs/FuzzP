@@ -1,6 +1,7 @@
 package UnifiedGp.Tree;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public abstract class AbstractVisitor<TType> {
@@ -14,6 +15,9 @@ public abstract class AbstractVisitor<TType> {
   abstract void visit(INode<TType> visit);
 
   protected boolean visitWithCostumizer(INode<TType> p) {
+    for (Consumer<INode<TType>> c : costumizer.getPredicatedConsumers(p)) {
+      c.accept(p);
+    }
     if (!p.isLeaf()) {
       Optional<Function<INode<TType>, Boolean>> l = costumizer.getOperatorConsumer(p.getType());
       if (l.isPresent()) {
