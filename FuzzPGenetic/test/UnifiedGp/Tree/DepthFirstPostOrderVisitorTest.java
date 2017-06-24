@@ -1,7 +1,9 @@
 package UnifiedGp.Tree;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Stack;
 import java.util.function.Function;
 
 import org.junit.Before;
@@ -27,6 +29,7 @@ public class DepthFirstPostOrderVisitorTest {
     };
   }
 
+
   @Test
   public void testVisit() throws Exception {
     VisitorCostumizer<Color> costum = new VisitorCostumizer<>();
@@ -40,5 +43,31 @@ public class DepthFirstPostOrderVisitorTest {
     bfv.visit(simpleFullTree);
     assertEquals("4 5 2 6 7 3 1 ", bld.toString());
   
+  }
+
+
+  private Stack<Integer> s;
+  @Test
+  public void testVisit_pred() throws Exception {
+    s = new Stack<>();
+    VisitorCostumizer<Color> costum = new VisitorCostumizer<>();
+    costum.registerPredicatedConsumer(node -> node.isLeaf(), node -> {
+      // System.out.println("l " + ((HasNumber) node).getMyNr());
+      s.push(((HasNumber) node).getMyNr());
+    });
+    costum.registerPredicatedConsumer(node -> !node.isLeaf(), node -> {
+      // System.out.println("i " + ((HasNumber) node).getMyNr());
+      Integer ll = s.pop();
+      Integer lr = s.pop();
+      s.push(ll + lr);
+    });
+
+
+    DepthFirstPostOrderVisitor<Color> bfv = new DepthFirstPostOrderVisitor<>(costum);
+    bfv.visit(simpleFullTree);
+    assertTrue(s.pop() == 22);
+    assertTrue(s.isEmpty());
+    
+
   }
 }

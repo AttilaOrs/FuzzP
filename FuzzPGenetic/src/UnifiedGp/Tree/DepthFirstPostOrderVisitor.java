@@ -11,7 +11,7 @@ public class DepthFirstPostOrderVisitor<TType> extends AbstractVisitor<TType> {
   }
 
   @Override
-  void visit(INode<TType> node) {
+  public void visit(INode<TType> node) {
     myStack = new Stack<>();
     INode<TType> lastVisitedNode = null;
     while (node != null || (!myStack.isEmpty())) {
