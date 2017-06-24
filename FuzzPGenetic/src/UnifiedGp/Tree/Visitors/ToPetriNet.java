@@ -2,6 +2,7 @@ package UnifiedGp.Tree.Visitors;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -52,6 +53,7 @@ public class ToPetriNet {
     cosutimzer.registerOperatorConsumer(NodeType.Selc, this::selcVisit);
     cosutimzer.registerOperatorConsumer(NodeType.Conc, this::concVisit);
     cosutimzer.registerOperatorConsumer(NodeType.Add, this::concVisit);
+    cosutimzer.registerOperatorConsumer(NodeType.PosNegSplit, this::concVisit);
     cosutimzer.registerOperatorConsumer(NodeType.Multiply, this::concVisit);
     cosutimzer.registerLeafConsumer(NodeType.Delay, this::delayVisit);
     cosutimzer.registerLeafConsumer(NodeType.Inp, this::inpVisit);
@@ -158,7 +160,7 @@ public class ToPetriNet {
   private Boolean concVisit(INode<NodeType> conc) {
     InnerNode op = (InnerNode) conc;
     int[] between = placesBetween.poll();
-    int enterTr = netToMake.addTransition(0, UnifiedOneXTwoTable.defaultTable());
+    int enterTr = netToMake.addTransition(0, getBeginingTableFor(op.getType()));
     netToMake.addArcFromPlaceToTransition(between[0], enterTr);
     int enterPlaceOne = netToMake.addPlace(scaleProvider.defaultScale());
     int enterPlaceTwo = netToMake.addPlace(scaleProvider.defaultScale());
@@ -167,7 +169,7 @@ public class ToPetriNet {
 
     int exitPlaceOne = netToMake.addPlace(scaleProvider.defaultScale());
     int exitPlaceTwo = netToMake.addPlace(scaleProvider.defaultScale());
-    int exitTr = netToMake.addTransition(0, getEndTableFor(op));
+    int exitTr = netToMake.addTransition(0, getEndTableFor(op.getType()));
     netToMake.addArcFromTransitionToPlace(exitTr, between[1]);
     netToMake.addArcFromPlaceToTransition(exitPlaceOne, exitTr);
     netToMake.addArcFromPlaceToTransition(exitPlaceTwo, exitTr);
@@ -176,16 +178,28 @@ public class ToPetriNet {
     return Boolean.TRUE;
   }
 
-  private UnifiedTwoXOneTable getEndTableFor(InnerNode op) {
-    switch (op.getType()){
+  private UnifiedTwoXOneTable getEndTableFor(NodeType op) {
+    switch (op) {
     case Conc:
       return UnifiedTwoXOneTable.defaultTable();
     case Add:
       return UnifiedTwoXOneTable.onlyOp(Operator.PLUS);
     case Multiply:
       return UnifiedTwoXOneTable.onlyOp(Operator.MULT);
+    case PosNegSplit:
+      return UnifiedTwoXOneTable.oneOfThemPhi();
     default:
       break;
+    }
+    throw new RuntimeException("Error at ToPetriNet");
+  }
+
+  private UnifiedOneXTwoTable getBeginingTableFor(NodeType op) {
+    if (Arrays.asList(NodeType.Conc, NodeType.Add, NodeType.Multiply).contains(op)) {
+      return UnifiedOneXTwoTable.defaultTable();
+    }
+    if (op.equals(NodeType.PosNegSplit)) {
+      return (UnifiedOneXTwoTable) NodeType.posNegSplitTable.myClone();
     }
     throw new RuntimeException("Error at ToPetriNet");
   }

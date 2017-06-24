@@ -42,7 +42,7 @@ public class UnifiedOneXTwoTable implements IUnifiedTable, IGeneralOneXTwoTable 
     return table.getTables();
   }
 
-  public static IUnifiedTable defaultTable() {
+  public static UnifiedOneXTwoTable defaultTable() {
     OneXTwoTable rr = OneXTwoTable.defaultTable();
     return new UnifiedOneXTwoTable(rr.getTables().get(0), rr.getTables().get(1));
   }

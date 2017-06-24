@@ -73,17 +73,6 @@ public class UnifiedTwoXOneTable extends AbstractTable implements IGeneralTwoXOn
     return op;
   }
   
-  public static UnifiedTwoXOneTable defaultTable(){
-    return new UnifiedTwoXOneTable(TwoXOneTable.defaultTable().getTable(), Operator.None);
-  }
-
-  public static UnifiedTwoXOneTable defaultTableWithOp(Operator op) {
-    return new UnifiedTwoXOneTable(TwoXOneTable.defaultTable().getTable(), op);
-  }
-
-  public static UnifiedTwoXOneTable onlyOp(Operator op) {
-    return new UnifiedTwoXOneTable(TwoXOneTable.onlyPositiveLarge().getTable(), op);
-  }
 
   @Override
   public IUnifiedTable myClone() {
@@ -102,4 +91,19 @@ public class UnifiedTwoXOneTable extends AbstractTable implements IGeneralTwoXOn
     return table.maybeExecutable(ar);
   }
 
+  public static UnifiedTwoXOneTable oneOfThemPhi() {
+    return new UnifiedTwoXOneTable(TwoXOneTable.oneOfThemPhi().getTable(), Operator.None);
+  }
+
+  public static UnifiedTwoXOneTable defaultTable() {
+    return new UnifiedTwoXOneTable(TwoXOneTable.defaultTable().getTable(), Operator.None);
+  }
+
+  public static UnifiedTwoXOneTable defaultTableWithOp(Operator op) {
+    return new UnifiedTwoXOneTable(TwoXOneTable.defaultTable().getTable(), op);
+  }
+
+  public static UnifiedTwoXOneTable onlyOp(Operator op) {
+    return new UnifiedTwoXOneTable(TwoXOneTable.onlyPositiveLarge().getTable(), op);
+  }
 }

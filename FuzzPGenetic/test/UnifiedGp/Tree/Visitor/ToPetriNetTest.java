@@ -1,5 +1,6 @@
 package UnifiedGp.Tree.Visitor;
 
+import static java.lang.Math.abs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -449,9 +450,48 @@ public class ToPetriNetTest {
     exec.runTick(inp);
 
     assertTrue(Math.abs(inverseBehavour_test - 0.5) < 0.00000000001);
-
   }
 
 
+
+  private static IInnerNode<NodeType> splitNet() {
+    InputLeaf l = new InputLeaf(InputType.ReaderBlocking, 0);
+    OutputLeaf out1 = new OutputLeaf(0, OutType.Copy);
+    OutputLeaf out2 = new OutputLeaf(1, OutType.Copy);
+    InnerNode split = new InnerNode(NodeType.PosNegSplit, out1, out2);
+    InnerNode seq = new InnerNode(NodeType.Seq, l, split);
+    return new InnerNode(NodeType.Loop, seq, new DelayLeaf(1));
+  }
+
+  Double solitNet_BehavourTest1 = null;
+  Double solitNet_BehavourTest2 = null;
+
+  @Test
+  public void solitNet_BehavourTest() {
+
+    PetriConversationResult rez = toNet.toNet(splitNet());
+
+
+    rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
+    rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(0), t -> solitNet_BehavourTest1 = t.getValue());
+    rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(1), t -> solitNet_BehavourTest2 = t.getValue());
+
+    Map<Integer, UnifiedToken> inp = new HashMap<>();
+    inp.put(rez.inpNrToInpPlace.get(0), new UnifiedToken(2.0));
+    exec.runTick(inp);
+
+    assertTrue(abs(solitNet_BehavourTest1 - 2.0) < 0.00000000001);
+    assertNull(solitNet_BehavourTest2);
+
+    solitNet_BehavourTest2 = null;
+    solitNet_BehavourTest1 = null;
+
+    inp.put(rez.inpNrToInpPlace.get(0), new UnifiedToken(-0.5));
+    exec.runTick(inp);
+
+    assertTrue(abs(solitNet_BehavourTest2 + 1.0) < 0.00000000001);
+    assertNull(solitNet_BehavourTest1);
+  }
 
 }
