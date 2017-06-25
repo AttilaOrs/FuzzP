@@ -1,6 +1,7 @@
 package UnifiedGp.GpIndi;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import UnifiedGp.Tree.DepthFirstPostOrderVisitor;
 import UnifiedGp.Tree.IInnerNode;
@@ -19,12 +20,12 @@ public class UnifiedGpIndi implements IGPGreature {
     this.size = null;
   }
 
-  private transient Stack<GPIndividSize> s;
+  private transient Deque<GPIndividSize> s;
 
   @Override
   public GPIndividSize getSizes() {
     if (size == null) {
-      s = new Stack<>();
+      s = new ArrayDeque<>();
       VisitorCostumizer<NodeType> costumizer = new VisitorCostumizer<>();
       costumizer.registerPredicatedConsumer(p -> p.isLeaf(), p -> s.push(new GPIndividSize(0, 1, 0)));
       costumizer.registerPredicatedConsumer(p -> !p.isLeaf(), p -> {

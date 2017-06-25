@@ -3,7 +3,8 @@ package UnifiedGp.Tree;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.function.Function;
 
 import org.junit.Before;
@@ -46,17 +47,15 @@ public class DepthFirstPostOrderVisitorTest {
   }
 
 
-  private Stack<Integer> s;
+  private Deque<Integer> s;
   @Test
   public void testVisit_pred() throws Exception {
-    s = new Stack<>();
+    s = new ArrayDeque<>();
     VisitorCostumizer<Color> costum = new VisitorCostumizer<>();
     costum.registerPredicatedConsumer(node -> node.isLeaf(), node -> {
-      // System.out.println("l " + ((HasNumber) node).getMyNr());
       s.push(((HasNumber) node).getMyNr());
     });
     costum.registerPredicatedConsumer(node -> !node.isLeaf(), node -> {
-      // System.out.println("i " + ((HasNumber) node).getMyNr());
       Integer ll = s.pop();
       Integer lr = s.pop();
       s.push(ll + lr);

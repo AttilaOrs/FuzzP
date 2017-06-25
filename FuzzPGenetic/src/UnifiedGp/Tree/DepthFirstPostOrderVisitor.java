@@ -1,10 +1,11 @@
 package UnifiedGp.Tree;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class DepthFirstPostOrderVisitor<TType> extends AbstractVisitor<TType> {
 
-  Stack<INode<TType>> myStack;
+  Deque<INode<TType>> myStack;
 
   public DepthFirstPostOrderVisitor(VisitorCostumizer<TType> costumizer) {
     super(costumizer);
@@ -12,7 +13,7 @@ public class DepthFirstPostOrderVisitor<TType> extends AbstractVisitor<TType> {
 
   @Override
   public void visit(INode<TType> node) {
-    myStack = new Stack<>();
+    myStack = new ArrayDeque<>();
     INode<TType> lastVisitedNode = null;
     while (node != null || (!myStack.isEmpty())) {
       if (node != null) {

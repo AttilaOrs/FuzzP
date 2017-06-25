@@ -30,4 +30,9 @@ public class GPIndividSize {
 				((ff.depth > ss.depth) ? ff.depth : ss.depth) + 1);
 
 	}
+
+  @Override
+  public String toString() {
+    return "GPIndividSize [depth: " + depth + " operators: " + ops + " leafs: " + leafs + "]";
+  }
 }
