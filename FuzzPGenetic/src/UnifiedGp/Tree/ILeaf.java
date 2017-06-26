@@ -8,4 +8,6 @@ public interface ILeaf<TType> extends INode<TType> {
     return true;
   }
 
+  ILeaf<TType> myClone();
+
 }

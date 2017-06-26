@@ -35,4 +35,9 @@ public class ColoredInnerNode implements IInnerNode<Color>, HasNumber {
   public int getMyNr() {
     return nr;
   }
+
+  @Override
+  public IInnerNode<Color> myClone(INode<Color> fi, INode<Color> se) {
+    return new ColoredInnerNode(nr, myColor, fi, se);
+  }
 }

@@ -25,4 +25,9 @@ public class GreenLeaf implements ILeaf<Color>, HasNumber {
     return nr;
   }
 
+  @Override
+  public ILeaf<Color> myClone() {
+    return new GreenLeaf(subColor, nr);
+  }
+
 }

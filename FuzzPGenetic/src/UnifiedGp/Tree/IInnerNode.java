@@ -11,4 +11,6 @@ public interface IInnerNode<TType> extends INode<TType> {
     return false;
   }
 
+  public IInnerNode<TType> myClone(INode<TType> fi, INode<TType> se);
+
 }

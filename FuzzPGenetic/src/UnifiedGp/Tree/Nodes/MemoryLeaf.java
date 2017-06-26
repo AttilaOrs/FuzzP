@@ -18,4 +18,9 @@ public class MemoryLeaf implements ILeaf<NodeType> {
   public int getMemNr() {
     return memNr;
   }
+
+  @Override
+  public ILeaf<NodeType> myClone() {
+    return new MemoryLeaf(memNr);
+  }
 }

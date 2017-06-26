@@ -58,4 +58,9 @@ public class InputLeaf implements ILeaf<NodeType> {
       "[<FF><FF><FF><FF><FF><FF>]" + //
       "}";
 
+  @Override
+  public ILeaf<NodeType> myClone() {
+    return new InputLeaf(type, inpNr);
+  }
+
 }

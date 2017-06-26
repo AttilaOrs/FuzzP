@@ -13,6 +13,11 @@ public class BlockLeaf implements ILeaf<NodeType> {
 
   private static final String tableStr = "{[<FF><FF><FF><FF><FF><FF>]}";
   public static final UnifiedOneXOneTable table = UnifiedTableParser.parseUnifiedOneXOneTable(tableStr);
+
+  @Override
+  public ILeaf<NodeType> myClone() {
+    return new BlockLeaf();
+  }
   
 
 }

@@ -29,5 +29,9 @@ public class InnerNode implements IInnerNode<NodeType> {
     return se;
   }
 
+  @Override
+  public IInnerNode<NodeType> myClone(INode<NodeType> fi, INode<NodeType> se) {
+    return new InnerNode(myType, fi, se);
+  }
 
 }

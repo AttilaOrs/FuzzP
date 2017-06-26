@@ -45,6 +45,11 @@ public class ConstantLeaf implements ILeaf<NodeType> {
   public final static UnifiedTwoXTwoTable copyTable = UnifiedTableParser.parseUnifiedTwoXTwoTable(copyTableStr);
   
   public final static UnifiedTwoXOneTable recieveTable = UnifiedTableParser.parseUnifiedTwoXOneTable(reciveTableStr );
+
+  @Override
+  public ILeaf<NodeType> myClone() {
+    return new ConstantLeaf(consValue);
+  }
   
 
 

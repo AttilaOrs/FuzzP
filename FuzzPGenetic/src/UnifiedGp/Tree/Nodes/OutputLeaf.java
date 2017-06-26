@@ -26,4 +26,9 @@ public class OutputLeaf implements ILeaf<NodeType> {
   public int outNr(){
     return this.outNr;
   }
+
+  @Override
+  public ILeaf<NodeType> myClone() {
+    return new OutputLeaf(outNr, myType);
+  }
 }

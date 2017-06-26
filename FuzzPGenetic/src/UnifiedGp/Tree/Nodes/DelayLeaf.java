@@ -18,4 +18,9 @@ public class DelayLeaf implements ILeaf<NodeType> {
   public int getDelay() {
     return delay;
   }
+
+  @Override
+  public ILeaf<NodeType> myClone() {
+    return new DelayLeaf(delay);
+  }
 }

@@ -9,5 +9,9 @@ public class InversionLeaf implements ILeaf<NodeType> {
     return NodeType.Inv;
   }
 
+  @Override
+  public ILeaf<NodeType> myClone() {
+    return new InversionLeaf();
+  }
 
 }

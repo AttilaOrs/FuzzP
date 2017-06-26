@@ -14,5 +14,9 @@ public class NegateLeaf implements ILeaf<NodeType> {
     return NodeType.Negate;
   }
 
+  @Override
+  public ILeaf<NodeType> myClone() {
+    return new NegateLeaf();
+  }
 
 }
