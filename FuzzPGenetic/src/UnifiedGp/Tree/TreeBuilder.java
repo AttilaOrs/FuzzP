@@ -1,4 +1,4 @@
-package UnifiedGp.GpIndi;
+package UnifiedGp.Tree;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -7,15 +7,9 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import UnifiedGp.Tree.IInnerNode;
-import UnifiedGp.Tree.INode;
-import UnifiedGp.Tree.Nodes.InnerNode;
-import UnifiedGp.Tree.Nodes.NodeType;
-import structure.operators.ICreatureGenerator;
+public class TreeBuilder<NodeType> {
 
-public class TreeBuilder implements ICreatureGenerator<UnifiedGpIndi> {
-
-  private TreeBuilderConfig config;
+  private TreeBuilderConfig<NodeType> config;
 
   private Deque<INode<NodeType>> nodeStack;
   private Deque<Integer> depthStack;
@@ -24,12 +18,16 @@ public class TreeBuilder implements ICreatureGenerator<UnifiedGpIndi> {
 
   private double inerNodeSum;
 
-  public TreeBuilder(TreeBuilderConfig config) {
+  public TreeBuilder(TreeBuilderConfig<NodeType> config) {
     this.config = config;
   }
 
-  @Override
-  public UnifiedGpIndi genearteRandomCreature(Random rnd) {
+  public IInnerNode<NodeType> genearteRandomCreature(Random rnd) {
+    return genearteRandomCreature(rnd, config.getMaxDepth());
+
+  }
+
+  public IInnerNode<NodeType> genearteRandomCreature(Random rnd, int maxDepth) {
     nodeStack = new ArrayDeque<>();
     depthStack = new ArrayDeque<>();
     nodeStack.push(randomLeaf(rnd));
@@ -48,14 +46,14 @@ public class TreeBuilder implements ICreatureGenerator<UnifiedGpIndi> {
         Integer depthSe = depthStack.pop();
         nodeStack.push(randomInnerNode(rnd, fi, se));
         Integer nowDepth = ((depthFi < depthSe) ? depthSe : depthFi) + 1;
-        if (nowDepth == config.getMaxDepth()) {
+        if (nowDepth == maxDepth) {
           break;
         }
         depthStack.push(nowDepth);
       }
     }
 
-    return new UnifiedGpIndi((IInnerNode<NodeType>) nodeStack.pop());
+    return ((IInnerNode<NodeType>) nodeStack.pop());
   }
 
   private INode<NodeType> randomLeaf(Random rnd) {
@@ -73,7 +71,7 @@ public class TreeBuilder implements ICreatureGenerator<UnifiedGpIndi> {
           .collect(Collectors.summarizingDouble(d -> d)).getSum();
     }
     NodeType n = selectType(rnd, inerNodeSum, config.getOperatorProbabilities());
-    return new InnerNode(n, fi, se);
+    return config.getInnerNodeFactory(n).createInnerNode(rnd, fi, se);
   }
 
   private NodeType selectType(Random rnd, Double totalSum, Map<NodeType, Double> probs) {

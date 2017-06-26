@@ -7,9 +7,11 @@ import java.util.function.Function;
 
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.Tree.INode;
+import UnifiedGp.Tree.TreeBuilderConfig;
 import UnifiedGp.Tree.Nodes.BlockLeaf;
 import UnifiedGp.Tree.Nodes.ConstantLeaf;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
+import UnifiedGp.Tree.Nodes.InnerNode;
 import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.InputType;
 import UnifiedGp.Tree.Nodes.InversionLeaf;
@@ -19,7 +21,7 @@ import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.OutType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
 
-public class TreeBuilderCongigGeneralImpl implements TreeBuilderConfig {
+public class TreeBuilderCongigGeneralImpl implements TreeBuilderConfig<NodeType> {
 
   private static final Map<NodeType, Double> defaulLeafProbs = new HashMap<>();
   private static final Map<NodeType, Double> defaulOpProbs = new HashMap<>();
@@ -99,8 +101,13 @@ public class TreeBuilderCongigGeneralImpl implements TreeBuilderConfig {
   }
 
   @Override
-  public double getMaxDepth() {
+  public int getMaxDepth() {
     return 10;
+  }
+
+  @Override
+  public UnifiedGp.Tree.TreeBuilderConfig.RandomInnerodeCreator<NodeType> getInnerNodeFactory(NodeType t) {
+    return (rnd, fi, se) -> new InnerNode(t, fi, se);
   }
   
   

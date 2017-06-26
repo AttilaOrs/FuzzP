@@ -10,8 +10,10 @@ import org.junit.Test;
 
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.PrroblemSpecificationImpl;
+import UnifiedGp.Tree.TreeBuilder;
+import UnifiedGp.Tree.Nodes.NodeType;
 
-public class TreeBuilderTest {
+public class UnifiedGpSuplierTest {
 
   @Test
   public void test() {
@@ -25,9 +27,11 @@ public class TreeBuilderTest {
     ProblemSpecification spec = new PrroblemSpecificationImpl(10.0, 3, inpScale, outScale);
     TreeBuilderCongigGeneralImpl g = new TreeBuilderCongigGeneralImpl(spec);
 
-    TreeBuilder bld = new TreeBuilder(g);
+    TreeBuilder<NodeType> bld = new TreeBuilder<>(g);
+    UnifiedGpSuplier sup = new UnifiedGpSuplier(bld);
+
     Random rnd = new Random();
-    UnifiedGpIndi i = bld.genearteRandomCreature(rnd);
+    UnifiedGpIndi i = sup.genearteRandomCreature(rnd);
     assertTrue(i.getSizes().depth < 11);
   }
 
