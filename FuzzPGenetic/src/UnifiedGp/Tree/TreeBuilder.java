@@ -16,7 +16,7 @@ public class TreeBuilder<NodeType> {
 
   private double leafSum = -1.0;
 
-  private double inerNodeSum;
+  private double inerNodeSum = -1.0;
 
   public TreeBuilder(TreeBuilderConfig<NodeType> config) {
     this.config = config;

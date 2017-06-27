@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
 import AlgoImpl.pools.CreaturePoolWithStreams;
+import Main.UnifiedVizualizer;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
@@ -15,6 +16,7 @@ import UnifiedGp.Tree.TreeBuilder;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
+import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -49,7 +51,7 @@ public class Main {
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, new LinearRankSelection());
     SimpleGA.iteration = 100;
-    SimpleGA.population = 1000;
+    SimpleGA.population = 100;
     algo.theAlgo();
 
     Integer i = algo.getMaxId();
@@ -69,8 +71,8 @@ public class Main {
     scenarioSaver.setPetriNet(convRez.net);
     scenarioSaver.save(new File("rezScenario.json"));
 
-    // UnifiedVizualizer.visualize(convRez.net, rec,
-    // TransitionPlaceNameStore.createOrdinarNames(convRez.net));
+    UnifiedVizualizer.visualize(convRez.net, rec,
+        TransitionPlaceNameStore.createOrdinarNames(convRez.net));
 
   }
 
