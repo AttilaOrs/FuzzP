@@ -1,4 +1,4 @@
-package UnifiedGp.Tree.Visitor;
+package UnifiedGp.Tree.Visitors;
 
 import static java.lang.Math.abs;
 import static org.junit.Assert.assertEquals;
@@ -28,8 +28,6 @@ import UnifiedGp.Tree.Nodes.NegateLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.OutType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
-import UnifiedGp.Tree.Visitors.PetriConversationResult;
-import UnifiedGp.Tree.Visitors.ToPetriNet;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
@@ -60,7 +58,7 @@ public class ToPetriNetTest {
         return 2.0;
       }
 
-    });
+    }, true);
   }
 
   IInnerNode<NodeType> simpleSeq() {
@@ -467,7 +465,7 @@ public class ToPetriNetTest {
   Double solitNet_BehavourTest2 = null;
 
   @Test
-  public void solitNet_BehavourTest() {
+  public void splitNet_BehavourTest() {
 
     PetriConversationResult rez = toNet.toNet(splitNet());
 
@@ -492,6 +490,16 @@ public class ToPetriNetTest {
 
     assertTrue(abs(solitNet_BehavourTest2 + 1.0) < 0.00000000001);
     assertNull(solitNet_BehavourTest1);
+  }
+
+  @Test
+  public void mapping_test() {
+    PetriConversationResult rez = toNet.toNet(simpleConc());
+    assertTrue(rez.nodeTransitionMapping.get().size() == 3);
+
+    rez = toNet.toNet(splitNet());
+    assertTrue(rez.nodeTransitionMapping.get().size() == 5);
+
   }
 
 }
