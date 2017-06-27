@@ -48,7 +48,7 @@ public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
 
   @Override
   public double evaluate(UnifiedGpIndi creature) {
-    PetriConversationResult rez = tp.toNet(creature.root);
+    PetriConversationResult rez = tp.toNet(creature.getRoot());
 
     if (rez.outNrToOutTr.containsKey(0)) {
       FirtsOrderSystem ll = new FirtsOrderSystem(0.5, 0.7, 0.2, 0.3);

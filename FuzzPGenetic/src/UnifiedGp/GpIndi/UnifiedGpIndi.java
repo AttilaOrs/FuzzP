@@ -12,19 +12,27 @@ import structure.IGPGreature;
 
 public class UnifiedGpIndi implements IGPGreature {
 
-  public final IInnerNode<NodeType> root;
+  private IInnerNode<NodeType> root;
   private transient GPIndividSize size;
 
   public UnifiedGpIndi(IInnerNode<NodeType> root) {
     this.root = root;
     this.size = null;
   }
+  
+
+  public IInnerNode<NodeType> getRoot() {
+    return root;
+  }
+
+  public void setRoot(IInnerNode<NodeType> root) {
+    this.root = root;
+  }
 
   private transient Deque<GPIndividSize> s;
 
   @Override
   public GPIndividSize getSizes() {
-    if (size == null) {
       s = new ArrayDeque<>();
       VisitorCostumizer<NodeType> costumizer = new VisitorCostumizer<>();
       costumizer.registerPredicatedConsumer(p -> p.isLeaf(), p -> s.push(new GPIndividSize(0, 1, 0)));
@@ -37,7 +45,6 @@ public class UnifiedGpIndi implements IGPGreature {
       DepthFirstPostOrderVisitor<NodeType> depthVisitor = new DepthFirstPostOrderVisitor<>(costumizer);
       depthVisitor.visit(root);
       size = s.pop();
-    }
     return size;
   }
 

@@ -56,7 +56,7 @@ public class Main {
 
     UnifiedGpIndi rez = pool.get(i);
     ToPetriNet toPetri = new ToPetriNet(FirstOrderFitnes.createProblemSpecification());
-    PetriConversationResult convRez = toPetri.toNet(rez.root);
+    PetriConversationResult convRez = toPetri.toNet(rez.getRoot());
     PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<UnifiedPetriNet>();
     saver.save(convRez.net,
         "rez.json");

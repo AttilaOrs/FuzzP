@@ -22,17 +22,17 @@ public class UnifiedGpIndiBreeder implements ICreatureBreeder<UnifiedGpIndi> {
   @Override
   public UnifiedGpIndi[] breed(UnifiedGpIndi mother, UnifiedGpIndi father, Random rnd) {
     INode<NodeType> motherSelected = randomNodeSelector
-        .selectRandomNode(mother.root, node -> !mother.root.equals(node), rnd)
+        .selectRandomNode(mother.getRoot(), node -> !mother.getRoot().equals(node), rnd)
         .orElseThrow(() -> new RuntimeException(" eee " + mother.getSizes()));
     INode<NodeType> fatherSelected = randomNodeSelector
-        .selectRandomNode(father.root, node -> !father.root.equals(node), rnd)
+        .selectRandomNode(father.getRoot(), node -> !father.getRoot().equals(node), rnd)
         .get();
 
     INode<NodeType> motherSelectedCopy = copyReplace.copyReplace(motherSelected, null, null);
     INode<NodeType> fatherSelectedCopy = copyReplace.copyReplace(fatherSelected, null, null);
 
-    INode<NodeType> childOne = copyReplace.copyReplace(mother.root, motherSelected, fatherSelectedCopy);
-    INode<NodeType> childTwo = copyReplace.copyReplace(father.root, fatherSelected, motherSelectedCopy);
+    INode<NodeType> childOne = copyReplace.copyReplace(mother.getRoot(), motherSelected, fatherSelectedCopy);
+    INode<NodeType> childTwo = copyReplace.copyReplace(father.getRoot(), fatherSelected, motherSelectedCopy);
 
     return new UnifiedGpIndi[] { new UnifiedGpIndi((IInnerNode<NodeType>) childOne),
         new UnifiedGpIndi((IInnerNode<NodeType>) childTwo) };
