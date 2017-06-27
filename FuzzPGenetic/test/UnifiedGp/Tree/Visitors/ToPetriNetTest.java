@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 import org.junit.Before;
 import org.junit.Test;
 
-import UnifiedGp.ScaleProvider;
+import UnifiedGp.TestUtils;
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.Nodes.BlockLeaf;
 import UnifiedGp.Tree.Nodes.ConstantLeaf;
@@ -39,34 +39,13 @@ public class ToPetriNetTest {
 
   private ToPetriNet toNet;
 
+
+
   @Before
   public void before() {
-    toNet = new ToPetriNet(new ScaleProvider() {
-
-      @Override
-      public double defaultScale() {
-        return 2.0;
-      }
-
-      @Override
-      public Double getScaleForInp(int inpNr) {
-        return 2.0;
-      }
-
-      @Override
-      public Double getScaleForOut(int inpNr) {
-        return 2.0;
-      }
-
-    }, true);
+    toNet = new ToPetriNet(TestUtils.simpleScaleProvider(2.0));
   }
 
-  IInnerNode<NodeType> simpleSeq() {
-    DelayLeaf d1 = new DelayLeaf(1);
-    DelayLeaf d2 = new DelayLeaf(2);
-    InnerNode seq = new InnerNode(NodeType.Seq, d1, d2);
-    return seq;
-  }
 
   IInnerNode<NodeType> simpleSelec() {
     DelayLeaf d1 = new DelayLeaf(1);
@@ -89,22 +68,10 @@ public class ToPetriNetTest {
     return seq;
   }
 
-  IInnerNode<NodeType> complex() {
-    DelayLeaf d1 = new DelayLeaf(1);
-    DelayLeaf d2 = new DelayLeaf(2);
-    DelayLeaf d3 = new DelayLeaf(3);
-    DelayLeaf d4 = new DelayLeaf(4);
-    DelayLeaf d5 = new DelayLeaf(4);
-    InnerNode seq = new InnerNode(NodeType.Seq, d1, d2);
-    InnerNode select = new InnerNode(NodeType.Selc, d3, d4);
-    InnerNode conc = new InnerNode(NodeType.Conc, seq, select);
-    InnerNode loop = new InnerNode(NodeType.Loop, conc, d5);
-    return loop;
-  }
 
   @Test
   public void seq_test() {
-    UnifiedPetriNet ll = toNet.toNet(simpleSeq()).net;
+    UnifiedPetriNet ll = toNet.toNet(TestUtils.simpleSeq()).net;
     assertTrue(ll.getNrOfPlaces() == 3);
     assertTrue(ll.getNrOfTransition() == 2);
     assertTrue(ll.getTransitinsBeforePlace(0).size() == 0);
@@ -149,7 +116,7 @@ public class ToPetriNetTest {
 
   @Test
   public void complex_test() {
-    UnifiedPetriNet ll = toNet.toNet(complex()).net;
+    UnifiedPetriNet ll = toNet.toNet(TestUtils.allSimpleOps()).net;
     assertTrue(ll.getNrOfPlaces() == 7);
     assertTrue(ll.getNrOfTransition() == 7);
   }

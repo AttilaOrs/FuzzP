@@ -304,9 +304,6 @@ public class ToPetriNet {
       int lastPlace = between[0];
       for(int i= 0; i < mem.getMemNr();i++){
         int tr = netToMake.addTransition(1, UnifiedOneXOneTable.defaultTable());
-        if (recordNodeTransitionMapping && i == 0) {
-          nodeTransitionMapping.put(ss, tr);
-        }
         int newPlace = netToMake.addPlace(scaleProvider.defaultScale());
         netToMake.addArcFromPlaceToTransition(lastPlace, tr);
         netToMake.addArcFromTransitionToPlace(tr, newPlace);

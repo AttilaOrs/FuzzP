@@ -5,16 +5,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.function.Predicate;
 
 import org.junit.Test;
 
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.ProblemSpecificationImpl;
-import UnifiedGp.Tree.BreadthFirstVisitor;
-import UnifiedGp.Tree.IInnerNode;
-import UnifiedGp.Tree.INode;
-import UnifiedGp.Tree.VisitorCostumizer;
+import UnifiedGp.TestUtils;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
 
@@ -45,7 +41,7 @@ public class UnifiedGpSuplierTest {
       int curentDepth = indi.getSizes().depth ;
       sumDepth += curentDepth;
       maxDepth = (maxDepth < curentDepth)? curentDepth : maxDepth;
-      int loopCount = nodeCount(indi.root, (node) -> node.getType().equals(NodeType.PosNegSplit));
+      int loopCount = TestUtils.nodeCount(indi.root, (node) -> node.getType().equals(NodeType.PosNegSplit));
       hasLoop += (loopCount > 0) ? 1 : 0;
     }
     
@@ -54,16 +50,5 @@ public class UnifiedGpSuplierTest {
     assertTrue(maxDepth == 10);
   }
 
-  int cntr = 0;
-  int nodeCount(IInnerNode<NodeType> root, Predicate<INode<NodeType>> pred) {
-    cntr = 0;
-    VisitorCostumizer<NodeType> costum = new VisitorCostumizer<>();
-    costum.registerPredicatedConsumer(pred, node -> cntr++);
-    BreadthFirstVisitor<NodeType> visitor = new BreadthFirstVisitor<>(costum);
-    visitor.visit(root);
-    return cntr;
-
-
-  }
 
 }
