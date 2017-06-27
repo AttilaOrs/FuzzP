@@ -61,6 +61,9 @@ public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TT
     loader.load(selectedFile, myConfig.getStringConverter());
     setNet(loader.getPetriNet());
     setFullRecorder(loader.getFullRec());
+    setDrawableNet(myConfig.getDrawableNetFactory().apply(loader.getPetriNet(),
+        TransitionPlaceNameStore.createOrdinarNames(loader.getPetriNet())));
+    setNameStore(TransitionPlaceNameStore.createOrdinarNames(loader.getPetriNet()));
   }
 
   public void saveToJava(File loadedFile) {
@@ -123,9 +126,9 @@ public class FuzzyPVizualModel<TTokenType extends FullRecordable<TTokenType>, TT
     this.store = nameStore;
   }
 
-  public void setNet(TPetriNetType net) {
-    this.net = net;
-    myConfig = configFactory.apply(net);
+  public void setNet(TPetriNetType newNet) {
+    this.net = newNet;
+    myConfig = configFactory.apply(newNet);
   }
 
   public void setDrawableNet(DrawableNet net) {
