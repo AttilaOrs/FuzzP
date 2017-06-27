@@ -7,7 +7,6 @@ import java.util.function.Function;
 
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.Tree.INode;
-import UnifiedGp.Tree.TreeBuilderConfig;
 import UnifiedGp.Tree.Nodes.BlockLeaf;
 import UnifiedGp.Tree.Nodes.ConstantLeaf;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
@@ -20,6 +19,7 @@ import UnifiedGp.Tree.Nodes.NegateLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.OutType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
+import UnifiedGp.Tree.Visitors.TreeBuilderConfig;
 
 public class TreeBuilderCongigGeneralImpl implements TreeBuilderConfig<NodeType> {
 
@@ -105,7 +105,7 @@ public class TreeBuilderCongigGeneralImpl implements TreeBuilderConfig<NodeType>
   }
 
   @Override
-  public UnifiedGp.Tree.TreeBuilderConfig.RandomInnerodeCreator<NodeType> getInnerNodeFactory(NodeType t) {
+  public UnifiedGp.Tree.Visitors.TreeBuilderConfig.RandomInnerodeCreator<NodeType> getInnerNodeFactory(NodeType t) {
     return (rnd, fi, se) -> new InnerNode(t, fi, se);
   }
   

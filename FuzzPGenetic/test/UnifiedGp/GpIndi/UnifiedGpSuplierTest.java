@@ -14,9 +14,9 @@ import UnifiedGp.ProblemSpecificationImpl;
 import UnifiedGp.Tree.BreadthFirstVisitor;
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.INode;
-import UnifiedGp.Tree.TreeBuilder;
 import UnifiedGp.Tree.VisitorCostumizer;
 import UnifiedGp.Tree.Nodes.NodeType;
+import UnifiedGp.Tree.Visitors.TreeBuilder;
 
 public class UnifiedGpSuplierTest {
 

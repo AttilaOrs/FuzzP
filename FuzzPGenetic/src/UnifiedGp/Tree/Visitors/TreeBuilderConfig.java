@@ -1,8 +1,11 @@
-package UnifiedGp.Tree;
+package UnifiedGp.Tree.Visitors;
 
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
+
+import UnifiedGp.Tree.IInnerNode;
+import UnifiedGp.Tree.INode;
 
 public interface TreeBuilderConfig<TNodeType> {
 

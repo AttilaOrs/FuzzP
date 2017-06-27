@@ -1,4 +1,4 @@
-package UnifiedGp.Tree;
+package UnifiedGp.Tree.Visitors;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.stream.Collectors;
+
+import UnifiedGp.Tree.IInnerNode;
+import UnifiedGp.Tree.INode;
 
 public class TreeBuilder<NodeType> {
 

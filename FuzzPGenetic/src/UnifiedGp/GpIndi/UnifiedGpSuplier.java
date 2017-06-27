@@ -2,8 +2,8 @@ package UnifiedGp.GpIndi;
 
 import java.util.Random;
 
-import UnifiedGp.Tree.TreeBuilder;
 import UnifiedGp.Tree.Nodes.NodeType;
+import UnifiedGp.Tree.Visitors.TreeBuilder;
 import structure.operators.ICreatureGenerator;
 
 public class UnifiedGpSuplier implements ICreatureGenerator<UnifiedGpIndi> {

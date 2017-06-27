@@ -4,10 +4,10 @@ import java.util.Random;
 
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.INode;
-import UnifiedGp.Tree.TreeBuilder;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.CopyReplace;
 import UnifiedGp.Tree.Visitors.RandomNodeSelector;
+import UnifiedGp.Tree.Visitors.TreeBuilder;
 import structure.operators.ICreatureMutator;
 
 public class UnifiedGpIndiTreeMutator implements ICreatureMutator<UnifiedGpIndi> {
