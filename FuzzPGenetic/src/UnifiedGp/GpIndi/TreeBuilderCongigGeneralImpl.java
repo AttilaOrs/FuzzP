@@ -69,7 +69,6 @@ public class TreeBuilderCongigGeneralImpl implements TreeBuilderConfig<NodeType>
         rnd.nextInt(spec.getInputCount())));
     factories.put(NodeType.Out, rnd -> new OutputLeaf(rnd.nextInt(spec.getOuputCount()),
         OutType.values()[rnd.nextInt(OutType.values().length)]));
-
     factories.put(NodeType.Delay, rnd -> new DelayLeaf(rnd.nextInt(spec.getMaxDelay())));
     factories.put(NodeType.Memory, rnd -> new MemoryLeaf(rnd.nextInt(spec.getMaxDelay())));
     factories.put(NodeType.Block, rnd -> new BlockLeaf());

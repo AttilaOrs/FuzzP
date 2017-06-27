@@ -12,7 +12,7 @@ public class TokenConverter {
     return new TokenConverter(1.0);
   }
 
-  public TokenConverter(Double scale) {
+  public TokenConverter(double scale) {
     this.scale = scale;
     if (!zeroScale()) {
       myDriver = FuzzyDriver.createDriverFromMinMax(-1.0 * scale, scale);

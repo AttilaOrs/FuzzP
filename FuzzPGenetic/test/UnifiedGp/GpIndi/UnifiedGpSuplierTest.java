@@ -9,7 +9,7 @@ import java.util.Random;
 import org.junit.Test;
 
 import UnifiedGp.ProblemSpecification;
-import UnifiedGp.PrroblemSpecificationImpl;
+import UnifiedGp.ProblemSpecificationImpl;
 import UnifiedGp.Tree.TreeBuilder;
 import UnifiedGp.Tree.Nodes.NodeType;
 
@@ -24,7 +24,7 @@ public class UnifiedGpSuplierTest {
     Map<Integer, Double> outScale = new HashMap<>();
     outScale.put(0, 10.0);
     outScale.put(1, 10.0);
-    ProblemSpecification spec = new PrroblemSpecificationImpl(10.0, 3, inpScale, outScale);
+    ProblemSpecification spec = new ProblemSpecificationImpl(10.0, 3, inpScale, outScale);
     TreeBuilderCongigGeneralImpl g = new TreeBuilderCongigGeneralImpl(spec);
 
     TreeBuilder<NodeType> bld = new TreeBuilder<>(g);

@@ -2,7 +2,7 @@ package UnifiedGp;
 
 import java.util.Map;
 
-public class PrroblemSpecificationImpl implements ProblemSpecification {
+public class ProblemSpecificationImpl implements ProblemSpecification {
 
 
   private final double defaultScale;
@@ -10,7 +10,7 @@ public class PrroblemSpecificationImpl implements ProblemSpecification {
   private final Map<Integer, Double> inpScale;
   private final Map<Integer, Double> outScale;
 
-  public PrroblemSpecificationImpl(double defaultScale, int maxDelay, Map<Integer, Double> inpScale,
+  public ProblemSpecificationImpl(double defaultScale, int maxDelay, Map<Integer, Double> inpScale,
       Map<Integer, Double> outScale) {
     this.defaultScale = defaultScale;
     this.inpScale = inpScale;

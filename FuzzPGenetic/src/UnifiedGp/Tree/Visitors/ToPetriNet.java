@@ -76,6 +76,7 @@ public class ToPetriNet {
     visitor.visit(type);
     resolveInputs();
     resolveOutputs();
+    netToMake.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
     return new PetriConversationResult(netToMake, inpNameInpPlace, outNrToOutTr);
   }
 

@@ -57,7 +57,7 @@ public class TreeBuilder<NodeType> {
   }
 
   private INode<NodeType> randomLeaf(Random rnd) {
-    if (leafSum != -1.0) {
+    if (leafSum == -1.0) {
       leafSum = config.getLeafProbabilities().values().stream()
           .collect(Collectors.summarizingDouble(d -> d)).getSum();
     }
@@ -66,7 +66,7 @@ public class TreeBuilder<NodeType> {
   }
 
   private INode<NodeType> randomInnerNode(Random rnd, INode<NodeType> fi, INode<NodeType> se) {
-    if (inerNodeSum != -1.0) {
+    if (inerNodeSum == -1.0) {
       inerNodeSum = config.getOperatorProbabilities().values().stream()
           .collect(Collectors.summarizingDouble(d -> d)).getSum();
     }

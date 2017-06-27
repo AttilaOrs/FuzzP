@@ -23,7 +23,7 @@ public class UnifiedGpIndiBreeder implements ICreatureBreeder<UnifiedGpIndi> {
   public UnifiedGpIndi[] breed(UnifiedGpIndi mother, UnifiedGpIndi father, Random rnd) {
     INode<NodeType> motherSelected = randomNodeSelector
         .selectRandomNode(mother.root, node -> !mother.root.equals(node), rnd)
-        .get();
+        .orElseThrow(() -> new RuntimeException(" eee " + mother.getSizes()));
     INode<NodeType> fatherSelected = randomNodeSelector
         .selectRandomNode(father.root, node -> !father.root.equals(node), rnd)
         .get();

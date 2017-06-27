@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
 
+import UnifiedGp.Tree.BreadthFirstVisitor;
 import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.VisitorCostumizer;
 
@@ -17,8 +18,11 @@ public class RandomNodeSelector<TNodeType> {
     arr = new ArrayList<>();
     VisitorCostumizer<TNodeType> cos = new VisitorCostumizer<>();
     cos.registerPredicatedConsumer(allowd, node -> arr.add(node));
+    BreadthFirstVisitor<TNodeType> brd = new BreadthFirstVisitor<>(cos);
+    brd.visit(root);
+
     if (arr.isEmpty()) {
-      Optional.empty();
+      return Optional.empty();
     }
     return Optional.of(arr.get(rnd.nextInt(arr.size())));
 

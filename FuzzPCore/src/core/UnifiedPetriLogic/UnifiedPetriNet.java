@@ -24,6 +24,7 @@ public class UnifiedPetriNet extends AbstractPetriNet<UnifiedToken, IUnifiedTabl
   }
 
 
+  @Override
   public IContex getContextForTransition(int trId) {
     if (!storedContexts.containsKey(trId)) {
       storedContexts.put(trId,
@@ -34,6 +35,7 @@ public class UnifiedPetriNet extends AbstractPetriNet<UnifiedToken, IUnifiedTabl
 
   }
 
+  @Override
   public double getScale(int placeId) {
     return this.scaleForPlace.get(placeId);
   }
