@@ -76,7 +76,7 @@ public class DynamicallySimplifiedPetriNetBuilder {
     newNetStack.push(((ILeaf<NodeType>) node).myClone());
   }
 
-  IInnerNode<NodeType> createSimplifiedTree(IInnerNode<NodeType> root, Set<Integer> firedTrs,
+  public IInnerNode<NodeType> createSimplifiedTree(IInnerNode<NodeType> root, Set<Integer> firedTrs,
       Map<INode<NodeType>, Integer> nodeTransitinMapping) {
     this.nodeTransitionMapping = nodeTransitinMapping;
     newNetStack = new ArrayDeque<>();

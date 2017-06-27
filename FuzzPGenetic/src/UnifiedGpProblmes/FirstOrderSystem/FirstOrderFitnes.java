@@ -1,17 +1,23 @@
 package UnifiedGpProblmes.FirstOrderSystem;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.ProblemSpecificationImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
+import UnifiedGp.Tree.IInnerNode;
+import UnifiedGp.Tree.Nodes.NodeType;
+import UnifiedGp.Tree.Visitors.DynamicallySimplifiedPetriNetBuilder;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
+import core.common.recoder.FiredTranitionRecorder;
 import core.common.recoder.FullRecorder;
+import core.common.recoder.MultiRecorder;
 import core.common.tokencache.TokenCacheDisabling;
 import structure.ICreatureFitnes;
 
@@ -22,6 +28,7 @@ public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
   private ProblemSpecification ps;
   private boolean useRecorder;
   private FullRecorder<UnifiedToken> recorder;
+  private DynamicallySimplifiedPetriNetBuilder simplifier;
 
 
   public FirstOrderFitnes() {
@@ -30,8 +37,9 @@ public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
 
   public FirstOrderFitnes(boolean useRecorder) {
     ps = createProblemSpecification();
-    tp = new ToPetriNet(ps);
+    tp = new ToPetriNet(ps, true);
     this.useRecorder = useRecorder;
+    simplifier = new DynamicallySimplifiedPetriNetBuilder();
   }
 
   public static ProblemSpecificationImpl createProblemSpecification() {
@@ -58,13 +66,18 @@ public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
       });
 
 
+
       SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
           new UnifiedPetrinetCacheTableResultWrapper(rez.net,
               () -> new TokenCacheDisabling<>(5)),
           false, true);
+      FiredTranitionRecorder<UnifiedToken> tk = new FiredTranitionRecorder<>();
       if (useRecorder) {
         recorder = new FullRecorder<>();
-        exec.setRecorder(recorder);
+        MultiRecorder<UnifiedToken> multi = new MultiRecorder<>(Arrays.asList(recorder, tk));
+        exec.setRecorder(multi);
+      } else {
+        exec.setRecorder(tk);
       }
       Map<Integer, UnifiedToken> inp = new HashMap<>();
       for (int i = 0; i < ref.getRefSize(); i++) {
@@ -78,6 +91,12 @@ public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
         exec.runTick(inp);
         ll.runTick();
       }
+
+      IInnerNode<NodeType> newRoot = simplifier.createSimplifiedTree(creature.getRoot(), tk.getFiredTransition(),
+          rez.nodeTransitionMapping.get());
+
+      creature.setRoot(newRoot);
+
       return 1.0 / (1.0 + ref.calcError(ll.getEvolution()));
     }
     return 0;
