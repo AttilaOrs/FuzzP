@@ -19,6 +19,11 @@ public class IterationLogger {
   public static String MEM_USE = "used memory";
   public static String GC_SEC = "garbage collector";
 
+  public static String TREE_DEPTH = "tree depth";
+  public static String TREE_OPS = "tree ops";
+  public static String TREE_LEAFS = "tree leafs";
+  public static String TIME = "time: nanosec/solution";
+
   HashMap<String, ArrayList<Double>> logs;
   List<String> prntingGroup;
   private NumberFormat formatter;

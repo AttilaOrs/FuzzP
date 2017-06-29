@@ -3,6 +3,7 @@ package UnifiedGpProblmes.FirstOrderSystem;
 import java.io.File;
 import java.util.ArrayList;
 
+import AlgoImpl.IterationLogger;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
 import AlgoImpl.pools.CreaturePoolWithStreams;
@@ -15,6 +16,7 @@ import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
+import commonUtil.PlotUtils;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -51,6 +53,11 @@ public class Main {
     SimpleGA.iteration = 100;
     SimpleGA.population = 1000;
     algo.theAlgo();
+
+    IterationLogger logger = algo.getLogger();
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree"), "bloat_tree.svg");
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"), "bloat_time.svg");
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"), "firtes.svg");
 
     Integer i = algo.getMaxId();
 

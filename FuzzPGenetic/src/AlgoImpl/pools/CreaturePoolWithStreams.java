@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.IntStream;
 
+import structure.GPIndividSize;
 import structure.ICreatureFitnes;
 import structure.ICreaturePool;
 import structure.IGPGreature;
@@ -23,19 +24,23 @@ public class CreaturePoolWithStreams<TCreatue extends IGPGreature>
 
 	private static final int THREAD_NR = 16;
 
-	public ArrayList<IOperatorFactory<ICreatureGenerator<TCreatue>>> getGenerators() {
+	@Override
+  public ArrayList<IOperatorFactory<ICreatureGenerator<TCreatue>>> getGenerators() {
 		return generators;
 	}
 
-	public ArrayList<IOperatorFactory<ICreatureMutator<TCreatue>>> getMutators() {
+	@Override
+  public ArrayList<IOperatorFactory<ICreatureMutator<TCreatue>>> getMutators() {
 		return mutators;
 	}
 
-	public ArrayList<IOperatorFactory<ICreatureBreeder<TCreatue>>> getBreeders() {
+	@Override
+  public ArrayList<IOperatorFactory<ICreatureBreeder<TCreatue>>> getBreeders() {
 		return breeders;
 	}
 
-	public ArrayList<IOperatorFactory<ICreatureFitnes<TCreatue>>> getFitnesCals() {
+	@Override
+  public ArrayList<IOperatorFactory<ICreatureFitnes<TCreatue>>> getFitnesCals() {
 		return fitnesses;
 	}
 
@@ -262,4 +267,13 @@ public class CreaturePoolWithStreams<TCreatue extends IGPGreature>
 		}
 
 	}
+
+  @Override
+  public GPIndividSize getAvarageSizeOfCurrentPool() {
+    GPIndividSize s = new GPIndividSize();
+    for (TCreatue cr : oldPool.values()) {
+      s.add(cr.getSizes());
+    }
+    return new GPIndividSize(s.ops / oldPool.size(), s.leafs / oldPool.size(), s.depth / oldPool.size());
+  }
 }

@@ -32,4 +32,6 @@ public interface ICreaturePool<TCreature extends IGPGreature> {
 
   void terminatePool();
 
+  public GPIndividSize getAvarageSizeOfCurrentPool();
+
 }

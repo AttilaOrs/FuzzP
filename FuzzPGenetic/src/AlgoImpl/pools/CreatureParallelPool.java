@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import structure.GPIndividSize;
 import structure.ICreatureFitnes;
 import structure.ICreaturePool;
 import structure.IGPGreature;
@@ -21,19 +22,23 @@ public class CreatureParallelPool<TCreatue extends IGPGreature>
 
 	public static final int THREAD_NR = 4;
 
-	public ArrayList<IOperatorFactory<ICreatureGenerator<TCreatue>>> getGenerators() {
+	@Override
+  public ArrayList<IOperatorFactory<ICreatureGenerator<TCreatue>>> getGenerators() {
 		return generators;
 	}
 
-	public ArrayList<IOperatorFactory<ICreatureMutator<TCreatue>>> getMutators() {
+	@Override
+  public ArrayList<IOperatorFactory<ICreatureMutator<TCreatue>>> getMutators() {
 		return mutators;
 	}
 
-	public ArrayList<IOperatorFactory<ICreatureBreeder<TCreatue>>> getBreeders() {
+	@Override
+  public ArrayList<IOperatorFactory<ICreatureBreeder<TCreatue>>> getBreeders() {
 		return breeders;
 	}
 
-	public ArrayList<IOperatorFactory<ICreatureFitnes<TCreatue>>> getFitnesCals() {
+	@Override
+  public ArrayList<IOperatorFactory<ICreatureFitnes<TCreatue>>> getFitnesCals() {
 		return fitnesCals;
 	}
 
@@ -226,7 +231,8 @@ public class CreatureParallelPool<TCreatue extends IGPGreature>
 			finish = true;
 		}
 
-		public synchronized void run() {
+		@Override
+    public synchronized void run() {
 			while (!finish) {
 				if (toDo.size() == 0) {
 					try {
@@ -293,4 +299,13 @@ public class CreatureParallelPool<TCreatue extends IGPGreature>
 			curentResult.put(i, fitness);
 		}
 	}
+
+  @Override
+  public GPIndividSize getAvarageSizeOfCurrentPool() {
+    GPIndividSize s = new GPIndividSize();
+    for (TCreatue cr : oldPool.values()) {
+      s.add(cr.getSizes());
+    }
+    return new GPIndividSize(s.ops / oldPool.size(), s.leafs / oldPool.size(), s.depth / oldPool.size());
+  }
 }

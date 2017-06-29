@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import structure.GPIndividSize;
 import structure.ICreaturePool;
 import structure.IGPGreature;
 import structure.ISelector;
@@ -44,6 +45,7 @@ public class SimpleGA<TCreature extends IGPGreature> {
 		int cross = population * CROSSOVER / 200;
 
 		for (int iter = 0; iter < iteration; iter++) {
+      long timeStart = System.nanoTime();
 			if (iter == 0) {
 				pool.generate(0, 0, population);
 			} else {
@@ -84,13 +86,15 @@ public class SimpleGA<TCreature extends IGPGreature> {
 
 			}
 			res = pool.calculateFitness();
+      GPIndividSize size = pool.getAvarageSizeOfCurrentPool();
+      long timeStop = System.nanoTime();
 
 			DoubleSummaryStatistics statistics = res.entrySet().stream()
 					.collect(
 							Collectors.summarizingDouble(e -> e.getValue()[0]));
 			logMemoryAndGc();
 			logIterationResults(iter, statistics.getAverage(),
-					statistics.getMax(), res.size());
+          statistics.getMax(), res.size(), size, (timeStop - timeStart) / res.size());
 
 			System.gc();
 
@@ -102,11 +106,16 @@ public class SimpleGA<TCreature extends IGPGreature> {
 		pool.terminatePool();
 	}
 
-	protected void logIterationResults(int iter, double average, double max,
-			int size) {
+
+  protected void logIterationResults(int iter, double average, double max,
+      int size, GPIndividSize avgSize, long l) {
 		logger.addLogToTopic(IterationLogger.AVG_FIT, average);
 		logger.addLogToTopic(IterationLogger.MAX_FIT, max);
 		logger.addLogToTopic(IterationLogger.POP_SIZE, size / 1.0);
+    logger.addLogToTopic(IterationLogger.TREE_DEPTH, avgSize.depth / 1.0);
+    logger.addLogToTopic(IterationLogger.TREE_LEAFS, avgSize.leafs / 1.0);
+    logger.addLogToTopic(IterationLogger.TREE_OPS, avgSize.ops / 1.0);
+    logger.addLogToTopic(IterationLogger.TIME, l / 1.0);
 		logger.iterFinished(iter);
 	}
 
