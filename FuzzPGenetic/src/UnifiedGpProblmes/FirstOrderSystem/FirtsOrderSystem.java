@@ -9,7 +9,7 @@ public class FirtsOrderSystem {
 	private double currentStatus;
   private ArrayList<Double> evolution;
 
-  private double command;
+  private Double command;
 
 
   public FirtsOrderSystem(double a, double b, double c, double d) {
@@ -17,13 +17,15 @@ public class FirtsOrderSystem {
 		this.b = b;
 		this.c = c;
 		this.d = d;
-		command = 0.0;
+    command = null;
 		x = 0.0;
     evolution = new ArrayList<>(200);
 	}
 
 	public void setCommand(double cmd) {
-		command = cmd;
+    if (command == null) {
+      command = cmd;
+    }
 	}
 
 
@@ -32,9 +34,13 @@ public class FirtsOrderSystem {
 	}
 
 	private void executeSystem() {
+    if (command == null) {
+      command = 0.0;
+    }
 		double xNew = a * x + b * command;
 		currentStatus = c * x + d * command;
 		x = xNew;
+    command = null;
 	}
 
   public void runTick() {

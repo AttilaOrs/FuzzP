@@ -1,5 +1,6 @@
 package UnifiedGp.Tree.Visitors;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
 
 import UnifiedGp.Tree.DepthFirstPostOrderVisitor;
@@ -9,6 +10,7 @@ import UnifiedGp.Tree.VisitorCostumizer;
 import UnifiedGp.Tree.Nodes.BlockLeaf;
 import UnifiedGp.Tree.Nodes.ConstantLeaf;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
+import UnifiedGp.Tree.Nodes.InnerNode;
 import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.InversionLeaf;
 import UnifiedGp.Tree.Nodes.MemoryLeaf;
@@ -232,7 +234,13 @@ public class StaticSimplifierPetriBuilder {
 
 
   public IInnerNode<NodeType> simplifyTree(IInnerNode<NodeType> original) {
+    newNetStack = new ArrayDeque<>();
+    visitor.visit(original);
+    INode<NodeType> rez = newNetStack.pop();
+    if (rez.isLeaf()) {
+      rez = new InnerNode(NodeType.Seq, rez, new BlockLeaf());
+    }
 
-    return original;
+    return (IInnerNode<NodeType>) rez;
   }
 }

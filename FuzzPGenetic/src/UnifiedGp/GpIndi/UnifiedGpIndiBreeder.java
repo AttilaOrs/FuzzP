@@ -7,16 +7,33 @@ import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.CopyReplace;
 import UnifiedGp.Tree.Visitors.RandomNodeSelector;
+import UnifiedGp.Tree.Visitors.StaticSimplifierPetriBuilder;
 import structure.operators.ICreatureBreeder;
 
 public class UnifiedGpIndiBreeder implements ICreatureBreeder<UnifiedGpIndi> {
 
-  private RandomNodeSelector<NodeType> randomNodeSelector;
-  private CopyReplace<NodeType> copyReplace;
+  private static final boolean defaultStaticSimplification = true;
+
+  private final RandomNodeSelector<NodeType> randomNodeSelector;
+  private final CopyReplace<NodeType> copyReplace;
+  private final boolean staticSimplificationEnabbled;
+  private final StaticSimplifierPetriBuilder simplifier;
+
 
   public UnifiedGpIndiBreeder() {
+    this(defaultStaticSimplification);
+
+  }
+  public UnifiedGpIndiBreeder(boolean staticSimplificationEnabled) {
     randomNodeSelector = new RandomNodeSelector<>();
     copyReplace = new CopyReplace<>();
+    this.staticSimplificationEnabbled = staticSimplificationEnabled;
+    if (staticSimplificationEnabled) {
+      simplifier = new StaticSimplifierPetriBuilder();
+    } else {
+      simplifier = null;
+    }
+
   }
 
   @Override
@@ -33,6 +50,10 @@ public class UnifiedGpIndiBreeder implements ICreatureBreeder<UnifiedGpIndi> {
 
     INode<NodeType> childOne = copyReplace.copyReplace(mother.getRoot(), motherSelected, fatherSelectedCopy);
     INode<NodeType> childTwo = copyReplace.copyReplace(father.getRoot(), fatherSelected, motherSelectedCopy);
+    if(staticSimplificationEnabbled){
+      return new UnifiedGpIndi[] { new UnifiedGpIndi((simplifier.simplifyTree((IInnerNode<NodeType>) childOne))),
+          new UnifiedGpIndi(simplifier.simplifyTree((IInnerNode<NodeType>) childTwo)) };
+    }
 
     return new UnifiedGpIndi[] { new UnifiedGpIndi((IInnerNode<NodeType>) childOne),
         new UnifiedGpIndi((IInnerNode<NodeType>) childTwo) };
