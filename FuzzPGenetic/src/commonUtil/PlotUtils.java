@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
@@ -28,7 +29,7 @@ public class PlotUtils {
 			NamedPlotColor.MIDNIGHT_BLUE, NamedPlotColor.BROWN,
 			NamedPlotColor.VIOLET};
 
-	public static void plot(Map<String, ArrayList<Double>> what, String fileName) {
+  public static void plot(Map<String, List<Double>> what, String fileName) {
 		try {
 			JavaPlot p = null;
 
@@ -46,7 +47,7 @@ public class PlotUtils {
 			p.setTitle("Results");
 			int cntr = 0;
 			for (String title : what.keySet()) {
-				ArrayList<Double> curentList = what.get(title);
+        List<Double> curentList = what.get(title);
 				double[][] temp = new double[curentList.size()][2];
 				for (int q = 0; q < curentList.size(); q++) {
 					temp[q][0] = q;

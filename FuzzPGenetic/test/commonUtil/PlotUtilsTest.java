@@ -2,6 +2,7 @@ package commonUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -15,7 +16,7 @@ public class PlotUtilsTest {
 
   @Test
   public void tt() {
-    Map<String, ArrayList<Double>> what = new HashMap<>();
+    Map<String, List<Double>> what = new HashMap<>();
     ArrayList<Double> kkk = new ArrayList<>();
     kkk.add(0.0);
     kkk.add(0.5);

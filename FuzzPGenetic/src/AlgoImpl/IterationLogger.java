@@ -58,12 +58,12 @@ public class IterationLogger {
     System.out.println(strb.toString());
   }
 
-  public Map<String, ArrayList<Double>> getLogsForPlotting(String... topicsToGet) {
+  public Map<String, List<Double>> getLogsForPlotting(String... topicsToGet) {
     return Arrays.stream(topicsToGet).filter(t -> logs.containsKey(t))
         .collect(Collectors.toMap(t -> t, t -> logs.get(t)));
   }
 
-  public Map<String, ArrayList<Double>> getLogsForPlottingContatinigStrings(String... pattrsn) {
+  public Map<String, List<Double>> getLogsForPlottingContatinigStrings(String... pattrsn) {
     return logs.entrySet().stream().filter(e -> IsOneOf(e.getKey(), pattrsn))
         .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
   }

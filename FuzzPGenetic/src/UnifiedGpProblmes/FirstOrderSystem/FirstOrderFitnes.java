@@ -92,14 +92,20 @@ public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
         ll.runTick();
       }
 
-      IInnerNode<NodeType> newRoot = simplifier.createSimplifiedTree(creature.getRoot(), tk.getFiredTransition(),
-          rez.nodeTransitionMapping.get());
 
-      creature.setRoot(newRoot);
+      updateCreatureWithSimplification(creature, rez, tk);
 
       return 1.0 / (1.0 + ref.calcError(ll.getEvolution()));
     }
     return 0;
+  }
+
+  private void updateCreatureWithSimplification(UnifiedGpIndi creature, PetriConversationResult rez,
+      FiredTranitionRecorder<UnifiedToken> tk) {
+    IInnerNode<NodeType> newRoot = simplifier.createSimplifiedTree(creature.getRoot(),
+        tk.getFiredTransition(), rez.nodeTransitionMapping.get());
+
+    creature.setRoot(newRoot);
   }
 
   public FullRecorder<UnifiedToken> getRecorder() {

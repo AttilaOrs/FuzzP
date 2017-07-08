@@ -2,8 +2,8 @@ package AlgoImpl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -50,7 +50,7 @@ public class IterationLoggerTest {
     underTest.addLogToTopic(IterationLogger.GC_SEC, 4.44);
     underTest.iterFinished(1);
 
-    Map<String, ArrayList<Double>> res = underTest.getLogsForPlotting(IterationLogger.MEM_USE, IterationLogger.GC_SEC);
+    Map<String, List<Double>> res = underTest.getLogsForPlotting(IterationLogger.MEM_USE, IterationLogger.GC_SEC);
 
     Assert.assertEquals(Arrays.asList(1.11, 3.33), res.get(IterationLogger.MEM_USE));
     Assert.assertEquals(Arrays.asList(2.22, 4.44), res.get(IterationLogger.GC_SEC));
