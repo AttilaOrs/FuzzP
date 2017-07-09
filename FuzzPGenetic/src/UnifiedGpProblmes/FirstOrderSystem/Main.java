@@ -83,7 +83,6 @@ public class Main {
 
   public static TreeBuilder<NodeType> createTreeBuilder() {
     return new TreeBuilder<>(new TreeBuilderCongigGeneralImpl(FirstOrderFitnes.createProblemSpecification()));
-
   }
 
 }

@@ -10,7 +10,9 @@ import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
+import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
 import core.common.recoder.FiredTranitionRecorder;
+import core.common.tokencache.TokenCacheDisabling;
 
 public class AntFitnes extends AbstactFitness {
   int MAX_MOOVES = 600;
@@ -29,7 +31,10 @@ public class AntFitnes extends AbstactFitness {
     rez.addActionIfPossible(0, d -> moove = 0);
     rez.addActionIfPossible(1, d -> moove = 1);
     rez.addActionIfPossible(2, d -> moove = 2);
-    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
+        new UnifiedPetrinetCacheTableResultWrapper(rez.net,
+            () -> new TokenCacheDisabling<>(5)),
+        false, true);
     exec.setRecorder(rec);
     
     table = new MutableState(GridReader.copyGrid());
