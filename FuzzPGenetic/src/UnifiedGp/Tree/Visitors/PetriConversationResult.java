@@ -2,10 +2,12 @@ package UnifiedGp.Tree.Visitors;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.Nodes.NodeType;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
+import core.UnifiedPetriLogic.UnifiedToken;
 
 public class PetriConversationResult {
   public final UnifiedPetriNet net;
@@ -19,7 +21,24 @@ public class PetriConversationResult {
     this.inpNrToInpPlace = inpNrToInpPlace;
     this.outNrToOutTr = outNrToOutTr;
     this.nodeTransitionMapping = mapping;
+  }
+
+  public boolean addActionIfPossible(Integer i, Consumer<UnifiedToken> cons) {
     
+    if (outNrToOutTr.containsKey(i)) {
+      net.addActionForOuputTransition(outNrToOutTr.get(i), cons);
+      return true;
+    }
+    return false;
+
+  }
+
+  public boolean addToInpIfPossible(Map<Integer, UnifiedToken> inp, Integer inpNr, UnifiedToken tk) {
+    if (inpNrToInpPlace.containsKey(inpNr)) {
+      inp.put(inpNrToInpPlace.get(inpNr), tk);
+      return true;
+    }
+    return false;
   }
 
 }

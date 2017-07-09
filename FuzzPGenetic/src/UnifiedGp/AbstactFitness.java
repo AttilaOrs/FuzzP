@@ -12,7 +12,6 @@ import structure.ICreatureFitnes;
 
 public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
 
-  public static boolean simplify = true;
 
   protected ToPetriNet tp;
   protected ProblemSpecification ps;
