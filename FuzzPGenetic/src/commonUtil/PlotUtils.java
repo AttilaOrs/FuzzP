@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +77,8 @@ public class PlotUtils {
 
 		}
 	}
-	public static void plot2(HashMap<String, HashMap<Double, Double>> what,
+
+  public static void plot2(Map<String, Map<Double, Double>> what,
 			String fileName) {
 
 		JavaPlot p = new JavaPlot();
@@ -90,7 +90,7 @@ public class PlotUtils {
 		int cntr = 0;
 		for (String title : what.keySet()) {
 			System.out.println(title);
-			HashMap<Double, Double> curentList = what.get(title);
+      Map<Double, Double> curentList = what.get(title);
 			double[][] temp = new double[curentList.size()][2];
 			ArrayList<Double> cigi = new ArrayList<Double>(curentList.keySet());
 			/*

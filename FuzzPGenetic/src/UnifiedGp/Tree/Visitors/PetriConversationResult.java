@@ -41,4 +41,9 @@ public class PetriConversationResult {
     return false;
   }
 
+  public boolean hasInp(int i) {
+    return inpNrToInpPlace.containsKey(i);
+
+  }
+
 }

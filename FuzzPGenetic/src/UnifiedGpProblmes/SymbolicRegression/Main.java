@@ -1,27 +1,21 @@
-package UnifiedGpProblmes.FirstOrderSystem;
+package UnifiedGpProblmes.SymbolicRegression;
 
-import java.io.File;
+
 import java.util.ArrayList;
+import java.util.Map;
 
 import AlgoImpl.IterationLogger;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
-import AlgoImpl.pools.CreaturePoolWithStreams;
+import AlgoImpl.pools.CreatureParallelPool;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifiedGpSuplier;
 import UnifiedGp.Tree.Nodes.NodeType;
-import UnifiedGp.Tree.Visitors.PetriConversationResult;
-import UnifiedGp.Tree.Visitors.ToPetriNet;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
 import commonUtil.PlotUtils;
-import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
-import core.UnifiedPetriLogic.UnifiedPetriNet;
-import core.UnifiedPetriLogic.UnifiedToken;
-import core.common.recoder.FullRecorder;
-import main.ScenarioSaverLoader;
 import structure.ICreatureFitnes;
 import structure.ICreaturePool;
 import structure.IOperatorFactory;
@@ -37,49 +31,45 @@ public class Main {
 
     ArrayList<IOperatorFactory<ICreatureMutator<UnifiedGpIndi>>> mutators = new ArrayList<>();
     mutators.add(() -> new UnifiedGpIndiTreeMutator(createTreeBuilder()));
-    
+
     ArrayList<IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>>> breeders = new ArrayList<>();
     breeders.add(() -> new UnifiedGpIndiBreeder());
 
     ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
-    fitnesses.add(() -> new FirstOrderFitnes());
+    fitnesses.add(() -> new SymbolicRegressionFitness());
 
-    ICreaturePool<UnifiedGpIndi> pool = new CreaturePoolWithStreams<UnifiedGpIndi>(gens, mutators, breeders, fitnesses);
+    ICreaturePool<UnifiedGpIndi> pool = new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses);
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, new LinearRankSelection());
-    SimpleGA.iteration = 100;
-    SimpleGA.population = 1000;
+    SimpleGA.iteration = 50;
+    SimpleGA.population = 500;
     algo.theAlgo();
 
     IterationLogger logger = algo.getLogger();
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree"), "bloat_tree.svg");
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"), "bloat_time.svg");
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"), "firtes.svg");
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree"), "bloat_tree_sym.svg");
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"), "bloat_time_sym.svg");
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"), "firtes_sym.svg");
 
     Integer i = algo.getMaxId();
 
     UnifiedGpIndi rez = pool.get(i);
-    ToPetriNet toPetri = new ToPetriNet(FirstOrderFitnes.createProblemSpecification());
-    PetriConversationResult convRez = toPetri.toNet(rez.getRoot());
-    PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<UnifiedPetriNet>();
-    saver.save(convRez.net,
-        "rez.json");
-
-    FirstOrderFitnes fitnes = new FirstOrderFitnes(true);
-    fitnes.evaluate(rez);
-    FullRecorder<UnifiedToken> rec = fitnes.getRecorder();
-    ScenarioSaverLoader<UnifiedPetriNet, UnifiedToken> scenarioSaver = new ScenarioSaverLoader<>(UnifiedPetriNet.class);
-    scenarioSaver.setFullRec(rec);
-    scenarioSaver.setPetriNet(convRez.net);
-    scenarioSaver.save(new File("rezScenario.json"));
+    finalize(rez);
 
     // UnifiedVizualizer.visualize(convRez.net, rec,
     // TransitionPlaceNameStore.createOrdinarNames(convRez.net));
 
   }
 
+  private static void finalize(UnifiedGpIndi rez) {
+    SymbolicRegressionFitness fit = new SymbolicRegressionFitness();
+    Map<String, Map<Double, Double>> l = fit.makeLog(rez);
+    PlotUtils.plot2(l, "comp_reg.svg");
+
+  }
+
   public static TreeBuilder<NodeType> createTreeBuilder() {
-    return new TreeBuilder<>(new TreeBuilderCongigGeneralImpl(FirstOrderFitnes.createProblemSpecification()));
+    return new TreeBuilder<>(new TreeBuilderCongigGeneralImpl(SymbolicRegressionFitness.problemsSpecification()));
   }
 
 }
+

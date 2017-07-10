@@ -28,8 +28,6 @@ public class Main {
     ArrayList<IOperatorFactory<ICreatureGenerator<UnifiedGpIndi>>> gens = new ArrayList<>();
     gens.add(() -> new UnifiedGpSuplier(createTreeBuilder()));
 
-    // gens.add(() -> ((rnd) -> new
-    // UnifiedGpIndi(FirstOrderFitnesTest.createConstantNet(1.5))));
 
     ArrayList<IOperatorFactory<ICreatureMutator<UnifiedGpIndi>>> mutators = new ArrayList<>();
     mutators.add(() -> new UnifiedGpIndiTreeMutator(createTreeBuilder()));
