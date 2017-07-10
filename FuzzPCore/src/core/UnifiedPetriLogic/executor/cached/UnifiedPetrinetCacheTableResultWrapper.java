@@ -11,11 +11,18 @@ import java.util.function.Supplier;
 import core.UnifiedPetriLogic.IContex;
 import core.UnifiedPetriLogic.IUnifiedTable;
 import core.UnifiedPetriLogic.ReadableUnifiedPetriNet;
+import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.common.tokencache.ITokenCache;
 import core.common.tokencache.TokenCache;
+import core.common.tokencache.TokenCacheDisabling;
 
 public class UnifiedPetrinetCacheTableResultWrapper implements ReadableUnifiedPetriNet {
+
+  public static UnifiedPetrinetCacheTableResultWrapper defaultWrap(UnifiedPetriNet net) {
+    return new UnifiedPetrinetCacheTableResultWrapper(net,
+        () -> new TokenCacheDisabling<>(5));
+  }
 
   private ReadableUnifiedPetriNet original;
   private Supplier<ITokenCache<UnifiedToken>> cacheFactory;
