@@ -2,6 +2,7 @@ package UnifiedGpProblmes.ArtificalAnt;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.ProblemSpecification;
@@ -19,10 +20,13 @@ public class AntFitnes extends AbstactFitness {
 
   public AntFitnes() {
     super(problemSpecification());
+    tableSup = () -> new MutableState(GridReader.copyGrid());
+
   }
 
   private int moove = -1;
   protected MutableState table;
+  protected Supplier<MutableState> tableSup;
 
   @Override
   public double evaluate(UnifiedGpIndi creature) {
@@ -37,7 +41,7 @@ public class AntFitnes extends AbstactFitness {
         false, true);
     exec.setRecorder(rec);
     
-    table = new MutableState(GridReader.copyGrid());
+    table = tableSup.get();
     
     Map<Integer, UnifiedToken> inp = new HashMap<>();
     int moveUnitl = MAX_MOOVES;

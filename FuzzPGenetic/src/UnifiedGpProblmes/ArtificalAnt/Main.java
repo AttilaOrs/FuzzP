@@ -1,5 +1,6 @@
 package UnifiedGpProblmes.ArtificalAnt;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import AlgoImpl.IterationLogger;
@@ -42,7 +43,7 @@ public class Main {
     ICreaturePool<UnifiedGpIndi> pool = new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses);
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, new LinearRankSelection());
-    SimpleGA.iteration = 100;
+    SimpleGA.iteration = 20;
     SimpleGA.population = 1200;
     algo.theAlgo();
 
@@ -63,10 +64,12 @@ public class Main {
 
   private static void finalize(UnifiedGpIndi rez) {
     AntFitnes f = new AntFitnes();
+    f.tableSup = () -> new MutableStateLogged(GridReader.copyGrid());
     f.evaluate(rez);
     System.out.println(f.table.getFoodEaten());
     System.out.println(f.table.getMovesTaken());
     System.out.println(GridReader.getNumberOfFoodCells());
+    ((MutableStateLogged) f.table).writeToFileWithXs(new File("antMoove.txt"));
 
   }
 

@@ -104,4 +104,9 @@ class MutableState {
     grid[coords[0]][coords[1]] = false;
     foodEaten++;
   }
+
+  protected int[] getCurrentPosition() {
+    return currentPosition;
+  }
+
 }
