@@ -1,6 +1,7 @@
 package UnifiedGpProblmes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -16,10 +17,8 @@ import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifiedGpSuplier;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
-import UnifiedGpProblmes.ArtificalAnt.AntFitnes;
-import UnifiedGpProblmes.CartCentering.CartFitnes;
-import UnifiedGpProblmes.CartCentering.UnifiedPetriController;
-import UnifiedGpProblmes.FirstOrderSystem.FirstOrderFitnes;
+import UnifiedGpProblmes.Multiplexer.MultiplexerFitness;
+import UnifiedGpProblmes.SymbolicRegression.SymbolicRegressionFitness;
 import commonUtil.PlotUtils;
 import structure.ICreatureFitnes;
 import structure.ICreaturePool;
@@ -47,47 +46,24 @@ public class MeasreMain {
   }
 
   public static final List<MeasureConfig> confs = new ArrayList<>();
+
   static {
     int repeate = 5;
+    List<Supplier<ProblemSpecification>> probSpec = Arrays.asList(MultiplexerFitness::problemSpecification,
+        SymbolicRegressionFitness::problemsSpecification);
+    List<Supplier<ICreatureFitnes<UnifiedGpIndi>>> fitnes = Arrays.asList(() -> new MultiplexerFitness(),
+        () -> new SymbolicRegressionFitness());
+    List<String> nameList = Arrays.asList("Multiplexer", "SymbolicReg");
+
     for (int i = 0; i < repeate; i++) {
-      confs.add(new MeasureConfig(100, 50, "firstOrder" + i, FirstOrderFitnes::createProblemSpecification,
-          () -> new FirstOrderFitnes()));
-      confs.add(new MeasureConfig(100, 100, "firstOrder" + i, FirstOrderFitnes::createProblemSpecification,
-          () -> new FirstOrderFitnes()));
-      confs.add(new MeasureConfig(500, 50, "firstOrder" + i, FirstOrderFitnes::createProblemSpecification,
-          () -> new FirstOrderFitnes()));
-      confs.add(new MeasureConfig(500, 100, "firstOrder" + i, FirstOrderFitnes::createProblemSpecification,
-          () -> new FirstOrderFitnes()));
-      confs.add(new MeasureConfig(1000, 50, "firstOrder" + i, FirstOrderFitnes::createProblemSpecification,
-          () -> new FirstOrderFitnes()));
-      confs.add(new MeasureConfig(1000, 100, "firstOrder" + i, FirstOrderFitnes::createProblemSpecification,
-          () -> new FirstOrderFitnes()));
-
-      confs.add(new MeasureConfig(100, 50, "cartCentering" + i, UnifiedPetriController::create,
-          () -> new CartFitnes()));
-      confs.add(new MeasureConfig(100, 100, "cartCentering" + i, UnifiedPetriController::create,
-          () -> new CartFitnes()));
-      confs.add(new MeasureConfig(500, 50, "cartCentering" + i, UnifiedPetriController::create,
-          () -> new CartFitnes()));
-      confs.add(new MeasureConfig(500, 100, "cartCentering" + i, UnifiedPetriController::create,
-          () -> new CartFitnes()));
-      confs.add(new MeasureConfig(1000, 50, "cartCentering" + i, UnifiedPetriController::create,
-          () -> new CartFitnes()));
-      confs.add(new MeasureConfig(1000, 100, "cartCentering" + i, UnifiedPetriController::create,
-          () -> new CartFitnes()));
-
-      confs.add(new MeasureConfig(100, 50, "ant" + i, AntFitnes::problemSpecification,
-          () -> new AntFitnes()));
-      confs.add(new MeasureConfig(100, 100, "ant" + i, AntFitnes::problemSpecification,
-          () -> new AntFitnes()));
-      confs.add(new MeasureConfig(500, 50, "ant" + i, AntFitnes::problemSpecification,
-          () -> new AntFitnes()));
-      confs.add(new MeasureConfig(500, 100, "ant" + i, AntFitnes::problemSpecification,
-          () -> new AntFitnes()));
-      confs.add(new MeasureConfig(1000, 50, "ant" + i, AntFitnes::problemSpecification,
-          () -> new AntFitnes()));
-      confs.add(new MeasureConfig(1000, 100, "ant" + i, AntFitnes::problemSpecification,
-          () -> new AntFitnes()));
+      for (int j = 0; j < nameList.size(); j++) {
+        confs.add(new MeasureConfig(100, 50, nameList.get(j) + i, probSpec.get(j), fitnes.get(j)));
+        confs.add(new MeasureConfig(100, 100, nameList.get(j) + i, probSpec.get(j), fitnes.get(j)));
+        confs.add(new MeasureConfig(500, 50, nameList.get(j) + i, probSpec.get(j), fitnes.get(j)));
+        confs.add(new MeasureConfig(500, 100, nameList.get(j) + i, probSpec.get(j), fitnes.get(j)));
+        confs.add(new MeasureConfig(1000, 50, nameList.get(j) + i, probSpec.get(j), fitnes.get(j)));
+        confs.add(new MeasureConfig(1000, 100, nameList.get(j) + i, probSpec.get(j), fitnes.get(j)));
+      }
 
     }
   }
