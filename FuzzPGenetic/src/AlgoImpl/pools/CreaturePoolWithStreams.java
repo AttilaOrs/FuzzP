@@ -157,8 +157,9 @@ public class CreaturePoolWithStreams<TCreatue extends IGPGreature>
 		try {
 			pool.submit(() -> {
 				idsToSurvive.parallelStream().forEach(i -> {
-					curentPool.put(i[0], oldPool.get(i[0]));
-					curentResult.put(i[0], oldResult.get(i[0]));
+          IGPGreature newInid = oldPool.get(i[0]).myClone();
+          curentPool.put(i[1], (TCreatue) newInid);
+          curentResult.put(i[1], oldResult.get(i[0]));
 				});
 			}).get();
 		} catch (InterruptedException | ExecutionException e) {

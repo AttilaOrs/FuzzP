@@ -43,7 +43,7 @@ public class ToPetriNetTest {
 
   @Before
   public void before() {
-    toNet = new ToPetriNet(TestUtils.simpleScaleProvider(2.0));
+    toNet = new ToPetriNet(TestUtils.simpleScaleProvider(2.0), true);
   }
 
 

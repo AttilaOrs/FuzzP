@@ -1,5 +1,6 @@
 package UnifiedPetriGA;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import structure.GPIndividSize;
@@ -15,6 +16,11 @@ public class BendingCreature implements IGPGreature {
   @Override
   public GPIndividSize getSizes() {
     return new GPIndividSize();
+  }
+
+  @Override
+  public IGPGreature myClone() {
+    return new BendingCreature(new ArrayList<>(gen));
   }
 
 }

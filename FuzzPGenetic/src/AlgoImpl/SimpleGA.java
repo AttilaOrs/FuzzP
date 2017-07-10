@@ -20,8 +20,8 @@ public class SimpleGA<TCreature extends IGPGreature> {
 
 	public static int population = 1000;
 	public static int iteration = 100;
-	public static int ELIT = 5;
-	public static int SELECTION = 15;
+  public static int ELIT = 2;
+  public static int SELECTION = 18;
 	public static int MUTATION = 15;
 	public static int CROSSOVER = 65; // sum has to be 100
 
@@ -29,6 +29,8 @@ public class SimpleGA<TCreature extends IGPGreature> {
 	protected Integer maxId;
 	private long garbageCollectionLastTime;
 	protected IterationLogger logger;
+  private int curentIndex;
+  protected int iter;
 
 	public SimpleGA(ICreaturePool<TCreature> pool, ISelector selector) {
 		this.pool = pool;
@@ -42,47 +44,60 @@ public class SimpleGA<TCreature extends IGPGreature> {
 		int eliteNr = population * ELIT / 100;
 		int survNr = population * SELECTION / 100;
 		int mutNr = population * MUTATION / 100;
-		int cross = population * CROSSOVER / 200;
+    int cross = (population - eliteNr - survNr - mutNr) / 2;
+    if (eliteNr + survNr + mutNr + cross != population) {
+      mutNr += 1;
+    }
+    System.out.println(eliteNr);
+    System.out.println(survNr);
+    System.out.println(mutNr);
+    System.out.println(cross);
 
-		for (int iter = 0; iter < iteration; iter++) {
+    for (iter = 0; iter < iteration; iter++) {
       long timeStart = System.nanoTime();
 			if (iter == 0) {
 				pool.generate(0, 0, population);
 			} else {
-				int curentIndex = 0;
+        curentIndex = 0;
 				List<Entry<Integer, Double[]>> elite = res.entrySet().stream()
 						.sorted((entry1,
 								entry2) -> entry1.getValue()[0]
 										.compareTo(entry2.getValue()[0]) * -1)
 						.limit(eliteNr).collect(Collectors.toList());
 				List<int[]> elitsSurv = elite.stream()
-						.map(entry -> new int[]{entry.getKey()})
+            .map(entry -> new int[] { entry.getKey(), nextIndex() })
 						.collect(Collectors.toList());
 
 				pool.survive(elitsSurv);
 
-				List<int[]> toSurv = selector.selectOne(res, 0,
-						survNr + eliteNr, 1);
+        Map<Integer, Double[]> withoutElite = res.entrySet().stream().filter(e -> !elite.contains(e))
+            .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+
+        List<int[]> toSurv = selector.selectOne(withoutElite, 0,
+            survNr, 2);
+        for (int i = 0; i < toSurv.size(); i++) {
+          toSurv.get(i)[1] = nextIndex();
+        }
+        String st = toSurv.stream().map(i -> Integer.toString(i[0])).collect(Collectors.joining(","));
+        System.out.println(st);
 
 				pool.survive(toSurv);
 
 				List<int[]> toMut = selector.selectOne(res, 0, mutNr, 2);
 				for (int i = 0; i < toMut.size(); i++) {
-					toMut.get(i)[1] = population * iter + curentIndex;
-					curentIndex++;
+          toMut.get(i)[1] = nextIndex();
 				}
 
 				pool.mutate(0, toMut);
 
 				List<int[]> toCross = selector.selectPairs(res, 0, cross, 4);
 				for (int i = 0; i < toCross.size(); i++) {
-					toCross.get(i)[2] = population * iter + curentIndex;
-					curentIndex++;
-					toCross.get(i)[3] = population * iter + curentIndex;
-					curentIndex++;
+          toCross.get(i)[2] = nextIndex();
+          toCross.get(i)[3] = nextIndex();
 				}
 
 				pool.crossover(0, toCross);
+        System.out.println(toCross.size());
 
 			}
 			res = pool.calculateFitness();
@@ -105,6 +120,12 @@ public class SimpleGA<TCreature extends IGPGreature> {
 		this.maxId = max.get().getKey();
 		pool.terminatePool();
 	}
+
+  protected int nextIndex() {
+    int temp = population * iter + curentIndex;
+    curentIndex++;
+    return temp;
+  }
 
 
   protected void logIterationResults(int iter, double average, double max,

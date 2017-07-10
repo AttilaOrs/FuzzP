@@ -7,6 +7,7 @@ import UnifiedGp.Tree.DepthFirstPostOrderVisitor;
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.VisitorCostumizer;
 import UnifiedGp.Tree.Nodes.NodeType;
+import UnifiedGp.Tree.Visitors.CopyReplace;
 import structure.GPIndividSize;
 import structure.IGPGreature;
 
@@ -48,5 +49,11 @@ public class UnifiedGpIndi implements IGPGreature {
     return size;
   }
 
+
+  @Override
+  public IGPGreature myClone() {
+    CopyReplace<NodeType> t = new CopyReplace<>();
+    return new UnifiedGpIndi((IInnerNode<NodeType>) t.copyReplace(root, null, null));
+  }
 
 }

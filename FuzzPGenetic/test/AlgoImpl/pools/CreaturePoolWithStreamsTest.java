@@ -161,6 +161,11 @@ public class CreaturePoolWithStreamsTest {
     public GPIndividSize getSizes() {
       return null;
     }
+
+    @Override
+    public IGPGreature myClone() {
+      return new TestCreature(bla);
+    }
   }
 
   public TestCreature oneGenerator(Random rr) {
@@ -197,12 +202,12 @@ public class CreaturePoolWithStreamsTest {
 
   public double fitnes(TestCreature ff) {
     long aas = ff.bla.chars().filter(i -> i == 'a').count();
-    return (double) aas;
+    return aas;
   }
 
   public double fitnes2(TestCreature ff) {
     long bbs = ff.bla.chars().filter(i -> i == 'b').count();
-    return (double) bbs;
+    return bbs;
   }
 
 }

@@ -49,13 +49,14 @@ public class MultiobjectiveGA<TCreature extends IGPGreature> extends SimpleGA<TC
 
   int hack;
 
+  @Override
   public void theAlgo() {
     int eliteNr = population * ELIT / 100;
     int survNr = population * SELECTION / 100;
     int mutNr = population * MUTATION / 100;
     int cross = population * CROSSOVER / 200;
 
-    for (int iter = 0; iter < iteration; iter++) {
+    for (iter = 0; iter < iteration; iter++) {
       if (iter == 0) {
         pool.generate(0, 0, population);
       } else {
@@ -64,21 +65,23 @@ public class MultiobjectiveGA<TCreature extends IGPGreature> extends SimpleGA<TC
           List<Entry<Integer, Double[]>> elite = res.entrySet().stream()
               .sorted((entry1, entry2) -> entry1.getValue()[hack].compareTo(entry2.getValue()[hack]) * -1)
               .limit((long) (eliteNr * fitnesNormalWeigths[hack])).collect(Collectors.toList());
-          List<int[]> elitsSurv = elite.stream().map(entry -> new int[] { entry.getKey() })
+          List<int[]> elitsSurv = elite.stream().map(entry -> new int[] { entry.getKey(), nextIndex() })
               .collect(Collectors.toList());
           pool.survive(elitsSurv);
         }
 
         for (int i = 0; i < fitnesNormalWeigths.length; i++) {
-          List<int[]> toSurv = selector.selectOne(res, i, (int) (survNr * fitnesNormalWeigths[i]), 1);
+          List<int[]> toSurv = selector.selectOne(res, i, (int) (survNr * fitnesNormalWeigths[i]), 2);
+          for (int j = 0; j < toSurv.size(); j++) {
+            toSurv.get(i)[1] = nextIndex();
+          }
           pool.survive(toSurv);
         }
 
         for (int ff = 0; ff < fitnesNormalWeigths.length; ff++) {
           List<int[]> toMut = selector.selectOne(res, ff, (int) (mutNr * fitnesNormalWeigths[ff]), 2);
           for (int i = 0; i < toMut.size(); i++) {
-            toMut.get(i)[1] = population * iter + curentIndex;
-            curentIndex++;
+            toMut.get(i)[1] = nextIndex();
           }
           pool.mutate(0, toMut);
         }
@@ -86,10 +89,8 @@ public class MultiobjectiveGA<TCreature extends IGPGreature> extends SimpleGA<TC
         for (int ff = 0; ff < fitnesNormalWeigths.length; ff++) {
           List<int[]> toCross = selector.selectPairs(res, ff, (int) (cross * fitnesNormalWeigths[ff]), 4);
           for (int i = 0; i < toCross.size(); i++) {
-            toCross.get(i)[2] = population * iter + curentIndex;
-            curentIndex++;
-            toCross.get(i)[3] = population * iter + curentIndex;
-            curentIndex++;
+            toCross.get(i)[2] = nextIndex();
+            toCross.get(i)[3] = nextIndex();
           }
 
           pool.crossover(0, toCross);

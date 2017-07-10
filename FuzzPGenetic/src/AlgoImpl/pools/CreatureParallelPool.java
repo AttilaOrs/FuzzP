@@ -279,8 +279,9 @@ public class CreatureParallelPool<TCreatue extends IGPGreature>
 		}
 
 		private void doSurvive(Task work) {
-			curentPool.put(work.params[0], oldPool.get(work.params[0]));
-			curentResult.put(work.params[0], oldResult.get(work.params[0]));
+		  TCreatue i = oldPool.get(work.params[0]);
+      curentPool.put(work.params[1], (TCreatue) i.myClone());
+      curentResult.put(work.params[1], oldResult.get(work.params[0]));
 		}
 
 		private void doInitialziation(Task work) {

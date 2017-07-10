@@ -39,8 +39,8 @@ public class Main {
     ICreaturePool<UnifiedGpIndi> pool = new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses);
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, new LinearRankSelection());
-    SimpleGA.iteration = 50;
-    SimpleGA.population = 500;
+    SimpleGA.iteration = 10;
+    SimpleGA.population = 100;
     algo.theAlgo();
 
     IterationLogger logger = algo.getLogger();

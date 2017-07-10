@@ -28,13 +28,14 @@ public class MultiobjectiveMulioperatorGA<TCreature extends IGPGreature> extends
 
   int hack;
 
+  @Override
   public void theAlgo() {
     int eliteNr = population * ELIT / 100;
     int survNr = population * SELECTION / 100;
     int mutNr = population * MUTATION / 100;
     int cross = population * CROSSOVER / 200;
 
-    for (int iter = 0; iter < iteration; iter++) {
+    for (iter = 0; iter < iteration; iter++) {
       if (iter == 0) {
         int curent = 0;
         for (int generatirIndex = 0; generatirIndex < generatorNormalWeigths.length; generatirIndex++) {
@@ -48,13 +49,17 @@ public class MultiobjectiveMulioperatorGA<TCreature extends IGPGreature> extends
           List<Entry<Integer, Double[]>> elite = res.entrySet().stream()
               .sorted((entry1, entry2) -> entry1.getValue()[hack].compareTo(entry2.getValue()[hack]) * -1)
               .limit((long) (eliteNr * fitnesNormalWeigths[hack])).collect(Collectors.toList());
-          List<int[]> elitsSurv = elite.stream().map(entry -> new int[] { entry.getKey() })
+          List<int[]> elitsSurv = elite.stream().map(entry -> new int[] { entry.getKey(), nextIndex() })
               .collect(Collectors.toList());
           pool.survive(elitsSurv);
         }
 
         for (int i = 0; i < fitnesNormalWeigths.length; i++) {
-          List<int[]> toSurv = selector.selectOne(res, i, (int) (survNr * fitnesNormalWeigths[i]), 1);
+          List<int[]> toSurv = selector.selectOne(res, i, (int) (survNr * fitnesNormalWeigths[i]), 2);
+          for (int j = 0; j < toSurv.size(); j++) {
+            toSurv.get(j)[1] = nextIndex();
+
+          }
           pool.survive(toSurv);
         }
         for (int mutIndex = 0; mutIndex < mutatationNormalWeigths.length; mutIndex++) {
