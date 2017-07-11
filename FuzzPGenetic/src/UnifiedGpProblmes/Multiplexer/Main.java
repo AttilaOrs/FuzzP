@@ -56,7 +56,7 @@ public class Main {
   }
 
   private static void finalize(UnifiedGpIndi rez) {
-    MultiplexerFitness fit = new MultiplexerFitness();
+    MultiplexerFitness fit = new MultiplexerFitness(true);
     double score = fit.evaluate(rez);
     System.out.println(score);
 

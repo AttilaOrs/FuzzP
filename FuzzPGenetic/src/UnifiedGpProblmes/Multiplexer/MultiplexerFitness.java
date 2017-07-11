@@ -1,7 +1,11 @@
 package UnifiedGpProblmes.Multiplexer;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.function.Function;
 
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.ProblemSpecification;
@@ -15,8 +19,15 @@ import core.common.recoder.FiredTranitionRecorder;
 
 public class MultiplexerFitness extends AbstactFitness {
 
-  public MultiplexerFitness() {
+  private boolean full;
+
+  public MultiplexerFitness(boolean full) {
     super(problemSpecification());
+    this.full = full;
+  }
+
+  public MultiplexerFitness() {
+    this(false);
   }
 
   private Boolean lastRez;
@@ -33,21 +44,31 @@ public class MultiplexerFitness extends AbstactFitness {
       exec.setRecorder(rec);
       Problem pr = new Problem();
       Map<Integer, UnifiedToken> inp = new HashMap<>();
-      int hits = pr.hits(bl -> {
-        lastRez = null;
-        inp.clear();
-        for(int i = 0; i < 11 ;i ++){
-          rez.addToInpIfPossible(inp, i, bl[i]? new UnifiedToken(1.0): new UnifiedToken());
-        }
-        exec.runTick(inp);
-        return lastRez;
-        
-      });
+      int hits  = -1;
+      if(full){
+        hits = pr.fullHits(doTheMacarean(rez, exec, inp));
+      } else {
+        hits = pr.hits(doTheMacarean(rez, exec, inp));
+      }
 
       updateCreatureWithSimplification(creature, rez, rec);
       return hits;
     }
     return 0;
+  }
+
+  private Function<boolean[], Boolean> doTheMacarean(PetriConversationResult rez, SyncronousUnifiedPetriExecutor exec,
+      Map<Integer, UnifiedToken> inp) {
+    return bl -> {
+      lastRez = null;
+      inp.clear();
+      for (int i = 0; i < 11; i++) {
+        rez.addToInpIfPossible(inp, i, bl[i] ? new UnifiedToken(1.0) : new UnifiedToken());
+      }
+      exec.runTick(inp);
+      return lastRez;
+
+    };
   }
 
   public static ProblemSpecification problemSpecification() {
@@ -59,7 +80,15 @@ public class MultiplexerFitness extends AbstactFitness {
     outScale.put(0, 1.0);
     outScale.put(1, 1.0);
     return new ProblemSpecificationImpl(5.0, 5, inpScale, outScale);
+  }
 
+  public static void main(String[] args) {
+    Set<Integer> rands = new HashSet<>();
+    Random rnd = new Random();
+    while (rands.size() < 600) {
+      rands.add(rnd.nextInt(2048));
+    }
+    System.out.println(rands);
   }
 
 }
