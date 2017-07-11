@@ -48,10 +48,6 @@ public class SimpleGA<TCreature extends IGPGreature> {
     if (eliteNr + survNr + mutNr + cross != population) {
       mutNr += 1;
     }
-    System.out.println(eliteNr);
-    System.out.println(survNr);
-    System.out.println(mutNr);
-    System.out.println(cross);
 
     for (iter = 0; iter < iteration; iter++) {
       long timeStart = System.nanoTime();
@@ -78,8 +74,6 @@ public class SimpleGA<TCreature extends IGPGreature> {
         for (int i = 0; i < toSurv.size(); i++) {
           toSurv.get(i)[1] = nextIndex();
         }
-        String st = toSurv.stream().map(i -> Integer.toString(i[0])).collect(Collectors.joining(","));
-        System.out.println(st);
 
 				pool.survive(toSurv);
 
@@ -97,7 +91,6 @@ public class SimpleGA<TCreature extends IGPGreature> {
 				}
 
 				pool.crossover(0, toCross);
-        System.out.println(toCross.size());
 
 			}
 			res = pool.calculateFitness();

@@ -62,7 +62,7 @@ public class MeasreMain {
 
     for (int i = 0; i < repeate; i++) {
       for (int j = 0; j < nameList.size(); j++) {
-        confs.add(new MeasureConfig(1000, 100, nameList.get(j) + i, probSpec.get(j), fitnes.get(j)));
+        confs.add(new MeasureConfig(500, 100, nameList.get(j) + i, probSpec.get(j), fitnes.get(j)));
       }
 
     }
