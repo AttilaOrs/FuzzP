@@ -8,6 +8,9 @@ import java.util.function.Supplier;
 import AlgoImpl.IterationLogger;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
+import AlgoImpl.Selectors.RouletteWheelSelection;
+import AlgoImpl.Selectors.SelectOnlyOneWrapper;
+import AlgoImpl.Selectors.TournamentSelection;
 import AlgoImpl.pools.CreaturePoolWithStreams;
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
@@ -27,6 +30,7 @@ import commonUtil.PlotUtils;
 import structure.ICreatureFitnes;
 import structure.ICreaturePool;
 import structure.IOperatorFactory;
+import structure.ISelector;
 import structure.operators.ICreatureBreeder;
 import structure.operators.ICreatureGenerator;
 import structure.operators.ICreatureMutator;
@@ -38,14 +42,16 @@ public class MeasreMain {
     final String name;
     final Supplier<ProblemSpecification> specificationSuplier;
     final Supplier<ICreatureFitnes<UnifiedGpIndi>> fitnessSuplier;
+    final ISelector selector;
 
     public MeasureConfig(int pop, int iter, String name, Supplier<ProblemSpecification> specificationSuplier,
-        Supplier<ICreatureFitnes<UnifiedGpIndi>> fitnessSuplier) {
+        Supplier<ICreatureFitnes<UnifiedGpIndi>> fitnessSuplier, ISelector selector) {
       this.pop = pop;
       this.iter = iter;
       this.name = name;
       this.specificationSuplier = specificationSuplier;
       this.fitnessSuplier = fitnessSuplier;
+      this.selector = selector;
     }
   }
 
@@ -59,10 +65,21 @@ public class MeasreMain {
     List<Supplier<ICreatureFitnes<UnifiedGpIndi>>> fitnes = Arrays.asList(MultiplexerFitness::new,
         SymbolicRegressionFitness::new, CartFitnes::new, FirstOrderFitnes::new, AntFitnes::new);
     List<String> nameList = Arrays.asList("Multiplexer_", "SymbolicReg_", "CartCenter_", "FirstOrder_", "Ant_");
+    
+    List<String> selectorNames = Arrays.asList("Roulette", "Rank", "Tournamet", "RouletteOne", "RankOne",
+        "TournamentOne");
+    
+    List<ISelector> selectors = Arrays.asList(new RouletteWheelSelection(), new LinearRankSelection(),
+        new TournamentSelection(), new SelectOnlyOneWrapper(new RouletteWheelSelection()),
+        new SelectOnlyOneWrapper(new LinearRankSelection()), new SelectOnlyOneWrapper(new TournamentSelection()));
+    
 
     for (int i = 0; i < repeate; i++) {
       for (int j = 0; j < nameList.size(); j++) {
-        confs.add(new MeasureConfig(500, 100, nameList.get(j) + i, probSpec.get(j), fitnes.get(j)));
+        for (int s = 0; s < selectorNames.size(); s++) {
+          confs.add(new MeasureConfig(500, 100, nameList.get(j) + selectorNames.get(s) + "_" + i, probSpec.get(j),
+              fitnes.get(j), selectors.get(s)));
+        }
       }
 
     }
@@ -85,7 +102,7 @@ public class MeasreMain {
       ICreaturePool<UnifiedGpIndi> pool = new CreaturePoolWithStreams<UnifiedGpIndi>(gens, mutators, breeders,
           fitnesses);
 
-      SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, new LinearRankSelection());
+      SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, conf.selector);
       SimpleGA.iteration = conf.iter;
       SimpleGA.population = conf.pop;
       algo.theAlgo();
