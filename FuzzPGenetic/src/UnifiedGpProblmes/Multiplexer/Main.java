@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import AlgoImpl.IterationLogger;
 import AlgoImpl.SimpleGA;
-import AlgoImpl.Selectors.LinearRankSelection;
+import AlgoImpl.Selectors.RouletteWheelSelection;
 import AlgoImpl.pools.CreatureParallelPool;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
@@ -38,8 +38,8 @@ public class Main {
 
     ICreaturePool<UnifiedGpIndi> pool = new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses);
 
-    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, new LinearRankSelection());
-    SimpleGA.iteration = 10;
+    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, new RouletteWheelSelection());
+    SimpleGA.iteration = 50;
     SimpleGA.population = 100;
     algo.theAlgo();
 
@@ -52,9 +52,6 @@ public class Main {
 
     UnifiedGpIndi rez = pool.get(i);
     finalize(rez);
-
-    // UnifiedVizualizer.visualize(convRez.net, rec,
-    // TransitionPlaceNameStore.createOrdinarNames(convRez.net));
 
   }
 

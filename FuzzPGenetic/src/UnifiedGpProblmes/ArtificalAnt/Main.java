@@ -5,7 +5,8 @@ import java.util.ArrayList;
 
 import AlgoImpl.IterationLogger;
 import AlgoImpl.SimpleGA;
-import AlgoImpl.Selectors.LinearRankSelection;
+import AlgoImpl.Selectors.SelectOnlyOneWrapper;
+import AlgoImpl.Selectors.TournamentSelection;
 import AlgoImpl.pools.CreatureParallelPool;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
@@ -40,15 +41,15 @@ public class Main {
 
     ICreaturePool<UnifiedGpIndi> pool = new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses);
 
-    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, new LinearRankSelection());
-    SimpleGA.iteration = 20;
-    SimpleGA.population = 1200;
+    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, new SelectOnlyOneWrapper(new TournamentSelection()));
+    SimpleGA.iteration = 50;
+    SimpleGA.population = 100;
     algo.theAlgo();
 
     IterationLogger logger = algo.getLogger();
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree"), "bloat_tree_ant.svg");
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"), "bloat_time_ant.svg");
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"), "firtes_ant.svg");
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree"), "bloat_tree_ant_tour_one.svg");
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"), "bloat_time_ant_tour_one.svg");
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"), "firtes_ant_tour_one.svg");
 
     Integer i = algo.getMaxId();
 

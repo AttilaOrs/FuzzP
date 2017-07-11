@@ -58,6 +58,51 @@ public class InputLeaf implements ILeaf<NodeType> {
       "[<FF><FF><FF><FF><FF><FF>]" + //
       "}";
 
+  public final static String readerNonBlocking = "{" +
+      "[<-2><-2><-2><-2><-2><FF>]" + //
+      "[<-1><-1><-1><-1><-1><FF>]" + //
+      "[< 0>< 0>< 0>< 0>< 0><FF>]" + //
+      "[< 1>< 1>< 1>< 1>< 1><FF>]" + //
+      "[< 2>< 2>< 2>< 2>< 2><FF>]" + //
+      "[<-2><-1>< 0>< 1>< 2><FF>]" + //
+      "}";
+
+  public final static String enableIfPhiTable = "{" +
+      "[<FF><FF><FF><FF><FF><FF>]" + //
+      "[<FF><FF><FF><FF><FF><FF>]" + //
+      "[<FF><FF><FF><FF><FF><FF>]" + //
+      "[<FF><FF><FF><FF><FF><FF>]" + //
+      "[<FF><FF><FF><FF><FF><FF>]" + //
+      "[<-2><-1>< 0>< 1>< 2><FF>]" + //
+      "}";
+
+  public final static String enableIfNonPhiTable = "{" +
+      "[<-2><-1>< 0>< 1>< 2><FF>]" + //
+      "[<-2><-1>< 0>< 1>< 2><FF>]" + //
+      "[<-2><-1>< 0>< 1>< 2><FF>]" + //
+      "[<-2><-1>< 0>< 1>< 2><FF>]" + //
+      "[<-2><-1>< 0>< 1>< 2><FF>]" + //
+      "[<FF><FF><FF><FF><FF><FF>]" + //
+      "}";
+
+  public final static String shiftUpIfEvenTable = "{" +
+      "[<-1>< 0>< 1>< 2>< 2><FF>]" + //
+      "[<-1>< 0>< 1>< 2>< 2><FF>]" + //
+      "[<-1>< 0>< 1>< 2>< 2><FF>]" + //
+      "[<-1>< 0>< 1>< 2>< 2><FF>]" + //
+      "[<-1>< 0>< 1>< 2>< 2><FF>]" + //
+      "[<FF><FF><FF><FF><FF><FF>]" + //
+      "}";
+
+  public final static String shiftDownIfNonPhiTable = "{" +
+      "[<-2><-2><-1>< 0>< 1><FF>]" + //
+      "[<-2><-2><-1>< 0>< 1><FF>]" + //
+      "[<-2><-2><-1>< 0>< 1><FF>]" + //
+      "[<-2><-2><-1>< 0>< 1><FF>]" + //
+      "[<-2><-2><-1>< 0>< 1><FF>]" + //
+      "[<FF><FF><FF><FF><FF><FF>]" + //
+      "}";
+
   @Override
   public ILeaf<NodeType> myClone() {
     return new InputLeaf(type, inpNr);
