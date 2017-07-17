@@ -44,6 +44,10 @@ public class FuzzyToken implements FullRecordable<FuzzyToken> {
   public void normalize() {
     if (!phi) {
       double sum = Arrays.stream(fuzzyValues).sum();
+      if (Double.isNaN(sum)) {
+        fuzzyValues = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0 };
+        return;
+      }
       if (sum != 0.0) {
         for (int q = 0; q < fuzzyValues.length; q++) {
           fuzzyValues[q] /= sum;

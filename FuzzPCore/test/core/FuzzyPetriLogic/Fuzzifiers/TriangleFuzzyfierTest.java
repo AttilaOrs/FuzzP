@@ -1,11 +1,14 @@
 package core.FuzzyPetriLogic.Fuzzifiers;
 
+import static org.junit.Assert.assertFalse;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import core.FuzzyPetriLogic.FuzzyDriver;
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.FuzzyValue;
 
@@ -17,6 +20,16 @@ public class TriangleFuzzyfierTest {
   public void setUp() throws Exception {
     underTest = new TriangleFuzzyfier(new Double[] { null, -2.0, -1.0 }, new Double[] { -2.0, -1.0, 0.0 },
         new Double[] { -1.0, 0.0, 1.0 }, new Double[] { 0.0, 1.0, 2.0 }, new Double[] { 1.0, 2.0, null });
+  }
+
+  @Test
+  public void NaN_proof_test() {
+    FuzzyDriver f = FuzzyDriver.createDriverFromMinMax(0.0 * -1.0, 0.0);
+    FuzzyToken rez = f.fuzzifie(0.0);
+    for (FuzzyValue v : FuzzyValue.inOrderWithoutPhi) {
+      assertFalse(Double.isNaN(rez.getFuzzyValue(v)));
+    }
+
   }
 
   @Test

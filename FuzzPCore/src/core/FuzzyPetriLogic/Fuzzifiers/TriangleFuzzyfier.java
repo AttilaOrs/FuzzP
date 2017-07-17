@@ -44,6 +44,8 @@ public class TriangleFuzzyfier implements FuzzyDriver {
       toRet.addToFuzzyValue(FuzzyValue.PL, 1.0);
     }
 
+    toRet.normalize();
+
     return toRet;
 
   }
