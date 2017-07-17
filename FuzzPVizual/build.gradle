@@ -21,13 +21,19 @@ sourceSets {
 }
 
 
-def getVersionName() { 
+def getVersionName() {
     def stdout = new ByteArrayOutputStream()
-    exec {
+    def rez = exec {
+        ignoreExitValue true
         commandLine 'git', 'describe', '--tags'
         standardOutput = stdout
     }
-    return stdout.toString().trim()
+    def toRet = "NNNNOOOPE"
+    if(rez.getExitValue()==1) {
+        toRet=  stdout.toString().trim()
+    }
+    return toRet
+
 }
 
 repositories {
