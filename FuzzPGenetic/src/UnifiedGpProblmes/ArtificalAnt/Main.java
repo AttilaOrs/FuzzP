@@ -42,14 +42,17 @@ public class Main {
     ICreaturePool<UnifiedGpIndi> pool = new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses);
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, new SelectOnlyOneWrapper(new TournamentSelection()));
-    SimpleGA.iteration = 50;
-    SimpleGA.population = 100;
+    SimpleGA.iteration = 100;
+    SimpleGA.population = 200;
     algo.theAlgo();
 
     IterationLogger logger = algo.getLogger();
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree"), "bloat_tree_ant_tour_one.svg");
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree depth"), "bloat_tree_depth_ant_tour_one.svg");
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree ops"), "bloat_tree_ops_ant_tour_one.svg");
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree leafs"), "bloat_tree_leafs_ant_tour_one.svg");
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"), "bloat_time_ant_tour_one.svg");
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"), "firtes_ant_tour_one.svg");
+    PlotUtils.hist(algo.getSizeHistLog(), "sizeHistLog.svg");
 
     Integer i = algo.getMaxId();
 
@@ -65,9 +68,8 @@ public class Main {
     AntFitnes f = new AntFitnes();
     f.tableSup = () -> new MutableStateLogged(GridReader.copyGrid());
     f.evaluate(rez);
-    System.out.println(f.table.getFoodEaten());
+    System.out.println(f.table.getFoodEaten() + " out of " + GridReader.getNumberOfFoodCells());
     System.out.println(f.table.getMovesTaken());
-    System.out.println(GridReader.getNumberOfFoodCells());
     ((MutableStateLogged) f.table).writeToFileWithXs(new File("antMoove.txt"));
 
   }

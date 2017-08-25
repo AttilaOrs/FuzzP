@@ -19,9 +19,18 @@ public class IterationLogger {
   public static String MEM_USE = "used memory";
   public static String GC_SEC = "garbage collector";
 
-  public static String TREE_DEPTH = "tree depth";
-  public static String TREE_OPS = "tree ops";
-  public static String TREE_LEAFS = "tree leafs";
+  public static String TREE_DEPTH_AVG = "avg tree depth";
+  public static String TREE_OPS_AVG = "avg tree ops";
+  public static String TREE_LEAFS_AVG = "avg tree leafs";
+
+  public static String TREE_DEPTH_MAX = "max tree depth";
+  public static String TREE_OPS_MAX = "max tree ops";
+  public static String TREE_LEAFS_MAX = "max tree leafs";
+
+  public static String TREE_DEPTH_MIN = "min tree depth";
+  public static String TREE_OPS_MIN = "min tree ops";
+  public static String TREE_LEAFS_MIN = "min tree leafs";
+
   public static String TIME = "time: nanosec/solution";
 
   HashMap<String, ArrayList<Double>> logs;

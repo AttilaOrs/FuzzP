@@ -3,20 +3,23 @@ package AlgoImpl;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.util.DoubleSummaryStatistics;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import structure.GPIndividSize;
 import structure.ICreaturePool;
+import structure.ICreaturePool.GenerationSizeStats;
 import structure.IGPGreature;
 import structure.ISelector;
 
 public class SimpleGA<TCreature extends IGPGreature> {
 	ICreaturePool<TCreature> pool;
 	ISelector selector;
+
+  public static final int SIZE_HIST_LOG = 10;
 
 	public static int population = 1000;
 	public static int iteration = 100;
@@ -29,6 +32,7 @@ public class SimpleGA<TCreature extends IGPGreature> {
 	protected Integer maxId;
 	private long garbageCollectionLastTime;
 	protected IterationLogger logger;
+  protected Map<String, Map<Integer, Integer>> sizeHistLogs;
   private int curentIndex;
   protected int iter;
 
@@ -38,6 +42,7 @@ public class SimpleGA<TCreature extends IGPGreature> {
 		this.maxId = null;
 		garbageCollectionLastTime = -1;
 		logger = new IterationLogger();
+    sizeHistLogs = new HashMap<>();
 	}
 
 	public void theAlgo() {
@@ -94,7 +99,7 @@ public class SimpleGA<TCreature extends IGPGreature> {
 
 			}
 			res = pool.calculateFitness();
-      GPIndividSize size = pool.getAvarageSizeOfCurrentPool();
+      GenerationSizeStats size = pool.getSizeStats();
       long timeStop = System.nanoTime();
 
 			DoubleSummaryStatistics statistics = res.entrySet().stream()
@@ -122,15 +127,28 @@ public class SimpleGA<TCreature extends IGPGreature> {
 
 
   protected void logIterationResults(int iter, double average, double max,
-      int size, GPIndividSize avgSize, long l) {
+      int size, GenerationSizeStats sizeStats, long l) {
 		logger.addLogToTopic(IterationLogger.AVG_FIT, average);
 		logger.addLogToTopic(IterationLogger.MAX_FIT, max);
 		logger.addLogToTopic(IterationLogger.POP_SIZE, size / 1.0);
-    logger.addLogToTopic(IterationLogger.TREE_DEPTH, avgSize.depth / 1.0);
-    logger.addLogToTopic(IterationLogger.TREE_LEAFS, avgSize.leafs / 1.0);
-    logger.addLogToTopic(IterationLogger.TREE_OPS, avgSize.ops / 1.0);
+
+    logger.addLogToTopic(IterationLogger.TREE_DEPTH_AVG, sizeStats.avg.depth / 1.0);
+    logger.addLogToTopic(IterationLogger.TREE_LEAFS_AVG, sizeStats.avg.leafs / 1.0);
+    logger.addLogToTopic(IterationLogger.TREE_OPS_AVG, sizeStats.avg.ops / 1.0);
+
+    logger.addLogToTopic(IterationLogger.TREE_DEPTH_MIN, sizeStats.min.depth / 1.0);
+    logger.addLogToTopic(IterationLogger.TREE_LEAFS_MIN, sizeStats.min.leafs / 1.0);
+    logger.addLogToTopic(IterationLogger.TREE_OPS_MIN, sizeStats.min.ops / 1.0);
+
+    logger.addLogToTopic(IterationLogger.TREE_DEPTH_MAX, sizeStats.max.depth / 1.0);
+    logger.addLogToTopic(IterationLogger.TREE_LEAFS_MAX, sizeStats.max.leafs / 1.0);
+    logger.addLogToTopic(IterationLogger.TREE_OPS_MAX, sizeStats.max.ops / 1.0);
+
     logger.addLogToTopic(IterationLogger.TIME, l / 1.0);
 		logger.iterFinished(iter);
+    if (iter % SIZE_HIST_LOG == 0) {
+      sizeHistLogs.put("gen " + iter, sizeStats.sizeHist);
+    }
 	}
 
 	protected void logMemoryAndGc() {
@@ -141,6 +159,10 @@ public class SimpleGA<TCreature extends IGPGreature> {
 				getGarbageCollectionTimeINLastIteration() / 1000.0);
 		logger.addLogToTopic(IterationLogger.MEM_USE, (double) usedMemory);
 	}
+
+  public Map<String, Map<Integer, Integer>> getSizeHistLog() {
+    return sizeHistLogs;
+  }
 
 	public Integer getMaxId() {
 		return this.maxId;

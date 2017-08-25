@@ -121,6 +121,41 @@ public class PlotUtils {
 		p.plot();
 	}
 
+  public static void hist(Map<String, Map<Integer, Integer>> what,
+			String fileName) {
+
+		JavaPlot p = new JavaPlot();
+		//JavaPlot.getDebugger().setLevel(Debug.QUIET);
+    // SVGTerminal svg = new SVGTerminal(fileName);
+    FileTerminal svg = new FileTerminal("svg", fileName);
+		// String kacs = svg.getOutputFile();
+		p.setTerminal(svg);
+		p.setTitle("Results");
+		int cntr = 0;
+		for (String title : what.keySet()) {
+			System.out.println(title);
+      Map<Integer, Integer> curentList = what.get(title);
+			double[][] temp = new double[curentList.size()][2];
+      ArrayList<Integer> cigi = new ArrayList<Integer>(curentList.keySet());
+
+			for (int index = 0; index < cigi.size(); index++) {
+        double key = cigi.get(index).doubleValue();
+        double val = curentList.get(cigi.get(index)).doubleValue();
+				temp[index][0] = key;
+				temp[index][1] = val;
+				index++;
+			}
+			DataSetPlot dt = new DataSetPlot(temp);
+			p.addPlot(dt);
+			((AbstractPlot) p.getPlots().get(cntr)).setTitle(title);
+
+			PlotStyle stl = ((AbstractPlot) p.getPlots().get(cntr))
+					.getPlotStyle();
+      stl.setStyle(Style.POINTS);
+			cntr++;
+		}
+		p.plot();
+	}
 	public static void writeToFile(String fileName, String content) {
 		try {
 			File file = new File(fileName);
