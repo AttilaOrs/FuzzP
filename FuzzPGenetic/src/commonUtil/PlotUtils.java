@@ -17,7 +17,7 @@ import com.panayotis.gnuplot.style.NamedPlotColor;
 import com.panayotis.gnuplot.style.PlotColor;
 import com.panayotis.gnuplot.style.PlotStyle;
 import com.panayotis.gnuplot.style.Style;
-import com.panayotis.gnuplot.terminal.SVGTerminal;
+import com.panayotis.gnuplot.terminal.FileTerminal;
 
 public class PlotUtils {
 
@@ -39,7 +39,7 @@ public class PlotUtils {
 				p = new JavaPlot();
 			}
 			//JavaPlot.getDebugger().setLevel(Debug.QUIET);
-			SVGTerminal svg = new SVGTerminal(fileName);
+      FileTerminal svg = new FileTerminal("svg", fileName);
 			// String kacs = svg.getOutputFile();
 			svg.set("size", "800, 600");
 			p.setTerminal(svg);
@@ -83,7 +83,8 @@ public class PlotUtils {
 
 		JavaPlot p = new JavaPlot();
 		//JavaPlot.getDebugger().setLevel(Debug.QUIET);
-		SVGTerminal svg = new SVGTerminal(fileName);
+    // SVGTerminal svg = new SVGTerminal(fileName);
+    FileTerminal svg = new FileTerminal("svg", fileName);
 		// String kacs = svg.getOutputFile();
 		p.setTerminal(svg);
 		p.setTitle("Results");

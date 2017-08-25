@@ -5,18 +5,34 @@ apply plugin: 'eclipse'
 
 
 version=getVersionName()
-
 sourceSets.main.java.srcDirs = ['src' ]
 mainClassName = "UnifiedGpProblmes.MeasreMain"
 project.ext.set("allJvmArgs", ["-Xms=1024m", "-Xmx=3000m"])
 
-def getVersionName() { 
+sourceSets {
+  test {
+    java.srcDirs= ['src','test' ]
+    
+  }
+  main {
+   java.srcDirs= ['src']
+  }
+}
+
+
+def getVersionName() {
     def stdout = new ByteArrayOutputStream()
-    exec {
+    def rez = exec {
+        ignoreExitValue true
         commandLine 'git', 'describe', '--tags'
         standardOutput = stdout
     }
-    return stdout.toString().trim()
+    def toRet = "NNNNOOOPE"
+    if(rez.getExitValue()==0) {
+        toRet=  stdout.toString().trim()
+    }
+    return toRet
+
 }
 
 repositories {
@@ -25,8 +41,12 @@ repositories {
 
 dependencies {
       compile project(':FuzzPCore')
-      compile fileTree(dir: 'lib', include: ['*.jar'])
-      runtime fileTree(dir: 'libs', include: ['*.jar'])
+      compile 'com.panayotis.javaplot:javaplot:0.5.0'
+      compile 'com.panayotis.javaplot:svg:0.5.0'
+      compile 'com.kitfox.svg:svg-salamander:1.0'
+      compile 'com.google.code.gson:gson:2.2.4'
+      compile project(':FuzzPVizual')
+      testCompile 'junit:junit:4.12'
 }
 
 task fatJar(type: Jar) {
