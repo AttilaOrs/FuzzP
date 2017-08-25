@@ -75,30 +75,36 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
         for (int index = 0; index < newRelation.length; index++) {
           Integer withWhoId = newIndexToId.get(index);
           if (withWhoId == id) {
-            newRelation[index] = 0;
-            newRelationSum += 0;
+            newRelation[index] = 1;
+            newRelationSum += 1;
           } else {
             float[] otherOldRelation = relationWithOld.get(withWhoId);
-            float s = 0.0f;
+            float common = 0.0f;
+            float notCommon = 0.0f;
             for(int ii = 0; ii < oldRelation.length; ii++){
-              float m = oldRelation[ii] * otherOldRelation[ii];
-              s += m;
+              float m = 0.0f;
+              m = (oldRelation[ii] * otherOldRelation[ii]);
+              common += m;
+              notCommon += oldRelation[ii] + otherOldRelation[ii] - m;
             }
+            float all = common / (common + notCommon);
 
-            newRelation[index] = s;
-            newRelationSum += s;
+            newRelation[index] = all;
+            newRelationSum += all;
+
           }
 
         }
-        for (int i = 0; i < newRelation.length; i++) {
-          newRelation[i] = newRelation[i] / newRelationSum;
-        }
+        /*
+         * for (int i = 0; i < newRelation.length; i++) { newRelation[i] =
+         * newRelation[i] / newRelationSum; }
+         */
         currentThDistance.put(id, newRelation);
       }
     }
   }
 
-  private static final NumberFormat formatter = new DecimalFormat("#0.00");
+  private static final NumberFormat formatter = new DecimalFormat("#0.000");
 
   void sysoStats() {
     double min = 100.0;
@@ -128,9 +134,13 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
       float[] f = currentThDistance.get(newIndexToId.get(index));
 
       for (int i = 0; i < f.length; i++) {
-        bld.append(formatter.format(f[i])).append(" ");
+        if (f[i] == 0.0f) {
+          bld.append("_____ ");
+        } else {
+          bld.append(formatter.format(f[i])).append(" ");
+        }
       }
-      bld.append("\n");
+      bld.append("<<").append(newIndexToId.get(index)).append("\n");
     }
     return bld.toString();
   }
@@ -146,7 +156,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
       float[] originalRel = currentThDistance.get(mut[0]);
       float[] newRel = new float[originalRel.length];
       for (int i = 0; i < originalRel.length; i++) {
-        newRel[i] = 0.75f * originalRel[i];
+        newRel[i] = 0.9f * originalRel[i];
       }
       relationWithOld.put(mut[1], newRel);
     }
@@ -182,18 +192,21 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
 
   @Override
   public void survive(List<int[]> idsToSurvive) {
+    idsToSurvive.forEach(arr -> System.out.println("s " + arr[0] + " " + " " + arr[1]));
     survive.addAll(idsToSurvive);
     wraped.survive(idsToSurvive);
   }
 
   @Override
   public void mutate(int whichMutator, List<int[]> idsToMutate) {
+    idsToMutate.forEach(arr -> System.out.println("m " + arr[0] + " " + " " + arr[1]));
     mutate.addAll(idsToMutate);
     wraped.mutate(whichMutator, idsToMutate);
   }
 
   @Override
   public void crossover(int whichbreeder, List<int[]> idsToCross) {
+    idsToCross.forEach(arr -> System.out.println("c " + arr[0] + " " + " " + arr[1] + " " + arr[2] + " " + arr[3]));
     crossOver.addAll(idsToCross);
     wraped.crossover(whichbreeder, idsToCross);
   }
