@@ -3,6 +3,7 @@ package AlgoImpl.pools;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -17,8 +18,7 @@ import structure.operators.ICreatureGenerator;
 import structure.operators.ICreatureMutator;
 
 public class CreatureParallelPool<TCreatue extends IGPGreature>
-		implements
-			ICreaturePool<TCreatue> {
+    implements ICreaturePool<TCreatue> {
 
 	public static final int THREAD_NR = 4;
 
@@ -301,12 +301,35 @@ public class CreatureParallelPool<TCreatue extends IGPGreature>
 		}
 	}
 
+
   @Override
-  public GPIndividSize getAvarageSizeOfCurrentPool() {
-    GPIndividSize s = new GPIndividSize();
+  public ICreaturePool.GenerationSizeStats getSizeStats() {
+    GPIndividSize sum = new GPIndividSize();
+    GPIndividSize min = new GPIndividSize(2000, 2000, 2000);
+    GPIndividSize max = new GPIndividSize();
+    Map<Integer, Integer> hist = new HashMap<>();
+
     for (TCreatue cr : oldPool.values()) {
-      s.add(cr.getSizes());
+      GPIndividSize curentSize = cr.getSizes();
+      sum.add(curentSize);
+      min.depth = (min.depth > curentSize.depth) ? curentSize.depth : min.depth;
+      min.leafs = (min.leafs > curentSize.leafs) ? curentSize.leafs : min.leafs;
+      min.ops = (min.ops > curentSize.ops) ? curentSize.ops : min.ops;
+
+      max.depth = (max.depth < curentSize.depth) ? curentSize.depth : max.depth;
+      max.leafs = (max.leafs < curentSize.leafs) ? curentSize.leafs : max.leafs;
+      max.ops = (max.ops < curentSize.ops) ? curentSize.ops : max.ops;
+      Integer size = curentSize.leafs + curentSize.ops;
+      Integer key = ((size / 10) * 10) + 5;
+      if (hist.containsKey(key)) {
+        hist.put(key, hist.get(key) + 1);
+      } else {
+        hist.put(key, 1);
+      }
+
     }
-    return new GPIndividSize(s.ops / oldPool.size(), s.leafs / oldPool.size(), s.depth / oldPool.size());
+    GPIndividSize avg = new GPIndividSize(sum.ops / oldPool.size(), sum.leafs / oldPool.size(),
+        sum.depth / oldPool.size());
+    return new GenerationSizeStats(min, max, avg, hist);
   }
 }

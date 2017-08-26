@@ -1,13 +1,23 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-sourceSets.main.java.srcDirs = ['src' ]
+//sourceSets.main.java.srcDirs = ['src', 'test' ]
+sourceSets {
+  test {
+    java.srcDirs= ['src', 'test' ]
+  }
+  main {
+   java.srcDirs= ['src']
+  }
+}
 
 repositories {
     mavenCentral()
 }
 dependencies {
    compile 'com.google.code.gson:gson:2.2.4'
+   testCompile 'junit:junit:4.12'
 }
+
 
 mainClassName = "main.Main"

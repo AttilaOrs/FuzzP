@@ -1,3 +1,7 @@
 
 include ':FuzzPCore'
 project(':FuzzPCore').projectDir = new File(settingsDir, '../FuzzPCore')
+include ':FuzzPVizual'
+project(':FuzzPVizual').projectDir = new File(settingsDir, '../FuzzPVizual')
+include ':FuzzPExt'
+project(':FuzzPExt').projectDir = new File(settingsDir, '../FuzzPExt')

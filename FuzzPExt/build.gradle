@@ -1,8 +1,18 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-sourceSets.main.java.srcDirs = ['src', 'gen']
-sourceSets.main.resources { srcDirs = ["src"]; exclude "**/*.java" }
+//sourceSets.main.java.srcDirs = ['src', 'gen']
+//sourceSets.main.resources { srcDirs = ["src"]; exclude "**/*.java" }
+sourceSets {
+  test {
+    java.srcDirs= ['src', 'gen','test' ]
+    resources { srcDirs = ["src"]; exclude "**/*.java" }
+  }
+  main {
+   java.srcDirs= ['src', 'gen']
+   resources { srcDirs = ["src"]; exclude "**/*.java" }
+  }
+}
 
 repositories {
     mavenCentral()
@@ -10,6 +20,7 @@ repositories {
 dependencies {
    compile project(':FuzzPCore') 
    compile group: 'org.antlr', name: 'antlr4', version: '4.5.3'
+   testCompile 'junit:junit:4.12'
 }
 
 mainClassName = "FuzzyPLang.FuzzpyPLangMain.FuzzyPLang"

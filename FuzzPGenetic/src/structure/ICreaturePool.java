@@ -32,6 +32,20 @@ public interface ICreaturePool<TCreature extends IGPGreature> {
 
   void terminatePool();
 
-  public GPIndividSize getAvarageSizeOfCurrentPool();
+  public GenerationSizeStats getSizeStats();
+
+  public static class GenerationSizeStats {
+
+    public final GPIndividSize min, max, avg;
+    public final Map<Integer, Integer> sizeHist;
+
+    public GenerationSizeStats(GPIndividSize min, GPIndividSize max, GPIndividSize avg,
+        Map<Integer, Integer> sizeHist) {
+      this.min = min;
+      this.max = max;
+      this.avg = avg;
+      this.sizeHist = sizeHist;
+    }
+  }
 
 }

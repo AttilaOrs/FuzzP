@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import AlgoImpl.IterationLogger;
-import structure.GPIndividSize;
 import structure.ICreatureFitnes;
 import structure.ICreaturePool;
 import structure.IFitnesTransformer;
@@ -259,8 +258,8 @@ public class PoolDecoratorForOperatorHistory<TCreatue extends IGPGreature> imple
   }
 
   @Override
-  public GPIndividSize getAvarageSizeOfCurrentPool() {
-    return realPool.getAvarageSizeOfCurrentPool();
+  public GenerationSizeStats getSizeStats() {
+    return realPool.getSizeStats();
   }
 
 }
