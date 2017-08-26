@@ -8,6 +8,7 @@ import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.SelectOnlyOneWrapper;
 import AlgoImpl.Selectors.TournamentSelection;
 import AlgoImpl.pools.CreatureParallelPool;
+import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
@@ -17,7 +18,6 @@ import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
 import commonUtil.PlotUtils;
 import structure.ICreatureFitnes;
-import structure.ICreaturePool;
 import structure.IOperatorFactory;
 import structure.operators.ICreatureBreeder;
 import structure.operators.ICreatureGenerator;
@@ -38,12 +38,14 @@ public class Main {
 
     ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
     fitnesses.add(() -> new AntFitnes());
+    SelectOnlyOneWrapper selector = new SelectOnlyOneWrapper(new TournamentSelection());
 
-    ICreaturePool<UnifiedGpIndi> pool = new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses);
+    PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
+        new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), selector);
 
-    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, new SelectOnlyOneWrapper(new TournamentSelection()));
-    SimpleGA.iteration = 100;
-    SimpleGA.population = 200;
+    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, pool);
+    SimpleGA.iteration = 50;
+    SimpleGA.population = 500;
     algo.theAlgo();
 
     IterationLogger logger = algo.getLogger();
