@@ -55,6 +55,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     Map<Integer, Double[]> i = wraped.calculateFitness();
     calcMatrix();
     // System.out.println(createMatrixStr());
+    // sysoStats();
     return i;
   }
 

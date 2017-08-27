@@ -30,6 +30,9 @@ public class AntFitnes extends AbstactFitness {
 
   @Override
   public double evaluate(UnifiedGpIndi creature) {
+    if (creature.getSizes().size() > 200) {
+      return 0.000000001;
+    }
     PetriConversationResult rez = super.convert(creature);
     FiredTranitionRecorder<UnifiedToken> rec = new FiredTranitionRecorder<>();
     rez.addActionIfPossible(0, d -> moove = 0);

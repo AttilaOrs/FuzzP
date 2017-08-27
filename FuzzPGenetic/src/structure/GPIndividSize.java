@@ -12,6 +12,10 @@ public class GPIndividSize {
 		depth = 0;
 	}
 
+  public int size() {
+    return ops + leafs;
+  }
+
 	public GPIndividSize(int ops, int leafs, int depth) {
 		this.ops = ops;
 		this.leafs = leafs;
