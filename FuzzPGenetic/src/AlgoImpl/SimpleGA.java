@@ -144,6 +144,8 @@ public class SimpleGA<TCreature extends IGPGreature> {
     logger.addLogToTopic(IterationLogger.TREE_LEAFS_MAX, sizeStats.max.leafs / 1.0);
     logger.addLogToTopic(IterationLogger.TREE_OPS_MAX, sizeStats.max.ops / 1.0);
 
+    logger.addLogToTopic(IterationLogger.TREE_SIZE_AVG, sizeStats.avg.size() / 1.0);
+
     logger.addLogToTopic(IterationLogger.TIME, l / 1.0);
 		logger.iterFinished(iter);
     if (iter % SIZE_HIST_LOG == 0) {

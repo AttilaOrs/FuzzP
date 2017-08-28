@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import AlgoImpl.IterationLogger;
 import structure.ICreatureFitnes;
 import structure.ICreaturePool;
 import structure.IGPGreature;
@@ -39,6 +40,8 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
 
   private ISelector originalSelector;
 
+  private IterationLogger log;
+
   public PoolWrapperForTheorteticalDistance(ICreaturePool<T> wraped, ISelector originalSelector) {
     this.wraped = wraped;
     firstIter = true;
@@ -47,6 +50,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     generate = new ArrayList<>();
     survive = new ArrayList<>();
     this.originalSelector = originalSelector;
+    log = new IterationLogger();
 
   }
 
@@ -56,7 +60,12 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     calcMatrix();
     // System.out.println(createMatrixStr());
     // sysoStats();
+    logStats();
     return i;
+  }
+
+  public IterationLogger getLogger() {
+    return log;
   }
 
   private void calcMatrix() {
@@ -108,7 +117,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
 
   private static final NumberFormat formatter = new DecimalFormat("#0.000");
 
-  void sysoStats() {
+  void logStats() {
     double min = 100.0;
     double max = 0.0;
     double sum = 0.0;
@@ -126,7 +135,9 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
       }
 
     }
-    System.out.println(min + " " + max + " " + sum / currentThDistance.size());
+    log.addLogToTopic("min avg dist", min);
+    log.addLogToTopic("max avg dist", max);
+    log.addLogToTopic("sum avg dist", sum / currentThDistance.size());
 
   }
 

@@ -16,6 +16,7 @@ import core.common.recoder.FiredTranitionRecorder;
 import core.common.tokencache.TokenCacheDisabling;
 
 public class AntFitnes extends AbstactFitness {
+  public static final int SIZE_LIMIT = 350;
   int MAX_MOOVES = 600;
 
   public AntFitnes() {
@@ -30,7 +31,7 @@ public class AntFitnes extends AbstactFitness {
 
   @Override
   public double evaluate(UnifiedGpIndi creature) {
-    if (creature.getSizes().size() > 200) {
+    if (creature.getSizes().size() > SIZE_LIMIT) {
       return 0.000000001;
     }
     PetriConversationResult rez = super.convert(creature);

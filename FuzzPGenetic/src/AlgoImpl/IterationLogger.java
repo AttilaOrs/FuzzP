@@ -31,6 +31,8 @@ public class IterationLogger {
   public static String TREE_OPS_MIN = "min tree ops";
   public static String TREE_LEAFS_MIN = "min tree leafs";
 
+
+  public static String TREE_SIZE_AVG = "avg tree size";
   public static String TIME = "time: nanosec/solution";
 
   HashMap<String, ArrayList<Double>> logs;
