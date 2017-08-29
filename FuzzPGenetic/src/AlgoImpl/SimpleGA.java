@@ -24,13 +24,13 @@ public class SimpleGA<TCreature extends IGPGreature> {
 	public static int population = 1000;
 	public static int iteration = 100;
 
-  public static int ELIT = 1;
-  public static int SELECTION = 17;
-  public static int NEW = 5;
-  public static int MUTATION = 17;
+  public static int ELIT = 2;
+  public static int SELECTION = 19;
+  public static int NEW = 0;
+  public static int MUTATION = 19;
   public static int CROSSOVER = 60; // sum has to be 100
 
-  public static boolean REMOVE_ELITE_FROM_POP = true;
+  public static boolean REMOVE_ELITE_FROM_POP = false;
 
 	protected Map<Integer, Double[]> res;
 	protected Integer maxId;

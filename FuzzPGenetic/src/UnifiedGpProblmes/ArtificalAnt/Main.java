@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import AlgoImpl.IterationLogger;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
-import AlgoImpl.Selectors.SelectOnlyOneWrapper;
 import AlgoImpl.pools.CreaturePoolWithStreams;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
@@ -35,7 +34,7 @@ public class Main {
   private static final String DEPTH = "tree_depth.svg";
 
   public static void main(String[] args) {
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 20; i++) {
       doStuff("ant" + i + "/", i);
     }
   }
@@ -58,18 +57,8 @@ public class Main {
     ISelector survSelector = new LinearRankSelection();
 
     String selectorStr = "";
-    if (runNr % 3 == 0) {
-      selectorStr = "Both LinerRankSelector";
-      SimpleGA.REMOVE_ELITE_FROM_POP = false;
-    } else if (runNr % 3 == 1) {
-      SimpleGA.REMOVE_ELITE_FROM_POP = true;
-      survSelector = new SelectOnlyOneWrapper(new LinearRankSelection());
-      selectorStr = "Surv selected only once";
-    } else {
-      selectorStr = "Evrything selected only once";
-      survSelector = new SelectOnlyOneWrapper(new LinearRankSelection());
-      otherSelector = new SelectOnlyOneWrapper(new LinearRankSelection());
-    }
+    selectorStr = "Both LinerRankSelector";
+    SimpleGA.REMOVE_ELITE_FROM_POP = false;
     
     
 
@@ -79,19 +68,6 @@ public class Main {
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, (runNr % 2 == 0) ? pool : otherSelector, survSelector);
     SimpleGA.iteration = 100;
     SimpleGA.population = 1000;
-    if (runNr % 4 >= 2) {
-      SimpleGA.ELIT = 1;
-      SimpleGA.SELECTION = 17;
-      SimpleGA.NEW = 5;
-      SimpleGA.MUTATION = 17;
-      SimpleGA.CROSSOVER = 60; // sum has to be 100
-    } else {
-      SimpleGA.ELIT = 2;
-      SimpleGA.SELECTION = 19;
-      SimpleGA.NEW = 0;
-      SimpleGA.MUTATION = 19;
-      SimpleGA.CROSSOVER = 60; // sum has to be 100
-    }
     algo.theAlgo();
 
 

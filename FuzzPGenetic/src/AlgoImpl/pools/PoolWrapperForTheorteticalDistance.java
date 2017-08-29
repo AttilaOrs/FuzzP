@@ -1,8 +1,5 @@
 package AlgoImpl.pools;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.pow;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -42,6 +39,10 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
 
   private IterationLogger log;
 
+  private double oldMax;
+
+  private int discoveryCounter;
+
   public PoolWrapperForTheorteticalDistance(ICreaturePool<T> wraped, ISelector originalSelector) {
     this.wraped = wraped;
     firstIter = true;
@@ -51,12 +52,20 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     survive = new ArrayList<>();
     this.originalSelector = originalSelector;
     log = new IterationLogger();
+    oldMax = 0.0;
+    discoveryCounter = 0;
 
   }
 
   @Override
   public Map<Integer, Double[]> calculateFitness() {
     Map<Integer, Double[]> i = wraped.calculateFitness();
+    double newMax = i.values().stream().mapToDouble(arr -> arr[0]).summaryStatistics().getMax();
+    if (newMax - oldMax > 0.00000000000000001) {
+      discoveryCounter = 5;
+    }
+    oldMax = newMax;
+
     calcMatrix();
     // System.out.println(createMatrixStr());
     logStats();
@@ -294,6 +303,12 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
 
   @Override
   public List<int[]> selectPairs(Map<Integer, Double[]> res, int basedOn, int howMany, int arraySize) {
+    if (discoveryCounter <= 0) {
+      System.out.println("normal selection");
+      return originalSelector.selectPairs(res, basedOn, howMany, arraySize);
+    }
+    System.out.println("tricky selection");
+    discoveryCounter--;
     // System.out.println("original");
     // printFirness(res);
     List<int[]> selectedForMating = originalSelector.selectOne(res, basedOn, howMany, arraySize);
@@ -326,7 +341,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
   }
 
   private Double func(float f) {
-    return 1.0 / (pow(100.0, abs(0.1 - f)));
+    return (double) (1.0f - f);
   }
 
 }
