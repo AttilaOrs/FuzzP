@@ -59,7 +59,6 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     Map<Integer, Double[]> i = wraped.calculateFitness();
     calcMatrix();
     // System.out.println(createMatrixStr());
-    // sysoStats();
     logStats();
     return i;
   }
@@ -72,6 +71,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     if (firstIter) {
       initializeFileds();
       firstIter = false;
+      generate.clear();
     } else {
       Map<Integer, float[]> relationWithOld = calcRelationWithOldGen();
       newIndexToId = new HashMap<>();
@@ -101,7 +101,10 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
               common += m;
               notCommon += oldRelation[ii] + otherOldRelation[ii] - 2 * m;
             }
-            float all = common / (common + notCommon);
+            float all = 0.0f;
+            if (common != 0.0f) {
+              all = common / (common + notCommon);
+            }
 
             newRelation[index] = all;
           }
@@ -138,6 +141,8 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     log.addLogToTopic("min avg dist", min);
     log.addLogToTopic("max avg dist", max);
     log.addLogToTopic("sum avg dist", sum / currentThDistance.size());
+    // System.out.println(" " + min + " " + max + " " + sum /
+    // currentThDistance.size());
 
   }
 
@@ -196,6 +201,11 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
       }
     }
     crossOver.clear();
+    for (Integer generated : generate) {
+      float[] nothin = new float[currentThDistance.size()];
+      relationWithOld.put(generated, nothin);
+    }
+    generate.clear();
     return relationWithOld;
   }
 
@@ -238,7 +248,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
 
   @Override
   public void generate(int whichGenerator, int firstId, int howMany) {
-    generate.addAll(IntStream.range(firstId, howMany).mapToObj(i -> i).collect(Collectors.toList()));
+    generate.addAll(IntStream.range(firstId, firstId + howMany).mapToObj(i -> i).collect(Collectors.toList()));
     wraped.generate(whichGenerator, firstId, howMany);
   }
 

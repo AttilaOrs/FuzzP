@@ -23,10 +23,14 @@ public class SimpleGA<TCreature extends IGPGreature> {
 
 	public static int population = 1000;
 	public static int iteration = 100;
-  public static int ELIT = 2;
-  public static int SELECTION = 18;
-	public static int MUTATION = 15;
-	public static int CROSSOVER = 65; // sum has to be 100
+
+  public static int ELIT = 1;
+  public static int SELECTION = 17;
+  public static int NEW = 5;
+  public static int MUTATION = 17;
+  public static int CROSSOVER = 60; // sum has to be 100
+
+  public static boolean REMOVE_ELITE_FROM_POP = true;
 
 	protected Map<Integer, Double[]> res;
 	protected Integer maxId;
@@ -35,10 +39,16 @@ public class SimpleGA<TCreature extends IGPGreature> {
   protected Map<String, Map<Integer, Integer>> sizeHistLogs;
   private int curentIndex;
   protected int iter;
+  private ISelector survSelector;
 
-	public SimpleGA(ICreaturePool<TCreature> pool, ISelector selector) {
+  public SimpleGA(ICreaturePool<TCreature> pool, ISelector selector) {
+    this(pool, selector, selector);
+  }
+
+  public SimpleGA(ICreaturePool<TCreature> pool, ISelector selector, ISelector survselector) {
 		this.pool = pool;
 		this.selector = selector;
+    this.survSelector = selector;
 		this.maxId = null;
 		garbageCollectionLastTime = -1;
 		logger = new IterationLogger();
@@ -49,8 +59,9 @@ public class SimpleGA<TCreature extends IGPGreature> {
 		int eliteNr = population * ELIT / 100;
 		int survNr = population * SELECTION / 100;
 		int mutNr = population * MUTATION / 100;
-    int cross = (population - eliteNr - survNr - mutNr) / 2;
-    if (eliteNr + survNr + mutNr + cross != population) {
+    int newEachRound = (population * NEW) / 100;
+    int cross = (population - eliteNr - survNr - mutNr - newEachRound) / 2;
+    if (eliteNr + survNr + mutNr + (cross * 2) + newEachRound != population) {
       mutNr += 1;
     }
 
@@ -70,11 +81,13 @@ public class SimpleGA<TCreature extends IGPGreature> {
 						.collect(Collectors.toList());
 
 				pool.survive(elitsSurv);
+        Map<Integer, Double[]> survBase = res;
+        if (REMOVE_ELITE_FROM_POP) {
+          survBase = res.entrySet().stream().filter(e -> !elite.contains(e))
+              .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+        }
 
-        Map<Integer, Double[]> withoutElite = res.entrySet().stream().filter(e -> !elite.contains(e))
-            .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
-
-        List<int[]> toSurv = selector.selectOne(withoutElite, 0,
+        List<int[]> toSurv = survSelector.selectOne(survBase, 0,
             survNr, 2);
         for (int i = 0; i < toSurv.size(); i++) {
           toSurv.get(i)[1] = nextIndex();
@@ -96,6 +109,7 @@ public class SimpleGA<TCreature extends IGPGreature> {
 				}
 
 				pool.crossover(0, toCross);
+        pool.generate(0, nextIndex(), newEachRound);
 
 			}
 			res = pool.calculateFitness();

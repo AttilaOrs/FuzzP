@@ -6,7 +6,7 @@ import AlgoImpl.IterationLogger;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
 import AlgoImpl.Selectors.SelectOnlyOneWrapper;
-import AlgoImpl.pools.CreatureParallelPool;
+import AlgoImpl.pools.CreaturePoolWithStreams;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
@@ -18,6 +18,7 @@ import UnifiedGp.Tree.Visitors.TreeBuilder;
 import commonUtil.PlotUtils;
 import structure.ICreatureFitnes;
 import structure.IOperatorFactory;
+import structure.ISelector;
 import structure.operators.ICreatureBreeder;
 import structure.operators.ICreatureGenerator;
 import structure.operators.ICreatureMutator;
@@ -34,7 +35,7 @@ public class Main {
   private static final String DEPTH = "tree_depth.svg";
 
   public static void main(String[] args) {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 1000; i++) {
       doStuff("ant" + i + "/", i);
     }
   }
@@ -53,14 +54,44 @@ public class Main {
 
     ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
     fitnesses.add(() -> new AntFitnes());
-    SelectOnlyOneWrapper selector = new SelectOnlyOneWrapper(new LinearRankSelection());
+    ISelector otherSelector = new LinearRankSelection();
+    ISelector survSelector = new LinearRankSelection();
+
+    String selectorStr = "";
+    if (runNr % 3 == 0) {
+      selectorStr = "Both LinerRankSelector";
+      SimpleGA.REMOVE_ELITE_FROM_POP = false;
+    } else if (runNr % 3 == 1) {
+      SimpleGA.REMOVE_ELITE_FROM_POP = true;
+      survSelector = new SelectOnlyOneWrapper(new LinearRankSelection());
+      selectorStr = "Surv selected only once";
+    } else {
+      selectorStr = "Evrything selected only once";
+      survSelector = new SelectOnlyOneWrapper(new LinearRankSelection());
+      otherSelector = new SelectOnlyOneWrapper(new LinearRankSelection());
+    }
+    
+    
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
-        new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), selector);
+        new CreaturePoolWithStreams<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector);
 
-    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, (runNr % 2 == 0) ? pool : selector);
-    SimpleGA.iteration = 50;
-    SimpleGA.population = 100;
+    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, (runNr % 2 == 0) ? pool : otherSelector, survSelector);
+    SimpleGA.iteration = 100;
+    SimpleGA.population = 1000;
+    if (runNr % 4 >= 2) {
+      SimpleGA.ELIT = 1;
+      SimpleGA.SELECTION = 17;
+      SimpleGA.NEW = 5;
+      SimpleGA.MUTATION = 17;
+      SimpleGA.CROSSOVER = 60; // sum has to be 100
+    } else {
+      SimpleGA.ELIT = 2;
+      SimpleGA.SELECTION = 19;
+      SimpleGA.NEW = 0;
+      SimpleGA.MUTATION = 19;
+      SimpleGA.CROSSOVER = 60; // sum has to be 100
+    }
     algo.theAlgo();
 
 
@@ -72,7 +103,10 @@ public class Main {
     config += "iteration " + SimpleGA.iteration + "\n";
     config += "size limit " + AntFitnes.SIZE_LIMIT + "\n";
     config += "family " + (runNr % 2 == 0) + "\n";
+    config += "ops " + SimpleGA.CROSSOVER + " " + SimpleGA.ELIT + " " + SimpleGA.MUTATION + " " + SimpleGA.SELECTION
+        + " " + SimpleGA.NEW + "\n";
     config += "result fitnes " + rezFitnes + "\n";
+    config += selectorStr;
 
     PlotUtils.writeToFile(path + CONFIG_REZ, config);
 
@@ -89,7 +123,7 @@ public class Main {
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"), path + TIME);
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"), path + FITNESS);
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("size"), path + SIZE);
-    PlotUtils.hist(algo.getSizeHistLog(), SIZE_HIST + runNr + ".svg");
+    PlotUtils.hist(algo.getSizeHistLog(), path + SIZE_HIST);
     PlotUtils.plot(pool.getLogger().getLogsForPlottingContatinigStrings(" "), path + DIVERSITY);
 
   }
