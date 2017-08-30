@@ -19,5 +19,9 @@ public class BlockLeaf implements ILeaf<NodeType> {
     return new BlockLeaf();
   }
   
+  @Override
+  public String toString() {
+    return NodeType.Block.symbol;
+  }
 
 }

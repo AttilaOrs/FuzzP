@@ -23,4 +23,9 @@ public class MemoryLeaf implements ILeaf<NodeType> {
   public ILeaf<NodeType> myClone() {
     return new MemoryLeaf(memNr);
   }
+
+  @Override
+  public String toString() {
+    return NodeType.Memory.symbol + ":" + memNr;
+  }
 }

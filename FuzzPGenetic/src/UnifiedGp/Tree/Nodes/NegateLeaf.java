@@ -19,4 +19,9 @@ public class NegateLeaf implements ILeaf<NodeType> {
     return new NegateLeaf();
   }
 
+  @Override
+  public String toString() {
+    return NodeType.Negate.symbol;
+  }
+
 }
