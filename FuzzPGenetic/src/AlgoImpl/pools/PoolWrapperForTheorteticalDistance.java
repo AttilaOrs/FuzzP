@@ -3,10 +3,11 @@ package AlgoImpl.pools;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -128,28 +129,53 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
   }
 
   private static final NumberFormat formatter = new DecimalFormat("#0.000");
+  static final Map<String, Predicate<Float>> categoryMap = new HashMap<>();
+  static {
+    categoryMap.put("<0.001", f -> f < 0.001f);
+    categoryMap.put("[0.001,0.005)", f -> f >= 0.001f && f < 0.005);
+    categoryMap.put("[0.005,0.01)", f -> f >= 0.05 && f < 0.01);
+    categoryMap.put("[0.01,0.015)", f -> f >= 0.01 && f < 0.015);
+    categoryMap.put("[0.015,0.02)", f -> f >= 0.015 && f < 0.020);
+    categoryMap.put("[0.02,0.025]", f -> f >= 0.02 && f <= 0.025);
+    categoryMap.put("0.25<", f -> f > 0.025);
+  }
 
   void logStats() {
     double min = 100.0;
     double max = 0.0;
     double sum = 0.0;
+    Map<String, Integer> categoryCount = new HashMap<>();
+    categoryMap.keySet().forEach(st -> categoryCount.put(st, 0));
 
     for (Integer id : currentThDistance.keySet()) {
       float[] rand = currentThDistance.get(id);
-      DoubleSummaryStatistics stats = IntStream.range(0, rand.length).mapToDouble(i -> rand[i]).summaryStatistics();
-      double d = stats.getAverage();
-      sum += d;
-      if (min > d) {
-        min = d;
+      float curentAvg = 0.0f;
+      for (float f : rand) {
+        curentAvg += f;
+        if (f != 1.0f) {
+          for (String categoryName : categoryMap.keySet()) {
+            if (categoryMap.get(categoryName).test(f)) {
+              categoryCount.put(categoryName, categoryCount.get(categoryName) + 1);
+            }
+          }
+        }
       }
-      if (max < d) {
-        max = d;
+      curentAvg /= rand.length;
+      sum += curentAvg;
+      if (min > curentAvg) {
+        min = curentAvg;
+      }
+      if (max < curentAvg) {
+        max = curentAvg;
       }
 
     }
     log.addLogToTopic("min avg dist", min);
     log.addLogToTopic("max avg dist", max);
     log.addLogToTopic("sum avg dist", sum / currentThDistance.size());
+    for (Entry<String, Integer> catCount : categoryCount.entrySet()) {
+      log.addLogToTopic("cat" + catCount.getKey(), catCount.getValue().doubleValue());
+    }
     // System.out.println(" " + min + " " + max + " " + sum /
     // currentThDistance.size());
 

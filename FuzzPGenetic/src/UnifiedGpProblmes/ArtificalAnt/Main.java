@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import AlgoImpl.IterationLogger;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
-import AlgoImpl.pools.CreaturePoolWithStreams;
+import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
@@ -26,6 +26,7 @@ public class Main {
   private static final String CONFIG_REZ = "ConfRez.txt";
   private static final String DIVERSITY = "diversity.svg";
   private static final String SIZE_HIST = "sizeHistLog.svg";
+  private static final String SIMILARTY_CAT = "similarityCategories.svg";
   private static final String SIZE = "tree_size.svg";
   private static final String FITNESS = "fitness.svg";
   private static final String TIME = "time_per_sol.svg";
@@ -63,11 +64,11 @@ public class Main {
     
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
-        new CreaturePoolWithStreams<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector);
+        new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector);
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, (runNr % 2 == 0) ? pool : otherSelector, survSelector);
-    SimpleGA.iteration = 100;
-    SimpleGA.population = 1000;
+    SimpleGA.iteration = 50;
+    SimpleGA.population = 500;
     algo.theAlgo();
 
 
@@ -98,9 +99,11 @@ public class Main {
         path + LEAFS);
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"), path + TIME);
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"), path + FITNESS);
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("size"), path + SIZE);
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree size"), path + SIZE);
     PlotUtils.hist(algo.getSizeHistLog(), path + SIZE_HIST);
-    PlotUtils.plot(pool.getLogger().getLogsForPlottingContatinigStrings(" "), path + DIVERSITY);
+    IterationLogger poolLogger = pool.getLogger();
+    PlotUtils.plot(poolLogger.getLogsForPlottingContatinigStrings("dist"), path + DIVERSITY);
+    PlotUtils.plot(poolLogger.getLogsForPlottingContatinigStrings("cat"), path + DIVERSITY);
 
   }
 
