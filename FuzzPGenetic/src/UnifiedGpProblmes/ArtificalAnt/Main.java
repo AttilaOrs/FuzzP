@@ -64,9 +64,9 @@ public class Main {
     
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
-        new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector);
+        new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, runNr % 2);
 
-    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, (runNr % 2 == 0) ? pool : otherSelector, survSelector);
+    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, pool, survSelector);
     SimpleGA.iteration = 100;
     SimpleGA.population = 1000;
     algo.theAlgo();
@@ -79,7 +79,7 @@ public class Main {
     String config = "population " + SimpleGA.population + "\n";
     config += "iteration " + SimpleGA.iteration + "\n";
     config += "size limit " + AntFitnes.SIZE_LIMIT + "\n";
-    config += "family " + (runNr % 2 == 0) + "\n";
+    config += "family combo " + runNr % 2 + "\n";
     config += "ops " + SimpleGA.CROSSOVER + " " + SimpleGA.ELIT + " " + SimpleGA.MUTATION + " " + SimpleGA.SELECTION
         + " " + SimpleGA.NEW + "\n";
     config += "result fitnes " + rezFitnes + "\n";

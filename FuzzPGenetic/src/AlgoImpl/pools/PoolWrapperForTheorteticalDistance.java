@@ -44,7 +44,9 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
 
   private int discoveryCounter;
 
-  public PoolWrapperForTheorteticalDistance(ICreaturePool<T> wraped, ISelector originalSelector) {
+  private int combo;
+
+  public PoolWrapperForTheorteticalDistance(ICreaturePool<T> wraped, ISelector originalSelector, int combo) {
     this.wraped = wraped;
     firstIter = true;
     crossOver = new ArrayList<>();
@@ -55,6 +57,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     log = new IterationLogger();
     oldMax = 0.0;
     discoveryCounter = 0;
+    this.combo = combo;
 
   }
 
@@ -329,12 +332,6 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
 
   @Override
   public List<int[]> selectPairs(Map<Integer, Double[]> res, int basedOn, int howMany, int arraySize) {
-    if (discoveryCounter > 0) {
-      discoveryCounter--;
-      System.out.println("normal selection");
-      return originalSelector.selectPairs(res, basedOn, howMany, arraySize);
-    }
-    System.out.println("tricky selection");
     // System.out.println("original");
     // printFirness(res);
     List<int[]> selectedForMating = originalSelector.selectOne(res, basedOn, howMany, arraySize);
@@ -345,6 +342,9 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
       Map<Integer, Double[]> newFitnes = new HashMap<>();
       for (Integer i : res.keySet()) {
         double currentNewFitnes = res.get(i)[basedOn] * func(dist[newIdToIndex.get(i)]);
+        if (combo == 1) {
+          currentNewFitnes += res.get(i)[basedOn];
+        }
         newFitnes.put(i, new Double[] { currentNewFitnes });
       }
       // printFirness(newFitnes);
