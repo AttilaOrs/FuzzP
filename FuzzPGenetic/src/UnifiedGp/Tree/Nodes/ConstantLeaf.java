@@ -51,6 +51,10 @@ public class ConstantLeaf implements ILeaf<NodeType> {
     return new ConstantLeaf(consValue);
   }
   
+  @Override
+  public String toString() {
+    return NodeType.Const.symbol + ":" + consValue;
+  }
 
 
 }

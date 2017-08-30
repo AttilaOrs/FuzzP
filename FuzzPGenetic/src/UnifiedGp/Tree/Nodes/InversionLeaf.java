@@ -14,4 +14,9 @@ public class InversionLeaf implements ILeaf<NodeType> {
     return new InversionLeaf();
   }
 
+  @Override
+  public String toString() {
+    return NodeType.Inv.symbol;
+  }
+
 }

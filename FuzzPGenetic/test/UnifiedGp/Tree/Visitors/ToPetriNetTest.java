@@ -306,6 +306,26 @@ public class ToPetriNetTest {
     assertEquals((Double) 0.25, memoryNet_behavoirTest);
   }
   
+  Double behave_memory_two = Double.NEGATIVE_INFINITY;
+
+  @Test
+  public void memoryNet_noInput_behavoirTest() {
+    PetriConversationResult rez = toNet.toNet(memoryNet());
+    rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
+    rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(0), t -> behave_memory_two = t.getValue());
+
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
+
+    Map<Integer, UnifiedToken> inp = new HashMap<>();
+    exec.runTick(inp);
+    assertEquals((Double) Double.NEGATIVE_INFINITY, behave_memory_two);
+
+    inp.put(rez.inpNrToInpPlace.get(0), new UnifiedToken(0.5));
+    exec.runTick(inp);
+    assertEquals((Double) 0.0, behave_memory_two);
+
+  }
+
   private IInnerNode<NodeType> constantNet() {
     ConstantLeaf constantLeaf  = new ConstantLeaf(0.13);
     OutputLeaf o = new OutputLeaf(0,OutType.Copy);

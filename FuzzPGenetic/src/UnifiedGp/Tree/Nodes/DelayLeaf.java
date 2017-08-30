@@ -23,4 +23,9 @@ public class DelayLeaf implements ILeaf<NodeType> {
   public ILeaf<NodeType> myClone() {
     return new DelayLeaf(delay);
   }
+
+  @Override
+  public String toString() {
+    return NodeType.Delay.symbol + ":" + delay;
+  }
 }

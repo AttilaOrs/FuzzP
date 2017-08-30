@@ -108,4 +108,8 @@ public class InputLeaf implements ILeaf<NodeType> {
     return new InputLeaf(type, inpNr);
   }
 
+  @Override
+  public String toString() {
+    return NodeType.Inp.symbol + ":" + type.symbol + ":" + inpNr;
+  }
 }

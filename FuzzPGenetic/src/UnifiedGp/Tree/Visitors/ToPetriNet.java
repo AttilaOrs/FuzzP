@@ -20,6 +20,7 @@ import UnifiedGp.Tree.Nodes.ConstantLeaf;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
 import UnifiedGp.Tree.Nodes.InnerNode;
 import UnifiedGp.Tree.Nodes.InputLeaf;
+import UnifiedGp.Tree.Nodes.InputType;
 import UnifiedGp.Tree.Nodes.MemoryLeaf;
 import UnifiedGp.Tree.Nodes.NegateLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
@@ -300,8 +301,20 @@ public class ToPetriNet {
       int tr = netToMake.addTransition(0, UnifiedOneXOneTable.defaultTable());
       netToMake.addArcFromPlaceToTransition(between[0], tr);
       netToMake.addArcFromTransitionToPlace(tr, between[1]);
+      if (recordNodeTransitionMapping) {
+        nodeTransitionMapping.put(ss, tr);
+      }
     } else {
-      int lastPlace = between[0];
+      int entryTransition = netToMake.addTransition(0, UnifiedOneXTwoTable.defaultTable());
+      if (recordNodeTransitionMapping) {
+        nodeTransitionMapping.put(ss, entryTransition);
+      }
+      int controlPlace = netToMake.addPlace(scaleProvider.defaultScale());
+      int lastPlace = netToMake.addPlace(scaleProvider.defaultScale());
+      netToMake.addArcFromPlaceToTransition(between[0], entryTransition);
+      netToMake.addArcFromTransitionToPlace(entryTransition, controlPlace);
+      netToMake.addArcFromTransitionToPlace(entryTransition, lastPlace);
+
       for(int i= 0; i < mem.getMemNr();i++){
         int tr = netToMake.addTransition(1, UnifiedOneXOneTable.defaultTable());
         int newPlace = netToMake.addPlace(scaleProvider.defaultScale());
@@ -310,10 +323,10 @@ public class ToPetriNet {
         netToMake.setInitialMarkingForPlace(newPlace, new UnifiedToken(0.0));
         lastPlace = newPlace;
       }
-      int tr = netToMake.addTransition(0, UnifiedOneXOneTable.defaultTable());
-      netToMake.addArcFromPlaceToTransition(lastPlace, tr);
-      netToMake.addArcFromTransitionToPlace(tr, between[1]);
-      
+      int exitTransition = netToMake.addTransition(0, InputType.ReaderBlocking.table.myClone());
+      netToMake.addArcFromPlaceToTransition(lastPlace, exitTransition);
+      netToMake.addArcFromTransitionToPlace(exitTransition, between[1]);
+      netToMake.addArcFromPlaceToTransition(controlPlace, exitTransition);
     }
     return Boolean.TRUE;
   }
@@ -358,8 +371,11 @@ public class ToPetriNet {
     netToMake.addArcFromTransitionToPlace(exitTr, between[1]);
     netToMake.addArcFromPlaceToTransition(exitPlaceOne, exitTr);
     netToMake.addArcFromPlaceToTransition(enterPlaceTwo, exitTr);
+    Queue<int[]> placesBetweenOriginal = placesBetween;
+    placesBetween = new ArrayDeque<>();
     placesBetween.add(new int[] { enterPlaceOne, exitPlaceOne });
     this.constantVisit(new ConstantLeaf(1.0));
+    placesBetween = placesBetweenOriginal;
     return Boolean.TRUE;
   }
 

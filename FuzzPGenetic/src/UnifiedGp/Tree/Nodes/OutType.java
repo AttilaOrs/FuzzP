@@ -1,15 +1,18 @@
 package UnifiedGp.Tree.Nodes;
 
-import core.UnifiedPetriLogic.UnifiedTableParser;
+import static core.UnifiedPetriLogic.UnifiedTableParser.parseUnifiedOneXTwoTable;
+
 import core.UnifiedPetriLogic.tables.UnifiedOneXTwoTable;
 
 public enum OutType {
-  Copy(UnifiedTableParser.parseUnifiedOneXTwoTable(OutputLeaf.CopyTable));
+  Copy(parseUnifiedOneXTwoTable(OutputLeaf.CopyTable), "c");
 
   public final UnifiedOneXTwoTable table;
+  public final String symbol;
 
-  private OutType(UnifiedOneXTwoTable table) {
+  private OutType(UnifiedOneXTwoTable table, String symbol) {
     this.table = table;
+    this.symbol = symbol;
   }
 
 }

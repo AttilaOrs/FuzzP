@@ -34,8 +34,24 @@ public class AntFitnes extends AbstactFitness {
     if (creature.getSizes().size() > SIZE_LIMIT) {
       return 0.0;
     }
-    PetriConversationResult rez = super.convert(creature);
+    String originalStr = creature.getRoot().toString();
     FiredTranitionRecorder<UnifiedToken> rec = new FiredTranitionRecorder<>();
+    PetriConversationResult rez = calcFitnes(creature, rec);
+    int inital = table.getFoodEaten();
+    super.updateCreatureWithSimplification(creature, rez, rec);
+    calcFitnes(creature, new FiredTranitionRecorder<>());
+    int newMooves = table.getFoodEaten();
+    String newStr = creature.getRoot().toString();
+    if (newMooves != inital) {
+      System.err.println("we have a problem sir " + inital + " " + newMooves + "\n>" + originalStr + "\n>" + newStr);
+    }
+    return newMooves;
+
+
+  }
+
+  private PetriConversationResult calcFitnes(UnifiedGpIndi creature, FiredTranitionRecorder<UnifiedToken> rec) {
+    PetriConversationResult rez = super.convert(creature);
     rez.addActionIfPossible(0, d -> moove = 0);
     rez.addActionIfPossible(1, d -> moove = 1);
     rez.addActionIfPossible(2, d -> moove = 2);
@@ -72,9 +88,7 @@ public class AntFitnes extends AbstactFitness {
         break;
       }
     }
-    super.updateCreatureWithSimplification(creature, rez, rec);
-
-    return table.getFoodEaten();
+    return rez;
   }
 
   public static ProblemSpecification problemSpecification() {

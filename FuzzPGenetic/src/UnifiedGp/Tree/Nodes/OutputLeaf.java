@@ -31,4 +31,9 @@ public class OutputLeaf implements ILeaf<NodeType> {
   public ILeaf<NodeType> myClone() {
     return new OutputLeaf(outNr, myType);
   }
+
+  @Override
+  public String toString() {
+    return NodeType.Out.symbol + ":" + myType.symbol + ":" + outNr;
+  }
 }
