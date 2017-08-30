@@ -14,4 +14,9 @@ public class FiredTranitionRecorder<TokenType> implements IGeneralPetriBehavoiur
   public Set<Integer> getFiredTransition() {
     return fired;
   }
+
+  @Override
+  public String toString() {
+    return "FiredTransitionRecorder:" + fired.toString();
+  }
 }
