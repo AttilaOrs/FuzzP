@@ -67,8 +67,8 @@ public class Main {
         new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector);
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, (runNr % 2 == 0) ? pool : otherSelector, survSelector);
-    SimpleGA.iteration = 50;
-    SimpleGA.population = 500;
+    SimpleGA.iteration = 100;
+    SimpleGA.population = 1000;
     algo.theAlgo();
 
 
@@ -103,7 +103,7 @@ public class Main {
     PlotUtils.hist(algo.getSizeHistLog(), path + SIZE_HIST);
     IterationLogger poolLogger = pool.getLogger();
     PlotUtils.plot(poolLogger.getLogsForPlottingContatinigStrings("dist"), path + DIVERSITY);
-    PlotUtils.plot(poolLogger.getLogsForPlottingContatinigStrings("cat"), path + DIVERSITY);
+    PlotUtils.plot(poolLogger.getLogsForPlottingContatinigStrings("cat"), path + SIMILARTY_CAT);
 
   }
 

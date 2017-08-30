@@ -63,7 +63,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     Map<Integer, Double[]> i = wraped.calculateFitness();
     double newMax = i.values().stream().mapToDouble(arr -> arr[0]).summaryStatistics().getMax();
     if (newMax - oldMax > 0.00000000000000001) {
-      discoveryCounter = 5;
+      discoveryCounter = 7;
     }
     oldMax = newMax;
 
@@ -131,8 +131,8 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
   private static final NumberFormat formatter = new DecimalFormat("#0.000");
   static final Map<String, Predicate<Float>> categoryMap = new HashMap<>();
   static {
-    categoryMap.put("<0.001", f -> f < 0.001f);
-    categoryMap.put("[0.001,0.005)", f -> f >= 0.001f && f < 0.005);
+    // categoryMap.put("<0.001", f -> f < 0.001f);
+    // categoryMap.put("[0.001,0.005)", f -> f >= 0.001f && f < 0.005);
     categoryMap.put("[0.005,0.01)", f -> f >= 0.05 && f < 0.01);
     categoryMap.put("[0.01,0.015)", f -> f >= 0.01 && f < 0.015);
     categoryMap.put("[0.015,0.02)", f -> f >= 0.015 && f < 0.020);
@@ -174,7 +174,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     log.addLogToTopic("max avg dist", max);
     log.addLogToTopic("sum avg dist", sum / currentThDistance.size());
     for (Entry<String, Integer> catCount : categoryCount.entrySet()) {
-      log.addLogToTopic("cat" + catCount.getKey(), catCount.getValue().doubleValue());
+      log.addLogToTopic("cat" + catCount.getKey(), catCount.getValue().doubleValue() / 2.0);
     }
     // System.out.println(" " + min + " " + max + " " + sum /
     // currentThDistance.size());
@@ -329,12 +329,12 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
 
   @Override
   public List<int[]> selectPairs(Map<Integer, Double[]> res, int basedOn, int howMany, int arraySize) {
-    if (discoveryCounter <= 0) {
+    if (discoveryCounter > 0) {
+      discoveryCounter--;
       System.out.println("normal selection");
       return originalSelector.selectPairs(res, basedOn, howMany, arraySize);
     }
     System.out.println("tricky selection");
-    discoveryCounter--;
     // System.out.println("original");
     // printFirness(res);
     List<int[]> selectedForMating = originalSelector.selectOne(res, basedOn, howMany, arraySize);
