@@ -39,22 +39,31 @@ public class AntFitnes extends AbstactFitness {
     PetriConversationResult rez = calcFitnes(creature, rec);
     int inital = table.getFoodEaten();
     super.updateCreatureWithSimplification(creature, rez, rec);
-    calcFitnes(creature, new FiredTranitionRecorder<>());
-    int newMooves = table.getFoodEaten();
-    String newStr = creature.getRoot().toString();
-    if (newMooves != inital) {
-      System.err.println("we have a problem sir " + inital + " " + newMooves + "\n>" + originalStr + "\n>" + newStr);
-    }
-    return newMooves;
+    /*
+     * calcFitnes(creature, new FiredTranitionRecorder<>()); int newMooves =
+     * table.getFoodEaten(); String newStr = creature.getRoot().toString(); if
+     * (newMooves != inital) { System.err.println("we have a problem sir " +
+     * inital + " " + newMooves + "\n>" + originalStr + "\n>" + newStr); }
+     */
+    return inital;
 
 
   }
 
   private PetriConversationResult calcFitnes(UnifiedGpIndi creature, FiredTranitionRecorder<UnifiedToken> rec) {
     PetriConversationResult rez = super.convert(creature);
-    rez.addActionIfPossible(0, d -> moove = 0);
-    rez.addActionIfPossible(1, d -> moove = 1);
-    rez.addActionIfPossible(2, d -> moove = 2);
+    rez.addActionIfPossible(0, d -> {
+      if (moove > 0)
+      moove = 0;
+    });
+    rez.addActionIfPossible(1, d -> {
+      if (moove > 1)
+      moove = 1;
+    });
+    rez.addActionIfPossible(2, d -> {
+      if (moove > 2)
+      moove = 2;
+    });
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
         new UnifiedPetrinetCacheTableResultWrapper(rez.net,
             () -> new TokenCacheDisabling<>(5)),
@@ -68,7 +77,7 @@ public class AntFitnes extends AbstactFitness {
     for (int i = 0; i < MAX_MOOVES; i++) {
       inp.clear();
       rez.addToInpIfPossible(inp, 0, table.isFoodAhead() ? new UnifiedToken(1.0) : new UnifiedToken());
-      moove = -1;
+      moove = 10;
       exec.runTick(inp);
       switch (moove) {
       case 0:
