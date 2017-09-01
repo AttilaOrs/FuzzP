@@ -79,8 +79,8 @@ public class Main {
         new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, runNr % 3);
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, otherSelector, survSelector);
-    SimpleGA.iteration = 50;
-    SimpleGA.population = 500;
+    SimpleGA.iteration = 100;
+    SimpleGA.population = 1000;
     long start = System.currentTimeMillis();
     algo.theAlgo();
     long stop = System.currentTimeMillis();
