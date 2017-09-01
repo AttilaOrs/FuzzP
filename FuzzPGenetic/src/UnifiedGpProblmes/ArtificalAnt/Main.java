@@ -10,9 +10,11 @@ import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
+import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
 import UnifiedGp.GpIndi.UnifiedGpIndiOnePointCrossover;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifiedGpSuplier;
+import UnifiedGp.GpIndi.UnifromCrossOver;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
 import commonUtil.PlotUtils;
@@ -51,7 +53,16 @@ public class Main {
     mutators.add(() -> new UnifiedGpIndiTreeMutator(createTreeBuilder()));
 
     ArrayList<IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>>> breeders = new ArrayList<>();
-    breeders.add(() -> new UnifiedGpIndiOnePointCrossover());
+    IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>> fact = () -> {
+      if (runNr %3 ==0){
+        return new UnifiedGpIndiBreeder();
+      } else if(runNr % 3 == 1){
+        return new UnifiedGpIndiOnePointCrossover();
+      } else {
+        return new UnifromCrossOver();
+      }
+    };
+    breeders.add(fact);
 
     ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
     fitnesses.add(() -> new AntFitnes());
@@ -67,7 +78,7 @@ public class Main {
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
         new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, runNr % 3);
 
-    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, (runNr % 3 == 2) ? otherSelector : pool, survSelector);
+    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, otherSelector, survSelector);
     SimpleGA.iteration = 50;
     SimpleGA.population = 500;
     long start = System.currentTimeMillis();
@@ -82,11 +93,12 @@ public class Main {
     String config = "population " + SimpleGA.population + "\n";
     config += "iteration " + SimpleGA.iteration + "\n";
     config += "size limit " + AntFitnes.SIZE_LIMIT + "\n";
-    config += "family " + ((runNr % 3 == 2) ? "false" : "combo " + runNr % 3) + "\n";
+    config += "family false \n";
     config += "ops " + SimpleGA.CROSSOVER + " " + SimpleGA.ELIT + " " + SimpleGA.MUTATION + " " + SimpleGA.SELECTION
         + " " + SimpleGA.NEW + "\n";
-    config += "result fitnes " + rezFitnes + "\n";
     config += selectorStr + "\n";
+    config += "cross" + fact.generate().getClass().getName() + "\n";
+    config += "result fitnes " + rezFitnes + "\n";
     config += "duration: " + (stop - start) + " milliseconds " + "(" + TimeUnit.MILLISECONDS.toMinutes(stop - start)
         + " minutes)";
 

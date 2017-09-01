@@ -12,7 +12,7 @@ import structure.operators.ICreatureBreeder;
 
 public class UnifiedGpIndiBreeder implements ICreatureBreeder<UnifiedGpIndi> {
 
-  private static final boolean defaultStaticSimplification = true;
+  public static final boolean defaultStaticSimplification = true;
 
   private final RandomNodeSelector<NodeType> randomNodeSelector;
   private final CopyReplace<NodeType> copyReplace;
