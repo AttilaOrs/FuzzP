@@ -1,6 +1,7 @@
 package UnifiedGpProblmes.ArtificalAnt;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import AlgoImpl.IterationLogger;
 import AlgoImpl.SimpleGA;
@@ -69,7 +70,9 @@ public class Main {
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, (runNr % 3 == 2) ? otherSelector : pool, survSelector);
     SimpleGA.iteration = 100;
     SimpleGA.population = 1000;
+    long start = System.currentTimeMillis();
     algo.theAlgo();
+    long stop = System.currentTimeMillis();
 
 
     Integer i = algo.getMaxId();
@@ -83,7 +86,9 @@ public class Main {
     config += "ops " + SimpleGA.CROSSOVER + " " + SimpleGA.ELIT + " " + SimpleGA.MUTATION + " " + SimpleGA.SELECTION
         + " " + SimpleGA.NEW + "\n";
     config += "result fitnes " + rezFitnes + "\n";
-    config += selectorStr;
+    config += selectorStr + "\n";
+    config += "duration: " + (stop - start) + " milliseconds " + "(" + TimeUnit.MILLISECONDS.toMinutes(stop - start)
+        + " minutes)";
 
     PlotUtils.writeToFile(path + CONFIG_REZ, config);
 
