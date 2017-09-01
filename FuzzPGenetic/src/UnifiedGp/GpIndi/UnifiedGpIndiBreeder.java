@@ -45,6 +45,12 @@ public class UnifiedGpIndiBreeder implements ICreatureBreeder<UnifiedGpIndi> {
         .selectRandomNode(father.getRoot(), node -> !father.getRoot().equals(node), rnd)
         .get();
 
+    return makeChildren(mother, father, motherSelected, fatherSelected);
+
+  }
+
+  protected UnifiedGpIndi[] makeChildren(UnifiedGpIndi mother, UnifiedGpIndi father, INode<NodeType> motherSelected,
+      INode<NodeType> fatherSelected) {
     INode<NodeType> motherSelectedCopy = copyReplace.copyReplace(motherSelected, null, null);
     INode<NodeType> fatherSelectedCopy = copyReplace.copyReplace(fatherSelected, null, null);
 
@@ -57,7 +63,6 @@ public class UnifiedGpIndiBreeder implements ICreatureBreeder<UnifiedGpIndi> {
 
     return new UnifiedGpIndi[] { new UnifiedGpIndi((IInnerNode<NodeType>) childOne),
         new UnifiedGpIndi((IInnerNode<NodeType>) childTwo) };
-
   }
 
 }

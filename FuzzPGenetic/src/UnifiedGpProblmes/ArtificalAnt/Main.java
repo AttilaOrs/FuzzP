@@ -10,7 +10,7 @@ import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
-import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
+import UnifiedGp.GpIndi.UnifiedGpIndiOnePointCrossover;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifiedGpSuplier;
 import UnifiedGp.Tree.Nodes.NodeType;
@@ -51,7 +51,7 @@ public class Main {
     mutators.add(() -> new UnifiedGpIndiTreeMutator(createTreeBuilder()));
 
     ArrayList<IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>>> breeders = new ArrayList<>();
-    breeders.add(() -> new UnifiedGpIndiBreeder());
+    breeders.add(() -> new UnifiedGpIndiOnePointCrossover());
 
     ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
     fitnesses.add(() -> new AntFitnes());
@@ -68,8 +68,8 @@ public class Main {
         new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, runNr % 3);
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, (runNr % 3 == 2) ? otherSelector : pool, survSelector);
-    SimpleGA.iteration = 100;
-    SimpleGA.population = 1000;
+    SimpleGA.iteration = 50;
+    SimpleGA.population = 500;
     long start = System.currentTimeMillis();
     algo.theAlgo();
     long stop = System.currentTimeMillis();
