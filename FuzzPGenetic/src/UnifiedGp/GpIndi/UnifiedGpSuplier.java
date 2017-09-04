@@ -30,9 +30,9 @@ public class UnifiedGpSuplier implements ICreatureGenerator<UnifiedGpIndi> {
   @Override
   public UnifiedGpIndi genearteRandomCreature(Random rnd) {
     if (staticSimplificationEnabbled) {
-      return new UnifiedGpIndi(simplifier.simplifyTree(builder.genearteRandomCreature(rnd)));
+      return new UnifiedGpIndi(simplifier.simplifyTree(builder.genearteRandomTree(rnd)));
     }
-    return new UnifiedGpIndi((builder.genearteRandomCreature(rnd)));
+    return new UnifiedGpIndi((builder.genearteRandomTree(rnd)));
   }
 
 }

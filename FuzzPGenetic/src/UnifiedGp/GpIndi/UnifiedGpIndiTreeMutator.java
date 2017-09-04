@@ -40,7 +40,7 @@ public class UnifiedGpIndiTreeMutator implements ICreatureMutator<UnifiedGpIndi>
   public UnifiedGpIndi mutate(UnifiedGpIndi creature, Random random) {
     INode<NodeType> selected = randomSelector.selectRandomNode(creature.getRoot(),
         node -> !node.equals(creature.getRoot()), random).get();
-    IInnerNode<NodeType> genrated = builder.genearteRandomCreature(random, 5);
+    IInnerNode<NodeType> genrated = builder.genearteRandomTree(random, 5);
     INode<NodeType> newRoot = copyReplace.copyReplace(creature.getRoot(), selected, genrated);
     if (staticSimplificationEnabbled) {
 

@@ -12,7 +12,7 @@ import UnifiedGp.Tree.INode;
 
 public class TreeBuilder<NodeType> {
 
-  private TreeBuilderConfig<NodeType> config;
+  protected TreeBuilderConfig<NodeType> config;
 
   private Deque<INode<NodeType>> nodeStack;
   private Deque<Integer> depthStack;
@@ -25,21 +25,25 @@ public class TreeBuilder<NodeType> {
     this.config = config;
   }
 
-  public IInnerNode<NodeType> genearteRandomCreature(Random rnd) {
-    return genearteRandomCreature(rnd, config.getMaxDepth());
+  public IInnerNode<NodeType> genearteRandomTree(Random rnd) {
+    return genearteRandomTree(rnd, config.getMaxDepth());
 
   }
 
-  public IInnerNode<NodeType> genearteRandomCreature(Random rnd, int maxDepth) {
+  public IInnerNode<NodeType> genearteRandomTree(Random rnd, int maxDepth) {
     nodeStack = new ArrayDeque<>();
     depthStack = new ArrayDeque<>();
     nodeStack.push(randomLeaf(rnd));
     nodeStack.push(randomLeaf(rnd));
     depthStack.push(0);
     depthStack.push(0);
+    boolean done = false;
     while (nodeStack.size() > 1) {
       double leafOrNode = rnd.nextDouble();
-      if (leafOrNode < config.getLeafOrInnerNode()) {
+      if (nodeStack.size() > Math.pow(2, maxDepth)) {
+        done = true;
+      }
+      if ((!done) && leafOrNode < config.getLeafOrInnerNode()) {
         nodeStack.push(randomLeaf(rnd));
         depthStack.push(0);
       } else {
@@ -59,7 +63,7 @@ public class TreeBuilder<NodeType> {
     return ((IInnerNode<NodeType>) nodeStack.pop());
   }
 
-  private INode<NodeType> randomLeaf(Random rnd) {
+  protected INode<NodeType> randomLeaf(Random rnd) {
     if (leafSum == -1.0) {
       leafSum = config.getLeafProbabilities().values().stream()
           .collect(Collectors.summarizingDouble(d -> d)).getSum();
@@ -68,7 +72,7 @@ public class TreeBuilder<NodeType> {
     return config.getLeafFactory(n).apply(rnd);
   }
 
-  private INode<NodeType> randomInnerNode(Random rnd, INode<NodeType> fi, INode<NodeType> se) {
+  protected INode<NodeType> randomInnerNode(Random rnd, INode<NodeType> fi, INode<NodeType> se) {
     if (inerNodeSum == -1.0) {
       inerNodeSum = config.getOperatorProbabilities().values().stream()
           .collect(Collectors.summarizingDouble(d -> d)).getSum();

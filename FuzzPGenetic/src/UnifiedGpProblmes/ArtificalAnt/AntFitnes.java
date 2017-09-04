@@ -34,7 +34,6 @@ public class AntFitnes extends AbstactFitness {
     if (creature.getSizes().size() > SIZE_LIMIT) {
       return 0.0;
     }
-    String originalStr = creature.getRoot().toString();
     FiredTranitionRecorder<UnifiedToken> rec = new FiredTranitionRecorder<>();
     PetriConversationResult rez = calcFitnes(creature, rec);
     int inital = table.getFoodEaten();

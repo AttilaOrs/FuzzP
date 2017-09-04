@@ -26,6 +26,7 @@ public class TreeBuilderCongigGeneralImpl implements TreeBuilderConfig<NodeType>
   private static final Map<NodeType, Double> defaulLeafProbs = new HashMap<>();
   private static final Map<NodeType, Double> defaulOpProbs = new HashMap<>();
   private static final double[] consts = new double[] { 0.5, 1, 2, 5, 10, 50 };
+  private static final double defaultLeafOrInnerNode = 0.6;
   static {
     defaulLeafProbs.put(NodeType.Inp, 1.0);
     defaulLeafProbs.put(NodeType.Out, 1.0);
@@ -50,17 +51,23 @@ public class TreeBuilderCongigGeneralImpl implements TreeBuilderConfig<NodeType>
   private Map<NodeType, Double> leafProbs;
   private Map<NodeType, Double> opProbs;
   private Map<NodeType, Function<Random, INode<NodeType>>> factories;
+  private double leafOrInnerNode;
 
   public TreeBuilderCongigGeneralImpl(ProblemSpecification spec) {
-    this(defaulLeafProbs, defaulOpProbs, spec);
+    this(defaulLeafProbs, defaulOpProbs, spec, defaultLeafOrInnerNode);
+  }
+
+  public TreeBuilderCongigGeneralImpl(ProblemSpecification spec, double leafOrInnerNode) {
+    this(defaulLeafProbs, defaulOpProbs, spec, leafOrInnerNode);
   }
 
   public TreeBuilderCongigGeneralImpl(Map<NodeType, Double> leafProbs, Map<NodeType, Double> opProbs,
-      ProblemSpecification spec) {
+      ProblemSpecification spec, double leafOrInnerNode) {
     this.spec = spec;
     this.leafProbs = leafProbs;
     this.opProbs = opProbs;
     initializeFacories();
+    this.leafOrInnerNode = leafOrInnerNode;
   }
 
   private void initializeFacories() {
@@ -81,7 +88,7 @@ public class TreeBuilderCongigGeneralImpl implements TreeBuilderConfig<NodeType>
 
   @Override
   public double getLeafOrInnerNode() {
-    return 0.6;
+    return leafOrInnerNode;
   }
 
   @Override
