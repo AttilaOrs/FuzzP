@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import structure.ICreaturePool;
@@ -40,6 +41,7 @@ public class SimpleGA<TCreature extends IGPGreature> {
   private int curentIndex;
   protected int iter;
   private ISelector survSelector;
+  private Predicate<Double> eralyStoppingCondition = null;
 
   public SimpleGA(ICreaturePool<TCreature> pool, ISelector selector) {
     this(pool, selector, selector);
@@ -124,7 +126,9 @@ public class SimpleGA<TCreature extends IGPGreature> {
           statistics.getMax(), res.size(), size, (timeStop - timeStart) / res.size());
 
 			System.gc();
-
+      if (eralyStoppingCondition != null && eralyStoppingCondition.test(statistics.getMax())) {
+        break;
+      }
 		}
 		Optional<Entry<Integer, Double[]>> max = res.entrySet().stream()
 				.max((entry1, entry2) -> entry1.getValue()[0]
@@ -206,4 +210,9 @@ public class SimpleGA<TCreature extends IGPGreature> {
 	public void setLogger(IterationLogger logger) {
 		this.logger = logger;
 	}
+
+
+  public void setEralyStoppingCondition(Predicate<Double> eralyStoppingCondition) {
+    this.eralyStoppingCondition = eralyStoppingCondition;
+  }
 }

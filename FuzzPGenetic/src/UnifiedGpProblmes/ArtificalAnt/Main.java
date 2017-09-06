@@ -8,12 +8,12 @@ import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
 import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
+import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
 import UnifiedGp.GpIndi.UnifiedGpIndiOnePointCrossover;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
-import UnifiedGp.GpIndi.UnifiedGpSuplier;
 import UnifiedGp.GpIndi.UnifromCrossOver;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
@@ -46,7 +46,7 @@ public class Main {
   public static void doStuff(String path, int runNr) {
 
     ArrayList<IOperatorFactory<ICreatureGenerator<UnifiedGpIndi>>> gens = new ArrayList<>();
-    gens.add(() -> new UnifiedGpSuplier(createTreeBuilder()));
+    gens.add(() -> new HalfRampHalfFull(new TreeBuilderCongigGeneralImpl(AntFitnes.problemSpecification()), 20));
 
 
     ArrayList<IOperatorFactory<ICreatureMutator<UnifiedGpIndi>>> mutators = new ArrayList<>();
@@ -81,6 +81,7 @@ public class Main {
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, otherSelector, survSelector);
     SimpleGA.iteration = 100;
     SimpleGA.population = 1000;
+    algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();
     algo.theAlgo();
     long stop = System.currentTimeMillis();
@@ -98,6 +99,7 @@ public class Main {
         + " " + SimpleGA.NEW + "\n";
     config += selectorStr + "\n";
     config += "cross" + fact.generate().getClass().getName() + "\n";
+    config += "half ranked half full gen max 20 \n";
     config += "result fitnes " + rezFitnes + "\n";
     config += "duration: " + (stop - start) + " milliseconds " + "(" + TimeUnit.MILLISECONDS.toMinutes(stop - start)
         + " minutes)";
