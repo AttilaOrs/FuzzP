@@ -28,17 +28,22 @@ public class PlotUtils {
 			NamedPlotColor.MIDNIGHT_BLUE, NamedPlotColor.BROWN,
 			NamedPlotColor.VIOLET};
 
-  public static void plot(Map<String, List<Double>> what, String fileName) {
-		try {
+	private static JavaPlot createJavaPlot(){
 			JavaPlot p = null;
 
-			if (System.getProperty("os.name").contains("Windows")) {
+			if (System.getProperty("os.name").contains("Windows") || System.getProperty("os.name").contains("win")) {
 				p = new JavaPlot(
-						"c:\\Program Files\\gnuplot\\bin\\gnuplot.exe", false);
+						"C:\\Users\\ors.kilyen\\Downloads\\gp520-win64-mingw\\gnuplot\\bin\\gnuplot.exe", false);
 			} else {
 				p = new JavaPlot();
 			}
+			return p;
+	}
+
+  public static void plot(Map<String, List<Double>> what, String fileName) {
+		try {
 			//JavaPlot.getDebugger().setLevel(Debug.QUIET);
+			JavaPlot p = createJavaPlot();
       FileTerminal svg = new FileTerminal("svg", fileName);
 			// String kacs = svg.getOutputFile();
 			svg.set("size", "800, 600");
@@ -81,7 +86,7 @@ public class PlotUtils {
   public static void plot2(Map<String, Map<Double, Double>> what,
 			String fileName) {
 
-		JavaPlot p = new JavaPlot();
+			JavaPlot p = createJavaPlot();
 		//JavaPlot.getDebugger().setLevel(Debug.QUIET);
     // SVGTerminal svg = new SVGTerminal(fileName);
     FileTerminal svg = new FileTerminal("svg", fileName);
@@ -124,7 +129,7 @@ public class PlotUtils {
   public static void hist(Map<String, Map<Integer, Integer>> what,
 			String fileName) {
 
-		JavaPlot p = new JavaPlot();
+			JavaPlot p = createJavaPlot();
 		//JavaPlot.getDebugger().setLevel(Debug.QUIET);
     // SVGTerminal svg = new SVGTerminal(fileName);
     FileTerminal svg = new FileTerminal("svg", fileName);
