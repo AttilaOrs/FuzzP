@@ -32,8 +32,13 @@ public class PlotUtils {
 			JavaPlot p = null;
 
 			if (System.getProperty("os.name").contains("Windows") || System.getProperty("os.name").contains("win")) {
+			  try{
+			  
 				p = new JavaPlot(
 						"C:\\Users\\ors.kilyen\\Downloads\\gp520-win64-mingw\\gnuplot\\bin\\gnuplot.exe", false);
+      } catch (Exception ex) {
+        p = new JavaPlot("d:\\gnuplot\\gnuplot\\gnuplot.exe", false);
+			  }
 			} else {
 				p = new JavaPlot();
 			}
