@@ -20,7 +20,7 @@ import structure.operators.ICreatureMutator;
 public class CreatureParallelPool<TCreatue extends IGPGreature>
     implements ICreaturePool<TCreatue> {
 
-	public static final int THREAD_NR = 4;
+	public static final int THREAD_NR = 16;
 
 	@Override
   public ArrayList<IOperatorFactory<ICreatureGenerator<TCreatue>>> getGenerators() {
