@@ -16,7 +16,10 @@ import core.common.recoder.FiredTranitionRecorder;
 import core.common.tokencache.TokenCacheDisabling;
 
 public class AntFitnes extends AbstactFitness {
-  public static final int SIZE_LIMIT = 300;
+  public static boolean HARD_LIMIT = true;
+  public static int SIZE_LIMIT = 300;
+  public static int SIZE_LIMIT_START = 200;
+
   int MAX_MOOVES = 600;
 
   public AntFitnes() {
@@ -31,8 +34,15 @@ public class AntFitnes extends AbstactFitness {
 
   @Override
   public double evaluate(UnifiedGpIndi creature) {
-    if (creature.getSizes().size() > SIZE_LIMIT) {
+    int size = creature.getSizes().size();
+    double multi = 1.0;
+    if (size > SIZE_LIMIT) {
       return 0.0;
+    } 
+    
+    if (!HARD_LIMIT && size > SIZE_LIMIT_START) {
+      multi = 1.0 - ((size - SIZE_LIMIT_START) / ((SIZE_LIMIT - SIZE_LIMIT_START) * 1.0));
+      
     }
     FiredTranitionRecorder<UnifiedToken> rec = new FiredTranitionRecorder<>();
     PetriConversationResult rez = calcFitnes(creature, rec);
@@ -44,7 +54,7 @@ public class AntFitnes extends AbstactFitness {
      * (newMooves != inital) { System.err.println("we have a problem sir " +
      * inital + " " + newMooves + "\n>" + originalStr + "\n>" + newStr); }
      */
-    return inital;
+    return inital * multi;
 
 
   }

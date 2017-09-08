@@ -53,7 +53,7 @@ public class Main {
 
     ArrayList<IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>>> breeders = new ArrayList<>();
     IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>> fact = () -> {
-      if (runNr % 4 > 2) {
+      if (true) {
         return new UnifiedGpIndiBreeder();
       } else {
         return new UnifromCrossOver();
@@ -65,6 +65,23 @@ public class Main {
     fitnesses.add(() -> new AntFitnes());
     ISelector otherSelector = new LinearRankSelection();
     ISelector survSelector = new LinearRankSelection();
+    if (runNr % 4 == 0) {
+      AntFitnes.HARD_LIMIT = true;
+      AntFitnes.SIZE_LIMIT = 300;
+      AntFitnes.SIZE_LIMIT_START = 300;
+    } else if (runNr % 4 == 1) {
+      AntFitnes.HARD_LIMIT = false;
+      AntFitnes.SIZE_LIMIT = 300;
+      AntFitnes.SIZE_LIMIT_START = 250;
+    } else if (runNr % 4 == 2) {
+      AntFitnes.HARD_LIMIT = false;
+      AntFitnes.SIZE_LIMIT = 350;
+      AntFitnes.SIZE_LIMIT_START = 250;
+    } else if (runNr % 4 == 3) {
+      AntFitnes.HARD_LIMIT = false;
+      AntFitnes.SIZE_LIMIT = 400;
+      AntFitnes.SIZE_LIMIT_START = 300;
+    }
 
     String selectorStr = "";
     selectorStr = "Both LinerRankSelector";
@@ -74,9 +91,9 @@ public class Main {
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
         new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 1);
-    otherSelector = (runNr % 2 == 0) ? pool : otherSelector;
+    // otherSelector = (runNr % 2 == 0) ? pool : otherSelector;
 
-    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, (runNr % 2 == 0) ? pool : otherSelector, survSelector);
+    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, otherSelector, survSelector);
     SimpleGA.iteration = 101;
     SimpleGA.population = 1000;
     algo.setEralyStoppingCondition(d -> d >= 89.0);
@@ -92,12 +109,14 @@ public class Main {
     String config = "population " + SimpleGA.population + "\n";
     config += "iteration " + SimpleGA.iteration + "\n";
     config += "size limit " + AntFitnes.SIZE_LIMIT + "\n";
-    config += "family  " + (runNr % 2 == 0) + " " + otherSelector.getClass().getSimpleName() + "\n";
+    config += "family  no" + " " + otherSelector.getClass().getSimpleName() + "\n";
     config += "ops " + SimpleGA.CROSSOVER + " " + SimpleGA.ELIT + " " + SimpleGA.MUTATION + " " + SimpleGA.SELECTION
         + " " + SimpleGA.NEW + "\n";
     config += selectorStr + "\n";
     config += "cross " + fact.generate().getClass().getSimpleName() + "\n";
     config += "half ranked half full gen max 6 \n";
+    config += "Size config: HardLimit " + AntFitnes.HARD_LIMIT + " limit " + AntFitnes.SIZE_LIMIT + " start limit "
+        + AntFitnes.SIZE_LIMIT_START + "\n";
     config += "result fitnes " + rezFitnes + "\n";
     config += "duration: " + (stop - start) + " milliseconds " + "(" + TimeUnit.MILLISECONDS.toMinutes(stop - start)
         + " minutes)";
