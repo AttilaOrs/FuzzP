@@ -12,7 +12,6 @@ import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
-import UnifiedGp.GpIndi.UnifiedGpIndiOnePointCrossover;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifromCrossOver;
 import UnifiedGp.Tree.Nodes.NodeType;
@@ -46,7 +45,7 @@ public class Main {
   public static void doStuff(String path, int runNr) {
 
     ArrayList<IOperatorFactory<ICreatureGenerator<UnifiedGpIndi>>> gens = new ArrayList<>();
-    gens.add(() -> new HalfRampHalfFull(new TreeBuilderCongigGeneralImpl(AntFitnes.problemSpecification()), 8));
+    gens.add(() -> new HalfRampHalfFull(new TreeBuilderCongigGeneralImpl(AntFitnes.problemSpecification()), 6));
 
 
     ArrayList<IOperatorFactory<ICreatureMutator<UnifiedGpIndi>>> mutators = new ArrayList<>();
@@ -54,10 +53,8 @@ public class Main {
 
     ArrayList<IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>>> breeders = new ArrayList<>();
     IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>> fact = () -> {
-      if (runNr %3 ==0){
+      if (runNr % 4 > 2) {
         return new UnifiedGpIndiBreeder();
-      } else if(runNr % 3 == 1){
-        return new UnifiedGpIndiOnePointCrossover();
       } else {
         return new UnifromCrossOver();
       }
@@ -76,9 +73,10 @@ public class Main {
     
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
-        new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, runNr % 3);
+        new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 1);
+    otherSelector = (runNr % 2 == 0) ? pool : otherSelector;
 
-    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, otherSelector, survSelector);
+    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, (runNr % 2 == 0) ? pool : otherSelector, survSelector);
     SimpleGA.iteration = 101;
     SimpleGA.population = 1000;
     algo.setEralyStoppingCondition(d -> d >= 89.0);
@@ -94,12 +92,12 @@ public class Main {
     String config = "population " + SimpleGA.population + "\n";
     config += "iteration " + SimpleGA.iteration + "\n";
     config += "size limit " + AntFitnes.SIZE_LIMIT + "\n";
-    config += "family false \n";
+    config += "family  " + (runNr % 2 == 0) + " " + otherSelector.getClass().getSimpleName() + "\n";
     config += "ops " + SimpleGA.CROSSOVER + " " + SimpleGA.ELIT + " " + SimpleGA.MUTATION + " " + SimpleGA.SELECTION
         + " " + SimpleGA.NEW + "\n";
     config += selectorStr + "\n";
-    config += "cross" + fact.generate().getClass().getName() + "\n";
-    config += "half ranked half full gen max 8 \n";
+    config += "cross " + fact.generate().getClass().getSimpleName() + "\n";
+    config += "half ranked half full gen max 6 \n";
     config += "result fitnes " + rezFitnes + "\n";
     config += "duration: " + (stop - start) + " milliseconds " + "(" + TimeUnit.MILLISECONDS.toMinutes(stop - start)
         + " minutes)";
