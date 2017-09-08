@@ -46,7 +46,7 @@ public class Main {
   public static void doStuff(String path, int runNr) {
 
     ArrayList<IOperatorFactory<ICreatureGenerator<UnifiedGpIndi>>> gens = new ArrayList<>();
-    gens.add(() -> new HalfRampHalfFull(new TreeBuilderCongigGeneralImpl(AntFitnes.problemSpecification()), 6));
+    gens.add(() -> new HalfRampHalfFull(new TreeBuilderCongigGeneralImpl(AntFitnes.problemSpecification()), 8));
 
 
     ArrayList<IOperatorFactory<ICreatureMutator<UnifiedGpIndi>>> mutators = new ArrayList<>();
@@ -99,7 +99,7 @@ public class Main {
         + " " + SimpleGA.NEW + "\n";
     config += selectorStr + "\n";
     config += "cross" + fact.generate().getClass().getName() + "\n";
-    config += "half ranked half full gen max 6 \n";
+    config += "half ranked half full gen max 8 \n";
     config += "result fitnes " + rezFitnes + "\n";
     config += "duration: " + (stop - start) + " milliseconds " + "(" + TimeUnit.MILLISECONDS.toMinutes(stop - start)
         + " minutes)";
