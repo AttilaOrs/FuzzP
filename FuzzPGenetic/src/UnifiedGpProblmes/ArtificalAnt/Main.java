@@ -27,15 +27,15 @@ import structure.operators.ICreatureMutator;
 public class Main {
 
   private static final String CONFIG_REZ = "ConfRez.txt";
-  private static final String DIVERSITY = "diversity.svg";
-  private static final String SIZE_HIST = "sizeHistLog.svg";
-  private static final String SIMILARTY_CAT = "similarityCategories.svg";
-  private static final String SIZE = "tree_size.svg";
-  private static final String FITNESS = "fitness.svg";
-  private static final String TIME = "time_per_sol.svg";
-  private static final String LEAFS = "tree_leaf.svg";
-  private static final String OPS = "tree_ops.svg";
-  private static final String DEPTH = "tree_depth.svg";
+  private static final String DIVERSITY = "diversity";
+  private static final String SIZE_HIST = "sizeHistLog";
+  private static final String SIMILARTY_CAT = "similarityCategories";
+  private static final String SIZE = "tree_size";
+  private static final String FITNESS = "fitness";
+  private static final String TIME = "time_per_sol";
+  private static final String LEAFS = "tree_leaf";
+  private static final String OPS = "tree_ops";
+  private static final String DEPTH = "tree_depth";
 
   public static void main(String[] args) {
     for (int i = 0; i < 30; i++) {
@@ -79,7 +79,7 @@ public class Main {
         new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, runNr % 3);
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, otherSelector, survSelector);
-    SimpleGA.iteration = 100;
+    SimpleGA.iteration = 101;
     SimpleGA.population = 1000;
     algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();

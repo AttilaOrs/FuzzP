@@ -33,7 +33,7 @@ public class IterationLogger {
 
 
   public static String TREE_SIZE_AVG = "avg tree size";
-  public static String TIME = "time: nanosec/solution";
+  public static String TIME = "time: millisec/solution";
 
   HashMap<String, ArrayList<Double>> logs;
   List<String> prntingGroup;

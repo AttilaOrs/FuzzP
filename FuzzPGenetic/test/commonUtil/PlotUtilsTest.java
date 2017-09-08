@@ -19,7 +19,7 @@ public class PlotUtilsTest {
     Map<String, List<Double>> what = new HashMap<>();
     ArrayList<Double> kkk = new ArrayList<>();
     kkk.add(0.0);
-    kkk.add(0.5);
+    kkk.add(0.3);
     kkk.add(1.0);
     ArrayList<Double> ll = new ArrayList<>();
     ll.add(0.1);

@@ -41,9 +41,7 @@ repositories {
 
 dependencies {
       compile project(':FuzzPCore')
-      compile 'com.panayotis.javaplot:javaplot:0.5.0'
-      compile 'com.panayotis.javaplot:svg:0.5.0'
-      compile 'com.kitfox.svg:svg-salamander:1.0'
+      compile 'org.tinyjee.jgraphx:jgraphx:3.4.1.3'
       compile 'com.google.code.gson:gson:2.2.4'
       compile project(':FuzzPVizual')
       testCompile 'junit:junit:4.12'
