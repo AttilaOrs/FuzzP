@@ -17,6 +17,7 @@ import core.common.tokencache.TokenCacheDisabling;
 
 public class AntFitnes extends AbstactFitness {
   public static boolean HARD_LIMIT = true;
+  public static boolean FIRED_TR_LIMIT = true;
   public static int SIZE_LIMIT = 300;
   public static int SIZE_LIMIT_START = 200;
 
@@ -54,9 +55,11 @@ public class AntFitnes extends AbstactFitness {
      * (newMooves != inital) { System.err.println("we have a problem sir " +
      * inital + " " + newMooves + "\n>" + originalStr + "\n>" + newStr); }
      */
-    return inital * multi;
-
-
+    double multi2 = 1.0;
+    if (FIRED_TR_LIMIT && rec.getTransitionFiredCount() > 300000) {
+      multi2 = 1.0 - (rec.getTransitionFiredCount() - 300000.0) / 600000.0;
+    }
+    return inital * multi * multi2;
   }
 
   private PetriConversationResult calcFitnes(UnifiedGpIndi creature, FiredTranitionRecorder<UnifiedToken> rec) {

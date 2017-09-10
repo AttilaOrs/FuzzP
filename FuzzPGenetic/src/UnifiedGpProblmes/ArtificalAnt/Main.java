@@ -45,7 +45,7 @@ public class Main {
   public static void doStuff(String path, int runNr) {
 
     ArrayList<IOperatorFactory<ICreatureGenerator<UnifiedGpIndi>>> gens = new ArrayList<>();
-    gens.add(() -> new HalfRampHalfFull(new TreeBuilderCongigGeneralImpl(AntFitnes.problemSpecification()), 6));
+    gens.add(() -> new HalfRampHalfFull(new TreeBuilderCongigGeneralImpl(AntFitnes.problemSpecification()), 7));
 
 
     ArrayList<IOperatorFactory<ICreatureMutator<UnifiedGpIndi>>> mutators = new ArrayList<>();
@@ -65,22 +65,16 @@ public class Main {
     fitnesses.add(() -> new AntFitnes());
     ISelector otherSelector = new LinearRankSelection();
     ISelector survSelector = new LinearRankSelection();
-    if (runNr % 4 == 0) {
+    if (runNr % 2 == 0) {
       AntFitnes.HARD_LIMIT = true;
       AntFitnes.SIZE_LIMIT = 300;
       AntFitnes.SIZE_LIMIT_START = 300;
-    } else if (runNr % 4 == 1) {
+      AntFitnes.FIRED_TR_LIMIT = false;
+    } else if (runNr % 2 == 1) {
       AntFitnes.HARD_LIMIT = false;
-      AntFitnes.SIZE_LIMIT = 300;
+      AntFitnes.SIZE_LIMIT = 360;
       AntFitnes.SIZE_LIMIT_START = 250;
-    } else if (runNr % 4 == 2) {
-      AntFitnes.HARD_LIMIT = false;
-      AntFitnes.SIZE_LIMIT = 350;
-      AntFitnes.SIZE_LIMIT_START = 250;
-    } else if (runNr % 4 == 3) {
-      AntFitnes.HARD_LIMIT = false;
-      AntFitnes.SIZE_LIMIT = 400;
-      AntFitnes.SIZE_LIMIT_START = 300;
+      AntFitnes.FIRED_TR_LIMIT = true;
     }
 
     String selectorStr = "";
@@ -91,11 +85,11 @@ public class Main {
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
         new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 1);
-    // otherSelector = (runNr % 2 == 0) ? pool : otherSelector;
+    otherSelector = (runNr % 4 >= 2) ? pool : otherSelector;
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, otherSelector, survSelector);
     SimpleGA.iteration = 101;
-    SimpleGA.population = 1000;
+    SimpleGA.population = 100;
     algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();
     algo.theAlgo();
@@ -109,14 +103,13 @@ public class Main {
     String config = "population " + SimpleGA.population + "\n";
     config += "iteration " + SimpleGA.iteration + "\n";
     config += "size limit " + AntFitnes.SIZE_LIMIT + "\n";
-    config += "family  no" + " " + otherSelector.getClass().getSimpleName() + "\n";
+    config += "family  " + " " + otherSelector.getClass().getSimpleName() + "\n";
     config += "ops " + SimpleGA.CROSSOVER + " " + SimpleGA.ELIT + " " + SimpleGA.MUTATION + " " + SimpleGA.SELECTION
         + " " + SimpleGA.NEW + "\n";
-    config += selectorStr + "\n";
     config += "cross " + fact.generate().getClass().getSimpleName() + "\n";
     config += "half ranked half full gen max 6 \n";
     config += "Size config: HardLimit " + AntFitnes.HARD_LIMIT + " limit " + AntFitnes.SIZE_LIMIT + " start limit "
-        + AntFitnes.SIZE_LIMIT_START + "\n";
+        + AntFitnes.SIZE_LIMIT_START + "FiredTransitionLmit " + AntFitnes.FIRED_TR_LIMIT + "\n";
     config += "result fitnes " + rezFitnes + "\n";
     config += "duration: " + (stop - start) + " milliseconds " + "(" + TimeUnit.MILLISECONDS.toMinutes(stop - start)
         + " minutes)";
