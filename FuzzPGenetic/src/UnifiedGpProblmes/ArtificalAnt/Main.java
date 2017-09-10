@@ -11,7 +11,6 @@ import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
-import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifromCrossOver;
 import UnifiedGp.Tree.Nodes.NodeType;
@@ -42,6 +41,8 @@ public class Main {
     }
   }
 
+  static double prob;
+
   public static void doStuff(String path, int runNr) {
 
     ArrayList<IOperatorFactory<ICreatureGenerator<UnifiedGpIndi>>> gens = new ArrayList<>();
@@ -52,12 +53,14 @@ public class Main {
     mutators.add(() -> new UnifiedGpIndiTreeMutator(createTreeBuilder()));
 
     ArrayList<IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>>> breeders = new ArrayList<>();
+    prob = 0.50;
+      if (runNr % 3 == 0) {
+      prob = 10;
+      } else if (runNr % 3 == 0) {
+      prob = 0.25;
+    }
     IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>> fact = () -> {
-      if (true) {
-        return new UnifiedGpIndiBreeder();
-      } else {
-        return new UnifromCrossOver();
-      }
+      return new UnifromCrossOver(prob);
     };
     breeders.add(fact);
 
@@ -65,17 +68,10 @@ public class Main {
     fitnesses.add(() -> new AntFitnes());
     ISelector otherSelector = new LinearRankSelection();
     ISelector survSelector = new LinearRankSelection();
-    if (runNr % 2 == 0) {
       AntFitnes.HARD_LIMIT = true;
-      AntFitnes.SIZE_LIMIT = 300;
-      AntFitnes.SIZE_LIMIT_START = 300;
+    AntFitnes.SIZE_LIMIT = 400;
+    AntFitnes.SIZE_LIMIT_START = 400;
       AntFitnes.FIRED_TR_LIMIT = false;
-    } else if (runNr % 2 == 1) {
-      AntFitnes.HARD_LIMIT = false;
-      AntFitnes.SIZE_LIMIT = 360;
-      AntFitnes.SIZE_LIMIT_START = 250;
-      AntFitnes.FIRED_TR_LIMIT = true;
-    }
 
     String selectorStr = "";
     selectorStr = "Both LinerRankSelector";
@@ -85,7 +81,7 @@ public class Main {
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
         new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 1);
-    otherSelector = (runNr % 4 >= 2) ? pool : otherSelector;
+    // otherSelector = (runNr % 4 >= 2) ? pool : otherSelector;
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, otherSelector, survSelector);
     SimpleGA.iteration = 101;
@@ -106,7 +102,7 @@ public class Main {
     config += "family  " + " " + otherSelector.getClass().getSimpleName() + "\n";
     config += "ops " + SimpleGA.CROSSOVER + " " + SimpleGA.ELIT + " " + SimpleGA.MUTATION + " " + SimpleGA.SELECTION
         + " " + SimpleGA.NEW + "\n";
-    config += "cross " + fact.generate().getClass().getSimpleName() + "\n";
+    config += "cross " + fact.generate().getClass().getSimpleName() + " " + prob + "\n";
     config += "half ranked half full gen max 6 \n";
     config += "Size config: HardLimit " + AntFitnes.HARD_LIMIT + " limit " + AntFitnes.SIZE_LIMIT + " start limit "
         + AntFitnes.SIZE_LIMIT_START + "FiredTransitionLmit " + AntFitnes.FIRED_TR_LIMIT + "\n";

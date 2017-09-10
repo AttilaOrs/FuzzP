@@ -19,14 +19,20 @@ public class UnifromCrossOver implements ICreatureBreeder<UnifiedGpIndi> {
   private final CopyReplace<NodeType> copyReplace;
   private boolean staticSimplificationEnabbled;
   private StaticSimplifierPetriBuilder simplifier;
+  private double prob;
 
-  public UnifromCrossOver() {
-    this(UnifiedGpIndiBreeder.defaultStaticSimplification);
+  public UnifromCrossOver(double chanse) {
+    this(UnifiedGpIndiBreeder.defaultStaticSimplification, chanse);
   }
 
-  public UnifromCrossOver(boolean staticSimplificationEnabled) {
+  public double getProb() {
+    return prob;
+  }
+
+  public UnifromCrossOver(boolean staticSimplificationEnabled, double chanse) {
     copyReplace = new CopyReplace<>();
     this.staticSimplificationEnabbled = staticSimplificationEnabled;
+    this.prob = chanse;
     if (staticSimplificationEnabled) {
       simplifier = new StaticSimplifierPetriBuilder();
     } else {
@@ -40,7 +46,7 @@ public class UnifromCrossOver implements ICreatureBreeder<UnifiedGpIndi> {
     createShape(mother.getRoot(), father.getRoot(), s);
     List<INode[]> nodesToSwitch = new ArrayList<>();
     for (INode[] pair : s.shapePairs) {
-      if (rnd.nextBoolean()) {
+      if (rnd.nextDouble() < prob) {
         nodesToSwitch.add(pair);
       }
     }
