@@ -36,7 +36,7 @@ public class Main {
   private static final String DEPTH = "tree_depth";
 
   public static void main(String[] args) {
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < 60; i++) {
       doStuff("ant" + i + "/", i);
     }
   }
@@ -56,7 +56,7 @@ public class Main {
     prob = 0.50;
       if (runNr % 3 == 0) {
       prob = 10;
-      } else if (runNr % 3 == 0) {
+    } else if (runNr % 3 == 1) {
       prob = 0.25;
     }
     IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>> fact = () -> {
@@ -81,7 +81,7 @@ public class Main {
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
         new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 1);
-    // otherSelector = (runNr % 4 >= 2) ? pool : otherSelector;
+    otherSelector = (runNr % 4 >= 2) ? pool : otherSelector;
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, otherSelector, survSelector);
     SimpleGA.iteration = 101;
