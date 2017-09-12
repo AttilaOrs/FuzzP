@@ -22,9 +22,9 @@ public class RoboVisualizer extends Application {
   int originalX = 400;
   int originalY = 400;
   RoboMovmentSimulator sim = new RoboMovmentSimulator();
-  double currentCoommandR = 0.0;
-  double currentCoommandL = 0.0;
-  protected double pixel = 5.0;
+  double currentCoommandBoth = 0.0;
+  double currentCoommandDiff = 0.0;
+  protected double pixel = 3.0;
 
   @Override
   public void start(Stage stage) {
@@ -49,20 +49,22 @@ public class RoboVisualizer extends Application {
       }
     });
     scene.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
-      if (e.getCode().equals(KeyCode.Q)) {
-        currentCoommandL += 1.0;
+      System.out.println(e.getCode());
+      if (e.getCode().equals(KeyCode.LEFT)) {
+        currentCoommandDiff += 0.1;
       }
-      if (e.getCode().equals(KeyCode.W)) {
-        currentCoommandL -= 1.0;
+      if (e.getCode().equals(KeyCode.UP)) {
+        currentCoommandBoth += 1.0;
       }
-      if (e.getCode().equals(KeyCode.O)) {
-        currentCoommandR += 1.0;
+      if (e.getCode().equals(KeyCode.RIGHT)) {
+        currentCoommandDiff -= 0.1;
       }
-      if (e.getCode().equals(KeyCode.P)) {
-        currentCoommandR -= 1.0;
+      if (e.getCode().equals(KeyCode.DOWN)) {
+        currentCoommandBoth -= 1.0;
       }
-
+      System.out.println(currentCoommandDiff + " " + currentCoommandBoth);
     });
+
     stage.setScene(scene);
     stage.show();
 
@@ -70,8 +72,8 @@ public class RoboVisualizer extends Application {
 
       @Override
       public void handle(ActionEvent t) {
-        sim.setLeftCommand(currentCoommandL);
-        sim.setRightCommand(currentCoommandR);
+        sim.setLeftCommand(currentCoommandBoth - currentCoommandDiff / 2);
+        sim.setRightCommand(currentCoommandBoth + currentCoommandDiff / 2);
         sim.simulateTimeUnit();
         double newX = originalX + sim.getX() * pixel;
         double newY = originalY + sim.getY() * pixel;
