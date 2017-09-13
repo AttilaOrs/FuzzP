@@ -85,7 +85,7 @@ public class Main {
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, otherSelector, survSelector);
     SimpleGA.iteration = 101;
-    SimpleGA.population = 100;
+    SimpleGA.population = 1000;
     algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();
     algo.theAlgo();
