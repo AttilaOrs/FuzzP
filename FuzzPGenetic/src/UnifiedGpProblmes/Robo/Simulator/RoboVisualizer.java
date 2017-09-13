@@ -49,20 +49,24 @@ public class RoboVisualizer extends Application {
       }
     });
     scene.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
-      System.out.println(e.getCode());
       if (e.getCode().equals(KeyCode.LEFT)) {
-        currentCoommandDiff += 0.1;
+        currentCoommandDiff += 0.2;
       }
       if (e.getCode().equals(KeyCode.UP)) {
         currentCoommandBoth += 1.0;
       }
       if (e.getCode().equals(KeyCode.RIGHT)) {
-        currentCoommandDiff -= 0.1;
+        currentCoommandDiff -= 0.2;
       }
       if (e.getCode().equals(KeyCode.DOWN)) {
         currentCoommandBoth -= 1.0;
       }
-      System.out.println(currentCoommandDiff + " " + currentCoommandBoth);
+    });
+    scene.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
+      if (e.getCode().equals(KeyCode.RIGHT) || e.getCode().equals(KeyCode.LEFT)) {
+        currentCoommandDiff = 0.0;
+      }
+
     });
 
     stage.setScene(scene);
