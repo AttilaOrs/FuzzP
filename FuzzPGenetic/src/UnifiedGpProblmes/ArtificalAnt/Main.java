@@ -11,6 +11,7 @@ import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
+import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifromCrossOver;
 import UnifiedGp.Tree.Nodes.NodeType;
@@ -41,7 +42,7 @@ public class Main {
     }
   }
 
-  static double prob;
+  static double prob = 10.0;
 
   public static void doStuff(String path, int runNr) {
 
@@ -53,14 +54,12 @@ public class Main {
     mutators.add(() -> new UnifiedGpIndiTreeMutator(createTreeBuilder()));
 
     ArrayList<IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>>> breeders = new ArrayList<>();
-    prob = 0.50;
-      if (runNr % 3 == 0) {
-      prob = 10;
-    } else if (runNr % 3 == 1) {
-      prob = 0.25;
-    }
     IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>> fact = () -> {
-      return new UnifromCrossOver(prob);
+      if ((runNr % 2) == 0) {
+        return new UnifromCrossOver(prob);
+      } else {
+        return new UnifiedGpIndiBreeder();
+      }
     };
     breeders.add(fact);
 
@@ -68,13 +67,12 @@ public class Main {
     fitnesses.add(() -> new AntFitnes());
     ISelector otherSelector = new LinearRankSelection();
     ISelector survSelector = new LinearRankSelection();
-      AntFitnes.HARD_LIMIT = true;
+    AntFitnes.HARD_LIMIT = true;
+    AntFitnes.APPLY_SIZE_LIMIT = false;
     AntFitnes.SIZE_LIMIT = 400;
     AntFitnes.SIZE_LIMIT_START = 400;
-      AntFitnes.FIRED_TR_LIMIT = false;
+    AntFitnes.FIRED_TR_LIMIT = true;
 
-    String selectorStr = "";
-    selectorStr = "Both LinerRankSelector";
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
     
     
@@ -104,7 +102,8 @@ public class Main {
         + " " + SimpleGA.NEW + "\n";
     config += "cross " + fact.generate().getClass().getSimpleName() + " " + prob + "\n";
     config += "half ranked half full gen max 6 \n";
-    config += "Size config: HardLimit " + AntFitnes.HARD_LIMIT + " limit " + AntFitnes.SIZE_LIMIT + " start limit "
+    config += "Size config: HardLimit " + AntFitnes.APPLY_SIZE_LIMIT + " " + AntFitnes.HARD_LIMIT + " limit "
+        + AntFitnes.SIZE_LIMIT + " start limit "
         + AntFitnes.SIZE_LIMIT_START + "FiredTransitionLmit " + AntFitnes.FIRED_TR_LIMIT + "\n";
     config += "result fitnes " + rezFitnes + "\n";
     config += "duration: " + (stop - start) + " milliseconds " + "(" + TimeUnit.MILLISECONDS.toMinutes(stop - start)
