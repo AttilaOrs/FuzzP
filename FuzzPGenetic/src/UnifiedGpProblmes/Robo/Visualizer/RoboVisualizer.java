@@ -1,6 +1,7 @@
-package UnifiedGpProblmes.Robo.Simulator;
+package UnifiedGpProblmes.Robo.Visualizer;
 
 
+import UnifiedGpProblmes.Robo.Simulator.Lines;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -13,32 +14,25 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 public class RoboVisualizer extends Application {
-  int originalX = 400;
-  int originalY = 400;
-  RoboMovmentSimulator sim = new RoboMovmentSimulator();
+  private static final double SENS = 0.5;
+  private static final double CNTR = 1.0;
   double currentCoommandBoth = 0.0;
   double currentCoommandDiff = 0.0;
-  protected double pixel = 3.0;
+  private TriangleRoboWithSensors s;
 
   @Override
   public void start(Stage stage) {
 
     Pane canvas = new Pane();
-    Scene scene = new Scene(canvas, 800, 800, Color.TRANSPARENT);
-    Polygon ball = new Polygon();
-    ball.getPoints().addAll(new Double[] {
-        5.0, 5.0,
-        0.0, 0.0,
-        10.0, 0.0 });
-    ball.relocate(originalX, originalY);
+    Scene scene = new Scene(canvas, 1000, 1000, Color.TRANSPARENT);
+    s = new TriangleRoboWithSensors(canvas, Lines.getPoint());
+    LinesVizualzier viz = new LinesVizualzier(canvas, Lines.getPoint());
 
-    canvas.getChildren().add(ball);
 
     stage.initStyle(StageStyle.TRANSPARENT);
     scene.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
@@ -50,16 +44,16 @@ public class RoboVisualizer extends Application {
     });
     scene.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
       if (e.getCode().equals(KeyCode.LEFT)) {
-        currentCoommandDiff += 0.2;
+        currentCoommandDiff += SENS;
       }
       if (e.getCode().equals(KeyCode.UP)) {
-        currentCoommandBoth += 1.0;
+        currentCoommandBoth += CNTR;
       }
       if (e.getCode().equals(KeyCode.RIGHT)) {
-        currentCoommandDiff -= 0.2;
+        currentCoommandDiff -= SENS;
       }
       if (e.getCode().equals(KeyCode.DOWN)) {
-        currentCoommandBoth -= 1.0;
+        currentCoommandBoth -= CNTR;
       }
     });
     scene.addEventHandler(KeyEvent.KEY_RELEASED, e -> {
@@ -72,17 +66,13 @@ public class RoboVisualizer extends Application {
     stage.setScene(scene);
     stage.show();
 
-    Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
+    Timeline timeline = new Timeline(new KeyFrame(Duration.millis(50), new EventHandler<ActionEvent>() {
 
       @Override
       public void handle(ActionEvent t) {
-        sim.setLeftCommand(currentCoommandBoth - currentCoommandDiff / 2);
-        sim.setRightCommand(currentCoommandBoth + currentCoommandDiff / 2);
-        sim.simulateTimeUnit();
-        double newX = originalX + sim.getX() * pixel;
-        double newY = originalY + sim.getY() * pixel;
-        ball.setRotate(360 - Math.toDegrees(sim.getAlfa()));
-        ball.relocate(newX, newY);
+        double leftC = (currentCoommandBoth + currentCoommandDiff / 2);
+        double rightC = (currentCoommandBoth - currentCoommandDiff / 2);
+        s.setCommandAndUpdate(rightC, leftC);
       }
     }));
     timeline.setCycleCount(Timeline.INDEFINITE);

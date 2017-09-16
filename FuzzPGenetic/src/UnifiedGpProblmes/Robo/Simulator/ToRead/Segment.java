@@ -2,6 +2,7 @@ package UnifiedGpProblmes.Robo.Simulator.ToRead;
 
 public class Segment {
   
+
   final Point start, end;
   final Double A, B, C;
 
@@ -35,6 +36,14 @@ public class Segment {
     double y = from.y - distStartinPoint.y;
     y *= y;
     return Math.sqrt(x + y);
+  }
+
+  public Point getStart() {
+    return start;
+  }
+
+  public Point getEnd() {
+    return end;
   }
 
 }

@@ -10,7 +10,7 @@ import UnifiedGpProblmes.Robo.Simulator.ToRead.Points;
 
 public class Lines {
 
-  public static void main(String[] args) {
+  public static Points getPoint() {
     String all = "";
 
     try (BufferedReader br = new BufferedReader(new FileReader("sm.json"))) {
@@ -21,7 +21,7 @@ public class Lines {
     }
     Gson gg = new Gson();
     Points f = gg.fromJson(all, Points.class);
-    System.out.println(f);
+    return f;
 
   }
 

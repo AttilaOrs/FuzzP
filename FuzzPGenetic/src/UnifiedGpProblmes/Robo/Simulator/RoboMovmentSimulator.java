@@ -9,18 +9,18 @@ import org.ejml.data.DMatrixRMaj;
 
 
 
-public class RoboMovmentSimulator {
+public class RoboMovmentSimulator implements IRoboMoovmentDescritions {
   private static final DMatrixRMaj A = new DMatrixRMaj(new double[][] {
-      { -3.78846264e-03, 5.08458745e-04, -4.36642603e-02, 3.66707433e-03 },
-      { 5.08458745e-04, -3.78846264e-03, 3.66707433e-03, -4.36642603e-02 },
-      { 8.60566252e-02, -6.07025184e-03, 9.46992583e-01, 8.05998969e-03 },
-      { -6.07025184e-03, 8.60566252e-02, 8.05998969e-03, 9.46992583e-01 },
+      { 0.11039272, -0.02206672, -0.04028361, 0.00261544 },
+      { -0.02206672, 0.11039272, 0.00261544, -0.04028361 },
+      { 0.07941429, -0.00408547, 0.98910846, 0.00174709 },
+      { -0.00408547, 0.07941429, 0.00174709, 0.98910846 },
   });
   private static final DMatrixRMaj B = new DMatrixRMaj(new double[][] {
-      { 4.45691372, -0.3986134 },
-      { -0.3986134, 4.45691372 },
-      { 3.12397131, -0.19517849 },
-      { -0.19517849, 3.12397131 },
+      { 4.04366647, -0.266526734 },
+      { -0.266526734, 4.04366647 },
+      { 0.53311875, -0.01707272 },
+      { -0.01707272, 0.53311875 },
   });
 
   private static final DMatrixRMaj C = new DMatrixRMaj(new double[][] {
@@ -86,14 +86,17 @@ public class RoboMovmentSimulator {
   }
 
 
+  @Override
   public double getX() {
     return x;
   }
 
+  @Override
   public double getY() {
     return y;
   }
 
+  @Override
   public double getAlfa() {
     return alfa;
   }
