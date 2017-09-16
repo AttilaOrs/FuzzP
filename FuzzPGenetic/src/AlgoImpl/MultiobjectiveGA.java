@@ -20,9 +20,10 @@ public class MultiobjectiveGA<TCreature extends IGPGreature> extends SimpleGA<TC
   protected double[] fitnesNormalWeigths;
   private IFitnesTransformer transformer;
 
-  public MultiobjectiveGA(ICreaturePool<TCreature> pool, ISelector selector, double[] fitnessweights,
+  public MultiobjectiveGA(ICreaturePool<TCreature> pool, ISelector selector, ISelector survSelector,
+      double[] fitnessweights,
       IFitnesTransformer transformer) {
-    super(pool, selector);
+    super(pool, selector, survSelector);
     this.fitnesNormalWeigths = normalise(fitnessweights);
 
     this.transformer = transformer;
@@ -57,6 +58,8 @@ public class MultiobjectiveGA<TCreature extends IGPGreature> extends SimpleGA<TC
     int cross = population * CROSSOVER / 200;
 
     for (iter = 0; iter < iteration; iter++) {
+
+      long timeStart = System.nanoTime();
       if (iter == 0) {
         pool.generate(0, 0, population);
       } else {
@@ -71,7 +74,7 @@ public class MultiobjectiveGA<TCreature extends IGPGreature> extends SimpleGA<TC
         }
 
         for (int i = 0; i < fitnesNormalWeigths.length; i++) {
-          List<int[]> toSurv = selector.selectOne(res, i, (int) (survNr * fitnesNormalWeigths[i]), 2);
+          List<int[]> toSurv = survSelector.selectOne(res, i, (int) (survNr * fitnesNormalWeigths[i]), 2);
           for (int j = 0; j < toSurv.size(); j++) {
             toSurv.get(i)[1] = nextIndex();
           }
@@ -99,11 +102,12 @@ public class MultiobjectiveGA<TCreature extends IGPGreature> extends SimpleGA<TC
       }
       res = transform(pool.calculateFitness());
 
+      long timeStop = System.nanoTime();
+
       logMemoryAndGc();
       logIterationResults(iter, res);
-
+      super.logNonFitnessRelated(iter, pool.getSizeStats(), (timeStop - timeStart) / res.size());
       System.gc();
-
     }
     Optional<Entry<Integer, Double[]>> max = res.entrySet().stream()
         .max((entry1, entry2) -> entry1.getValue()[0].compareTo(entry2.getValue()[0]));

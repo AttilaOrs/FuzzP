@@ -19,7 +19,6 @@ import java.util.Map;
 import de.erichseifert.gral.data.DataSeries;
 import de.erichseifert.gral.data.DataTable;
 import de.erichseifert.gral.graphics.DrawingContext;
-import de.erichseifert.gral.graphics.Insets2D;
 import de.erichseifert.gral.io.plots.DrawableWriter;
 import de.erichseifert.gral.io.plots.DrawableWriterFactory;
 import de.erichseifert.gral.plots.XYPlot;
@@ -83,12 +82,6 @@ public class PlotUtils {
 	}
 
   private static void writeOut(String fileName, XYPlot plot, double maxKey, double maxValue) {
-    double insetsTop = 20.0,
-        insetsLeft = 60.0,
-        insetsBottom = 60.0,
-        insetsRight = 40.0;
-    plot.setInsets(new Insets2D.Double(
-        insetsTop, insetsLeft, insetsBottom, insetsRight));
     plot.getAxis(XYPlot.AXIS_X).setMin(maxKey / -10.0);
     plot.getAxis(XYPlot.AXIS_Y).setMin(maxValue / -10.0);
     plot.getAxis(XYPlot.AXIS_X).setMax(maxKey + maxKey / 25.0);

@@ -16,9 +16,10 @@ public class MultiobjectiveMulioperatorGA<TCreature extends IGPGreature> extends
   private double[] crossoverNormalWeigths;
   private double[] mutatationNormalWeigths;
 
-  public MultiobjectiveMulioperatorGA(ICreaturePool<TCreature> pool, ISelector selector, IFitnesTransformer transformer,
+  public MultiobjectiveMulioperatorGA(ICreaturePool<TCreature> pool, ISelector selector, ISelector survSelector,
+      IFitnesTransformer transformer,
       double[] fitnessWeights, double[] generatorWeigths, double[] crossoverWeights, double[] mutationWeights) {
-    super(pool, selector, fitnessWeights, transformer);
+    super(pool, selector, survSelector, fitnessWeights, transformer);
 
     this.generatorNormalWeigths = normalise(generatorWeigths);
     this.crossoverNormalWeigths = normalise(crossoverWeights);
@@ -36,6 +37,7 @@ public class MultiobjectiveMulioperatorGA<TCreature extends IGPGreature> extends
     int cross = population * CROSSOVER / 200;
 
     for (iter = 0; iter < iteration; iter++) {
+      long timeStart = System.nanoTime();
       if (iter == 0) {
         int curent = 0;
         for (int generatirIndex = 0; generatirIndex < generatorNormalWeigths.length; generatirIndex++) {
@@ -55,7 +57,7 @@ public class MultiobjectiveMulioperatorGA<TCreature extends IGPGreature> extends
         }
 
         for (int i = 0; i < fitnesNormalWeigths.length; i++) {
-          List<int[]> toSurv = selector.selectOne(res, i, (int) (survNr * fitnesNormalWeigths[i]), 2);
+          List<int[]> toSurv = survSelector.selectOne(res, i, (int) (survNr * fitnesNormalWeigths[i]), 2);
           for (int j = 0; j < toSurv.size(); j++) {
             toSurv.get(j)[1] = nextIndex();
 
@@ -91,9 +93,11 @@ public class MultiobjectiveMulioperatorGA<TCreature extends IGPGreature> extends
 
       }
       res = transform(pool.calculateFitness());
+      long timeStop = System.nanoTime();
 
       logMemoryAndGc();
       logIterationResults(iter, res);
+      super.logNonFitnessRelated(iter, pool.getSizeStats(), (timeStop - timeStart) / res.size());
 
       System.gc();
 
