@@ -25,6 +25,13 @@ public class Points implements ISegmentProvider {
         segments.add(new Segment(last, newLast));
         last = newLast;
       }
+      segments.remove(segments.size() - 1);
+      List<Segment> smallSegments = new ArrayList<>();
+      for (Segment seg : segments) {
+        smallSegments.addAll(seg.createSmallerSegments(0.30));
+      }
+      segments = smallSegments;
+
     }
     return segments;
   }
