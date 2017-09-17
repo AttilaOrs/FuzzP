@@ -75,20 +75,17 @@ public class Main {
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
     
     double[] crossWeigth = new double[]{0.5, 0.5};
-    if (runNr % 3 == 0) {
-      crossWeigth = new double[]{0.75, 0.25};
+    if (runNr % 2 == 0) {
+      crossWeigth = new double[] { 1.0, 0.0 };
     }
-    if (runNr % 3 == 1) {
-      crossWeigth = new double[] { 0.50, 0.50 };
-    }
-    if (runNr % 3 == 2) {
+    if (runNr % 2 == 1) {
       crossWeigth = new double[] { 0.25, 0.75 };
     }
     
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
         new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 1);
-    // otherSelector = (runNr % 4 >= 2) ? pool : otherSelector;
+    otherSelector = (runNr % 4 >= 2) ? pool : otherSelector;
 
     MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
         survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
