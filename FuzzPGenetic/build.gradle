@@ -6,7 +6,7 @@ apply plugin: 'eclipse'
 
 version=getVersionName()
 sourceSets.main.java.srcDirs = ['src' ]
-mainClassName = "UnifiedGpProblmes.ArtificalAnt.Main"
+mainClassName = "UnifiedGpProblmes.Robo.Main"
 project.ext.set("allJvmArgs", ["-Xms=1024m", "-Xmx=3000m"])
 
 sourceSets {
@@ -43,6 +43,8 @@ dependencies {
       compile project(':FuzzPCore')
       compile 'org.tinyjee.jgraphx:jgraphx:3.4.1.3'
       compile 'com.google.code.gson:gson:2.2.4'
+      compile group: 'org.ejml', name: 'ejml-core', version: '0.31'
+      compile group: 'org.ejml', name: 'ejml-ddense', version: '0.31'
       compile project(':FuzzPVizual')
       testCompile 'junit:junit:4.12'
 }
