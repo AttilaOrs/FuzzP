@@ -19,6 +19,7 @@ import core.common.tokencache.TokenCacheDisabling;
 public class LineFallowerFitnes extends AbstactFitness{
 
   private ISegmentProvider segmentProvider;
+  private static final int TICK_NR = 600;
 
   public LineFallowerFitnes(ISegmentProvider segmentProv) {
     super(getProblemSpecification());
@@ -35,7 +36,11 @@ public class LineFallowerFitnes extends AbstactFitness{
   public double evaluate(UnifiedGpIndi creature) {
     FiredTranitionRecorder<UnifiedToken> rec = new FiredTranitionRecorder<>();
     rez = super.convert(creature);
-    
+    int size = creature.getSizes().size();
+    double multi = sizeMulti(size);
+    if (multi == 0.0) {
+      return 0.0;
+    }
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
         new UnifiedPetrinetCacheTableResultWrapper(rez.net,
             () -> new TokenCacheDisabling<>(5)),
@@ -47,7 +52,7 @@ public class LineFallowerFitnes extends AbstactFitness{
     TwoSensorLineFallowerRobot robo = new TwoSensorLineFallowerRobot(segmentProvider);
     boolean[] sensorsOut = new boolean[]{false,false};
     Map<Integer, UnifiedToken> inp = new HashMap<>();
-    for(int i = 0; i < 2000; i++){
+    for (int i = 0; i < TICK_NR; i++) {
       inp.clear();
       rez.addToInpIfPossible(inp, 0, sensorsOut[0] ? new UnifiedToken(1.0) : new UnifiedToken());
       rez.addToInpIfPossible(inp, 1, sensorsOut[1] ? new UnifiedToken(1.0) : new UnifiedToken());
@@ -67,7 +72,8 @@ public class LineFallowerFitnes extends AbstactFitness{
     int segs = segmentProvider.segmentsTouchedByPoints(robo.getVisitedPoints());
     
     super.updateCreatureWithSimplification(creature, rez, rec);
-    return segs / 1.0;
+    double multi2 = super.fireCountMulti(rec, TICK_NR);
+    return segs * multi * multi2;
   }
   
   public static ProblemSpecification getProblemSpecification(){

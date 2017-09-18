@@ -13,6 +13,12 @@ import structure.ICreatureFitnes;
 public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
 
 
+  public static boolean HARD_LIMIT = true;
+  public static boolean FIRED_TR_LIMIT = true;
+  public static boolean APPLY_SIZE_LIMIT = true;
+
+  public static int SIZE_LIMIT = 300;
+  public static int SIZE_LIMIT_START = 200;
   protected ToPetriNet tp;
   protected ProblemSpecification ps;
   protected DynamicallySimplifiedPetriNetBuilder simplifier;
@@ -27,7 +33,29 @@ public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
     PetriConversationResult rez = tp.toNet(creature.getRoot());
     return rez;
   }
+
+  protected double sizeMulti(int size) {
+    double multi = 1.0;
+    if (APPLY_SIZE_LIMIT) {
+      if (size > SIZE_LIMIT) {
+        return 0.0;
+      }
+
+      if (!HARD_LIMIT && size > SIZE_LIMIT_START) {
+        multi = 1.0 - ((size - SIZE_LIMIT_START) / ((SIZE_LIMIT - SIZE_LIMIT_START) * 1.0));
+      }
+    }
+    return multi;
+  }
   
+  protected double fireCountMulti(FiredTranitionRecorder<UnifiedToken> rec, int mooves) {
+    double multi2 = 1.0;
+    int ss = mooves * 500;
+    if (FIRED_TR_LIMIT && rec.getTransitionFiredCount() > ss) {
+      multi2 = 1.0 - (1.0 * (rec.getTransitionFiredCount() - ss)) / (2.0 * ss);
+    }
+    return multi2;
+  }
   protected void updateCreatureWithSimplification(UnifiedGpIndi creature, PetriConversationResult rez,
       FiredTranitionRecorder<UnifiedToken> tk) {
     IInnerNode<NodeType> newRoot = simplifier.createSimplifiedTree(creature.getRoot(),
