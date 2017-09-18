@@ -78,8 +78,12 @@ public class MultiobjectiveMulioperatorGA<TCreature extends IGPGreature> extends
 
         for (int crossIndex = 0; crossIndex < crossoverNormalWeigths.length; crossIndex++) {
           for (int ff = 0; ff < fitnesNormalWeigths.length; ff++) {
+            int fffff = (int) (cross * fitnesNormalWeigths[ff] * crossoverNormalWeigths[crossIndex]);
+            if (fffff == 0) {
+              break;
+            }
             List<int[]> toCross = selector.selectPairs(res, ff,
-                (int) (cross * fitnesNormalWeigths[ff] * crossoverNormalWeigths[crossIndex]), 4);
+                fffff, 4);
             for (int i = 0; i < toCross.size(); i++) {
               toCross.get(i)[2] = population * iter + curentIndex;
               curentIndex++;
