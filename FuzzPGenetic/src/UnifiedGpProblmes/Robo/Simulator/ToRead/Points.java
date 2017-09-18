@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class Points implements ISegmentProvider {
-  List<Point> Elements;
+  public List<Point> Elements;
   transient List<Segment> segments;
 
   @Override
@@ -34,6 +34,23 @@ public class Points implements ISegmentProvider {
 
     }
     return segments;
+  }
+  
+  double EPS = 0.01;
+
+  @Override
+  public int segmentsTouchedByPoints(List<Point> path) {
+    int toRet = 0;
+    for(Segment seg : getLineSegments()){
+      for(Point p : path){
+        double d = seg.dist(p);
+        if(d < EPS){
+          toRet += 1;
+          break;
+        }
+      }
+    }
+    return toRet;
   }
 
 
