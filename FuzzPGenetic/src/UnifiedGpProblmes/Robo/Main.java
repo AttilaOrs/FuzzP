@@ -5,16 +5,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import AlgoImpl.IterationLogger;
+import AlgoImpl.MultiobjectiveMulioperatorGA;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
 import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
+import UnifiedGp.AbstactFitness;
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
+import UnifiedGp.GpIndi.UnifromCrossOver;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
 import UnifiedGpProblmes.ArtificalAnt.AntFitnes;
 import UnifiedGpProblmes.Robo.Simulator.Lines;
@@ -66,22 +69,30 @@ public class Main {
 
     ArrayList<IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>>> breeders = new ArrayList<>();
     breeders.add(() -> new UnifiedGpIndiBreeder());
+    breeders.add(() -> new UnifromCrossOver(0.5));
 
     ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
     fitnesses.add(() -> firntsSup.get());
     ISelector otherSelector = new LinearRankSelection();
     ISelector survSelector = new LinearRankSelection();
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
+    AbstactFitness.APPLY_SIZE_LIMIT = true;
+    AbstactFitness.FIRED_TR_LIMIT = true;
+    AbstactFitness.HARD_LIMIT = false;
+    AbstactFitness.SIZE_LIMIT_START = 300;
+    AbstactFitness.SIZE_LIMIT = 400;
     
     
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
         new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 1);
-    otherSelector = (runNr % 4 >= 2) ? pool : otherSelector;
+    otherSelector = pool;
 
-    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, otherSelector, survSelector);
-    SimpleGA.iteration = 50;
-    SimpleGA.population = 100;
+    double[] crossWeigth = new double[] { 0.5, 0.5 };
+    MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
+        survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
+    SimpleGA.iteration = 100;
+    SimpleGA.population = 1000;
     algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();
     algo.theAlgo();
@@ -138,9 +149,10 @@ public class Main {
     // ((MutableStateLogged) f.table).writeToFileWithXs(new File("antMoove" +
     // runNr + ".txt"));
     PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<>();
-    saver.save(mm.getRez().net, path + "Petri.json");
+    String l = saver.makeString(mm.getRez().net);
+    PlotUtils.writeToFile(path + "Petri.json", l);
     String ss = mm.getRez().inpNrToInpPlace.toString() + "\n" + mm.getRez().outNrToOutTr.toString();
-    PlotUtils.writeToFile(path + "Mapping.txr", ss);
+    PlotUtils.writeToFile(path + "Mapping.txt", ss);
     return rr;
 
   }
