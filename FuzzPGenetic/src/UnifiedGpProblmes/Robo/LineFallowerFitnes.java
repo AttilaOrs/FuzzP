@@ -27,11 +27,14 @@ public class LineFallowerFitnes extends AbstactFitness{
   
   double commonCmd = 0.0;
   double diffCmd = 0.0;
+  private PetriConversationResult rez;
+
+  static int cntr = 0;
 
   @Override
   public double evaluate(UnifiedGpIndi creature) {
     FiredTranitionRecorder<UnifiedToken> rec = new FiredTranitionRecorder<>();
-    PetriConversationResult rez = super.convert(creature);
+    rez = super.convert(creature);
     
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
         new UnifiedPetrinetCacheTableResultWrapper(rez.net,
@@ -40,15 +43,20 @@ public class LineFallowerFitnes extends AbstactFitness{
     exec.setRecorder(rec);
     
     rez.addActionIfPossible(0, i -> commonCmd = i.getValue());
-    rez.addActionIfPossible(1 , i -> diffCmd = i.getValue());
+    rez.addActionIfPossible(1, i -> diffCmd = i.getValue());
     TwoSensorLineFallowerRobot robo = new TwoSensorLineFallowerRobot(segmentProvider);
     boolean[] sensorsOut = new boolean[]{false,false};
     Map<Integer, UnifiedToken> inp = new HashMap<>();
     for(int i = 0; i < 2000; i++){
       inp.clear();
       rez.addToInpIfPossible(inp, 0, sensorsOut[0] ? new UnifiedToken(1.0) : new UnifiedToken());
-      rez.addToInpIfPossible(inp, 0, sensorsOut[1] ? new UnifiedToken(1.0) : new UnifiedToken());
+      rez.addToInpIfPossible(inp, 1, sensorsOut[1] ? new UnifiedToken(1.0) : new UnifiedToken());
+      try {
       exec.runTick(inp);
+      } catch (Throwable t) {
+        System.out.println(creature.getRoot());
+        throw t;
+      }
       
       double commandR = commonCmd + diffCmd/2.0;
       double commandL = commonCmd - diffCmd/2.0;
@@ -65,13 +73,17 @@ public class LineFallowerFitnes extends AbstactFitness{
   public static ProblemSpecification getProblemSpecification(){
     
     Map<Integer, Double> inpScale = new HashMap<>();
-    inpScale.put(0, 0.0);
-    inpScale.put(1, 0.0);
+    inpScale.put(0, 1.0);
+    inpScale.put(1, 1.0);
     Map<Integer, Double> outScale = new HashMap<>();
     outScale.put(0, 10.0);
     outScale.put(1, 10.0);
     return new ProblemSpecificationImpl(10.0, 4, inpScale, outScale);
     
+  }
+
+  public PetriConversationResult getRez() {
+    return rez;
   }
 
 }

@@ -104,8 +104,10 @@ public class Segment {
     return new double[] { (-1.0 * bb - delta) / (2.0 * aa), (-1.0 * bb + delta) / (2.0 * aa) };
   }
   
+  @Override
   public String toString(){
     return start +"---->"+end;
   }
+
 
 }

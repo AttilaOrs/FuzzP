@@ -53,6 +53,17 @@ public class Points implements ISegmentProvider {
     return toRet;
   }
 
+  public Points myClone() {
+    ArrayList<Point> l = new ArrayList<>();
+    for (Point p : Elements) {
+      l.add(p.myClone());
+    }
+    Points toRet = new Points();
+    toRet.Elements = l;
+    return toRet;
+
+  }
+
 
 
 }

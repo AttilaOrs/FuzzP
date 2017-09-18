@@ -16,4 +16,8 @@ public class Point {
   public String toString() {
     return "[" + x + "," + y + "]";
   }
+
+  public Point myClone() {
+    return new Point(x, y);
+  }
 }
