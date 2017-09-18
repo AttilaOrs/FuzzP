@@ -13,11 +13,11 @@ public class MultiobjectivMultioperatorAdaptativGa<TCreature extends IGPGreature
 
   private PoolDecoratorForOperatorHistory<TCreature> decoratorPool;
 
-  public MultiobjectivMultioperatorAdaptativGa(ICreaturePool<TCreature> pool, ISelector selector,
+  public MultiobjectivMultioperatorAdaptativGa(ICreaturePool<TCreature> pool, ISelector selector, ISelector survSelect,
       IFitnesTransformer transformer, double[] fitnessWeights, double[] generatorWeigths, double[] crossoverWeights,
       double[] mutationWeights) {
 
-    super(pool, selector, transformer, fitnessWeights, generatorWeigths, crossoverWeights, mutationWeights);
+    super(pool, selector, survSelect, transformer, fitnessWeights, generatorWeigths, crossoverWeights, mutationWeights);
     decoratorPool = new PoolDecoratorForOperatorHistory<>(pool, logger, transformer);
     super.pool = decoratorPool;
   }

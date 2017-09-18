@@ -40,7 +40,7 @@ public class SimpleGA<TCreature extends IGPGreature> {
   protected Map<String, Map<Integer, Integer>> sizeHistLogs;
   private int curentIndex;
   protected int iter;
-  private ISelector survSelector;
+  protected ISelector survSelector;
   private Predicate<Double> eralyStoppingCondition = null;
 
   public SimpleGA(ICreaturePool<TCreature> pool, ISelector selector) {
@@ -50,7 +50,11 @@ public class SimpleGA<TCreature extends IGPGreature> {
   public SimpleGA(ICreaturePool<TCreature> pool, ISelector selector, ISelector survselector) {
 		this.pool = pool;
 		this.selector = selector;
-    this.survSelector = selector;
+    if (survselector == null) {
+
+    } else {
+      this.survSelector = selector;
+    }
 		this.maxId = null;
 		garbageCollectionLastTime = -1;
 		logger = new IterationLogger();
@@ -145,11 +149,16 @@ public class SimpleGA<TCreature extends IGPGreature> {
 
 
   protected void logIterationResults(int iter, double average, double max,
-      int size, GenerationSizeStats sizeStats, long l) {
+      int size, GenerationSizeStats sizeStats, long iterTime) {
 		logger.addLogToTopic(IterationLogger.AVG_FIT, average);
 		logger.addLogToTopic(IterationLogger.MAX_FIT, max);
 		logger.addLogToTopic(IterationLogger.POP_SIZE, size / 1.0);
 
+    logNonFitnessRelated(iter, sizeStats, iterTime);
+    logger.iterFinished(iter);
+	}
+
+  protected void logNonFitnessRelated(int iter, GenerationSizeStats sizeStats, long iterTime) {
     logger.addLogToTopic(IterationLogger.TREE_DEPTH_AVG, sizeStats.avg.depth / 1.0);
     logger.addLogToTopic(IterationLogger.TREE_LEAFS_AVG, sizeStats.avg.leafs / 1.0);
     logger.addLogToTopic(IterationLogger.TREE_OPS_AVG, sizeStats.avg.ops / 1.0);
@@ -164,12 +173,11 @@ public class SimpleGA<TCreature extends IGPGreature> {
 
     logger.addLogToTopic(IterationLogger.TREE_SIZE_AVG, sizeStats.avg.size() / 1.0);
 
-    logger.addLogToTopic(IterationLogger.TIME, l / 1000000.0);
-		logger.iterFinished(iter);
+    logger.addLogToTopic(IterationLogger.TIME, iterTime / 1000000.0);
     if (iter % SIZE_HIST_LOG == 0) {
       sizeHistLogs.put("gen " + iter, sizeStats.sizeHist);
     }
-	}
+  }
 
 	protected void logMemoryAndGc() {
 		Runtime runtime = Runtime.getRuntime();

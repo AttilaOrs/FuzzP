@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import AlgoImpl.IterationLogger;
+import AlgoImpl.MultiobjectiveMulioperatorGA;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
 import AlgoImpl.pools.CreatureParallelPool;
@@ -29,6 +30,8 @@ public class Main {
   private static final String DIVERSITY = "diversity";
   private static final String SIZE_HIST = "sizeHistLog";
   private static final String SIMILARTY_CAT = "similarityCategories";
+  private static final String MEM_USE = "mem_use";
+  private static final String GC_FILE = "gc";
   private static final String SIZE = "tree_size";
   private static final String FITNESS = "fitness";
   private static final String TIME = "time_per_sol";
@@ -37,64 +40,56 @@ public class Main {
   private static final String DEPTH = "tree_depth";
 
   public static void main(String[] args) {
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < 60; i++) {
       doStuff("ant" + i + "/", i);
     }
   }
 
+  static double prob = 50.0;
+  private static final int HALD_RANK_MAX_SIZE = 7;
+
   public static void doStuff(String path, int runNr) {
 
     ArrayList<IOperatorFactory<ICreatureGenerator<UnifiedGpIndi>>> gens = new ArrayList<>();
-    gens.add(() -> new HalfRampHalfFull(new TreeBuilderCongigGeneralImpl(AntFitnes.problemSpecification()), 6));
+    gens.add(() -> new HalfRampHalfFull(new TreeBuilderCongigGeneralImpl(AntFitnes.problemSpecification()),
+        HALD_RANK_MAX_SIZE));
 
 
     ArrayList<IOperatorFactory<ICreatureMutator<UnifiedGpIndi>>> mutators = new ArrayList<>();
     mutators.add(() -> new UnifiedGpIndiTreeMutator(createTreeBuilder()));
 
     ArrayList<IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>>> breeders = new ArrayList<>();
-    IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>> fact = () -> {
-      if (true) {
-        return new UnifiedGpIndiBreeder();
-      } else {
-        return new UnifromCrossOver();
-      }
-    };
-    breeders.add(fact);
+    breeders.add(() -> new UnifiedGpIndiBreeder());
+    breeders.add(() -> new UnifromCrossOver(prob));
 
     ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
     fitnesses.add(() -> new AntFitnes());
     ISelector otherSelector = new LinearRankSelection();
     ISelector survSelector = new LinearRankSelection();
-    if (runNr % 4 == 0) {
-      AntFitnes.HARD_LIMIT = true;
-      AntFitnes.SIZE_LIMIT = 300;
-      AntFitnes.SIZE_LIMIT_START = 300;
-    } else if (runNr % 4 == 1) {
-      AntFitnes.HARD_LIMIT = false;
-      AntFitnes.SIZE_LIMIT = 300;
-      AntFitnes.SIZE_LIMIT_START = 250;
-    } else if (runNr % 4 == 2) {
-      AntFitnes.HARD_LIMIT = false;
-      AntFitnes.SIZE_LIMIT = 350;
-      AntFitnes.SIZE_LIMIT_START = 250;
-    } else if (runNr % 4 == 3) {
-      AntFitnes.HARD_LIMIT = false;
-      AntFitnes.SIZE_LIMIT = 400;
-      AntFitnes.SIZE_LIMIT_START = 300;
-    }
+    AntFitnes.HARD_LIMIT = true;
+    AntFitnes.APPLY_SIZE_LIMIT = false;
+    AntFitnes.SIZE_LIMIT = 400;
+    AntFitnes.SIZE_LIMIT_START = 400;
+    AntFitnes.FIRED_TR_LIMIT = true;
 
-    String selectorStr = "";
-    selectorStr = "Both LinerRankSelector";
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
     
+    double[] crossWeigth = new double[]{0.5, 0.5};
+    if (runNr % 2 == 0) {
+      crossWeigth = new double[] { 1.0, 0.0 };
+    }
+    if (runNr % 2 == 1) {
+      crossWeigth = new double[] { 0.25, 0.75 };
+    }
     
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
         new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 1);
-    // otherSelector = (runNr % 2 == 0) ? pool : otherSelector;
+    otherSelector = (runNr % 4 >= 2) ? pool : otherSelector;
 
-    SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, otherSelector, survSelector);
-    SimpleGA.iteration = 101;
+    MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
+        survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
+    SimpleGA.iteration = 100;
     SimpleGA.population = 1000;
     algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();
@@ -109,14 +104,17 @@ public class Main {
     String config = "population " + SimpleGA.population + "\n";
     config += "iteration " + SimpleGA.iteration + "\n";
     config += "size limit " + AntFitnes.SIZE_LIMIT + "\n";
-    config += "family  no" + " " + otherSelector.getClass().getSimpleName() + "\n";
+    config += "family  " + " " + otherSelector.getClass().getSimpleName() + "\n";
     config += "ops " + SimpleGA.CROSSOVER + " " + SimpleGA.ELIT + " " + SimpleGA.MUTATION + " " + SimpleGA.SELECTION
         + " " + SimpleGA.NEW + "\n";
-    config += selectorStr + "\n";
-    config += "cross " + fact.generate().getClass().getSimpleName() + "\n";
-    config += "half ranked half full gen max 6 \n";
-    config += "Size config: HardLimit " + AntFitnes.HARD_LIMIT + " limit " + AntFitnes.SIZE_LIMIT + " start limit "
-        + AntFitnes.SIZE_LIMIT_START + "\n";
+    config += "cross " + breeders.get(0).generate().getClass().getSimpleName() + "\n";
+    config += "cross " + breeders.get(1).generate().getClass().getSimpleName() + " " + prob + "\n";
+    config += "crossWeights " + crossWeigth[0] + " " + crossWeigth[1] + "\n";
+
+    config += "half ranked half full gen max " + HALD_RANK_MAX_SIZE + " \n";
+    config += "Size config: HardLimit " + AntFitnes.APPLY_SIZE_LIMIT + " " + AntFitnes.HARD_LIMIT + " limit "
+        + AntFitnes.SIZE_LIMIT + " start limit "
+        + AntFitnes.SIZE_LIMIT_START + "FiredTransitionLmit " + AntFitnes.FIRED_TR_LIMIT + "\n";
     config += "result fitnes " + rezFitnes + "\n";
     config += "duration: " + (stop - start) + " milliseconds " + "(" + TimeUnit.MILLISECONDS.toMinutes(stop - start)
         + " minutes)";
@@ -134,12 +132,14 @@ public class Main {
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree leafs"),
         path + LEAFS);
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"), path + TIME);
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"), path + FITNESS);
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("Fit"), path + FITNESS);
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree size"), path + SIZE);
     PlotUtils.hist(algo.getSizeHistLog(), path + SIZE_HIST);
     IterationLogger poolLogger = pool.getLogger();
     PlotUtils.plot(poolLogger.getLogsForPlottingContatinigStrings("dist"), path + DIVERSITY);
     PlotUtils.plot(poolLogger.getLogsForPlottingContatinigStrings("cat"), path + SIMILARTY_CAT);
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings(IterationLogger.MEM_USE), path + MEM_USE);
+    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings(IterationLogger.GC_SEC), path + GC_FILE);
 
   }
 

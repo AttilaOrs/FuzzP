@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 
 public class IterationLogger {
   private static final String numberFormat = "#0.00";
-  public static String MAX_FIT = "maximum of fitnes";
-  public static String AVG_FIT = "avarage of fitnes";
+  public static String MAX_FIT = "maximum of Fitnes";
+  public static String AVG_FIT = "avarage of Fitnes";
   public static String POP_SIZE = "population size";
 
   public static String MEM_USE = "used memory";

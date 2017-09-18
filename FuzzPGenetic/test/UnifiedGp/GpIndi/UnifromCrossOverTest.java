@@ -36,7 +36,7 @@ public class UnifromCrossOverTest {
 
   @Test
   public void test() {
-    UnifromCrossOver cr = new UnifromCrossOver(false);
+    UnifromCrossOver cr = new UnifromCrossOver(false, 50);
     String[] comps1 = createIndiOne().getRoot().toString().split(" ");
     String[] comps2 = createIndiTwo().getRoot().toString().split(" ");
 
