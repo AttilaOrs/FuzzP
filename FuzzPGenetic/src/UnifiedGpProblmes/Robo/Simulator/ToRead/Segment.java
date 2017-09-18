@@ -26,10 +26,10 @@ public class Segment {
     double c_x = B * B * from.x - A * B * from.y - A * C;
     c_x = c_x / den;
     Point distStartinPoint = new Point(c_x, c_y);
-    if ((start.x - end.x) / (distStartinPoint.x - start.x) > 0.0) {
+    if ((start.x - end.x) / (distStartinPoint.x - start.x) > 0.0 || (start.y - end.y) / (distStartinPoint.y - start.y) > 0.0) {
       // out of bounds;
       distStartinPoint = start;
-    } else if ((distStartinPoint.x - end.x) / (end.x - start.x) > 0.0) {
+    } else if ((distStartinPoint.x - end.x) / (end.x - start.x) > 0.0 || (distStartinPoint.y - end.y) / (end.y - start.y) > 0.0) {
       distStartinPoint = end;
     }
     return dist(from, distStartinPoint);
@@ -102,6 +102,10 @@ public class Segment {
     }
     delta = sqrt(delta);
     return new double[] { (-1.0 * bb - delta) / (2.0 * aa), (-1.0 * bb + delta) / (2.0 * aa) };
+  }
+  
+  public String toString(){
+    return start +"---->"+end;
   }
 
 }

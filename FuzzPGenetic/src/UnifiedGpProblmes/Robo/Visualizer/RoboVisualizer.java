@@ -29,7 +29,7 @@ public class RoboVisualizer extends Application {
   public void start(Stage stage) {
 
     Pane canvas = new Pane();
-    Scene scene = new Scene(canvas, 1000, 1000, Color.TRANSPARENT);
+    Scene scene = new Scene(canvas, 1000, 1000, Color.WHITE);
     s = new TriangleRoboWithSensors(canvas, Lines.getPoint());
     LinesVizualzier viz = new LinesVizualzier(canvas, Lines.getPoint());
 
