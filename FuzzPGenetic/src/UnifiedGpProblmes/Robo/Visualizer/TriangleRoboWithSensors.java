@@ -68,5 +68,9 @@ public class TriangleRoboWithSensors {
   public static double yOnCansvas(double y) {
     return originalY - y * pixel;
   }
+  
+  public List<Point> getCurrentPathPoints(){
+    return roboSim.getVisitedPoints();
+  }
 
 }

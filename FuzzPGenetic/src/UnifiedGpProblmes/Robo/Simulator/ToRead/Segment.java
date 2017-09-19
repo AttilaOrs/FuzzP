@@ -70,44 +70,16 @@ public class Segment {
   }
 
   private Point nextSegmentPoint(Point from, double length) {
-    if (A != 0.0) {
-      double alfa = from.x - C / A;
-      double aa = (B * B / (A * A)) + 1;
-      double bb = -2.0 * (alfa * (B / A) + from.y);
-      double cc = alfa * alfa + from.y * from.y - length * length;
-      double[] yy = qudraticSol(aa, bb, cc);
-      if (yy == null) {
-        double xxx = (from.x + end.x) / 2.0;
-        double yyy = (from.y + end.y) / 2.0;
-        Point w = new Point(xxx, yyy);
-        return w;
-
-      }
-      double y_sol = ((from.y - yy[0]) / (yy[0] - end.y) > 0.0) ? yy[0] : yy[1];
-      double x_sol = -1.0 * (B * y_sol + C) / A;
-      return new Point(x_sol, y_sol);
-    } else if (B != 0.0) {
-      double dir = (end.x - start.x) / Math.abs(start.x - end.x);
-      Point toRet = new Point(from.x + length * dir, from.y);
-      return toRet;
-    }
-    System.err.println("we got a problem");
-    return null;
+    double d= dist(from, end);
+    double x_sol = from.x + (length/d)*(end.x - from.x);
+    double y_sol = from.y + (length/d)*(end.y - from.y);
+    return new Point(x_sol, y_sol);
   }
 
-  private double[] qudraticSol(double aa, double bb, double cc) {
-    double delta = bb * bb - 4 * aa * cc;
-    if (delta < 0.0) {
-      return null;
-    }
-    delta = sqrt(delta);
-    return new double[] { (-1.0 * bb - delta) / (2.0 * aa), (-1.0 * bb + delta) / (2.0 * aa) };
-  }
-  
   @Override
   public String toString(){
     return start +"---->"+end;
   }
-
+  
 
 }

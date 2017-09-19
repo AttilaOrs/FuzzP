@@ -7,6 +7,9 @@ import java.util.List;
 public class Points implements ISegmentProvider {
   public List<Point> Elements;
   transient List<Segment> segments;
+  transient List<Segment> smallSegments;
+  private static final double EPS_TOUCH = 0.01;
+  private static final double SEG_LENGHT = 0.05;
 
   @Override
   public Collection<Segment> getLineSegments() {
@@ -26,32 +29,49 @@ public class Points implements ISegmentProvider {
         last = newLast;
       }
       segments.remove(segments.size() - 1);
-      List<Segment> smallSegments = new ArrayList<>();
-      for (Segment seg : segments) {
-        smallSegments.addAll(seg.createSmallerSegments(0.30));
-      }
-      segments = smallSegments;
 
     }
     return segments;
   }
   
-  double EPS = 0.01;
+  @Override
+  public List<Segment> getSmallSegments(){
+    if(smallSegments == null){
+       smallSegments = new ArrayList<>();
+      for (Segment seg : segments) {
+        smallSegments.addAll(seg.createSmallerSegments(SEG_LENGHT));
+      }
+    }
+    return smallSegments;
+  }
+  
 
   @Override
-  public int segmentsTouchedByPoints(List<Point> path) {
-    int toRet = 0;
-    for(Segment seg : getLineSegments()){
-      for(Point p : path){
+  public PathResult smallSegmentsTouchedByPoints(List<Point> path) {
+    int touchedAtAll = 0;
+    ArrayList<Integer> order = new ArrayList<>();
+    for(Segment seg : getSmallSegments()){
+      for(int pointIndex = 0; pointIndex < path.size(); pointIndex++){
+        Point p = path.get(pointIndex);
         double d = seg.dist(p);
-        if(d < EPS){
-          toRet += 1;
+        if(d < EPS_TOUCH){
+          touchedAtAll += 1;
+          order.add(pointIndex);
           break;
         }
       }
     }
-    return toRet;
+    int touchedInOrder =0;
+    for(int i=1 ; i < order.size()-1; i++){
+      if(order.get(i-1) <= order.get(i) &&  order.get(i) < order.get(i+1) ){
+        touchedInOrder++;
+      }
+    }
+    return new PathResult(touchedAtAll, touchedInOrder);
   }
+  
+    
+    
 
   public Points myClone() {
     ArrayList<Point> l = new ArrayList<>();

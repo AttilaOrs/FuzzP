@@ -50,5 +50,12 @@ public class SegmentTest {
     assertTrue(rez - 2 * sqrt(2.0) < EPS);
 
   }
+  
+  @Test
+  public void smallSegment(){
+    Segment s = new Segment(new Point(0.6821300883861746, 2.6174720863984233), new Point(0.4141675934751009, 2.605821435108098));
+    System.out.println(s.createSmallerSegments(0.25));
+    
+  }
 
 }

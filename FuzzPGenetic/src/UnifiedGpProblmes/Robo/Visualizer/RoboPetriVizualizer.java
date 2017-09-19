@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import UnifiedGpProblmes.Robo.Simulator.Lines;
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Points;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -41,8 +42,9 @@ public class RoboPetriVizualizer extends Application {
 
     Pane canvas = new Pane();
     Scene scene = new Scene(canvas, 1000, 1000, Color.WHITE);
-    s = new TriangleRoboWithSensors(canvas, Lines.getPoint());
-    LinesVizualzier viz = new LinesVizualzier(canvas, Lines.getPoint());
+    Points segments = Lines.getPoint();
+    s = new TriangleRoboWithSensors(canvas, segments);
+    LinesVizualzier viz = new LinesVizualzier(canvas, segments);
 
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
         new UnifiedPetrinetCacheTableResultWrapper(net,
@@ -79,7 +81,7 @@ public class RoboPetriVizualizer extends Application {
         sensorsOut = s.setCommandAndUpdate(commandR, commandL);
         commonCmd = 0.0;
         diffCmd = 0.0;
-        System.out.println(cntr++);
+        System.out.println((cntr++) + " "+ segments.smallSegmentsTouchedByPoints(s.getCurrentPathPoints()));
       }
     }));
     timeline.setCycleCount(Timeline.INDEFINITE);

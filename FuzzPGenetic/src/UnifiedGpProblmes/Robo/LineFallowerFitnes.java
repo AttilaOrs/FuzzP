@@ -10,6 +10,7 @@ import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGpProblmes.Robo.Simulator.TwoSensorLineFallowerRobot;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.ISegmentProvider;
+import UnifiedGpProblmes.Robo.Simulator.ToRead.ISegmentProvider.PathResult;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
@@ -69,11 +70,11 @@ public class LineFallowerFitnes extends AbstactFitness{
       commonCmd = 0.0;
       diffCmd = 0.0;
     }
-    int segs = segmentProvider.segmentsTouchedByPoints(robo.getVisitedPoints());
+    PathResult pathRez  = segmentProvider.smallSegmentsTouchedByPoints(robo.getVisitedPoints()) ;
     
     super.updateCreatureWithSimplification(creature, rez, rec);
     double multi2 = super.fireCountMulti(rec, TICK_NR);
-    return segs * multi * multi2;
+    return (pathRez.touchedAtAll+ pathRez.touchedInOrder*2) * multi * multi2;
   }
   
   public static ProblemSpecification getProblemSpecification(){
