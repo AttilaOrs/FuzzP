@@ -42,7 +42,7 @@ public class TriangleRoboWithSensors {
     }
   }
 
-  public void setCommandAndUpdate(double commandR, double commandL) {
+  public boolean[] setCommandAndUpdate(double commandR, double commandL) {
     boolean[] r = roboSim.simulate(commandR, commandL);
     robo.setRotate(toDegrees(roboSim.getRoboMoovmentSim().getAlfa()));
     robo.setCenterX(xOnCansvas(roboSim.getRoboMoovmentSim().getX()));
@@ -58,7 +58,7 @@ public class TriangleRoboWithSensors {
         sensors.get(i).setFill(javafx.scene.paint.Color.GREEN);
       }
     }
-
+    return r;
   }
 
   public static double xOnCansvas(double x) {

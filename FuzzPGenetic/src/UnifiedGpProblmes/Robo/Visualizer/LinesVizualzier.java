@@ -19,8 +19,8 @@ public class LinesVizualzier {
         l.setFill(javafx.scene.paint.Color.BLUE);
         l.setStroke(javafx.scene.paint.Color.BLUE);
       } else {
-        l.setFill(javafx.scene.paint.Color.BLACK);
-        l.setStroke(javafx.scene.paint.Color.BLACK);
+        l.setFill(javafx.scene.paint.Color.BROWN);
+        l.setStroke(javafx.scene.paint.Color.BROWN);
       }
       cntr++;
 
