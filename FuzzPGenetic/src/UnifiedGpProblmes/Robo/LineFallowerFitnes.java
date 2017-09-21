@@ -53,7 +53,8 @@ public class LineFallowerFitnes extends AbstactFitness{
     TwoSensorLineFallowerRobot robo = new TwoSensorLineFallowerRobot(segmentProvider);
     boolean[] sensorsOut = new boolean[]{false,false};
     Map<Integer, UnifiedToken> inp = new HashMap<>();
-    for (int i = 0; i < TICK_NR; i++) {
+    int finalTickNr = TICK_NR;
+    for (int i = 0; i < finalTickNr; i++) {
       inp.clear();
       rez.addToInpIfPossible(inp, 0, sensorsOut[0] ? new UnifiedToken(1.0) : new UnifiedToken());
       rez.addToInpIfPossible(inp, 1, sensorsOut[1] ? new UnifiedToken(1.0) : new UnifiedToken());
@@ -69,12 +70,22 @@ public class LineFallowerFitnes extends AbstactFitness{
       sensorsOut = robo.simulate(commandR, commandL);
       commonCmd = 0.0;
       diffCmd = 0.0;
+      if (i == TICK_NR) {
+        int r = calcBasicFitness(segmentProvider.smallSegmentsTouchedByPoints(robo.getVisitedPoints()));
+        if (r > 170) {
+          finalTickNr += 200;
+        }
+      }
     }
     PathResult pathRez  = segmentProvider.smallSegmentsTouchedByPoints(robo.getVisitedPoints()) ;
     
     super.updateCreatureWithSimplification(creature, rez, rec);
     double multi2 = super.fireCountMulti(rec, TICK_NR);
-    return (pathRez.touchedAtAll+ pathRez.touchedInOrder*2) * multi * multi2;
+    return calcBasicFitness(pathRez) * multi * multi2;
+  }
+
+  private int calcBasicFitness(PathResult pathRez) {
+    return pathRez.touchedAtAll+ pathRez.touchedInOrder*2;
   }
   
   public static ProblemSpecification getProblemSpecification(){
