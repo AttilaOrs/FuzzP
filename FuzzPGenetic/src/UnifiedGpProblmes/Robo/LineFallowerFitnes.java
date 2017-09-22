@@ -80,7 +80,7 @@ public class LineFallowerFitnes extends AbstactFitness{
     PathResult pathRez  = segmentProvider.smallSegmentsTouchedByPoints(robo.getVisitedPoints()) ;
     
     super.updateCreatureWithSimplification(creature, rez, rec);
-    double multi2 = super.fireCountMulti(rec, TICK_NR);
+    double multi2 = super.fireCountMulti(rec, finalTickNr);
     return calcBasicFitness(pathRez) * multi * multi2;
   }
 

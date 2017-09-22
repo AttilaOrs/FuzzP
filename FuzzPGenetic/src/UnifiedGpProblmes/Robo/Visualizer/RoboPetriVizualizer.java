@@ -4,13 +4,16 @@ package UnifiedGpProblmes.Robo.Visualizer;
 import java.util.HashMap;
 import java.util.Map;
 
+import Main.UnifiedVizualizer;
 import UnifiedGpProblmes.Robo.Simulator.Lines;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Points;
+import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
+import core.common.recoder.FullRecorder;
 import core.common.tokencache.TokenCacheDisabling;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -52,13 +55,16 @@ public class RoboPetriVizualizer extends Application {
         false, true);
     net.addActionForOuputTransition(fiOut, i -> commonCmd = i.getValue());
     net.addActionForOuputTransition(seOut, i -> diffCmd = i.getValue());
+    FullRecorder<UnifiedToken> tk = new FullRecorder<>();
+    exec.setRecorder(tk);
 
 
     scene.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent mouseEvent) {
         Platform.exit();
-        System.exit(0);
+        // System.exit(0);
+        UnifiedVizualizer.visualize(net, tk, TransitionPlaceNameStore.createOrdinarNames(net));
       }
     });
 
@@ -91,10 +97,10 @@ public class RoboPetriVizualizer extends Application {
   public static void main(String[] args) {
     PetriNetJsonSaver<UnifiedPetriNet> load = new PetriNetJsonSaver<UnifiedPetriNet>();
     RoboPetriVizualizer.net = load.load("Petri.json", UnifiedPetriNet.class);
-    fiInp = 180;
-    seInp = 184;
-    fiOut = 136;
-    seOut = 143;
+    fiInp = 360;
+    seInp = 371;
+    fiOut = 269;
+    seOut = 286;
     launch();
   }
 }
