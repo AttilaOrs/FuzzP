@@ -85,8 +85,8 @@ public class Main {
     
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
-        new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 1);
-    // otherSelector = pool;
+        new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 0);
+    otherSelector = pool;
 
     double[] crossWeigth = new double[] { 0.5, 0.5 };
     MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
@@ -116,7 +116,8 @@ public class Main {
         + AntFitnes.SIZE_LIMIT_START + "FiredTransitionLmit " + AntFitnes.FIRED_TR_LIMIT + "\n";
     config += "result fitnes " + rezFitnes + "\n";
     config += "duration: " + (stop - start) + " milliseconds " + "(" + TimeUnit.MILLISECONDS.toMinutes(stop - start)
-        + " minutes)";
+        + " minutes)\n";
+    config += "New family island";
 
     PlotUtils.writeToFile(path + CONFIG_REZ, config);
 

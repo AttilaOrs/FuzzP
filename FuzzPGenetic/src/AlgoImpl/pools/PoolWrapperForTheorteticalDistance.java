@@ -367,7 +367,19 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
   }
 
   private Double func(float f) {
-    return (double) (1.0f - f);
+    if (f > 0.038f) {
+      return 0.1;
+    }
+    if (f > 0.010f) {
+      return 0.25;
+    }
+    if (f > 0.003f) {
+      return 0.50;
+    }
+    if (f > 0.00001f) {
+      return 1.0;
+    }
+    return 0.5;
   }
 
 }
