@@ -1,0 +1,779 @@
+{
+  "scaleForPlace": [
+    50.0,
+    50.0,
+    0.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    0.0,
+    0.0,
+    0.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0
+  ],
+  "delayForTransition": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "delayMulitiperForTransition": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "tableForTransition": [
+    {
+      "unfiedType": "u1x1",
+      "unifiedData": {
+        "table": {
+          "valTable": {
+            "NL": "NL",
+            "NM": "NM",
+            "ZR": "ZR",
+            "PM": "PM",
+            "PL": "PL",
+            "FF": "FF"
+          }
+        }
+      }
+    },
+    {
+      "unfiedType": "u1x1",
+      "unifiedData": {
+        "table": {
+          "valTable": {
+            "NL": "NL",
+            "NM": "NM",
+            "ZR": "ZR",
+            "PM": "PM",
+            "PL": "PL",
+            "FF": "FF"
+          }
+        }
+      }
+    },
+    {
+      "unfiedType": "u2x1",
+      "unifiedData": {
+        "table": {
+          "ruleTable": {
+            "NL": {
+              "NL": "NL",
+              "NM": "NL",
+              "ZR": "NL",
+              "PM": "NL",
+              "PL": "NL",
+              "FF": "FF"
+            },
+            "NM": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "NM",
+              "PM": "NM",
+              "PL": "NM",
+              "FF": "FF"
+            },
+            "ZR": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "ZR",
+              "PL": "ZR",
+              "FF": "FF"
+            },
+            "PM": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PM",
+              "FF": "FF"
+            },
+            "PL": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "FF": {
+              "NL": "FF",
+              "NM": "FF",
+              "ZR": "FF",
+              "PM": "FF",
+              "PL": "FF",
+              "FF": "FF"
+            }
+          }
+        },
+        "op": "None"
+      }
+    },
+    {
+      "unfiedType": "u2x2",
+      "unifiedData": {
+        "table": {
+          "ruleTable1": {
+            "NL": {
+              "NL": "NL",
+              "NM": "NL",
+              "ZR": "NL",
+              "PM": "NL",
+              "PL": "NL",
+              "FF": "FF"
+            },
+            "NM": {
+              "NL": "NM",
+              "NM": "NM",
+              "ZR": "NM",
+              "PM": "NM",
+              "PL": "NM",
+              "FF": "FF"
+            },
+            "ZR": {
+              "NL": "ZR",
+              "NM": "ZR",
+              "ZR": "ZR",
+              "PM": "ZR",
+              "PL": "ZR",
+              "FF": "FF"
+            },
+            "PM": {
+              "NL": "PM",
+              "NM": "PM",
+              "ZR": "PM",
+              "PM": "PM",
+              "PL": "PM",
+              "FF": "FF"
+            },
+            "PL": {
+              "NL": "PL",
+              "NM": "PL",
+              "ZR": "PL",
+              "PM": "PL",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "FF": {
+              "NL": "FF",
+              "NM": "FF",
+              "ZR": "FF",
+              "PM": "FF",
+              "PL": "FF",
+              "FF": "FF"
+            }
+          },
+          "ruleTable2": {
+            "NL": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "NM": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "ZR": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "PM": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "PL": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "FF": {
+              "NL": "FF",
+              "NM": "FF",
+              "ZR": "FF",
+              "PM": "FF",
+              "PL": "FF",
+              "FF": "FF"
+            }
+          }
+        },
+        "op": "None"
+      }
+    },
+    {
+      "unfiedType": "u1x2",
+      "unifiedData": {
+        "table": {
+          "valTable1": {
+            "NL": "NL",
+            "NM": "NM",
+            "ZR": "ZR",
+            "PM": "PM",
+            "PL": "PL",
+            "FF": "FF"
+          },
+          "valTable2": {
+            "NL": "NL",
+            "NM": "NM",
+            "ZR": "ZR",
+            "PM": "PM",
+            "PL": "PL",
+            "FF": "FF"
+          }
+        }
+      }
+    },
+    {
+      "unfiedType": "u1x1",
+      "unifiedData": {
+        "table": {
+          "valTable": {
+            "NL": "NL",
+            "NM": "NM",
+            "ZR": "ZR",
+            "PM": "PM",
+            "PL": "PL",
+            "FF": "FF"
+          }
+        }
+      }
+    },
+    {
+      "unfiedType": "u2x2",
+      "unifiedData": {
+        "table": {
+          "ruleTable1": {
+            "NL": {
+              "NL": "NL",
+              "NM": "NL",
+              "ZR": "NM",
+              "PM": "NM",
+              "PL": "ZR",
+              "FF": "FF"
+            },
+            "NM": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "NM",
+              "PM": "ZR",
+              "PL": "PM",
+              "FF": "FF"
+            },
+            "ZR": {
+              "NL": "NM",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PM",
+              "FF": "FF"
+            },
+            "PM": {
+              "NL": "NM",
+              "NM": "ZR",
+              "ZR": "PM",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "PL": {
+              "NL": "ZR",
+              "NM": "PM",
+              "ZR": "PM",
+              "PM": "PL",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "FF": {
+              "NL": "FF",
+              "NM": "FF",
+              "ZR": "FF",
+              "PM": "FF",
+              "PL": "FF",
+              "FF": "FF"
+            }
+          },
+          "ruleTable2": {
+            "NL": {
+              "NL": "NL",
+              "NM": "NL",
+              "ZR": "NM",
+              "PM": "NM",
+              "PL": "ZR",
+              "FF": "FF"
+            },
+            "NM": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "NM",
+              "PM": "ZR",
+              "PL": "PM",
+              "FF": "FF"
+            },
+            "ZR": {
+              "NL": "NM",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PM",
+              "FF": "FF"
+            },
+            "PM": {
+              "NL": "NM",
+              "NM": "ZR",
+              "ZR": "PM",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "PL": {
+              "NL": "ZR",
+              "NM": "PM",
+              "ZR": "PM",
+              "PM": "PL",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "FF": {
+              "NL": "FF",
+              "NM": "FF",
+              "ZR": "FF",
+              "PM": "FF",
+              "PL": "FF",
+              "FF": "FF"
+            }
+          }
+        },
+        "op": "None"
+      }
+    },
+    {
+      "unfiedType": "u2x1",
+      "unifiedData": {
+        "table": {
+          "ruleTable": {
+            "NL": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "NM": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "ZR": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "PM": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "PL": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "FF": {
+              "NL": "FF",
+              "NM": "FF",
+              "ZR": "FF",
+              "PM": "FF",
+              "PL": "FF",
+              "FF": "FF"
+            }
+          }
+        },
+        "op": "None"
+      }
+    },
+    {
+      "unfiedType": "u2x1",
+      "unifiedData": {
+        "table": {
+          "ruleTable": {
+            "NL": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "NM": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "ZR": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "PM": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "PL": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "FF": {
+              "NL": "FF",
+              "NM": "FF",
+              "ZR": "FF",
+              "PM": "FF",
+              "PL": "FF",
+              "FF": "FF"
+            }
+          }
+        },
+        "op": "None"
+      }
+    },
+    {
+      "unfiedType": "u2x1",
+      "unifiedData": {
+        "table": {
+          "ruleTable": {
+            "NL": {
+              "NL": "NL",
+              "NM": "NL",
+              "ZR": "NL",
+              "PM": "NL",
+              "PL": "NL",
+              "FF": "FF"
+            },
+            "NM": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "NM",
+              "PM": "NM",
+              "PL": "NM",
+              "FF": "FF"
+            },
+            "ZR": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "ZR",
+              "PL": "ZR",
+              "FF": "FF"
+            },
+            "PM": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PM",
+              "FF": "FF"
+            },
+            "PL": {
+              "NL": "NL",
+              "NM": "NM",
+              "ZR": "ZR",
+              "PM": "PM",
+              "PL": "PL",
+              "FF": "FF"
+            },
+            "FF": {
+              "NL": "FF",
+              "NM": "FF",
+              "ZR": "FF",
+              "PM": "FF",
+              "PL": "FF",
+              "FF": "FF"
+            }
+          }
+        },
+        "op": "None"
+      }
+    }
+  ],
+  "fromTransToPlace": [
+    [],
+    [],
+    [
+      15
+    ],
+    [
+      6,
+      5
+    ],
+    [
+      8,
+      7
+    ],
+    [
+      9
+    ],
+    [
+      10,
+      11
+    ],
+    [
+      12
+    ],
+    [
+      13
+    ],
+    [
+      14
+    ]
+  ],
+  "fromPlaceToTrans": [
+    [
+      2
+    ],
+    [
+      9
+    ],
+    [
+      6
+    ],
+    [
+      8
+    ],
+    [
+      7
+    ],
+    [
+      4
+    ],
+    [
+      0
+    ],
+    [
+      5
+    ],
+    [
+      1
+    ],
+    [
+      6
+    ],
+    [
+      7
+    ],
+    [
+      8
+    ],
+    [
+      9
+    ],
+    [
+      2
+    ],
+    [
+      3
+    ],
+    [
+      3
+    ]
+  ],
+  "placesNeededForTrans": [
+    [
+      6
+    ],
+    [
+      8
+    ],
+    [
+      13,
+      0
+    ],
+    [
+      14,
+      15
+    ],
+    [
+      5
+    ],
+    [
+      7
+    ],
+    [
+      9,
+      2
+    ],
+    [
+      10,
+      4
+    ],
+    [
+      11,
+      3
+    ],
+    [
+      12,
+      1
+    ]
+  ],
+  "initialMarkingOfThePlaces": [
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": 0.0,
+      "isPhi": false
+    },
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": null,
+      "isPhi": true
+    },
+    {
+      "val": null,
+      "isPhi": true
+    }
+  ],
+  "isInputPlaces": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "isOutputTransition": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "transitionCntr": 10,
+  "placeCntr": 16
+}

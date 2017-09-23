@@ -4,7 +4,7 @@ import core.UnifiedPetriLogic.UnifiedTableParser;
 import core.UnifiedPetriLogic.tables.UnifiedOneXTwoTable;
 
 public enum NodeType {
-  Seq("~"), Conc("&"), Selc("?"), Loop("#"), Add("+"), Multiply("*"), PosNegSplit("%"), /* ops */
+  Seq("@"), Conc("&"), Selc("?"), Loop("#"), Add("+"), Multiply("*"), PosNegSplit("%"), /* ops */
   Delay("d"), Inp("i"), Out("o"), Block("b"), Memory("m"), Const("c"), Inv("v"), Negate("n"); /* leafs */
 
   private NodeType(String symbol) {
