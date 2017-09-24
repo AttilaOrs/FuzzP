@@ -71,7 +71,6 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     oldMax = newMax;
 
     calcMatrix();
-    System.out.println(createMatrixStr());
     logStats();
     return i;
   }
