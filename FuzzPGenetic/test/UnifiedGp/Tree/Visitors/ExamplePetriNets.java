@@ -14,8 +14,11 @@ import UnifiedGp.Tree.Nodes.NegateLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.OutType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
+import UnifiedPetriGA.controller.TableToLatex;
 import core.Drawable.TransitionPlaceNameStore;
 import core.UnifiedPetriLogic.DrawableUnifiedPetriNet;
+import core.UnifiedPetriLogic.IUnifiedTable;
+import core.UnifiedPetriLogic.tables.UnifiedTwoXTwoTable;
 import dotDrawer.PetriDotDrawerVertical;
 
 public class ExamplePetriNets {
@@ -63,7 +66,6 @@ public class ExamplePetriNets {
     // v.makeImage("seEx");
   }
 
-  @Test
   public void thirdExample() {
     InputLeaf i = new InputLeaf(InputType.ShiftDown, 0);
     DelayLeaf d = new DelayLeaf(1);
@@ -78,8 +80,51 @@ public class ExamplePetriNets {
     PetriDotDrawerVertical v = new PetriDotDrawerVertical(
         new DrawableUnifiedPetriNet(ll.net, false, TransitionPlaceNameStore.createOrdinarNames(ll.net)));
 
-    v.makeImage("thEx");
 
+    // v.makeImage("thEx");
+
+
+  }
+
+  public void inputExamples() {
+    InputLeaf i = new InputLeaf(InputType.ReaderBlocking, 0);
+    InputLeaf i2 = new InputLeaf(InputType.ReaderBlocking, 0);
+    InnerNode multi = new InnerNode(NodeType.Multiply, i, i2);
+
+    InnerNode loop = new InnerNode(NodeType.Loop, multi, new OutputLeaf(0, OutType.Copy));
+
+    System.out.println(loop.toString());
+    PetriConversationResult ll = toNet.toNet(loop);
+
+    PetriDotDrawerVertical v = new PetriDotDrawerVertical(
+        new DrawableUnifiedPetriNet(ll.net, false, TransitionPlaceNameStore.createOrdinarNames(ll.net)));
+
+    IUnifiedTable m = ll.net.getTableForTransition(5);
+    TableToLatex.saveTableLatex((UnifiedTwoXTwoTable) m, "inpT5.txt", true);
+
+
+    // v.makeImage("inpExample");
+  }
+
+  @Test
+  public void inputExamplesTwo() {
+
+    InputLeaf i = new InputLeaf(InputType.ReaderBlocking, 0);
+    InputLeaf i2 = new InputLeaf(InputType.ReaderBlocking, 0);
+    InnerNode multi = new InnerNode(NodeType.Multiply, i, i2);
+    InputLeaf i3 = new InputLeaf(InputType.ReaderBlocking, 0);
+    InnerNode add = new InnerNode(NodeType.Add, multi, i3);
+
+    System.out.println(add.toString());
+    PetriConversationResult ll = toNet.toNet(add);
+
+    PetriDotDrawerVertical v = new PetriDotDrawerVertical(
+        new DrawableUnifiedPetriNet(ll.net, false, TransitionPlaceNameStore.createOrdinarNames(ll.net)));
+  }
+
+  @Test
+  public void inputLatex() {
+    TableToLatex.saveTabeLatex(InputType.ReaderNonBlocking.table, "nonredaerBlocking.txt", true);
 
   }
 

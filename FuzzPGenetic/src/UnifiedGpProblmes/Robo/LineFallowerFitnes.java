@@ -1,6 +1,8 @@
 package UnifiedGpProblmes.Robo;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import UnifiedGp.AbstactFitness;
@@ -20,7 +22,7 @@ import core.common.tokencache.TokenCacheDisabling;
 public class LineFallowerFitnes extends AbstactFitness{
 
   private ISegmentProvider segmentProvider;
-  private static final int TICK_NR = 600;
+  private static final int TICK_NR = 51;
 
   public LineFallowerFitnes(ISegmentProvider segmentProv) {
     super(getProblemSpecification());
@@ -32,6 +34,9 @@ public class LineFallowerFitnes extends AbstactFitness{
   private PetriConversationResult rez;
 
   static int cntr = 0;
+  final static List<Integer> checkpoints = Arrays.asList(0, 0, 2, 7, 13, 20, 28, 34, 39, 43, 47, 52, 57, 64, 69, 75,
+      80, 85, 90, 95, 100, 105, 110, 115, 120);
+
 
   @Override
   public double evaluate(UnifiedGpIndi creature) {
@@ -70,12 +75,16 @@ public class LineFallowerFitnes extends AbstactFitness{
       sensorsOut = robo.simulate(commandR, commandL);
       commonCmd = 0.0;
       diffCmd = 0.0;
-      if (i == TICK_NR) {
-        int r = calcBasicFitness(segmentProvider.smallSegmentsTouchedByPoints(robo.getVisitedPoints()));
-        if (r > 170) {
-          finalTickNr += 200;
+        if (i % 50 == 0) {
+          PathResult l = segmentProvider.smallSegmentsTouchedByPoints(robo.getVisitedPoints());
+        int ii = (i / 50);
+          if(ii > checkpoints.size()){
+            break;
+          }
+          if (l.touchedAtAll >= checkpoints.get(ii)) {
+            finalTickNr += 50;
+          }
         }
-      }
     }
     PathResult pathRez  = segmentProvider.smallSegmentsTouchedByPoints(robo.getVisitedPoints()) ;
     

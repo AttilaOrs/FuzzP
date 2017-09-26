@@ -73,7 +73,7 @@ public class RoboPetriVizualizer extends Application {
 
     Map<Integer, UnifiedToken> inp = new HashMap<>();
 
-    Timeline timeline = new Timeline(new KeyFrame(Duration.millis(50), new EventHandler<ActionEvent>() {
+    Timeline timeline = new Timeline(new KeyFrame(Duration.millis(25), new EventHandler<ActionEvent>() {
 
       @Override
       public void handle(ActionEvent t) {

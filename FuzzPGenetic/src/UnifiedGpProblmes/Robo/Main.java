@@ -91,8 +91,8 @@ public class Main {
     double[] crossWeigth = new double[] { 0.5, 0.5 };
     MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
         survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
-    SimpleGA.iteration = 131;
-    SimpleGA.population = 3000;
+    SimpleGA.iteration = 121;
+    SimpleGA.population = 2000;
     long start = System.currentTimeMillis();
     algo.theAlgo();
     long stop = System.currentTimeMillis();

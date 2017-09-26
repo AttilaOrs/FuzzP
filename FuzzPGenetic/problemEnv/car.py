@@ -93,7 +93,7 @@ D = np.zeros((2,2))
 cons_sys = sig.StateSpace(A,B,C,D);
 # tout, y, x = sig.lsim(cons_sys, np.ones((100,2))*1, np.linspace(0,100,100))
 
-dt = 0.05
+dt = 0.025
 dis_sys = sig.cont2discrete((A,B,C,D), dt)
 
 
