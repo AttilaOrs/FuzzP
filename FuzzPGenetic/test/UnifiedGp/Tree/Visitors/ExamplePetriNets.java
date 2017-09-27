@@ -106,7 +106,6 @@ public class ExamplePetriNets {
     // v.makeImage("inpExample");
   }
 
-  @Test
   public void inputExamplesTwo() {
 
     InputLeaf i = new InputLeaf(InputType.ReaderBlocking, 0);
@@ -122,10 +121,61 @@ public class ExamplePetriNets {
         new DrawableUnifiedPetriNet(ll.net, false, TransitionPlaceNameStore.createOrdinarNames(ll.net)));
   }
 
-  @Test
   public void inputLatex() {
-    TableToLatex.saveTabeLatex(InputType.ReaderNonBlocking.table, "nonredaerBlocking.txt", true);
+    TableToLatex.saveTabeLatex(InputType.EnableIfNonPhi.table, "enableIfNonPhi.txt", true);
 
   }
 
+  public void ouputFirstExample() {
+
+    InputLeaf i = new InputLeaf(InputType.ReaderBlocking, 0);
+    InnerNode seq1 = new InnerNode(NodeType.Seq, new ConstantLeaf(2.5), new OutputLeaf(1, OutType.Copy));
+    InnerNode seq2 = new InnerNode(NodeType.Seq, new ConstantLeaf(-2.5), new OutputLeaf(1, OutType.Copy));
+    InnerNode pozNeg = new InnerNode(NodeType.PosNegSplit, seq1, seq2);
+    InnerNode ss = new InnerNode(NodeType.Seq, i, pozNeg);
+
+    System.out.println(ss.toString());
+    PetriConversationResult ll = toNet.toNet(ss);
+
+    PetriDotDrawerVertical v = new PetriDotDrawerVertical(
+        new DrawableUnifiedPetriNet(ll.net, false, TransitionPlaceNameStore.createOrdinarNames(ll.net)));
+
+
+  }
+  
+  public void constantExample() {
+    ConstantLeaf c = new ConstantLeaf(3.5);
+    OutputLeaf o = new OutputLeaf(0, OutType.Copy);
+    DelayLeaf d = new DelayLeaf(1);
+    
+    InnerNode seq = new InnerNode(NodeType.Seq, c, o);
+    InnerNode loop = new InnerNode(NodeType.Loop, seq, d);
+
+    System.out.println(loop.toString());
+    PetriConversationResult ll = toNet.toNet(loop);
+
+    PetriDotDrawerVertical v = new PetriDotDrawerVertical(
+        new DrawableUnifiedPetriNet(ll.net, false, TransitionPlaceNameStore.createOrdinarNames(ll.net)));
+  }
+
+  @Test
+  public void memoryExample() {
+    MemoryLeaf m = new MemoryLeaf(3);
+    InputLeaf i = new InputLeaf(InputType.ReaderBlocking, 0);
+
+    InnerNode seq = new InnerNode(NodeType.Seq, i, m);
+    InnerNode seq2 = new InnerNode(NodeType.Seq, seq, new OutputLeaf(0, OutType.Copy));
+
+    InnerNode loop = new InnerNode(NodeType.Loop, seq2, new DelayLeaf(1));
+
+    System.out.println(loop.toString());
+    PetriConversationResult ll = toNet.toNet(loop);
+
+    PetriDotDrawerVertical v = new PetriDotDrawerVertical(
+        new DrawableUnifiedPetriNet(ll.net, false, TransitionPlaceNameStore.createOrdinarNames(ll.net)));
+
+    v.makeImage("memoryExample");
+
+
+  }
 }

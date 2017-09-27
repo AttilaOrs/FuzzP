@@ -34,8 +34,8 @@ public class LineFallowerFitnes extends AbstactFitness{
   private PetriConversationResult rez;
 
   static int cntr = 0;
-  final static List<Integer> checkpoints = Arrays.asList(0, 0, 2, 7, 13, 20, 28, 34, 39, 43, 47, 52, 57, 64, 69, 75,
-      80, 85, 90, 95, 100, 105, 110, 115, 120);
+  final static List<Integer> checkpoints = Arrays.asList(0, 0, 1, 4, 7, 10, 13, 16, 20, 24, 28, 32, 35, 40, 45,
+      50, 55, 60, 65, 70, 75, 80, 85, 90, 100);
 
 
   @Override
@@ -59,6 +59,7 @@ public class LineFallowerFitnes extends AbstactFitness{
     boolean[] sensorsOut = new boolean[]{false,false};
     Map<Integer, UnifiedToken> inp = new HashMap<>();
     int finalTickNr = TICK_NR;
+    boolean chance = true;
     for (int i = 0; i < finalTickNr; i++) {
       inp.clear();
       rez.addToInpIfPossible(inp, 0, sensorsOut[0] ? new UnifiedToken(1.0) : new UnifiedToken());
@@ -83,6 +84,10 @@ public class LineFallowerFitnes extends AbstactFitness{
           }
           if (l.touchedAtAll >= checkpoints.get(ii)) {
             finalTickNr += 50;
+          chance = true;
+        } else if (chance) {
+          chance = false;
+          finalTickNr += 50;
           }
         }
     }
