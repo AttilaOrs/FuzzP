@@ -13,7 +13,7 @@ public class Lines {
   public static Points getPoint() {
     String all = "";
 
-    try (BufferedReader br = new BufferedReader(new FileReader("sm.json"))) {
+    try (BufferedReader br = new BufferedReader(new FileReader("sm2.json"))) {
       StringBuilder sb = new StringBuilder();
       all = br.lines().collect(Collectors.joining());
     } catch (Exception e) {

@@ -5,6 +5,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import Main.UnifiedVizualizer;
+import UnifiedGp.GpIndi.UnifiedGpIndi;
+import UnifiedGp.Tree.IInnerNode;
+import UnifiedGp.Tree.INode;
+import UnifiedGp.Tree.Nodes.ConstantLeaf;
+import UnifiedGp.Tree.Nodes.DelayLeaf;
+import UnifiedGp.Tree.Nodes.InnerNode;
+import UnifiedGp.Tree.Nodes.InputLeaf;
+import UnifiedGp.Tree.Nodes.InputType;
+import UnifiedGp.Tree.Nodes.NodeType;
+import UnifiedGp.Tree.Nodes.OutType;
+import UnifiedGp.Tree.Nodes.OutputLeaf;
+import UnifiedGpProblmes.Robo.LineFallowerFitnes;
+import UnifiedGpProblmes.Robo.Main;
 import UnifiedGpProblmes.Robo.Simulator.Lines;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Points;
 import core.Drawable.TransitionPlaceNameStore;
@@ -85,22 +98,59 @@ public class RoboPetriVizualizer extends Application {
         double commandR = commonCmd + diffCmd / 2.0;
         double commandL = commonCmd - diffCmd / 2.0;
         sensorsOut = s.setCommandAndUpdate(commandR, commandL);
+        System.out.println(commandL + " " + commandR + "[" + diffCmd + "]" + commonCmd);
         commonCmd = 0.0;
         diffCmd = 0.0;
-        System.out.println((cntr++) + " "+ segments.smallSegmentsTouchedByPoints(s.getCurrentPathPoints()));
+        // System.out.println((cntr++) + " "+
+        // segments.smallSegmentsTouchedByPoints(s.getCurrentPathPoints()));
       }
     }));
     timeline.setCycleCount(Timeline.INDEFINITE);
     timeline.play();
   }
 
+  public static void handMain() {
+    double rot = 3.0;
+    double sp = 1.0;
+
+    INode<NodeType> seqFF = new InnerNode(NodeType.Seq, new InputLeaf(InputType.EnableIfNonPhi, 1),
+        new ConstantLeaf(rot * -1.0));
+    INode<NodeType> seqF = new InnerNode(NodeType.Seq, seqFF,
+        new InnerNode(NodeType.Seq, new OutputLeaf(1, OutType.Copy), new DelayLeaf(1)));
+    INode<NodeType> seqSS = new InnerNode(NodeType.Seq, new InputLeaf(InputType.EnableIfNonPhi, 0),
+        new ConstantLeaf(rot));
+    INode<NodeType> seqS = new InnerNode(NodeType.Seq, seqSS, 
+        new InnerNode(NodeType.Seq, new OutputLeaf(1, OutType.Copy), new DelayLeaf(1)));
+    InnerNode select = new InnerNode(NodeType.Selc, seqS, seqF);
+    InnerNode bigSelect = new InnerNode(NodeType.Selc, select, new DelayLeaf(1));
+    InnerNode seq = new InnerNode(NodeType.Seq, new ConstantLeaf(sp), new OutputLeaf(0, OutType.Copy));
+    InnerNode conc = new InnerNode(NodeType.Conc, seq, bigSelect);
+    IInnerNode<NodeType> root = new InnerNode(NodeType.Loop, conc, new DelayLeaf(1));
+    UnifiedGpIndi rez = new UnifiedGpIndi(root);
+    LineFallowerFitnes mm = Main.generateFitnes();
+    double rr = mm.evaluate(rez);
+    System.out.println(rr);
+    PetriNetJsonSaver<UnifiedPetriNet> load = new PetriNetJsonSaver<UnifiedPetriNet>();
+    RoboPetriVizualizer.net = mm.getRez().net;
+    fiInp = mm.getRez().inpNrToInpPlace.get(0);
+    seInp = mm.getRez().inpNrToInpPlace.get(1);
+    fiOut = mm.getRez().outNrToOutTr.get(0);
+    seOut = mm.getRez().outNrToOutTr.get(1);
+    launch();
+  }
+
   public static void main(String[] args) {
+    loadMain();
+    // handMain();
+  }
+
+  private static void loadMain() {
     PetriNetJsonSaver<UnifiedPetriNet> load = new PetriNetJsonSaver<UnifiedPetriNet>();
     RoboPetriVizualizer.net = load.load("Petri.json", UnifiedPetriNet.class);
-    fiInp = 321;
-    seInp = 329;
-    fiOut = 248;
-    seOut = 254;
+    fiInp = 452;
+    seInp = 463;
+    fiOut = 343;
+    seOut = 357;
     launch();
   }
 }

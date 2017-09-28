@@ -1,7 +1,5 @@
 package UnifiedGpProblmes.Robo.Simulator.ToRead;
 
-import static java.lang.Math.sqrt;
-
 import java.util.ArrayList;
 import java.util.List;
 

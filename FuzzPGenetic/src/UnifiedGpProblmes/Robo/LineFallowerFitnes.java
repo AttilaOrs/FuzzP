@@ -22,7 +22,7 @@ import core.common.tokencache.TokenCacheDisabling;
 public class LineFallowerFitnes extends AbstactFitness {
 
   private ISegmentProvider segmentProvider;
-  private static final int TICK_NR = 51;
+  private static final int TICK_NR = 201;
 
   public LineFallowerFitnes(ISegmentProvider segmentProv) {
     super(getProblemSpecification());
@@ -34,8 +34,7 @@ public class LineFallowerFitnes extends AbstactFitness {
   private PetriConversationResult rez;
 
   static int cntr = 0;
-  final static List<Integer> checkpoints = Arrays.asList(0, 0, 1, 4, 7, 10, 13, 16, 20, 24, 28, 32, 35, 40, 45,
-      50, 55, 60, 65, 70, 75, 80, 85, 90, 100);
+  final static List<Integer> checkpoints = Arrays.asList(0, 5, 15, 20, 40);
 
   @Override
   public double evaluate(UnifiedGpIndi creature) {
@@ -75,16 +74,16 @@ public class LineFallowerFitnes extends AbstactFitness {
       sensorsOut = robo.simulate(commandR, commandL);
       commonCmd = 0.0;
       diffCmd = 0.0;
-      if (i % 50 == 0) {
+      if (i % 200 == 0) {
         PathResult l = segmentProvider.smallSegmentsTouchedByPoints(robo.getVisitedPoints());
-        int ii = (i / 50);
+        int ii = (i / 200);
         if (ii < checkpoints.size()) {
           if (l.touchedAtAll >= checkpoints.get(ii)) {
-            finalTickNr += 50;
+            finalTickNr += 200;
             chance = true;
           } else if (chance) {
             chance = false;
-            finalTickNr += 50;
+            finalTickNr += 200;
           }
         }
       }

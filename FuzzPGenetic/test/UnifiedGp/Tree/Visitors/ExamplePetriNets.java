@@ -19,6 +19,7 @@ import UnifiedPetriGA.controller.TableToLatex;
 import core.Drawable.TransitionPlaceNameStore;
 import core.UnifiedPetriLogic.DrawableUnifiedPetriNet;
 import core.UnifiedPetriLogic.IUnifiedTable;
+import core.UnifiedPetriLogic.tables.UnifiedTwoXOneTable;
 import core.UnifiedPetriLogic.tables.UnifiedTwoXTwoTable;
 import dotDrawer.PetriDotDrawerVertical;
 
@@ -196,7 +197,6 @@ public class ExamplePetriNets {
 
   }
 
-  @Test
   public void selectionExample() {
     InputLeaf i = new InputLeaf(InputType.EnableIfNonPhi, 0);
     InputLeaf i2 = new InputLeaf(InputType.EnableIfNonPhi, 1);
@@ -215,6 +215,23 @@ public class ExamplePetriNets {
         new DrawableUnifiedPetriNet(ll.net, false, TransitionPlaceNameStore.createOrdinarNames(ll.net)));
 
     v.makeImage("selectionExample");
+  }
+
+  @Test
+  public void posNegSplit() {
+    InputLeaf i = new InputLeaf(InputType.ReaderBlocking, 0);
+    InnerNode split = new InnerNode(NodeType.PosNegSplit, new OutputLeaf(0, OutType.Copy),
+        new OutputLeaf(1, OutType.Copy));
+    InnerNode seq = new InnerNode(NodeType.Seq, i, split);
+
+    PetriConversationResult ll = toNet.toNet(seq);
+    System.out.println(seq.toString());
+    IUnifiedTable tt = ll.net.getTableForTransition(2);
+    TableToLatex.saveTabeLatex((UnifiedTwoXOneTable) tt, "posNegEnd.txt", true);
+
+    PetriDotDrawerVertical v = new PetriDotDrawerVertical(
+        new DrawableUnifiedPetriNet(ll.net, false, TransitionPlaceNameStore.createOrdinarNames(ll.net)));
+
   }
 
 }

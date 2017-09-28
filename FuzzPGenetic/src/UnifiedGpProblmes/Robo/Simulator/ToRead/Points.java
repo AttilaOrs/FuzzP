@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class Points implements ISegmentProvider {
+  private static final double FIRST_SEGMENT_LENGTH = 0.40;
   public List<Point> Elements;
   transient List<Segment> segments;
   transient List<Segment> smallSegments;
@@ -22,7 +23,7 @@ public class Points implements ISegmentProvider {
         Point newLast = p0.relative(Elements.get(i));
         if (multi == null) {
           // the first segment is 2 m long
-          multi = Math.sqrt(newLast.x * newLast.x + newLast.y * newLast.y) * 0.5;
+          multi = Math.sqrt(newLast.x * newLast.x + newLast.y * newLast.y) * (1.0 / FIRST_SEGMENT_LENGTH);
         }
         newLast = new Point(newLast.x / multi, newLast.y / multi);
         segments.add(new Segment(last, newLast));
