@@ -9,6 +9,7 @@ import UnifiedGp.Tree.Nodes.DelayLeaf;
 import UnifiedGp.Tree.Nodes.InnerNode;
 import UnifiedGp.Tree.Nodes.InputLeaf;
 import UnifiedGp.Tree.Nodes.InputType;
+import UnifiedGp.Tree.Nodes.InversionLeaf;
 import UnifiedGp.Tree.Nodes.MemoryLeaf;
 import UnifiedGp.Tree.Nodes.NegateLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
@@ -158,7 +159,6 @@ public class ExamplePetriNets {
         new DrawableUnifiedPetriNet(ll.net, false, TransitionPlaceNameStore.createOrdinarNames(ll.net)));
   }
 
-  @Test
   public void memoryExample() {
     MemoryLeaf m = new MemoryLeaf(3);
     InputLeaf i = new InputLeaf(InputType.ReaderBlocking, 0);
@@ -174,8 +174,47 @@ public class ExamplePetriNets {
     PetriDotDrawerVertical v = new PetriDotDrawerVertical(
         new DrawableUnifiedPetriNet(ll.net, false, TransitionPlaceNameStore.createOrdinarNames(ll.net)));
 
-    v.makeImage("memoryExample");
+    // v.makeImage("memoryExample");
 
 
   }
+
+  public void inversionExample() {
+    InputLeaf i = new InputLeaf(InputType.ReaderBlocking, 0);
+    InversionLeaf inv = new InversionLeaf();
+
+    InnerNode seq = new InnerNode(NodeType.Seq, i, inv);
+    InnerNode seq2 = new InnerNode(NodeType.Seq, seq, new OutputLeaf(0, OutType.Copy));
+
+
+    System.out.println(seq2.toString());
+    PetriConversationResult ll = toNet.toNet(seq2);
+
+    PetriDotDrawerVertical v = new PetriDotDrawerVertical(
+        new DrawableUnifiedPetriNet(ll.net, false, TransitionPlaceNameStore.createOrdinarNames(ll.net)));
+
+
+  }
+
+  @Test
+  public void selectionExample() {
+    InputLeaf i = new InputLeaf(InputType.EnableIfNonPhi, 0);
+    InputLeaf i2 = new InputLeaf(InputType.EnableIfNonPhi, 1);
+
+    InnerNode seq1 = new InnerNode(NodeType.Seq, i, new OutputLeaf(1, OutType.Copy));
+    InnerNode seq2 = new InnerNode(NodeType.Seq, i2, new OutputLeaf(0, OutType.Copy));
+
+    InnerNode slec = new InnerNode(NodeType.Selc, seq1, seq2);
+
+    InnerNode loop = new InnerNode(NodeType.Loop, slec, new DelayLeaf(1));
+
+    System.out.println(loop.toString());
+    PetriConversationResult ll = toNet.toNet(loop);
+
+    PetriDotDrawerVertical v = new PetriDotDrawerVertical(
+        new DrawableUnifiedPetriNet(ll.net, false, TransitionPlaceNameStore.createOrdinarNames(ll.net)));
+
+    v.makeImage("selectionExample");
+  }
+
 }
