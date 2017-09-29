@@ -6,7 +6,7 @@ apply plugin: 'eclipse'
 
 version=getVersionName()
 sourceSets.main.java.srcDirs = ['src' ]
-mainClassName = "UnifiedGpProblmes.FirstOrderSystem.Main"
+mainClassName = "UnifiedGpProblmes.CartCentering.Main"
 project.ext.set("allJvmArgs", ["-Xms=1024m", "-Xmx=3000m"])
 
 sourceSets {

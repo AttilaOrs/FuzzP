@@ -16,7 +16,6 @@ import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
-import commonUtil.PlotUtils;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.common.recoder.FullRecorder;
@@ -54,9 +53,14 @@ public class Main {
     algo.theAlgo();
 
     IterationLogger logger = algo.getLogger();
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree"), "bloat_tree_cart.svg");
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"), "bloat_time_cart.svg");
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"), "firtes_cart.svg");
+    /*
+     * PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree"),
+     * "bloat_tree_cart.svg");
+     * PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"),
+     * "bloat_time_cart.svg");
+     * PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"),
+     * "firtes_cart.svg");
+     */
 
     Integer i = algo.getMaxId();
 
