@@ -3,7 +3,6 @@ package UnifiedGpProblmes.FirstOrderSystem;
 import java.io.File;
 import java.util.ArrayList;
 
-import AlgoImpl.IterationLogger;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
 import AlgoImpl.pools.CreaturePoolWithStreams;
@@ -16,7 +15,6 @@ import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
-import commonUtil.PlotUtils;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -51,10 +49,15 @@ public class Main {
     SimpleGA.population = 1000;
     algo.theAlgo();
 
-    IterationLogger logger = algo.getLogger();
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree"), "bloat_tree.svg");
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"), "bloat_time.svg");
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"), "firtes.svg");
+    /*
+     * IterationLogger logger = algo.getLogger();
+     * PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree"),
+     * "bloat_tree.svg");
+     * PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"),
+     * "bloat_time.svg");
+     * PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"),
+     * "firtes.svg");
+     */
 
     Integer i = algo.getMaxId();
 
@@ -66,12 +69,14 @@ public class Main {
         "rez.json");
 
     FirstOrderFitnes fitnes = new FirstOrderFitnes(true);
-    fitnes.evaluate(rez);
+    double fitness = fitnes.evaluate(rez);
     FullRecorder<UnifiedToken> rec = fitnes.getRecorder();
     ScenarioSaverLoader<UnifiedPetriNet, UnifiedToken> scenarioSaver = new ScenarioSaverLoader<>(UnifiedPetriNet.class);
     scenarioSaver.setFullRec(rec);
     scenarioSaver.setPetriNet(convRez.net);
     scenarioSaver.save(new File("rezScenario.json"));
+
+    System.out.println(fitness);
 
     // UnifiedVizualizer.visualize(convRez.net, rec,
     // TransitionPlaceNameStore.createOrdinarNames(convRez.net));

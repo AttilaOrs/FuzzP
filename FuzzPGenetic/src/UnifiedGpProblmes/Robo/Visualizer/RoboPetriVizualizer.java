@@ -147,10 +147,10 @@ public class RoboPetriVizualizer extends Application {
   private static void loadMain() {
     PetriNetJsonSaver<UnifiedPetriNet> load = new PetriNetJsonSaver<UnifiedPetriNet>();
     RoboPetriVizualizer.net = load.load("Petri.json", UnifiedPetriNet.class);
-    fiInp = 452;
-    seInp = 463;
-    fiOut = 343;
-    seOut = 357;
+    fiInp = 231;
+    seInp = 241;
+    fiOut = 171;
+    seOut = 176;
     launch();
   }
 }
