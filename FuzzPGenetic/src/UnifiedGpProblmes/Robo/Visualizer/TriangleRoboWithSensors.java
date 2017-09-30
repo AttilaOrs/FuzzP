@@ -5,8 +5,8 @@ import static java.lang.Math.toDegrees;
 import java.util.ArrayList;
 import java.util.List;
 
+import UnifiedGpProblmes.Robo.Simulator.IRobo;
 import UnifiedGpProblmes.Robo.Simulator.LineSensorsimulator;
-import UnifiedGpProblmes.Robo.Simulator.TwoSensorLineFallowerRobot;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.ISegmentProvider;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Point;
 import javafx.scene.layout.Pane;
@@ -18,12 +18,12 @@ public class TriangleRoboWithSensors {
   public static final double pixel = 170;
   public static final double originalX = 400.0;
   public static final double originalY = 650.0;
-  private TwoSensorLineFallowerRobot roboSim;
+  private IRobo roboSim;
   private Circle robo;
   private List<Circle> sensors;
 
-  public TriangleRoboWithSensors(Pane pane, ISegmentProvider segProv) {
-    roboSim = new TwoSensorLineFallowerRobot(segProv);
+  public TriangleRoboWithSensors(Pane pane, ISegmentProvider segProv, IRobo roboSim) {
+    this.roboSim = roboSim;
     sensors = new ArrayList<>();
 
     robo = new Circle(pixel * hight);
@@ -42,8 +42,8 @@ public class TriangleRoboWithSensors {
     }
   }
 
-  public boolean[] setCommandAndUpdate(double commandR, double commandL) {
-    boolean[] r = roboSim.simulate(commandR, commandL);
+  public List<Boolean> setCommandAndUpdate(double commandR, double commandL) {
+    List<Boolean> r = roboSim.simulate(commandR, commandL);
     robo.setRotate(toDegrees(roboSim.getRoboMoovmentSim().getAlfa()));
     robo.setCenterX(xOnCansvas(roboSim.getRoboMoovmentSim().getX()));
     robo.setCenterY(yOnCansvas(roboSim.getRoboMoovmentSim().getY()));

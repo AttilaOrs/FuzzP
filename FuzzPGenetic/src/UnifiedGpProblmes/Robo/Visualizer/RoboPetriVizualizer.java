@@ -1,7 +1,9 @@
 package UnifiedGpProblmes.Robo.Visualizer;
 
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import Main.UnifiedVizualizer;
@@ -16,9 +18,9 @@ import UnifiedGp.Tree.Nodes.InputType;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.OutType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
-import UnifiedGpProblmes.Robo.LineFallowerFitnes;
-import UnifiedGpProblmes.Robo.Main;
+import UnifiedGpProblmes.Robo.TwoSensorsLineFallowerFitnes;
 import UnifiedGpProblmes.Robo.Simulator.Lines;
+import UnifiedGpProblmes.Robo.Simulator.TwoSensorLineFallowerRobot;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Points;
 import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
@@ -52,14 +54,14 @@ public class RoboPetriVizualizer extends Application {
   double commonCmd = 0.0;
   double diffCmd = 0.0;
   int cntr = 0;
-  boolean[] sensorsOut = new boolean[] { false, false };
+  List<Boolean> sensorsOut = Arrays.asList(false, false);
   @Override
   public void start(Stage stage) {
 
     Pane canvas = new Pane();
     Scene scene = new Scene(canvas, 1000, 1000, Color.WHITE);
     Points segments = Lines.getPoint();
-    s = new TriangleRoboWithSensors(canvas, segments);
+    s = new TriangleRoboWithSensors(canvas, segments, new TwoSensorLineFallowerRobot(segments));
     LinesVizualzier viz = new LinesVizualzier(canvas, segments);
 
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
@@ -91,8 +93,8 @@ public class RoboPetriVizualizer extends Application {
       @Override
       public void handle(ActionEvent t) {
         inp.clear();
-        inp.put(fiInp, sensorsOut[0] ? new UnifiedToken(1.0) : new UnifiedToken());
-        inp.put(seInp, sensorsOut[1] ? new UnifiedToken(1.0) : new UnifiedToken());
+        inp.put(fiInp, sensorsOut.get(0) ? new UnifiedToken(1.0) : new UnifiedToken());
+        inp.put(seInp, sensorsOut.get(1) ? new UnifiedToken(1.0) : new UnifiedToken());
         exec.runTick(inp);
 
         double commandR = commonCmd + diffCmd / 2.0;
@@ -127,7 +129,7 @@ public class RoboPetriVizualizer extends Application {
     InnerNode conc = new InnerNode(NodeType.Conc, seq, bigSelect);
     IInnerNode<NodeType> root = new InnerNode(NodeType.Loop, conc, new DelayLeaf(1));
     UnifiedGpIndi rez = new UnifiedGpIndi(root);
-    LineFallowerFitnes mm = Main.generateFitnes();
+    TwoSensorsLineFallowerFitnes mm = new TwoSensorsLineFallowerFitnes(Lines.getPoint());
     double rr = mm.evaluate(rez);
     System.out.println(rr);
     PetriNetJsonSaver<UnifiedPetriNet> load = new PetriNetJsonSaver<UnifiedPetriNet>();

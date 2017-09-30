@@ -115,6 +115,7 @@ public class Main {
         + AntFitnes.SIZE_LIMIT + " start limit "
         + AntFitnes.SIZE_LIMIT_START + "FiredTransitionLmit " + AntFitnes.FIRED_TR_LIMIT + "\n";
     config += "result fitnes " + rezFitnes + "\n";
+    config += "rez>> " + rez.getRoot().toString() + "\n";
     config += "duration: " + (stop - start) + " milliseconds " + "(" + TimeUnit.MILLISECONDS.toMinutes(stop - start)
         + " minutes)\n";
     config += "New family island";
@@ -144,7 +145,7 @@ public class Main {
   }
 
   private static double finalize(UnifiedGpIndi rez, String path) {
-    LineFallowerFitnes mm = generateFitnes();
+    AbstactFitness mm = generateFitnes();
     double rr = mm.evaluate(rez);
     // ((MutableStateLogged) f.table).writeToFileWithXs(new File("antMoove" +
     // runNr + ".txt"));
@@ -157,18 +158,25 @@ public class Main {
 
   }
 
-  public static ProblemSpecification createProblemSpec() {
+  private static final boolean towSensorRobo = false;
 
-    // return new TreeBuilder<>(new
-    // TreeBuilderCongigGeneralImpl(AntFitnes.problemSpecification()));
-    ProblemSpecification d = LineFallowerFitnes.getProblemSpecification();
-    return d;
+  public static ProblemSpecification createProblemSpec() {
+    if (towSensorRobo) {
+      return TwoSensorsLineFallowerFitnes.getProblemSpecification();
+    }
+    return FiveSensorLineFallowerFitnes.getProblemSpecification();
+
   }
 
 
   static Points p = Lines.getPoint();
-  public static LineFallowerFitnes generateFitnes() {
-    return new LineFallowerFitnes(p.myClone());
+
+  public static AbstactFitness generateFitnes() {
+    if (towSensorRobo) {
+    return new TwoSensorsLineFallowerFitnes(p.myClone());
+    } else {
+      return new FiveSensorLineFallowerFitnes(p.myClone());
+    }
   }
 
 }

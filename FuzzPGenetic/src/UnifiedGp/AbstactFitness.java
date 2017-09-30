@@ -22,6 +22,7 @@ public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
   protected ToPetriNet tp;
   protected ProblemSpecification ps;
   protected DynamicallySimplifiedPetriNetBuilder simplifier;
+  private PetriConversationResult rez;
 
   public AbstactFitness(ProblemSpecification ps) {
     tp = new ToPetriNet(ps, true);
@@ -30,7 +31,7 @@ public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
   }
 
   protected PetriConversationResult convert(UnifiedGpIndi creature) {
-    PetriConversationResult rez = tp.toNet(creature.getRoot());
+    rez = tp.toNet(creature.getRoot());
     return rez;
   }
 
@@ -61,6 +62,10 @@ public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
     IInnerNode<NodeType> newRoot = simplifier.createSimplifiedTree(creature.getRoot(),
         tk.getFiredTransition(), rez.nodeTransitionMapping.get());
     creature.setRoot(newRoot);
+  }
+
+  public PetriConversationResult getRez() {
+    return rez;
   }
 
 }

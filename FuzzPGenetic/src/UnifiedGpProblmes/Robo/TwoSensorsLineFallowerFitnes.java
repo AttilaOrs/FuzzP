@@ -19,12 +19,12 @@ import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWra
 import core.common.recoder.FiredTranitionRecorder;
 import core.common.tokencache.TokenCacheDisabling;
 
-public class LineFallowerFitnes extends AbstactFitness {
+public class TwoSensorsLineFallowerFitnes extends AbstactFitness {
 
   private ISegmentProvider segmentProvider;
   private static final int TICK_NR = 201;
 
-  public LineFallowerFitnes(ISegmentProvider segmentProv) {
+  public TwoSensorsLineFallowerFitnes(ISegmentProvider segmentProv) {
     super(getProblemSpecification());
     this.segmentProvider = segmentProv;
   }
@@ -54,14 +54,14 @@ public class LineFallowerFitnes extends AbstactFitness {
     rez.addActionIfPossible(0, i -> commonCmd = i.getValue());
     rez.addActionIfPossible(1, i -> diffCmd = i.getValue());
     TwoSensorLineFallowerRobot robo = new TwoSensorLineFallowerRobot(segmentProvider);
-    boolean[] sensorsOut = new boolean[] { false, false };
+    List<Boolean> sensorsOut = Arrays.asList(false, false);
     Map<Integer, UnifiedToken> inp = new HashMap<>();
     int finalTickNr = TICK_NR;
     boolean chance = true;
     for (int i = 0; i < finalTickNr; i++) {
       inp.clear();
-      rez.addToInpIfPossible(inp, 0, sensorsOut[0] ? new UnifiedToken(1.0) : new UnifiedToken());
-      rez.addToInpIfPossible(inp, 1, sensorsOut[1] ? new UnifiedToken(1.0) : new UnifiedToken());
+      rez.addToInpIfPossible(inp, 0, sensorsOut.get(0) ? new UnifiedToken(1.0) : new UnifiedToken());
+      rez.addToInpIfPossible(inp, 1, sensorsOut.get(1) ? new UnifiedToken(1.0) : new UnifiedToken());
       try {
         exec.runTick(inp);
       } catch (Throwable t) {

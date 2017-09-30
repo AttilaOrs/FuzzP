@@ -1,6 +1,7 @@
 package UnifiedGpProblmes.Robo.Visualizer;
 
 
+import UnifiedGpProblmes.Robo.Simulator.FiveSensorLineFollowerRobot;
 import UnifiedGpProblmes.Robo.Simulator.Lines;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -30,7 +31,7 @@ public class RoboVisualizer extends Application {
 
     Pane canvas = new Pane();
     Scene scene = new Scene(canvas, 1000, 1000, Color.WHITE);
-    s = new TriangleRoboWithSensors(canvas, Lines.getPoint());
+    s = new TriangleRoboWithSensors(canvas, Lines.getPoint(), new FiveSensorLineFollowerRobot(Lines.getPoint()));
     LinesVizualzier viz = new LinesVizualzier(canvas, Lines.getPoint());
 
 

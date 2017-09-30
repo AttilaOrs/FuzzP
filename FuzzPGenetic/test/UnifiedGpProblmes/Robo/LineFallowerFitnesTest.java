@@ -25,7 +25,7 @@ public class LineFallowerFitnesTest {
     p.Elements.add(new Point(0, 0));
     p.Elements.add(new Point(0, 100.0));
     p.Elements.add(new Point(0, 0));
-    LineFallowerFitnes f = new LineFallowerFitnes(p);
+    TwoSensorsLineFallowerFitnes f = new TwoSensorsLineFallowerFitnes(p);
     UnifiedGpIndi l = new UnifiedGpIndi(createCreature(0));
     double rez = f.evaluate(l);
     assertTrue(rez > 6.0);
@@ -38,7 +38,7 @@ public class LineFallowerFitnesTest {
     p.Elements.add(new Point(0, 0));
     p.Elements.add(new Point(0, 100.0));
     p.Elements.add(new Point(0, 0));
-    LineFallowerFitnes f = new LineFallowerFitnes(p);
+    TwoSensorsLineFallowerFitnes f = new TwoSensorsLineFallowerFitnes(p);
     UnifiedGpIndi l = new UnifiedGpIndi(createCreature(1));
     double rez = f.evaluate(l);
     assertTrue(rez< 2.0);
