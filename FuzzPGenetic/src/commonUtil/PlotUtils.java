@@ -166,7 +166,9 @@ public class PlotUtils {
 	public static void writeToFile(String fileName, String content) {
 		try {
 			File file = new File(fileName);
-      file.getParentFile().mkdirs();
+      if (file.getParentFile() != null) {
+        file.getParentFile().mkdirs();
+      }
 			BufferedWriter output = new BufferedWriter(new FileWriter(file));
 			output.write(content);
 			output.close();

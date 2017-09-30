@@ -10,7 +10,7 @@ import UnifiedGpProblmes.Robo.Simulator.ToRead.Point;
 
 public class LineSensorsimulator {
 
-  private static final double EPS = 0.003;
+  private static final double EPS = 0.01;
 
 
   private final double offsetX;

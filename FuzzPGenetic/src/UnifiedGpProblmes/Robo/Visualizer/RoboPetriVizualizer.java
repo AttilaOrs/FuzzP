@@ -86,7 +86,7 @@ public class RoboPetriVizualizer extends Application {
 
     Map<Integer, UnifiedToken> inp = new HashMap<>();
 
-    Timeline timeline = new Timeline(new KeyFrame(Duration.millis(25), new EventHandler<ActionEvent>() {
+    Timeline timeline = new Timeline(new KeyFrame(Duration.millis(50), new EventHandler<ActionEvent>() {
 
       @Override
       public void handle(ActionEvent t) {
@@ -147,10 +147,10 @@ public class RoboPetriVizualizer extends Application {
   private static void loadMain() {
     PetriNetJsonSaver<UnifiedPetriNet> load = new PetriNetJsonSaver<UnifiedPetriNet>();
     RoboPetriVizualizer.net = load.load("Petri.json", UnifiedPetriNet.class);
-    fiInp = 231;
-    seInp = 241;
-    fiOut = 171;
-    seOut = 176;
+    fiInp = 422;
+    seInp = 437;
+    fiOut = 327;
+    seOut = 339;
     launch();
   }
 }
