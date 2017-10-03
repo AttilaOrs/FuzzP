@@ -23,7 +23,7 @@ public class CreaturePoolWithStreams<TCreatue extends IGPGreature>
 		implements
 			ICreaturePool<TCreatue> {
 
-	private static final int THREAD_NR = 16;
+  private static final int THREAD_NR = Runtime.getRuntime().availableProcessors() * 2;
 
 	@Override
   public ArrayList<IOperatorFactory<ICreatureGenerator<TCreatue>>> getGenerators() {

@@ -8,7 +8,7 @@ import AlgoImpl.IterationLogger;
 import AlgoImpl.MultiobjectiveMulioperatorGA;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
-import AlgoImpl.pools.CreatureParallelPool;
+import AlgoImpl.pools.CreaturePoolWithStreams;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.ProblemSpecification;
@@ -79,20 +79,20 @@ public class Main {
     AbstactFitness.APPLY_SIZE_LIMIT = true;
     AbstactFitness.FIRED_TR_LIMIT = true;
     AbstactFitness.HARD_LIMIT = false;
-    AbstactFitness.SIZE_LIMIT_START = 300;
-    AbstactFitness.SIZE_LIMIT = 400;
+    AbstactFitness.SIZE_LIMIT_START = 400;
+    AbstactFitness.SIZE_LIMIT = 500;
     
     
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
-        new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 0);
+        new CreaturePoolWithStreams<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 0);
     otherSelector = (runNr % 2 == 0) ? otherSelector : pool;
 
     double[] crossWeigth = new double[] { 0.5, 0.5 };
     MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
         survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
     SimpleGA.iteration = 121;
-    SimpleGA.population = 4000;
+    SimpleGA.population = 5000;
     long start = System.currentTimeMillis();
     algo.theAlgo();
     long stop = System.currentTimeMillis();
