@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import Main.UnifiedVizualizer;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.INode;
@@ -22,7 +21,6 @@ import UnifiedGpProblmes.Robo.TwoSensorsLineFallowerFitnes;
 import UnifiedGpProblmes.Robo.Simulator.Lines;
 import UnifiedGpProblmes.Robo.Simulator.TwoSensorLineFallowerRobot;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Points;
-import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -79,7 +77,6 @@ public class RoboPetriVizualizer extends Application {
       public void handle(MouseEvent mouseEvent) {
         Platform.exit();
         // System.exit(0);
-        UnifiedVizualizer.visualize(net, tk, TransitionPlaceNameStore.createOrdinarNames(net));
       }
     });
 
