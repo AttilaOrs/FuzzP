@@ -5,11 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import Main.UnifiedVizualizer;
 import UnifiedGpProblmes.Robo.Simulator.FiveSensorLineFollowerRobot;
 import UnifiedGpProblmes.Robo.Simulator.Lines;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Points;
-import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -67,7 +65,6 @@ public class RoboPetriVisulaizerFiveSensors extends Application {
       public void handle(MouseEvent mouseEvent) {
         Platform.exit();
         // System.exit(0);
-        UnifiedVizualizer.visualize(net, tk, TransitionPlaceNameStore.createOrdinarNames(net));
       }
     });
 
@@ -110,10 +107,10 @@ public class RoboPetriVisulaizerFiveSensors extends Application {
   private static void loadMain() {
     PetriNetJsonSaver<UnifiedPetriNet> load = new PetriNetJsonSaver<UnifiedPetriNet>();
     RoboPetriVisulaizerFiveSensors.net = load.load("Petri.json", UnifiedPetriNet.class);
-    inpsPlaceId = Arrays.asList(132, 134, 135, 137, 139);
+    inpsPlaceId = Arrays.asList(505, 507, 514, 519, 522);
 
-    fiOut = 102;
-    seOut = 104;
+    fiOut = 362;
+    seOut = 393;
     launch();
   }
 }
