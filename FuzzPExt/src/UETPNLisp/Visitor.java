@@ -1,11 +1,15 @@
 package UETPNLisp;
 
+import java.util.LinkedList;
 import java.util.Queue;
+
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import UETPNLisp.gen.UETPNLispBaseVisitor;
 import UETPNLisp.gen.UETPNLispParser;
 import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.Nodes.BlockLeaf;
+import UnifiedGp.Tree.Nodes.ConstantLeaf;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
 import UnifiedGp.Tree.Nodes.InnerNode;
 import UnifiedGp.Tree.Nodes.InputLeaf;
@@ -24,6 +28,28 @@ public class Visitor extends UETPNLispBaseVisitor<Boolean> {
   private Integer lastNumber = null;
   private Double lastDouble = null;
   Queue<INode<NodeType>> queue;
+
+
+
+  INode<NodeType> getRoot() {
+    return queue.poll();
+  }
+
+  @Override
+  public Boolean visit(ParseTree tr) {
+    queue = new LinkedList<>();
+    return super.visit(tr);
+  }
+
+
+  @Override
+  public Boolean visitConst(UETPNLispParser.ConstContext ctx) {
+    visitChildren(ctx);
+    System.out.println("co");
+    queue.add(new ConstantLeaf(lastDouble));
+    lastDouble = null;
+    return false;
+  }
 
   @Override
   public Boolean visitSeq(UETPNLispParser.SeqContext ctx) {
@@ -49,6 +75,7 @@ public class Visitor extends UETPNLispBaseVisitor<Boolean> {
   @Override
   public Boolean visitLoop(UETPNLispParser.LoopContext ctx) {
     visitChildren(ctx);
+    System.out.println("LLL");
     addOperator(NodeType.Loop);
     return true;
   }
@@ -56,6 +83,7 @@ public class Visitor extends UETPNLispBaseVisitor<Boolean> {
   @Override
   public Boolean visitAdd(UETPNLispParser.AddContext ctx) {
     visitChildren(ctx);
+    System.out.println("aaaa" + queue.size());
     addOperator(NodeType.Add);
     return true;
   }
@@ -87,8 +115,8 @@ public class Visitor extends UETPNLispBaseVisitor<Boolean> {
 
   @Override
   public Boolean visitBlock(UETPNLispParser.BlockContext ctx) {
-    visitChildren(ctx);
     queue.add(new BlockLeaf());
+    System.out.println("BB");
     return false;
   }
 
@@ -114,7 +142,7 @@ public class Visitor extends UETPNLispBaseVisitor<Boolean> {
 
   @Override
   public Boolean visitInv(UETPNLispParser.InvContext ctx) {
-    visitChildren(ctx);
+    System.out.println("INV");
     queue.add(new InversionLeaf());
     return true;
   }

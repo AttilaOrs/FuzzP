@@ -20,7 +20,7 @@ public class UETPNLispParser extends Parser {
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
 		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
-		SEP=25, INT=26;
+		SEP=25, INT=26, WS=27;
 	public static final int
 		RULE_prog = 0, RULE_subexp = 1, RULE_op = 2, RULE_leaf = 3, RULE_nr = 4, 
 		RULE_outType = 5, RULE_inpType = 6, RULE_poz_neg_double = 7;
@@ -36,7 +36,7 @@ public class UETPNLispParser extends Parser {
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
-		null, "SEP", "INT"
+		null, "SEP", "INT", "WS"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -246,6 +246,14 @@ public class UETPNLispParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class PosNegSplitContext extends OpContext {
+		public PosNegSplitContext(OpContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof UETPNLispVisitor ) return ((UETPNLispVisitor<? extends T>)visitor).visitPosNegSplit(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class MultiContext extends OpContext {
 		public MultiContext(OpContext ctx) { copyFrom(ctx); }
 		@Override
@@ -267,14 +275,6 @@ public class UETPNLispParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof UETPNLispVisitor ) return ((UETPNLispVisitor<? extends T>)visitor).visitSelc(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class PosNegSpliContext extends OpContext {
-		public PosNegSpliContext(OpContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof UETPNLispVisitor ) return ((UETPNLispVisitor<? extends T>)visitor).visitPosNegSpli(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -334,7 +334,7 @@ public class UETPNLispParser extends Parser {
 				}
 				break;
 			case T__8:
-				_localctx = new PosNegSpliContext(_localctx);
+				_localctx = new PosNegSplitContext(_localctx);
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(37);
@@ -405,18 +405,6 @@ public class UETPNLispParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class PosNegSplitContext extends LeafContext {
-		public TerminalNode SEP() { return getToken(UETPNLispParser.SEP, 0); }
-		public Poz_neg_doubleContext poz_neg_double() {
-			return getRuleContext(Poz_neg_doubleContext.class,0);
-		}
-		public PosNegSplitContext(LeafContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof UETPNLispVisitor ) return ((UETPNLispVisitor<? extends T>)visitor).visitPosNegSplit(this);
-			else return visitor.visitChildren(this);
-		}
-	}
 	public static class OutputContext extends LeafContext {
 		public List<TerminalNode> SEP() { return getTokens(UETPNLispParser.SEP); }
 		public TerminalNode SEP(int i) {
@@ -432,6 +420,18 @@ public class UETPNLispParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof UETPNLispVisitor ) return ((UETPNLispVisitor<? extends T>)visitor).visitOutput(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class ConstContext extends LeafContext {
+		public TerminalNode SEP() { return getToken(UETPNLispParser.SEP, 0); }
+		public Poz_neg_doubleContext poz_neg_double() {
+			return getRuleContext(Poz_neg_doubleContext.class,0);
+		}
+		public ConstContext(LeafContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof UETPNLispVisitor ) return ((UETPNLispVisitor<? extends T>)visitor).visitConst(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -535,7 +535,7 @@ public class UETPNLispParser extends Parser {
 				}
 				break;
 			case T__14:
-				_localctx = new PosNegSplitContext(_localctx);
+				_localctx = new ConstContext(_localctx);
 				enterOuterAlt(_localctx, 6);
 				{
 				setState(59);
@@ -858,7 +858,7 @@ public class UETPNLispParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\34]\4\2\t\2\4\3\t"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\35]\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\3\2\3\2\3\2"+
 		"\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3 \n\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4"+
 		"\5\4)\n\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5"+

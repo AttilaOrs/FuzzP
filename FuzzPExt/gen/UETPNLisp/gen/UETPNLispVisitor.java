@@ -66,12 +66,12 @@ public interface UETPNLispVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMulti(UETPNLispParser.MultiContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code PosNegSpli}
+	 * Visit a parse tree produced by the {@code PosNegSplit}
 	 * labeled alternative in {@link UETPNLispParser#op}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPosNegSpli(UETPNLispParser.PosNegSpliContext ctx);
+	T visitPosNegSplit(UETPNLispParser.PosNegSplitContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Delay}
 	 * labeled alternative in {@link UETPNLispParser#leaf}.
@@ -108,12 +108,12 @@ public interface UETPNLispVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMemory(UETPNLispParser.MemoryContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code PosNegSplit}
+	 * Visit a parse tree produced by the {@code Const}
 	 * labeled alternative in {@link UETPNLispParser#leaf}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPosNegSplit(UETPNLispParser.PosNegSplitContext ctx);
+	T visitConst(UETPNLispParser.ConstContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Inv}
 	 * labeled alternative in {@link UETPNLispParser#leaf}.

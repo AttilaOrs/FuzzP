@@ -74,7 +74,7 @@ public class UETPNLispBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitPosNegSpli(UETPNLispParser.PosNegSpliContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPosNegSplit(UETPNLispParser.PosNegSplitContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -116,7 +116,7 @@ public class UETPNLispBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitPosNegSplit(UETPNLispParser.PosNegSplitContext ctx) { return visitChildren(ctx); }
+	@Override public T visitConst(UETPNLispParser.ConstContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

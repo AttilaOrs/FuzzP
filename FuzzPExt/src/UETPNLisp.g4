@@ -16,14 +16,14 @@ op: '@' #Seq
   | '#' #Loop
   | '+' #Add
   | '*' #Multi
-  | '%' #PosNegSpli 
+  | '%' #PosNegSplit 
   ;
 leaf:'d' SEP nr #Delay
     |'i' SEP inpType SEP nr #Input
     |'o' SEP outType SEP nr #Output  
     |'b' #Block
     |'m' SEP nr  #Memory
-    |'c' SEP poz_neg_double #PosNegSplit
+    |'c' SEP poz_neg_double #Const
     |'v' #Inv
     |'n' #Negate
     ;
@@ -46,6 +46,8 @@ inpType: 'br' #BlockingReader
 SEP : ':';
 
 INT : [0-9]+ ;
+
+WS :[ \t\r\n]+ -> skip;
 
 poz_neg_double : INT.INT
 			   | '-'INT.INT
