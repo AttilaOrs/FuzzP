@@ -8,7 +8,7 @@ import AlgoImpl.IterationLogger;
 import AlgoImpl.MultiobjectiveMulioperatorGA;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
-import AlgoImpl.pools.CreaturePoolWithStreams;
+import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.ProblemSpecification;
@@ -85,7 +85,7 @@ public class Main {
     
 
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
-        new CreaturePoolWithStreams<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 0);
+        new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 0);
     otherSelector = (runNr % 2 == 0) ? otherSelector : pool;
 
     double[] crossWeigth = new double[] { 0.5, 0.5 };
