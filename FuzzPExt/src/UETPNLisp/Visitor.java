@@ -32,7 +32,17 @@ public class Visitor extends UETPNLispBaseVisitor<Boolean> {
 
 
   INode<NodeType> getRoot() {
-    return queue.poll();
+    return builtUpTree();
+  }
+
+  private INode<NodeType> builtUpTree() {
+    INode<NodeType> i = queue.poll();
+    if (!i.isLeaf() ) {
+      INode<NodeType> fi = builtUpTree();
+      INode<NodeType> se = builtUpTree();
+      return new InnerNode(i.getType(), fi, se);
+    }
+    return i;
   }
 
   @Override
@@ -45,7 +55,6 @@ public class Visitor extends UETPNLispBaseVisitor<Boolean> {
   @Override
   public Boolean visitConst(UETPNLispParser.ConstContext ctx) {
     visitChildren(ctx);
-    System.out.println("co");
     queue.add(new ConstantLeaf(lastDouble));
     lastDouble = null;
     return false;
@@ -75,7 +84,6 @@ public class Visitor extends UETPNLispBaseVisitor<Boolean> {
   @Override
   public Boolean visitLoop(UETPNLispParser.LoopContext ctx) {
     visitChildren(ctx);
-    System.out.println("LLL");
     addOperator(NodeType.Loop);
     return true;
   }
@@ -83,7 +91,6 @@ public class Visitor extends UETPNLispBaseVisitor<Boolean> {
   @Override
   public Boolean visitAdd(UETPNLispParser.AddContext ctx) {
     visitChildren(ctx);
-    System.out.println("aaaa" + queue.size());
     addOperator(NodeType.Add);
     return true;
   }
@@ -116,7 +123,6 @@ public class Visitor extends UETPNLispBaseVisitor<Boolean> {
   @Override
   public Boolean visitBlock(UETPNLispParser.BlockContext ctx) {
     queue.add(new BlockLeaf());
-    System.out.println("BB");
     return false;
   }
 
@@ -135,14 +141,11 @@ public class Visitor extends UETPNLispBaseVisitor<Boolean> {
   }
 
   private void addOperator(NodeType type) {
-    INode<NodeType> se = queue.poll();
-    INode<NodeType> fi = queue.poll();
-    queue.add(new InnerNode(type, fi, se));
+    queue.add(new InnerNode(type, null, null));
   }
 
   @Override
   public Boolean visitInv(UETPNLispParser.InvContext ctx) {
-    System.out.println("INV");
     queue.add(new InversionLeaf());
     return true;
   }

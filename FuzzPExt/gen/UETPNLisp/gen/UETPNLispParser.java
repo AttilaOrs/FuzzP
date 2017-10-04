@@ -20,7 +20,7 @@ public class UETPNLispParser extends Parser {
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
 		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
-		SEP=25, INT=26, WS=27;
+		T__24=25, SEP=26, INT=27, WS=28;
 	public static final int
 		RULE_prog = 0, RULE_subexp = 1, RULE_op = 2, RULE_leaf = 3, RULE_nr = 4, 
 		RULE_outType = 5, RULE_inpType = 6, RULE_poz_neg_double = 7;
@@ -31,12 +31,12 @@ public class UETPNLispParser extends Parser {
 	private static final String[] _LITERAL_NAMES = {
 		null, "'('", "')'", "'@'", "'&'", "'?'", "'#'", "'+'", "'*'", "'%'", "'d'", 
 		"'i'", "'o'", "'b'", "'m'", "'c'", "'v'", "'n'", "'br'", "'nr'", "'eip'", 
-		"'enp'", "'su'", "'sd'", "'-'", "':'"
+		"'enp'", "'su'", "'sd'", "'.'", "'-'", "':'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
-		null, "SEP", "INT", "WS"
+		null, null, "SEP", "INT", "WS"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -810,7 +810,7 @@ public class UETPNLispParser extends Parser {
 				setState(78);
 				match(INT);
 				setState(79);
-				matchWildcard();
+				match(T__23);
 				setState(80);
 				match(INT);
 				}
@@ -819,11 +819,11 @@ public class UETPNLispParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(81);
-				match(T__23);
+				match(T__24);
 				setState(82);
 				match(INT);
 				setState(83);
-				matchWildcard();
+				match(T__23);
 				setState(84);
 				match(INT);
 				}
@@ -839,7 +839,7 @@ public class UETPNLispParser extends Parser {
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(86);
-				match(T__23);
+				match(T__24);
 				setState(87);
 				match(INT);
 				}
@@ -858,7 +858,7 @@ public class UETPNLispParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\35]\4\2\t\2\4\3\t"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\36]\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\3\2\3\2\3\2"+
 		"\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3 \n\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4"+
 		"\5\4)\n\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5"+
@@ -871,16 +871,16 @@ public class UETPNLispParser extends Parser {
 		"\7\4\2\2\35 \3\2\2\2\36 \5\b\5\2\37\30\3\2\2\2\37\36\3\2\2\2 \5\3\2\2"+
 		"\2!)\7\5\2\2\")\7\6\2\2#)\7\7\2\2$)\7\b\2\2%)\7\t\2\2&)\7\n\2\2\')\7\13"+
 		"\2\2(!\3\2\2\2(\"\3\2\2\2(#\3\2\2\2($\3\2\2\2(%\3\2\2\2(&\3\2\2\2(\'\3"+
-		"\2\2\2)\7\3\2\2\2*+\7\f\2\2+,\7\33\2\2,C\5\n\6\2-.\7\r\2\2./\7\33\2\2"+
-		"/\60\5\16\b\2\60\61\7\33\2\2\61\62\5\n\6\2\62C\3\2\2\2\63\64\7\16\2\2"+
-		"\64\65\7\33\2\2\65\66\5\f\7\2\66\67\7\33\2\2\678\5\n\6\28C\3\2\2\29C\7"+
-		"\17\2\2:;\7\20\2\2;<\7\33\2\2<C\5\n\6\2=>\7\21\2\2>?\7\33\2\2?C\5\20\t"+
+		"\2\2\2)\7\3\2\2\2*+\7\f\2\2+,\7\34\2\2,C\5\n\6\2-.\7\r\2\2./\7\34\2\2"+
+		"/\60\5\16\b\2\60\61\7\34\2\2\61\62\5\n\6\2\62C\3\2\2\2\63\64\7\16\2\2"+
+		"\64\65\7\34\2\2\65\66\5\f\7\2\66\67\7\34\2\2\678\5\n\6\28C\3\2\2\29C\7"+
+		"\17\2\2:;\7\20\2\2;<\7\34\2\2<C\5\n\6\2=>\7\21\2\2>?\7\34\2\2?C\5\20\t"+
 		"\2@C\7\22\2\2AC\7\23\2\2B*\3\2\2\2B-\3\2\2\2B\63\3\2\2\2B9\3\2\2\2B:\3"+
-		"\2\2\2B=\3\2\2\2B@\3\2\2\2BA\3\2\2\2C\t\3\2\2\2DE\7\34\2\2E\13\3\2\2\2"+
+		"\2\2\2B=\3\2\2\2B@\3\2\2\2BA\3\2\2\2C\t\3\2\2\2DE\7\35\2\2E\13\3\2\2\2"+
 		"FG\7\21\2\2G\r\3\2\2\2HO\7\24\2\2IO\7\25\2\2JO\7\26\2\2KO\7\27\2\2LO\7"+
 		"\30\2\2MO\7\31\2\2NH\3\2\2\2NI\3\2\2\2NJ\3\2\2\2NK\3\2\2\2NL\3\2\2\2N"+
-		"M\3\2\2\2O\17\3\2\2\2PQ\7\34\2\2QR\13\2\2\2R[\7\34\2\2ST\7\32\2\2TU\7"+
-		"\34\2\2UV\13\2\2\2V[\7\34\2\2W[\7\34\2\2XY\7\32\2\2Y[\7\34\2\2ZP\3\2\2"+
+		"M\3\2\2\2O\17\3\2\2\2PQ\7\35\2\2QR\7\32\2\2R[\7\35\2\2ST\7\33\2\2TU\7"+
+		"\35\2\2UV\7\32\2\2V[\7\35\2\2W[\7\35\2\2XY\7\33\2\2Y[\7\35\2\2ZP\3\2\2"+
 		"\2ZS\3\2\2\2ZW\3\2\2\2ZX\3\2\2\2[\21\3\2\2\2\7\37(BNZ";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());

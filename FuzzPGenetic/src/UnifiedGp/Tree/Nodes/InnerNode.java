@@ -36,7 +36,8 @@ public class InnerNode implements IInnerNode<NodeType> {
 
   @Override
   public String toString() {
-    return "(" + myType.symbol + " " + fi.toString() + " " + se.toString() + ")";
+    return "(" + myType.symbol + " " + ((fi != null) ? fi.toString() : "XX") + " "
+        + ((se != null) ? se.toString() : "XX") + ")";
   }
 
 }

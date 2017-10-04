@@ -49,10 +49,10 @@ INT : [0-9]+ ;
 
 WS :[ \t\r\n]+ -> skip;
 
-poz_neg_double : INT.INT
-			   | '-'INT.INT
-			   | INT
-			   | '-'INT
+poz_neg_double : INT'.'INT
+			   | '-'INT'.'INT
+			   |INT
+			   |'-'INT
 			   ;			
 
 
