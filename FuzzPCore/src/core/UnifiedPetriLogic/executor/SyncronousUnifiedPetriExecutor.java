@@ -21,8 +21,9 @@ public class SyncronousUnifiedPetriExecutor extends UnifiedAbstactExecutor {
 
 
   public void runTick(Map<Integer, UnifiedToken> inputs) {
-    setInputPlacesWithToken(inputs);
     updateDelayStateOfTransitionsAllreadyInFire();
+    executeFirableTransitions();
+    setInputPlacesWithToken(inputs);
     executeFirableTransitions();
     recorder.tickFinished(delayStateOfTransitions, stateOfPlaces);
   }

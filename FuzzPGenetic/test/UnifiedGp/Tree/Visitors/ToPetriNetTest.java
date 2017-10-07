@@ -486,6 +486,37 @@ public class ToPetriNetTest {
 
     rez = toNet.toNet(splitNet());
     assertTrue(rez.nodeTransitionMapping.get().size() == 5);
+  }
+
+  Double enableIfPhiRrez = null;
+
+  @Test
+  public void eanbleIfPhi_behaviourTest() {
+    InputLeaf inp = new InputLeaf(InputType.EnableIfPhi, 0);
+    OutputLeaf out = new OutputLeaf(0, OutType.Copy);
+    InnerNode seq = new InnerNode(NodeType.Seq, inp, out);
+    InnerNode loop = new InnerNode(NodeType.Loop, seq, new DelayLeaf(1));
+
+
+    PetriConversationResult rez = toNet.toNet(loop);
+
+    rez.net.setInitialMarkingForPlace(0, new UnifiedToken(0.0));
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
+    rez.addActionIfPossible(0, t -> enableIfPhiRrez = t.getValue());
+    Map<Integer, UnifiedToken> inps = new HashMap<>();
+    
+    exec.runTick(inps);
+    assertTrue(enableIfPhiRrez != null);
+    enableIfPhiRrez = null;
+    
+    rez.addToInpIfPossible(inps, 0, new UnifiedToken(2.0));
+    exec.runTick(inps);
+    assertTrue(enableIfPhiRrez == null);
+
+    inps.clear();
+    exec.runTick(inps);
+    assertTrue(enableIfPhiRrez != null);
+    // remains blocked
 
   }
 

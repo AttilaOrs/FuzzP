@@ -1,5 +1,7 @@
 package UnifiedGp.Tree.Visitors;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -138,8 +140,24 @@ public class ToPetriNet {
           netToMake.addArcFromTransitionToPlace(tr, placeToPut);
         }
       }
+    }
+    if (!inpNameInpPlace.isEmpty()){
+    int resetLoopInitalPlace = netToMake.addPlace(scaleProvider.defaultScale());
+    int lastIntermediatePlace = resetLoopInitalPlace;
+      for (Integer placeId : placesWaitingForInputs.values().stream().flatMap(List::stream)
+          .collect(toList())) {
 
+        int tr = netToMake.addTransition(0, InputLeaf.inputTransmitterTwoXOne);
+        netToMake.addArcFromPlaceToTransition(lastIntermediatePlace, tr);
+        netToMake.addArcFromPlaceToTransition(placeId, tr);
+        lastIntermediatePlace = netToMake.addPlace(scaleProvider.defaultScale());
+        netToMake.addArcFromTransitionToPlace(tr, lastIntermediatePlace);
+      }
 
+      int delatTr = netToMake.addTransition(1, UnifiedOneXOneTable.defaultTable());
+      netToMake.addArcFromPlaceToTransition(lastIntermediatePlace, delatTr);
+      netToMake.addArcFromTransitionToPlace(delatTr, resetLoopInitalPlace);
+      netToMake.setInitialMarkingForPlace(resetLoopInitalPlace, new UnifiedToken(0.0));
     }
 
   }
