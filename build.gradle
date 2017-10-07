@@ -1,0 +1,73 @@
+
+apply plugin:'java'
+apply plugin:'application'
+apply plugin: 'eclipse'
+
+
+version=getVersionName()
+sourceSets.main.java.srcDirs = ['src' ]
+mainClassName = "UnifiedGpProblmes.Robo.Main"
+project.ext.set("allJvmArgs", ["-Xms=1024m", "-Xmx=3000m"])
+
+sourceSets {
+  test {
+    java.srcDirs= ['src','test' ]
+    
+  }
+  main {
+   java.srcDirs= ['src']
+  }
+}
+
+
+def getVersionName() {
+    def stdout = new ByteArrayOutputStream()
+    def rez = exec {
+        ignoreExitValue true
+        commandLine 'git', 'describe', '--tags'
+        standardOutput = stdout
+    }
+    def toRet = "NNNNOOOPE"
+    if(rez.getExitValue()==0) {
+        toRet=  stdout.toString().trim()
+    }
+    return toRet
+
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+      compile project(':FuzzPCore')
+      compile project(':FuzzPGenetic')
+      compile project(':FuzzPExt')
+      compile project(':FuzzPVizual')
+      compile 'org.tinyjee.jgraphx:jgraphx:3.4.1.3'
+      compile 'com.google.code.gson:gson:2.2.4'
+      compile 'de.erichseifert.gral:gral-core:0.11'
+      compile group: 'org.ejml', name: 'ejml-core', version: '0.31'
+      compile group: 'org.ejml', name: 'ejml-ddense', version: '0.31'
+      testCompile 'junit:junit:4.12'
+}
+
+task fatJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',  
+        	'Implementation-Version': version,
+        	'Main-Class': mainClassName 
+    }
+    baseName = project.name + '-all'
+    doFirst{
+      from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    }
+   exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA' 
+    with jar
+}
+
+
+
+
+
+
