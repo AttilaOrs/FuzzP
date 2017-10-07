@@ -1,3 +1,5 @@
 
 include ':FuzzPCore'
 project(':FuzzPCore').projectDir = new File(settingsDir, '../FuzzPCore')
+include ':FuzzPGenetic'
+project(':FuzzPGenetic').projectDir = new File(settingsDir, '../FuzzPGenetic')

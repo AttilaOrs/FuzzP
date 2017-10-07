@@ -5,4 +5,6 @@ include ':FuzzPExt'
 project(':FuzzPExt').projectDir = new File(settingsDir, '/FuzzPExt')
 include ':FuzzPVizual'
 project(':FuzzPVizual').projectDir = new File(settingsDir, '/FuzzPVizual')
+include ':FuzzPGenetic'
+project(':FuzzPGenetic').projectDir = new File(settingsDir, '/FuzzPGenetic')
 

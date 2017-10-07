@@ -19,6 +19,7 @@ repositories {
 }
 dependencies {
    compile project(':FuzzPCore') 
+   compile project(':FuzzPGenetic') 
    compile group: 'org.antlr', name: 'antlr4', version: '4.5.3'
    testCompile 'junit:junit:4.12'
 }
