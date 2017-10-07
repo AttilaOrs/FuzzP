@@ -37,7 +37,7 @@ public class IterationLoggerTest {
 
     underTest.iterFinished(0);
 
-    String out = "IterNR: 0 maximum of fitnes 1.11 avarage of fitnes 0.55 population size 100.00";
+    String out = "IterNR: 0 maximum of Fitnes 1.11 avarage of Fitnes 0.55 population size 100.00";
     Assert.assertEquals(out, outContent.toString().trim());
   }
 

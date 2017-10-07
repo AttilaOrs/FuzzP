@@ -225,7 +225,6 @@ public class ExamplePetriNets {
     InnerNode seq = new InnerNode(NodeType.Seq, i, split);
 
     PetriConversationResult ll = toNet.toNet(seq);
-    System.out.println(seq.toString());
     IUnifiedTable tt = ll.net.getTableForTransition(2);
     TableToLatex.saveTabeLatex((UnifiedTwoXOneTable) tt, "posNegEnd.txt", true);
 

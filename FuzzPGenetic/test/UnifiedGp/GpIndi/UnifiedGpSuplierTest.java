@@ -46,7 +46,7 @@ public class UnifiedGpSuplierTest {
     }
     
     assertTrue(hasLoop > 300);
-    assertTrue((sumDepth / 1000.0) > 4.5);
+    assertTrue((sumDepth / 1000.0) > 2.5);
     assertTrue(maxDepth == 10);
   }
 
