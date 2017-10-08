@@ -8,7 +8,11 @@ import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.VisitorCostumizer;
 import UnifiedGp.Tree.Nodes.DelayLeaf;
 import UnifiedGp.Tree.Nodes.InnerNode;
+import UnifiedGp.Tree.Nodes.InputLeaf;
+import UnifiedGp.Tree.Nodes.InputType;
 import UnifiedGp.Tree.Nodes.NodeType;
+import UnifiedGp.Tree.Nodes.OutType;
+import UnifiedGp.Tree.Nodes.OutputLeaf;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
 import core.Drawable.TransitionPlaceNameStore;
@@ -76,5 +80,17 @@ public class TestUtils {
     InnerNode conc = new InnerNode(NodeType.Conc, seq, select);
     InnerNode loop = new InnerNode(NodeType.Loop, conc, d5);
     return loop;
+  }
+
+  public static IInnerNode<NodeType> selectionNet() {
+    InnerNode seq1 = new InnerNode(NodeType.Seq, new InputLeaf(InputType.EnableIfNonPhi, 0),
+        new OutputLeaf(0, OutType.Copy));
+
+    InnerNode seq2 = new InnerNode(NodeType.Seq, new InputLeaf(InputType.EnableIfNonPhi, 1),
+        new OutputLeaf(1, OutType.Copy));
+    InnerNode selc = new InnerNode(NodeType.Selc, seq1, seq2);
+    InnerNode loop = new InnerNode(NodeType.Loop, selc, new DelayLeaf(1));
+    return loop;
+
   }
 }
