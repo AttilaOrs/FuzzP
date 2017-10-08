@@ -1,5 +1,6 @@
 package UnifiedGpProblmes.ArtificalAnt;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -13,6 +14,9 @@ import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
 import core.common.recoder.FiredTranitionRecorder;
+import core.common.recoder.FullRecorder;
+import core.common.recoder.IGeneralPetriBehavoiurRecorder;
+import core.common.recoder.MultiRecorder;
 import core.common.tokencache.TokenCacheDisabling;
 
 public class AntFitnes extends AbstactFitness {
@@ -28,6 +32,9 @@ public class AntFitnes extends AbstactFitness {
   private int moove = -1;
   protected MutableState table;
   protected Supplier<MutableState> tableSup;
+  public PetriConversationResult originalRez;
+  public FiredTranitionRecorder<UnifiedToken> rec;
+  public FullRecorder<UnifiedToken> recc;
 
   @Override
   public double evaluate(UnifiedGpIndi creature) {
@@ -36,16 +43,25 @@ public class AntFitnes extends AbstactFitness {
     if(multi == 0.0){
       return 0.0;
     }
-    FiredTranitionRecorder<UnifiedToken> rec = new FiredTranitionRecorder<>();
-    PetriConversationResult rez = calcFitnes(creature, rec);
+    rec = new FiredTranitionRecorder<>();
+    // recc = new FullRecorder<>();
+    MultiRecorder<UnifiedToken> multiRec = new MultiRecorder<>(Arrays.asList(rec /*
+                                                                                  * ,
+                                                                                  * recc
+                                                                                  */));
+    originalRez = calcFitnes(creature, multiRec);
+    String originalStr = creature.getRoot().toString();
     int inital = table.getFoodEaten();
-    super.updateCreatureWithSimplification(creature, rez, rec);
+    super.updateCreatureWithSimplification(creature, originalRez, rec);
+
     /*
      * calcFitnes(creature, new FiredTranitionRecorder<>()); int newMooves =
      * table.getFoodEaten(); String newStr = creature.getRoot().toString(); if
      * (newMooves != inital) { System.err.println("we have a problem sir " +
-     * inital + " " + newMooves + "\n>" + originalStr + "\n>" + newStr); }
+     * inital + " " + newMooves + "\n>" + originalStr + "\n>" + newStr + "\n>" +
+     * originalStr.equals(newStr)); }
      */
+
     double multi2 = fireCountMulti(rec, MAX_MOOVES);
     return inital * multi * multi2;
   }
@@ -53,7 +69,7 @@ public class AntFitnes extends AbstactFitness {
 
 
 
-  private PetriConversationResult calcFitnes(UnifiedGpIndi creature, FiredTranitionRecorder<UnifiedToken> rec) {
+  private PetriConversationResult calcFitnes(UnifiedGpIndi creature, IGeneralPetriBehavoiurRecorder<UnifiedToken> rec) {
     PetriConversationResult rez = super.convert(creature);
     rez.addActionIfPossible(0, d -> {
       if (moove > 0)

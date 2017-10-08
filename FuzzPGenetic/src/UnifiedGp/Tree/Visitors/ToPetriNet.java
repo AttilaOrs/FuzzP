@@ -394,6 +394,9 @@ public class ToPetriNet {
     placesBetween.add(new int[] { enterPlaceOne, exitPlaceOne });
     this.constantVisit(new ConstantLeaf(1.0));
     placesBetween = placesBetweenOriginal;
+    if (recordNodeTransitionMapping) {
+      nodeTransitionMapping.put(ss, enterTr);
+    }
     return Boolean.TRUE;
   }
 

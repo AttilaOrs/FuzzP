@@ -19,7 +19,7 @@ public class TestUtils {
 
   private static int cntr = 0;
 
-  public static int nodeCount(IInnerNode<NodeType> root, Predicate<INode<NodeType>> pred) {
+  public static int countNode(IInnerNode<NodeType> root, Predicate<INode<NodeType>> pred) {
     cntr = 0;
     VisitorCostumizer<NodeType> costum = new VisitorCostumizer<>();
     costum.registerPredicatedConsumer(pred, node -> cntr++);

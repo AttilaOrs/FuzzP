@@ -17,4 +17,16 @@ public enum NodeType {
   public static final UnifiedOneXTwoTable posNegSplitTable = UnifiedTableParser
       .parseUnifiedOneXTwoTable(posNegSplitStr);
 
+  public boolean isBlock() {
+    return this == NodeType.Block;
+  }
+
+  public boolean isSeq() {
+    return this == NodeType.Seq;
+  }
+
+  public boolean isPosNegSplit() {
+    return this == NodeType.PosNegSplit;
+  }
+
 }

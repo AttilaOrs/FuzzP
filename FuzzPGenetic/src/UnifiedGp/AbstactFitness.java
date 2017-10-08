@@ -5,6 +5,7 @@ import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.DynamicallySimplifiedPetriNetBuilder;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
+import UnifiedGp.Tree.Visitors.StaticSimplifierPetriBuilder;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.common.recoder.FiredTranitionRecorder;
@@ -21,13 +22,14 @@ public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
   public static int SIZE_LIMIT_START = 200;
   protected ToPetriNet tp;
   protected ProblemSpecification ps;
-  protected DynamicallySimplifiedPetriNetBuilder simplifier;
+  protected DynamicallySimplifiedPetriNetBuilder dynamicSimplifier;
+  protected StaticSimplifierPetriBuilder staticSimplifier;
   private PetriConversationResult rez;
 
   public AbstactFitness(ProblemSpecification ps) {
     tp = new ToPetriNet(ps, true);
-    simplifier = new DynamicallySimplifiedPetriNetBuilder();
-
+    dynamicSimplifier = new DynamicallySimplifiedPetriNetBuilder();
+    staticSimplifier = new StaticSimplifierPetriBuilder();
   }
 
   protected PetriConversationResult convert(UnifiedGpIndi creature) {
@@ -59,8 +61,10 @@ public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
   }
   protected void updateCreatureWithSimplification(UnifiedGpIndi creature, PetriConversationResult rez,
       FiredTranitionRecorder<UnifiedToken> tk) {
-    IInnerNode<NodeType> newRoot = simplifier.createSimplifiedTree(creature.getRoot(),
+    IInnerNode<NodeType> dynamiclySimpliedRoot = dynamicSimplifier.createSimplifiedTree(creature.getRoot(),
         tk.getFiredTransition(), rez.nodeTransitionMapping.get());
+    // System.out.println(dynamiclySimpliedRoot);
+    IInnerNode<NodeType> newRoot = staticSimplifier.simplifyTree(dynamiclySimpliedRoot);
     creature.setRoot(newRoot);
   }
 

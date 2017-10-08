@@ -41,7 +41,7 @@ public class UnifiedGpSuplierTest {
       int curentDepth = indi.getSizes().depth ;
       sumDepth += curentDepth;
       maxDepth = (maxDepth < curentDepth)? curentDepth : maxDepth;
-      int loopCount = TestUtils.nodeCount(indi.getRoot(), (node) -> node.getType().equals(NodeType.PosNegSplit));
+      int loopCount = TestUtils.countNode(indi.getRoot(), (node) -> node.getType().equals(NodeType.PosNegSplit));
       hasLoop += (loopCount > 0) ? 1 : 0;
     }
     

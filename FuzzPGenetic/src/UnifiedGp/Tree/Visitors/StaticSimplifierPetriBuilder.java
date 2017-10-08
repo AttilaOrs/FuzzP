@@ -47,14 +47,11 @@ public class StaticSimplifierPetriBuilder {
       newNetStack.push(new BlockLeaf());
       return Boolean.TRUE;
     }
-    if (fi.getType().equals(NodeType.Block)) {
-      newNetStack.push(se);
-      return Boolean.TRUE;
-    }
-    if (se.getType().equals(NodeType.Block)) {
-      newNetStack.push(fi);
-      return Boolean.TRUE;
-    }
+    /*
+     * if (fi.getType().equals(NodeType.Block)) { newNetStack.push(se); return
+     * Boolean.TRUE; } if (se.getType().equals(NodeType.Block)) {
+     * newNetStack.push(fi); return Boolean.TRUE; }
+     */
 
     notModfied((IInnerNode<NodeType>) conc, fi, se);
     return Boolean.TRUE;
@@ -74,15 +71,10 @@ public class StaticSimplifierPetriBuilder {
   private Boolean loopVisit(INode<NodeType> conc) {
     INode<NodeType> se = newNetStack.pop();
     INode<NodeType> fi = newNetStack.pop();
-    if (fi.getType().equals(NodeType.Block) && se.getType().equals(NodeType.Block)) {
+    if (fi.getType().isBlock() && se.getType().isBlock()) {
       newNetStack.push(new BlockLeaf());
       return Boolean.TRUE;
     }
-    if (se.getType().equals(NodeType.Block)) {
-      newNetStack.push(fi);
-      return Boolean.TRUE;
-    }
-
     notModfied((IInnerNode<NodeType>) conc, fi, se);
     return Boolean.TRUE;
   }
@@ -168,7 +160,7 @@ public class StaticSimplifierPetriBuilder {
   private Boolean seqVisit(INode<NodeType> node) {
     INode<NodeType> se = newNetStack.pop();
     INode<NodeType> fi = newNetStack.pop();
-    if (fi.getType().equals(NodeType.Block)) {
+    if (fi.getType().isBlock() && se.getType().isBlock()) {
       newNetStack.push(new BlockLeaf());
       return Boolean.TRUE;
     }
@@ -222,6 +214,13 @@ public class StaticSimplifierPetriBuilder {
     if (se.getType().equals(NodeType.Delay) && ((DelayLeaf) se).getDelay() == 0) {
       newNetStack.push(fi);
       return Boolean.TRUE;
+    }
+    if (se.getType().isBlock() && fi.getType().isSeq()) {
+      IInnerNode<NodeType> fiSe = (IInnerNode<NodeType>) fi;
+      if (fiSe.getSecondChild().getType().isBlock()) {
+        newNetStack.push(fi);
+        return Boolean.TRUE;
+      }
     }
     notModfied((IInnerNode<NodeType>) node, fi, se);
     return Boolean.TRUE;

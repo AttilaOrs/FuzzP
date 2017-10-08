@@ -24,14 +24,18 @@ public class DynamicallySimplifiedPetriNetBuilder {
   private Map<INode<NodeType>, Integer> nodeTransitionMapping;
   private Set<Integer> firedTrs;
 
-  private final static List<NodeType> concLike = Arrays.asList(NodeType.Conc, NodeType.Add, NodeType.Multiply,
-      NodeType.PosNegSplit);
+  private final static List<NodeType> concLike = Arrays.asList(NodeType.Conc, NodeType.Add, NodeType.Multiply);
+
+  private static boolean concLike(INode<NodeType> node) {
+    return concLike.contains(node.getType());
+  }
 
   public DynamicallySimplifiedPetriNetBuilder() {
     cosumizer = new VisitorCostumizer<>();
     cosumizer.registerPredicatedConsumer(node -> node.isLeaf(), this::visitLeaf);
-    cosumizer.registerPredicatedConsumer(node -> concLike.contains(node.getType()), this::visitConcLike);
-    cosumizer.registerPredicatedConsumer(node -> (!node.isLeaf() && !concLike.contains(node.getType())),
+    cosumizer.registerPredicatedConsumer(DynamicallySimplifiedPetriNetBuilder::concLike, this::visitConcLike);
+    cosumizer.registerPredicatedConsumer(
+        node -> (!node.isLeaf() && !DynamicallySimplifiedPetriNetBuilder.concLike(node)),
         this::visitOtherOps);
     
 
@@ -62,7 +66,13 @@ public class DynamicallySimplifiedPetriNetBuilder {
     }
     INode<NodeType> se = newNetStack.pop();
     INode<NodeType> fi = newNetStack.pop();
-    newNetStack.push(((IInnerNode<NodeType>) node).myClone(fi, se));
+    if (se.getType().isBlock()) {
+      newNetStack.push(new InnerNode(NodeType.Seq, fi, se));
+    } else if (fi.getType().isBlock()) {
+      newNetStack.push(new InnerNode(NodeType.Seq, se, fi));
+    } else {
+      newNetStack.push(((IInnerNode<NodeType>) node).myClone(fi, se));
+    }
   }
 
   private void visitLeaf(INode<NodeType> node) {
