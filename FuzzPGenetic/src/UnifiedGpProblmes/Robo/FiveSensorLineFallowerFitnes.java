@@ -97,7 +97,7 @@ public class FiveSensorLineFallowerFitnes extends AbstactFitness {
   }
 
   private int calcBasicFitness(PathResult pathRez) {
-    return pathRez.touchedAtAll + pathRez.touchedInOrder * 2;
+    return pathRez.touchedInOrder;
   }
 
   public static ProblemSpecification getProblemSpecification() {
@@ -115,6 +115,7 @@ public class FiveSensorLineFallowerFitnes extends AbstactFitness {
 
   }
 
+  @Override
   public PetriConversationResult getRez() {
     return rez;
   }
