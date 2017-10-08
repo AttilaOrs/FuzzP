@@ -37,7 +37,7 @@ public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
 
   public FirstOrderFitnes(boolean useRecorder) {
     ps = createProblemSpecification();
-    tp = new ToPetriNet(ps, true);
+    tp = new ToPetriNet(ps, true, true);
     this.useRecorder = useRecorder;
     simplifier = new DynamicallySimplifiedPetriNetBuilder();
   }

@@ -13,6 +13,7 @@ import structure.ICreatureFitnes;
 
 public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
 
+  public static boolean RESET_LOOP = true;
 
   public static boolean HARD_LIMIT = true;
   public static boolean FIRED_TR_LIMIT = true;
@@ -27,7 +28,7 @@ public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
   private PetriConversationResult rez;
 
   public AbstactFitness(ProblemSpecification ps) {
-    tp = new ToPetriNet(ps, true);
+    tp = new ToPetriNet(ps, true, RESET_LOOP);
     dynamicSimplifier = new DynamicallySimplifiedPetriNetBuilder();
     staticSimplifier = new StaticSimplifierPetriBuilder();
   }

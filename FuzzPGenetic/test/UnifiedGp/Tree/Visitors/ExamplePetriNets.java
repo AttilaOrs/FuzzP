@@ -29,7 +29,7 @@ public class ExamplePetriNets {
 
   @Before
   public void before() {
-    toNet = new ToPetriNet(TestUtils.simpleScaleProvider(2.0), true);
+    toNet = new ToPetriNet(TestUtils.simpleScaleProvider(2.0), true, true);
   }
 
   public void firstSimpleExample() {

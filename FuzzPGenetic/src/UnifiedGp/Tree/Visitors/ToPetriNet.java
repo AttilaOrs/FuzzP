@@ -48,12 +48,13 @@ public class ToPetriNet {
   private Map<Integer, Integer> outNrToOutTr;
   private boolean recordNodeTransitionMapping;
   private Map<INode<NodeType>, Integer> nodeTransitionMapping = null;
+  private boolean resetLoopEnabled;
 
   public ToPetriNet(ScaleProvider scaleProvider) {
-    this(scaleProvider, false);
+    this(scaleProvider, false, true);
   }
   
-  public ToPetriNet(ScaleProvider scaleProvider, boolean recordNodeTransitionMapping) {
+  public ToPetriNet(ScaleProvider scaleProvider, boolean recordNodeTransitionMapping, boolean resetLoopEnabled) {
     this.scaleProvider = scaleProvider;
     cosutimzer = new VisitorCostumizer<>();
     cosutimzer.registerOperatorConsumer(NodeType.Seq, this::seqVisit);
@@ -73,6 +74,7 @@ public class ToPetriNet {
     cosutimzer.registerLeafConsumer(NodeType.Inv, this::invVisit);
     visitor = new BreadthFirstVisitor<>(cosutimzer);
     this.recordNodeTransitionMapping = recordNodeTransitionMapping;
+    this.resetLoopEnabled = resetLoopEnabled;
   }
 
   public PetriConversationResult toNet(IInnerNode<NodeType> type) {
@@ -141,7 +143,7 @@ public class ToPetriNet {
         }
       }
     }
-    if (!inpNameInpPlace.isEmpty()){
+    if (resetLoopEnabled && !inpNameInpPlace.isEmpty()) {
     int resetLoopInitalPlace = netToMake.addPlace(scaleProvider.defaultScale());
     int lastIntermediatePlace = resetLoopInitalPlace;
       for (Integer placeId : placesWaitingForInputs.values().stream().flatMap(List::stream)

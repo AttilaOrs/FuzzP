@@ -23,7 +23,7 @@ public class DynamicallySimplifiedPetriNetBuilderTest {
 
   @Before
   public void setUp() {
-    toNet = new ToPetriNet(TestUtils.simpleScaleProvider(2.0), true);
+    toNet = new ToPetriNet(TestUtils.simpleScaleProvider(2.0), true, true);
     bld = new DynamicallySimplifiedPetriNetBuilder();
 
   }
