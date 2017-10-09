@@ -17,7 +17,7 @@ public class TriangleRoboWithSensors {
   private static final double hight = 0.06;
   public static final double pixel = 170;
   public static final double originalX = 400.0;
-  public static final double originalY = 650.0;
+  public static final double originalY = 550.0;
   private IRobo roboSim;
   private Circle robo;
   private List<Circle> sensors;

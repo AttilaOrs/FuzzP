@@ -68,7 +68,8 @@ public class Points implements ISegmentProvider {
         touchedInOrder++;
       }
     }
-    return new PathResult(touchedAtAll, touchedInOrder);
+    Integer lastIndex = order.get(order.size() - 1);
+    return new PathResult(touchedAtAll, touchedInOrder, lastIndex);
   }
   
     

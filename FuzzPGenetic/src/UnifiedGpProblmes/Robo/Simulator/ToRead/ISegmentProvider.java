@@ -14,14 +14,17 @@ public interface ISegmentProvider {
   public static class PathResult {
     public final int touchedAtAll;
     public final int touchedInOrder;
+    public final int lastIndex;
     
-    public PathResult(int touchedAtAll, int touchedInOrder){
+    public PathResult(int touchedAtAll, int touchedInOrder, int lastIndex){
       this.touchedAtAll = touchedAtAll;
       this.touchedInOrder = touchedInOrder;
+      this.lastIndex = lastIndex;
     }
     
+    @Override
     public String toString(){
-      return "touched "+ touchedAtAll +" in order " +touchedInOrder;
+      return "touched " + touchedAtAll + " in order " + touchedInOrder + " lastIndex";
     }
   }
 
