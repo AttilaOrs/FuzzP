@@ -97,7 +97,11 @@ public class FiveSensorLineFallowerFitnes extends AbstactFitness {
   }
 
   private double calcBasicFitness(PathResult pathRez) {
-    return pathRez.touchedInOrder + 1.0 / (pathRez.lastIndex + 1);
+    double d = 0;
+    if(pathRez.touchedInOrder != 0 && pathRez.lastIndex !=0){
+      d = pathRez.touchedInOrder / ((double) pathRez.lastIndex);
+    }
+    return pathRez.touchedInOrder + 5.0 * d;
   }
 
   public static ProblemSpecification getProblemSpecification() {
