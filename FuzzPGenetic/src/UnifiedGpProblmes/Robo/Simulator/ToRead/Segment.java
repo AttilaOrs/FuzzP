@@ -2,36 +2,53 @@ package UnifiedGpProblmes.Robo.Simulator.ToRead;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import UnifiedGpProblmes.Robo.Simulator.Line;
 
 public class Segment {
   
 
   final Point start, end;
-  final Double A, B, C;
+  final Line holdingLine;
 
   public Segment(Point start, Point end) {
     this.start = start;
     this.end = end;
-    A = start.y - end.y;
-    B = end.x - start.x;
-    C = start.x * end.y - end.x * start.y;
+    double A = start.y - end.y;
+    double B = end.x - start.x;
+    double C = start.x * end.y - end.x * start.y;
+    holdingLine = new Line(A, B, C);
   }
 
   public double dist(Point from) {
-    double den = A * A + B * B;
-    double c_y = A * A * from.y - A * B * from.x - B * C;
-    c_y = c_y / den;
-    double c_x = B * B * from.x - A * B * from.y - A * C;
-    c_x = c_x / den;
-    Point distStartinPoint = new Point(c_x, c_y);
-    if ((start.x - end.x) / (distStartinPoint.x - start.x) > 0.0 || (start.y - end.y) / (distStartinPoint.y - start.y) > 0.0) {
+    Point distStartinPoint = holdingLine.orthogonalFromPoint(from);
+    if (outOfStart(distStartinPoint)) {
       // out of bounds;
       distStartinPoint = start;
-    } else if ((distStartinPoint.x - end.x) / (end.x - start.x) > 0.0 || (distStartinPoint.y - end.y) / (end.y - start.y) > 0.0) {
+    } else if (outOfEnd(distStartinPoint)) {
       distStartinPoint = end;
     }
     return dist(from, distStartinPoint);
   }
+
+  private boolean outOfEnd(Point distStartinPoint) {
+    return (distStartinPoint.x - end.x) / (end.x - start.x) > 0.0
+        || (distStartinPoint.y - end.y) / (end.y - start.y) > 0.0;
+  }
+
+  private boolean outOfStart(Point distStartinPoint) {
+    return (start.x - end.x) / (distStartinPoint.x - start.x) > 0.0
+        || (start.y - end.y) / (distStartinPoint.y - start.y) > 0.0;
+  }
+
+  public Optional<Point> commonPoint(Segment other) {
+    return other.holdingLine.commonWith(holdingLine)
+        .filter(p -> (!outOfEnd(p)) && (!outOfStart(p)) && (!other.outOfEnd(p))
+        && (!other.outOfStart(p)));
+
+  }
+
 
   private static double dist(Point from, Point distStartinPoint) {
     double x = from.x - distStartinPoint.x;
