@@ -9,7 +9,6 @@ import AlgoImpl.MultiobjectiveMulioperatorGA;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
 import AlgoImpl.pools.CreatureParallelPool;
-import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
@@ -84,9 +83,9 @@ public class Main {
     
     
 
-    PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
-        new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 0);
     // otherSelector = (runNr % 2 == 0) ? otherSelector : pool;
+    CreatureParallelPool<UnifiedGpIndi> pool = new CreatureParallelPool<>(
+        gens, mutators, breeders, fitnesses);
 
     double[] crossWeigth = new double[] { 0.5, 0.5 };
     MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
@@ -136,9 +135,13 @@ public class Main {
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("Fit"), path + FITNESS);
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree size"), path + SIZE);
     PlotUtils.hist(algo.getSizeHistLog(), path + SIZE_HIST);
-    IterationLogger poolLogger = pool.getLogger();
-    PlotUtils.plot(poolLogger.getLogsForPlottingContatinigStrings("dist"), path + DIVERSITY);
-    PlotUtils.plot(poolLogger.getLogsForPlottingContatinigStrings("cat"), path + SIMILARTY_CAT);
+    /*
+     * IterationLogger poolLogger = pool.getLogger();
+     * PlotUtils.plot(poolLogger.getLogsForPlottingContatinigStrings("dist"),
+     * path + DIVERSITY);
+     * PlotUtils.plot(poolLogger.getLogsForPlottingContatinigStrings("cat"),
+     * path + SIMILARTY_CAT);
+     */
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings(IterationLogger.MEM_USE), path + MEM_USE);
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings(IterationLogger.GC_SEC), path + GC_FILE);
 

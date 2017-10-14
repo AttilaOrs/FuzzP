@@ -101,7 +101,10 @@ public class FiveSensorLineFallowerFitnes extends AbstactFitness {
     if(pathRez.touchedInOrder != 0 && pathRez.lastIndex !=0){
       d = pathRez.touchedInOrder / ((double) pathRez.lastIndex);
     }
-    return pathRez.touchedInOrder + 5.0 * d;
+    if (pathRez.touchedInOrder <= 100) {
+      return pathRez.touchedInOrder;
+    }
+    return pathRez.touchedInOrder + 10.0 * d;
   }
 
   public static ProblemSpecification getProblemSpecification() {
