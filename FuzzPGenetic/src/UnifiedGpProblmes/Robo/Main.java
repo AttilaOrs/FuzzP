@@ -22,6 +22,7 @@ import UnifiedGp.Tree.Visitors.TreeBuilder;
 import UnifiedGpProblmes.ArtificalAnt.AntFitnes;
 import UnifiedGpProblmes.Robo.Simulator.Lines;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Points;
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Walls;
 import commonUtil.PlotUtils;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
@@ -158,13 +159,22 @@ public class Main {
 
   }
 
-  private static final boolean towSensorRobo = false;
+  private static enum problem {
+    twoSensor, fiveSensor, threeSensorOneInfra
+  };
+
+  private static final problem current = problem.threeSensorOneInfra;
 
   public static ProblemSpecification createProblemSpec() {
-    if (towSensorRobo) {
+    switch (current) {
+    case twoSensor:
       return TwoSensorsLineFallowerFitnes.getProblemSpecification();
+    case fiveSensor:
+      return FiveSensorLineFallowerFitnes.getProblemSpecification();
+    case threeSensorOneInfra:
+      return ThreeLineSensorOneInfraredFitnes.getProblemSpecification();
     }
-    return FiveSensorLineFallowerFitnes.getProblemSpecification();
+    return null;
 
   }
 
@@ -172,11 +182,15 @@ public class Main {
   static Points p = Lines.getPoint();
 
   public static AbstactFitness generateFitnes() {
-    if (towSensorRobo) {
-    return new TwoSensorsLineFallowerFitnes(p.myClone());
-    } else {
+    switch (current) {
+    case twoSensor:
+      return new TwoSensorsLineFallowerFitnes(p.myClone());
+    case fiveSensor:
       return new FiveSensorLineFallowerFitnes(p.myClone());
+    case threeSensorOneInfra:
+      return new ThreeLineSensorOneInfraredFitnes(p.myClone(), Walls.getWalls());
     }
+    return null;
   }
 
 }

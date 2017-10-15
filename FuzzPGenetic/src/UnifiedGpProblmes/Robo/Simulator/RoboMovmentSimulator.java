@@ -7,6 +7,8 @@ import static org.ejml.dense.row.CommonOps_DDRM.mult;
 
 import org.ejml.data.DMatrixRMaj;
 
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Point;
+
 
 
 public class RoboMovmentSimulator implements IRoboMoovmentDescritions {
@@ -94,6 +96,10 @@ public class RoboMovmentSimulator implements IRoboMoovmentDescritions {
   @Override
   public double getY() {
     return y;
+  }
+
+  public Point position() {
+    return new Point(x, y);
   }
 
   @Override

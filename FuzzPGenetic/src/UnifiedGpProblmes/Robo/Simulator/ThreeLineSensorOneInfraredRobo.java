@@ -7,13 +7,16 @@ import java.util.Optional;
 
 import UnifiedGpProblmes.Robo.Simulator.ToRead.ISegmentProvider;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Point;
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Segment;
 
 public class ThreeLineSensorOneInfraredRobo implements IRobo {
 
+  private static final double DEAD = 0.15;
   private final RoboMovmentSimulator moovmen;
   private final List<Point> visitedPoints;
   private final List<LineSensorsimulator> lineSensors;
   private final InfraredSensorSimulator infraredDistance;
+  private ISegmentProvider walls;
 
   public ThreeLineSensorOneInfraredRobo(ISegmentProvider lines, ISegmentProvider walls) {
     moovmen = new RoboMovmentSimulator();
@@ -23,6 +26,18 @@ public class ThreeLineSensorOneInfraredRobo implements IRobo {
     lineSensors.add(new LineSensorsimulator(0.02, 0.12, moovmen, lines));
     lineSensors.add(new LineSensorsimulator(-0.02, 0.12, moovmen, lines));
     infraredDistance = InfraredSensorSimulator.createSmall(0, 0.06, 0, moovmen, walls);
+    this.walls = walls;
+  }
+
+  public boolean touchedTheWalls() {
+    Point p = moovmen.position();
+    for (Segment s : walls.getLineSegments()) {
+      if (s.dist(p) < DEAD) {
+        return true;
+      }
+    }
+    return false;
+
   }
 
   @Override

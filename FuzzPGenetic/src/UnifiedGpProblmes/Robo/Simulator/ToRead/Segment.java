@@ -88,6 +88,10 @@ public class Segment {
   public String toString(){
     return start +"---->"+end;
   }
+
+  public Segment myClone() {
+    return new Segment(start.myClone(), end.myClone());
+  }
   
 
 }

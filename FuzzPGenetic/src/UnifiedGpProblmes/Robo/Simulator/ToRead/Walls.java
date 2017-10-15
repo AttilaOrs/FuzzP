@@ -5,11 +5,10 @@ import java.util.ArrayList;
 public class Walls {
 
   public static ISegmentProvider getWalls() {
-    ArrayList<Point> p = new ArrayList<>();
-    p.add(new Point(-0.0, 0.80));
-    p.add(new Point(-0.20, 0.80));
-    p.add(new Point(-0.0, 0.0));
-    return new Points(p, 0.40);
+    ArrayList<Segment> p = new ArrayList<>();
+    p.add(new Segment(new Point(0.90, 1.90), new Point(+1.50, 1.90)));
+    p.add(new Segment(new Point(-0.10, 2.40), new Point(-0.10, 3.00)));
+    return new Segments(p);
   }
 
 }
