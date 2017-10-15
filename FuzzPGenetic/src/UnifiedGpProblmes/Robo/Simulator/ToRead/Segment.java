@@ -29,7 +29,7 @@ public class Segment {
     } else if (outOfEnd(distStartinPoint)) {
       distStartinPoint = end;
     }
-    return dist(from, distStartinPoint);
+    return from.distance(distStartinPoint);
   }
 
   private boolean outOfEnd(Point distStartinPoint) {
@@ -50,13 +50,6 @@ public class Segment {
   }
 
 
-  private static double dist(Point from, Point distStartinPoint) {
-    double x = from.x - distStartinPoint.x;
-    x *= x;
-    double y = from.y - distStartinPoint.y;
-    y *= y;
-    return Math.sqrt(x + y);
-  }
 
   public Point getStart() {
     return start;
@@ -68,12 +61,12 @@ public class Segment {
 
   public List<Segment> createSmallerSegments(double length) {
     List<Segment> segments = new ArrayList<>();
-    if (dist(start, end) <= length) {
+    if (start.distance(end) <= length) {
       segments.add(this);
     } else {
       Point p = nextSegmentPoint(start, length);
       segments.add(new Segment(start, p));
-      while (dist(p, end) > length) {
+      while (p.distance(end) > length) {
         Point newP = nextSegmentPoint(p, length);
         segments.add(new Segment(p, newP));
         p = newP;
@@ -85,7 +78,7 @@ public class Segment {
   }
 
   private Point nextSegmentPoint(Point from, double length) {
-    double d= dist(from, end);
+    double d = from.distance(end);
     double x_sol = from.x + (length/d)*(end.x - from.x);
     double y_sol = from.y + (length/d)*(end.y - from.y);
     return new Point(x_sol, y_sol);

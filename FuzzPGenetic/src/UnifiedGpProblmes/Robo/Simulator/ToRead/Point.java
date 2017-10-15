@@ -17,6 +17,16 @@ public class Point {
     return "[" + x + "," + y + "]";
   }
 
+  public double distance(Point from) {
+
+    double x = from.x - this.x;
+    x *= x;
+    double y = from.y - this.y;
+    y *= y;
+    return Math.sqrt(x + y);
+
+  }
+
   public Point myClone() {
     return new Point(x, y);
   }
