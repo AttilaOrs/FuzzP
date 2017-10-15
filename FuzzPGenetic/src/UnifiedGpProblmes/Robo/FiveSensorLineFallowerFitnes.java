@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.ProblemSpecification;
@@ -54,14 +55,15 @@ public class FiveSensorLineFallowerFitnes extends AbstactFitness {
     rez.addActionIfPossible(0, i -> commonCmd = i.getValue());
     rez.addActionIfPossible(1, i -> diffCmd = i.getValue());
     FiveSensorLineFollowerRobot robo = new FiveSensorLineFollowerRobot(segmentProvider);
-    List<Boolean> sensorsOut = Arrays.asList(false, false, false, false, false);
+    List<Optional<Double>> sensorsOut = Arrays.asList(Optional.empty(), Optional.empty(), Optional.empty(),
+        Optional.empty(), Optional.empty());
     Map<Integer, UnifiedToken> inp = new HashMap<>();
     int finalTickNr = TICK_NR;
     boolean chance = true;
     for (int i = 0; i < finalTickNr; i++) {
       inp.clear();
       for (int ii = 0; ii < sensorsOut.size(); ii++) {
-        rez.addToInpIfPossible(inp, ii, sensorsOut.get(ii) ? new UnifiedToken(1.0) : new UnifiedToken());
+        rez.addToInpIfPossible(inp, ii, UnifiedToken.fromOptional(sensorsOut.get(ii)));
       }
       try {
         exec.runTick(inp);

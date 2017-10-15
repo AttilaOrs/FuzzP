@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.Tree.IInnerNode;
@@ -52,7 +53,7 @@ public class RoboPetriVizualizer extends Application {
   double commonCmd = 0.0;
   double diffCmd = 0.0;
   int cntr = 0;
-  List<Boolean> sensorsOut = Arrays.asList(false, false);
+  List<Optional<Double>> sensorsOut = Arrays.asList(Optional.empty(), Optional.empty());
   @Override
   public void start(Stage stage) {
 
@@ -60,7 +61,7 @@ public class RoboPetriVizualizer extends Application {
     Scene scene = new Scene(canvas, 1000, 1000, Color.WHITE);
     Points segments = Lines.getPoint();
     s = new TriangleRoboWithSensors(canvas, segments, new TwoSensorLineFallowerRobot(segments));
-    LinesVizualzier viz = new LinesVizualzier(canvas, segments);
+    LinesVizualzier viz = new LinesVizualzier(canvas, segments, javafx.scene.paint.Color.BLUE);
 
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
         new UnifiedPetrinetCacheTableResultWrapper(net,
@@ -90,8 +91,8 @@ public class RoboPetriVizualizer extends Application {
       @Override
       public void handle(ActionEvent t) {
         inp.clear();
-        inp.put(fiInp, sensorsOut.get(0) ? new UnifiedToken(1.0) : new UnifiedToken());
-        inp.put(seInp, sensorsOut.get(1) ? new UnifiedToken(1.0) : new UnifiedToken());
+        inp.put(fiInp, UnifiedToken.fromOptional(sensorsOut.get(0)));
+        inp.put(seInp, UnifiedToken.fromOptional(sensorsOut.get(1)));
         exec.runTick(inp);
 
         double commandR = commonCmd + diffCmd / 2.0;

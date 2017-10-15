@@ -1,7 +1,9 @@
 package UnifiedGpProblmes.Robo.Simulator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import UnifiedGpProblmes.Robo.Simulator.ToRead.ISegmentProvider;
@@ -25,12 +27,18 @@ public class FiveSensorLineFollowerRobot implements IRobo {
   }
 
   @Override
-  public List<Boolean> simulate(double commandR, double commandL) {
+  public List<Optional<Double>> simulate(double commandR, double commandL) {
     moovmen.setLeftCommand(commandL);
     moovmen.setRightCommand(commandR);
     moovmen.simulateTimeUnit();
     visitedPoints.add(new Point(moovmen.getX(), moovmen.getY()));
-    return sensors.stream().map(m -> m.isSomthingThere()).collect(Collectors.toList());
+    return sensors.stream().map(FiveSensorLineFollowerRobot::mm)
+        .collect(Collectors.toList());
+  }
+
+  private static Optional<Double> mm(LineSensorsimulator s) {
+    return s.isSomthingThere() ? Optional.of(1.0) : Optional.empty();
+
   }
 
   @Override
@@ -39,13 +47,18 @@ public class FiveSensorLineFollowerRobot implements IRobo {
   }
 
   @Override
-  public List<LineSensorsimulator> getSensors() {
+  public List<LineSensorsimulator> getLineSensors() {
     return sensors;
   }
 
   @Override
   public List<Point> getVisitedPoints() {
     return visitedPoints;
+  }
+
+  @Override
+  public List<InfraredSensorSimulator> getInfraredSesors() {
+    return Collections.EMPTY_LIST;
   }
 
 }

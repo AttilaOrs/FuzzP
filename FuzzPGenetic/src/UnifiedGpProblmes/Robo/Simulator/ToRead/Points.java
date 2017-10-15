@@ -9,11 +9,25 @@ public class Points implements ISegmentProvider {
   public List<Point> Elements;
   transient List<Segment> segments;
   transient List<Segment> smallSegments;
+  transient Double firstSegLenght;
   private static final double EPS_TOUCH = 0.01;
   private static final double SEG_LENGHT = 0.05;
 
+  public Points() {
+    this(new ArrayList<>(), FIRST_SEGMENT_LENGTH);
+
+  }
+
+  public Points(List<Point> p, double firstSegLength) {
+    this.Elements = p;
+    this.firstSegLenght = firstSegLength;
+  }
+
   @Override
   public Collection<Segment> getLineSegments() {
+    if (firstSegLenght == null) {
+      firstSegLenght = FIRST_SEGMENT_LENGTH;
+    }
     if (segments == null) {
       segments = new ArrayList<>();
       Point p0 = Elements.get(0);
@@ -23,7 +37,7 @@ public class Points implements ISegmentProvider {
         Point newLast = p0.relative(Elements.get(i));
         if (multi == null) {
           // the first segment is 2 m long
-          multi = Math.sqrt(newLast.x * newLast.x + newLast.y * newLast.y) * (1.0 / FIRST_SEGMENT_LENGTH);
+          multi = Math.sqrt(newLast.x * newLast.x + newLast.y * newLast.y) * (1.0 / firstSegLenght);
         }
         newLast = new Point(newLast.x / multi, newLast.y / multi);
         segments.add(new Segment(last, newLast));

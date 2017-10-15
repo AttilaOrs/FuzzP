@@ -22,7 +22,7 @@ public class InfraredSensorSimulatorTest {
   @Before
   public void setup() {
     walls = mock(ISegmentProvider.class);
-    when(walls.getLineSegments()).thenReturn(Arrays.asList(new Segment(new Point(10, 50), new Point(30, 50))));
+    when(walls.getLineSegments()).thenReturn(Arrays.asList(new Segment(new Point(0.10, 0.50), new Point(0.30, 0.50))));
     robo = mock(IRoboMoovmentDescritions.class);
   }
 
@@ -42,7 +42,7 @@ public class InfraredSensorSimulatorTest {
 
   @Test
   public void toFar() {
-    putRobot(20, 0, 0);
+    putRobot(0.20, 0, 0);
     InfraredSensorSimulator underTest = InfraredSensorSimulator.createSmall(0, 0, 0, robo, walls);
 
     assertTrue(underTest.currentValue() < EPS);
@@ -50,7 +50,7 @@ public class InfraredSensorSimulatorTest {
 
   @Test
   public void thereIsSomethng() {
-    putRobot(20, 15, 0);
+    putRobot(0.20, 0.15, 0);
     InfraredSensorSimulator underTest = InfraredSensorSimulator.createSmall(0, 0, 0, robo, walls);
 
     assertTrue(underTest.currentValue() - 0.35 < EPS);
@@ -58,7 +58,7 @@ public class InfraredSensorSimulatorTest {
 
   @Test
   public void offsetAngle() {
-    putRobot(20, 15, 0);
+    putRobot(0.20, 0.15, 0);
     InfraredSensorSimulator underTest = InfraredSensorSimulator.createSmall(0, 0, Math.PI / 2, robo, walls);
 
     assertTrue(underTest.currentValue() < EPS);
@@ -66,7 +66,7 @@ public class InfraredSensorSimulatorTest {
 
   @Test
   public void offsetAngleSecond() {
-    putRobot(15, 30, 0);
+    putRobot(0.15, 0.30, 0);
     InfraredSensorSimulator underTest = InfraredSensorSimulator.createSmall(0, 0, Math.PI / 4, robo, walls);
 
     assertTrue(underTest.currentValue() < EPS);
@@ -74,7 +74,7 @@ public class InfraredSensorSimulatorTest {
 
   @Test
   public void offsetAngleThird() {
-    putRobot(15, 40, 0);
+    putRobot(0.15, 0.40, 0);
     InfraredSensorSimulator underTest = InfraredSensorSimulator.createSmall(0, 0, -Math.PI / 4, robo, walls);
 
     assertTrue(underTest.currentValue() > 0.95);

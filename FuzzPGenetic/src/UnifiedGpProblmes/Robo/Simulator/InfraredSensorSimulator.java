@@ -22,25 +22,24 @@ public class InfraredSensorSimulator {
       IRoboMoovmentDescritions robo, ISegmentProvider walls) {
     List<double[]> d = new ArrayList<>();
     d.add(new double[] { 0.0, 0.0 });
-    d.add(new double[] { 0.7, 1.4 });
-    d.add(new double[] { 1.1, 1.85 });
-    d.add(new double[] { 2.0, 2.2 });
-    d.add(new double[] { 3.0, 3.05 });
-    d.add(new double[] { 3.0, 3.05 });
-    d.add(new double[] { 3.5, 2.95 });
-    d.add(new double[] { 4.0, 2.75 });
-    d.add(new double[] { 5.0, 2.35 });
-    d.add(new double[] { 6.0, 2.0 });
-    d.add(new double[] { 8.0, 1.55 });
-    d.add(new double[] { 10.0, 1.25 });
-    d.add(new double[] { 12.0, 1.05 });
-    d.add(new double[] { 14.0, 0.95 });
-    d.add(new double[] { 16.0, 0.8 });
-    d.add(new double[] { 20.0, 0.65 });
-    d.add(new double[] { 26.0, 0.55 });
-    d.add(new double[] { 35.0, 0.35 });
-    d.add(new double[] { 40.0, 0.30 });
-    return new InfraredSensorSimulator(ovifsetX, ofsetY, offsetAlfa, robo, walls, d, 40.0);
+    d.add(new double[] { 0.007, 1.4 });
+    d.add(new double[] { 0.011, 1.85 });
+    d.add(new double[] { 0.02, 2.2 });
+    d.add(new double[] { 0.03, 3.05 });
+    d.add(new double[] { 0.035, 2.95 });
+    d.add(new double[] { 0.04, 2.75 });
+    d.add(new double[] { 0.05, 2.35 });
+    d.add(new double[] { 0.06, 2.0 });
+    d.add(new double[] { 0.08, 1.55 });
+    d.add(new double[] { 0.1, 1.25 });
+    d.add(new double[] { 0.12, 1.05 });
+    d.add(new double[] { 0.14, 0.95 });
+    d.add(new double[] { 0.16, 0.8 });
+    d.add(new double[] { 0.20, 0.65 });
+    d.add(new double[] { 0.26, 0.55 });
+    d.add(new double[] { 0.35, 0.35 });
+    d.add(new double[] { 0.40, 0.30 });
+    return new InfraredSensorSimulator(ovifsetX, ofsetY, offsetAlfa, robo, walls, d, 0.40);
   }
 
 
@@ -66,10 +65,12 @@ public class InfraredSensorSimulator {
   }
 
   public Segment getCurrentState() {
-    double xOne = robo.getX()+ofsetX;
-    double yOne = robo.getY()+ofsetY;
+    
+    double alfa = robo.getAlfa();
+    double xOne = robo.getX() + sin(alfa) * ofsetY + cos(alfa) * ofsetX;
+    double yOne = robo.getY() + cos(alfa) * ofsetY - sin(alfa) * ofsetX;
     double currentAlfa = robo.getAlfa() + ofsetAlfa;
-    double xTwo = xOne - sin(currentAlfa) * rangeMax;
+    double xTwo = xOne + sin(currentAlfa) * rangeMax;
     double yTwo = yOne + cos(currentAlfa) * rangeMax;
     return new Segment(new Point(xOne, yOne), new Point(xTwo, yTwo));
   }

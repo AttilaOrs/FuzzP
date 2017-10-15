@@ -1,8 +1,9 @@
 package UnifiedGpProblmes.Robo.Visualizer;
 
 
-import UnifiedGpProblmes.Robo.Simulator.FiveSensorLineFollowerRobot;
 import UnifiedGpProblmes.Robo.Simulator.Lines;
+import UnifiedGpProblmes.Robo.Simulator.ThreeLineSensorOneInfraredRobo;
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Walls;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -31,8 +32,10 @@ public class RoboVisualizer extends Application {
 
     Pane canvas = new Pane();
     Scene scene = new Scene(canvas, 1000, 1000, Color.WHITE);
-    s = new TriangleRoboWithSensors(canvas, Lines.getPoint(), new FiveSensorLineFollowerRobot(Lines.getPoint()));
-    LinesVizualzier viz = new LinesVizualzier(canvas, Lines.getPoint());
+    s = new TriangleRoboWithSensors(canvas, Lines.getPoint(),
+        new ThreeLineSensorOneInfraredRobo(Lines.getPoint(), Walls.getWalls()));
+    LinesVizualzier viz = new LinesVizualzier(canvas, Lines.getPoint(), javafx.scene.paint.Color.BLUE);
+    LinesVizualzier viz2 = new LinesVizualzier(canvas, Walls.getWalls(), javafx.scene.paint.Color.BROWN);
 
 
     stage.initStyle(StageStyle.TRANSPARENT);

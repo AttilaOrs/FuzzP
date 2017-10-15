@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import UnifiedGpProblmes.Robo.Simulator.FiveSensorLineFollowerRobot;
 import UnifiedGpProblmes.Robo.Simulator.Lines;
@@ -40,7 +41,8 @@ public class RoboPetriVisulaizerFiveSensors extends Application {
   double commonCmd = 0.0;
   double diffCmd = 0.0;
   int cntr = 0;
-  List<Boolean> sensorsOut = Arrays.asList(false, false, false, false, false);
+  List<Optional<Double>> sensorsOut = Arrays.asList(Optional.empty(), Optional.empty(), Optional.empty(),
+      Optional.empty(), Optional.empty());
   @Override
   public void start(Stage stage) {
 
@@ -48,7 +50,7 @@ public class RoboPetriVisulaizerFiveSensors extends Application {
     Scene scene = new Scene(canvas, 1000, 1000, Color.WHITE);
     Points segments = Lines.getPoint();
     s = new TriangleRoboWithSensors(canvas, segments, new FiveSensorLineFollowerRobot(segments));
-    LinesVizualzier viz = new LinesVizualzier(canvas, segments);
+    LinesVizualzier viz = new LinesVizualzier(canvas, segments, javafx.scene.paint.Color.BLUE);
 
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
         new UnifiedPetrinetCacheTableResultWrapper(net,
@@ -80,7 +82,7 @@ public class RoboPetriVisulaizerFiveSensors extends Application {
         inp.clear();
         for(int inpIndex = 0; inpIndex < inpsPlaceId.size(); inpIndex++){
           if(inpsPlaceId.get(inpIndex)!=-1){
-            inp.put(inpsPlaceId.get(inpIndex), sensorsOut.get(inpIndex) ? new UnifiedToken(1.0) : new UnifiedToken());
+            inp.put(inpsPlaceId.get(inpIndex), UnifiedToken.fromOptional(sensorsOut.get(inpIndex)));
           }
           
         }

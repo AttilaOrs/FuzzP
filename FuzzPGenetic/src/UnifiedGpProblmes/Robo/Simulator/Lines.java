@@ -22,7 +22,7 @@ public class Lines {
     Gson gg = new Gson();
     Points f = gg.fromJson(all, Points.class);
     return f;
-
   }
+
 
 }

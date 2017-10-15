@@ -1,10 +1,20 @@
 package core.UnifiedPetriLogic;
 
+import java.util.Optional;
+
 import core.common.recoder.FullRecordable;
 
 public class UnifiedToken implements FullRecordable<UnifiedToken> {
   private final Double val;
   private final boolean isPhi;
+
+  public static UnifiedToken fromOptional(Optional<Double> d) {
+    if (d.isPresent()) {
+      return new UnifiedToken(d.get());
+    }
+    return new UnifiedToken();
+
+  }
 
   public UnifiedToken(Double d) {
     val = d;
