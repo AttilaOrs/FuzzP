@@ -24,7 +24,6 @@ public class NodeUsageAsociatorTest {
   public void setup() {
     toPetriNet = new ToPetriNet(TestUtils.simpleScaleProvider(2.0), true, true);
     associator = new NodeUsageAsociator();
-
   }
 
   @Test

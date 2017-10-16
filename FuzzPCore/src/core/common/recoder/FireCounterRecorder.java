@@ -29,6 +29,6 @@ public class FireCounterRecorder<TokenType> extends FiredTranitionRecorder<Token
   }
 
   public Integer getFireCountForTransition(Integer trId) {
-    return fireCounter.get(trId);
+    return fireCounter.getOrDefault(trId, 0);
   }
 }
