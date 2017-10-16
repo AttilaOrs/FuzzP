@@ -22,7 +22,7 @@ public class UnifromCrossOver implements ICreatureBreeder<UnifiedGpIndi> {
   private double prob;
 
   public UnifromCrossOver(double chanse) {
-    this(UnifiedGpIndiBreeder.defaultStaticSimplification, chanse);
+    this(AbstactBreeder.defaultStaticSimplification, chanse);
   }
 
   public double getProb() {
