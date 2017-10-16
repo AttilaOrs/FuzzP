@@ -24,7 +24,6 @@ public class SelectRandomBasedOnUsageAndDepth {
 			ranking.put(sorted.get(index), rank);
 			sum += rank;
 		}
-		System.out.println(ranking);
 		double i = rnd.nextDouble()*sum;
 		double tempS = 0.0;
 		for(INode<NodeType> muve: ranking.keySet()){

@@ -61,7 +61,6 @@ public class NodeUsageMergerTest {
     assertThat("overall run", i.getUsage(newRoot) == 3);
     
     SelectRandomBasedOnUsageAndDepth l = new SelectRandomBasedOnUsageAndDepth();
-    System.out.println( l.selectNode(i, new Random()));
 
   }
 
