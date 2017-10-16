@@ -13,7 +13,7 @@ public class NodeUsageMerger {
   
   public static UsageStats merge(INode<NodeType> oldRoot, UsageStats oldStats, INode<NodeType> newRoot, UsageStats newOne ){
     if(newRoot.isLeaf()){
-      newOne.add(newRoot, oldStats.getUsage(oldRoot), 0);
+      newOne.add(newRoot, oldStats.getUsage(oldRoot), 0, 1);
     } else {
       IInnerNode<NodeType> oldRootAsInner = ((IInnerNode<NodeType>) oldRoot);
       IInnerNode<NodeType> newRootAsInner = ((IInnerNode<NodeType>) newRoot);
@@ -22,7 +22,12 @@ public class NodeUsageMerger {
       int depthFi = newOne.getDepth(newRootAsInner.getFirstChild());
       int depthSe = newOne.getDepth(newRootAsInner.getSecondChild());
       int depth = ((depthFi > depthSe)?depthFi:depthSe)+1;
-      newOne.add(newRoot, oldStats.getUsage(oldRoot), depth);
+      
+      int sizeFi = newOne.getSize(newRootAsInner.getFirstChild());
+      int sizeSe = newOne.getSize(newRootAsInner.getSecondChild());
+      int size = sizeFi + sizeSe+1;
+      
+      newOne.add(newRoot, oldStats.getUsage(oldRoot), depth, size);
     }
     
     return newOne;

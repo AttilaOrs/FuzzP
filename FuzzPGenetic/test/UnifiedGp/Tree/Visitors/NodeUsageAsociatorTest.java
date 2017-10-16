@@ -49,6 +49,8 @@ public class NodeUsageAsociatorTest {
     UsageStats overallRez = associator.calcUsage(root, counterRecorder,
         convRez.nodeTransitionMapping.get());
     
+    System.out.println(overallRez);
+    
 
     assertThat("overall depth", overallRez.getDepth(root) == 3);
     assertThat("overall run", overallRez.getUsage(root) == 3);

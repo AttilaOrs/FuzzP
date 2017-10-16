@@ -3,6 +3,7 @@ package UnifiedGp.Tree.Visitors;
 import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import org.junit.Test;
 import com.sun.prism.j2d.J2DPipeline;
 
 import UnifiedGp.TestUtils;
+import UnifiedGp.GpIndi.UsageStats.SelectRandomBasedOnUsageAndDepth;
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.Nodes.NodeType;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -57,6 +59,9 @@ public class NodeUsageMergerTest {
     
     assertThat("overall depth", i.getDepth(newRoot) == 3);
     assertThat("overall run", i.getUsage(newRoot) == 3);
+    
+    SelectRandomBasedOnUsageAndDepth l = new SelectRandomBasedOnUsageAndDepth();
+    System.out.println( l.selectNode(i, new Random()));
 
   }
 

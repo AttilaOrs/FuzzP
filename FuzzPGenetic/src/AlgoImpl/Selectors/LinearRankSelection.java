@@ -85,7 +85,7 @@ public class LinearRankSelection implements ISelector {
 	}
 
 	private Double rankOf(int index, int size) {
-		return 2.0 - sp + (2 * (sp - 1.0) * ((index - 1.0) / (size - 1.0)));
+		return 2.0 - sp + (2 * (sp - 1.0) * ((index - 0.0) / (size - 1.0)));
 	}
 
 	@Override

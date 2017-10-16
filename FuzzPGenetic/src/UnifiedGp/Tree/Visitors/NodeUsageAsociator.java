@@ -41,9 +41,9 @@ public class NodeUsageAsociator {
     if (nodeToTransitionMapping.containsKey(leaf)) {
       Integer trId = nodeToTransitionMapping.get(leaf);
       Integer fired = counter.getFireCountForTransition(trId);
-      usage.add(leaf, fired, 0);
+      usage.add(leaf, fired, 0,1);
     } else {
-      usage.add(leaf, 0, 0);
+      usage.add(leaf, 0, 0,1);
       System.err.println("No usage info for: " + leaf);
     }
 
@@ -58,7 +58,11 @@ public class NodeUsageAsociator {
     int depthFi = usage.getDepth(inner.getFirstChild());
     int depthSe = usage.getDepth(inner.getSecondChild());
     int depth = ((depthFi > depthSe) ? depthFi : depthSe) + 1;
-    usage.add(node, fire, depth);
+    
+    int sizeFi = usage.getSize(inner.getFirstChild());
+    int sizeSe = usage.getSize(inner.getSecondChild());
+    int size = sizeFi + sizeSe + 1;
+    usage.add(node, fire, depth, size);
   }
 
 }
