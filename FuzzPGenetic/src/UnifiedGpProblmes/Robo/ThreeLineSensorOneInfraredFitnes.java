@@ -78,6 +78,10 @@ public class ThreeLineSensorOneInfraredFitnes extends AbstactFitness {
       double commandR = commonCmd + diffCmd / 2.0;
       double commandL = commonCmd - diffCmd / 2.0;
       sensorsOut = robo.simulate(commandR, commandL);
+      if (robo.touchedTheWalls()) {
+        break;
+      }
+
       commonCmd = 0.0;
       diffCmd = 0.0;
       if (i % 200 == 0) {

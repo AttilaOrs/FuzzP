@@ -80,8 +80,8 @@ public class Main {
     AbstactFitness.APPLY_SIZE_LIMIT = true;
     AbstactFitness.FIRED_TR_LIMIT = true;
     AbstactFitness.HARD_LIMIT = false;
-    AbstactFitness.SIZE_LIMIT_START = 400;
-    AbstactFitness.SIZE_LIMIT = 500;
+    AbstactFitness.SIZE_LIMIT_START = 500;
+    AbstactFitness.SIZE_LIMIT = 600;
     
     
 
@@ -92,8 +92,8 @@ public class Main {
     double[] crossWeigth = new double[] { 0.5, 0.5 };
     MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
         survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
-    SimpleGA.iteration = 121;
-    SimpleGA.population = 6000;
+    SimpleGA.iteration = 131;
+    SimpleGA.population = 10000;
     long start = System.currentTimeMillis();
     algo.theAlgo();
     long stop = System.currentTimeMillis();
