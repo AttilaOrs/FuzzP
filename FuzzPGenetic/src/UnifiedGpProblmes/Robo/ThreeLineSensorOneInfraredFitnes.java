@@ -11,7 +11,7 @@ import UnifiedGp.ProblemSpecification;
 import UnifiedGp.ProblemSpecificationImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
-import UnifiedGpProblmes.Robo.Simulator.ThreeLineSensorOneInfraredRobo;
+import UnifiedGpProblmes.Robo.Simulator.BigRobo;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.ISegmentProvider;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.ISegmentProvider.PathResult;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -56,7 +56,7 @@ public class ThreeLineSensorOneInfraredFitnes extends AbstactFitness {
 
     rez.addActionIfPossible(0, i -> commonCmd = i.getValue());
     rez.addActionIfPossible(1, i -> diffCmd = i.getValue());
-    ThreeLineSensorOneInfraredRobo robo = new ThreeLineSensorOneInfraredRobo(lines, walls);
+    BigRobo robo = new BigRobo(lines, walls);
     List<Optional<Double>> sensorsOut = Arrays.asList(Optional.empty(), Optional.empty(), Optional.empty(),
         Optional.empty());
     Map<Integer, UnifiedToken> inp = new HashMap<>();

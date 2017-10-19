@@ -106,4 +106,10 @@ public class RoboMovmentSimulator implements IRoboMoovmentDescritions {
   public double getAlfa() {
     return alfa;
   }
+
+  @Override
+  public String toString() {
+    return "{RoboMovmentSimulator [x:" + getX() + " y:" + getY() + " alfa:" + getAlfa() + "]}";
+
+  }
 }

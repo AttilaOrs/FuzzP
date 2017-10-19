@@ -9,7 +9,6 @@ import java.util.Optional;
 import UnifiedGpProblmes.Robo.Simulator.IRobo;
 import UnifiedGpProblmes.Robo.Simulator.InfraredSensorSimulator;
 import UnifiedGpProblmes.Robo.Simulator.LineSensorsimulator;
-import UnifiedGpProblmes.Robo.Simulator.ToRead.ISegmentProvider;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Point;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Segment;
 import javafx.scene.layout.Pane;
@@ -26,7 +25,7 @@ public class TriangleRoboWithSensors {
   private List<Circle> lineSensors;
   private List<Line> infrared;
 
-  public TriangleRoboWithSensors(Pane pane, ISegmentProvider segProv, IRobo roboSim) {
+  public TriangleRoboWithSensors(Pane pane, IRobo roboSim) {
     this.roboSim = roboSim;
     lineSensors = new ArrayList<>();
 
@@ -80,8 +79,8 @@ public class TriangleRoboWithSensors {
       ll.setEndX(xOnCansvas(sensor.getCurrentState().getEnd().x));
       ll.setEndY(yOnCansvas(sensor.getCurrentState().getEnd().y));
       if (sensor.currentValue() > 0.0001) {
-        ll.setFill(javafx.scene.paint.Color.ORANGE);
-        ll.setStroke(javafx.scene.paint.Color.ORANGE);
+        ll.setFill(javafx.scene.paint.Color.BLUE);
+        ll.setStroke(javafx.scene.paint.Color.BLUE);
       } else {
         ll.setFill(javafx.scene.paint.Color.YELLOW);
         ll.setStroke(javafx.scene.paint.Color.YELLOW);

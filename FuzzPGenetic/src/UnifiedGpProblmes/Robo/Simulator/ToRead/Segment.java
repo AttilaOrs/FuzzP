@@ -1,5 +1,8 @@
 package UnifiedGpProblmes.Robo.Simulator.ToRead;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.signum;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +12,7 @@ import UnifiedGpProblmes.Robo.Simulator.Line;
 public class Segment {
   
 
+  private static final double EPS = 0.00001;
   final Point start, end;
   final Line holdingLine;
 
@@ -33,16 +37,42 @@ public class Segment {
   }
 
   private boolean outOfEnd(Point distStartinPoint) {
-    return (distStartinPoint.x - end.x) / (end.x - start.x) > 0.0
-        || (distStartinPoint.y - end.y) / (end.y - start.y) > 0.0;
+
+    if (abs(end.x - start.x) < EPS && abs(end.y - start.y) < EPS) {
+      return (abs(end.x - distStartinPoint.x) > EPS) || (abs(end.y - distStartinPoint.y) > EPS);
+    }
+    if (abs(end.x - start.x) < EPS) {
+      return (abs(end.x - distStartinPoint.x) > EPS)
+          || signum(end.y - distStartinPoint.y) != signum(distStartinPoint.y - start.y);
+    }
+    if (abs(end.y - start.y) < EPS) {
+      return (abs(end.y - distStartinPoint.y) > EPS)
+          || signum(end.x - distStartinPoint.x) != signum(distStartinPoint.x - start.x);
+    }
+
+    return signum(end.x - distStartinPoint.x) != signum(distStartinPoint.x - start.x) ||
+        signum(end.y - distStartinPoint.y) != signum(distStartinPoint.y - start.y);
   }
 
   private boolean outOfStart(Point distStartinPoint) {
-    return (start.x - end.x) / (distStartinPoint.x - start.x) > 0.0
-        || (start.y - end.y) / (distStartinPoint.y - start.y) > 0.0;
+    if (abs(end.x - start.x) < EPS && abs(end.y - start.y) < EPS) {
+      return (abs(start.x - distStartinPoint.x) > EPS) || (abs(start.y - distStartinPoint.y) > EPS);
+    }
+
+    if (abs(end.x - start.x) < EPS) {
+      return (abs(start.x - distStartinPoint.x) > EPS)
+          || signum(start.y - distStartinPoint.y) != signum(start.y - end.y);
+    }
+    if (abs(end.y - start.y) < EPS) {
+      return (abs(start.y - distStartinPoint.y) > EPS)
+          || signum(start.x - distStartinPoint.x) != signum(start.x - end.x);
+    }
+    return signum(start.x - distStartinPoint.x) != signum(start.x - end.x) ||
+        signum(start.y - distStartinPoint.y) != signum(start.y - end.y);
   }
 
   public Optional<Point> commonPoint(Segment other) {
+
     return other.holdingLine.commonWith(holdingLine)
         .filter(p -> (!outOfEnd(p)) && (!outOfStart(p)) && (!other.outOfEnd(p))
         && (!other.outOfStart(p)));

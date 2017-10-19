@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import UnifiedGpProblmes.Robo.Simulator.FiveSensorLineFollowerRobot;
-import UnifiedGpProblmes.Robo.Simulator.Lines;
-import UnifiedGpProblmes.Robo.Simulator.ToRead.Points;
+import UnifiedGpProblmes.Robo.Simulator.LineReader;
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Segments;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -48,8 +48,8 @@ public class RoboPetriVisulaizerFiveSensors extends Application {
 
     Pane canvas = new Pane();
     Scene scene = new Scene(canvas, 1000, 1000, Color.WHITE);
-    Points segments = Lines.getPoint();
-    s = new TriangleRoboWithSensors(canvas, segments, new FiveSensorLineFollowerRobot(segments));
+    Segments segments = LineReader.getProblem();
+    s = new TriangleRoboWithSensors(canvas, new FiveSensorLineFollowerRobot(segments));
     LinesVizualzier viz = new LinesVizualzier(canvas, segments, javafx.scene.paint.Color.BLUE);
 
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(

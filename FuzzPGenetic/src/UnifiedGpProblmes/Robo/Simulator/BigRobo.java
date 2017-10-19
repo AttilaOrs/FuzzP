@@ -1,33 +1,43 @@
 package UnifiedGpProblmes.Robo.Simulator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Court;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.ISegmentProvider;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Point;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Segment;
 
-public class ThreeLineSensorOneInfraredRobo implements IRobo {
+public class BigRobo implements IRobo {
 
   private static final double DEAD = 0.15;
   private final RoboMovmentSimulator moovmen;
   private final List<Point> visitedPoints;
   private final List<LineSensorsimulator> lineSensors;
-  private final InfraredSensorSimulator infraredDistance;
+  private final List<InfraredSensorSimulator> infraredDistanceSensors;
   private ISegmentProvider walls;
 
-  public ThreeLineSensorOneInfraredRobo(ISegmentProvider lines, ISegmentProvider walls) {
+  public BigRobo(Court c) {
+    this(c.getLines(), c.getWalls());
+  }
+
+  public BigRobo(ISegmentProvider lines, ISegmentProvider walls) {
     moovmen = new RoboMovmentSimulator();
     visitedPoints = new ArrayList<>();
     lineSensors = new ArrayList<>();
     lineSensors.add(new LineSensorsimulator(0.00, 0.13, moovmen, lines));
     lineSensors.add(new LineSensorsimulator(0.02, 0.12, moovmen, lines));
     lineSensors.add(new LineSensorsimulator(-0.02, 0.12, moovmen, lines));
-    infraredDistance = InfraredSensorSimulator.createSmall(0, 0.06, 0, moovmen, walls);
+    lineSensors.add(new LineSensorsimulator(0.04, 0.11, moovmen, lines));
+    lineSensors.add(new LineSensorsimulator(-0.04, 0.11, moovmen, lines));
+    infraredDistanceSensors = new ArrayList<>();
+    infraredDistanceSensors.add(InfraredSensorSimulator.createSmall(0.03, 0.06, (Math.PI / 2.0) / 9.0, moovmen, walls));
+    infraredDistanceSensors
+        .add(InfraredSensorSimulator.createSmall(-0.03, 0.06, (Math.PI / 2.0) / -9.0, moovmen, walls));
     this.walls = walls;
   }
+
 
   public boolean touchedTheWalls() {
     Point p = moovmen.position();
@@ -65,13 +75,15 @@ public class ThreeLineSensorOneInfraredRobo implements IRobo {
     for (LineSensorsimulator lineSens : this.lineSensors) {
       d.add(lineSens.isSomthingThere()?Optional.of(1.0):Optional.empty());
     }
-    d.add(Optional.of(infraredDistance.currentValue()));
+    for (InfraredSensorSimulator infra : infraredDistanceSensors) {
+      d.add(Optional.of(infra.currentValue()));
+    }
     return d;
 
   }
 
   @Override
   public List<InfraredSensorSimulator> getInfraredSesors() {
-    return Arrays.asList(infraredDistance);
+    return infraredDistanceSensors;
   }
 }

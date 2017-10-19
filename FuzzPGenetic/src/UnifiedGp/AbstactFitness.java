@@ -25,12 +25,14 @@ public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
   protected ProblemSpecification ps;
   protected DynamicallySimplifiedPetriNetBuilder dynamicSimplifier;
   protected StaticSimplifierPetriBuilder staticSimplifier;
-  private PetriConversationResult rez;
+  protected PetriConversationResult rez;
+
 
   public AbstactFitness(ProblemSpecification ps) {
     tp = new ToPetriNet(ps, true, RESET_LOOP);
     dynamicSimplifier = new DynamicallySimplifiedPetriNetBuilder();
     staticSimplifier = new StaticSimplifierPetriBuilder();
+    this.ps = ps;
   }
 
   protected PetriConversationResult convert(UnifiedGpIndi creature) {

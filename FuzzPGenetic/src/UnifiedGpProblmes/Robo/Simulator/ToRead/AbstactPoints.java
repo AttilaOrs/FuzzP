@@ -20,15 +20,14 @@ public abstract class AbstactPoints implements ISegmentProvider {
     return smallSegments;
   }
 
-  @Override
-  public PathResult smallSegmentsTouchedByPoints(List<Point> path) {
+  public PathResult smallSegmentsTouchedByPoints(List<Point> path, double eps) {
     int touchedAtAll = 0;
     ArrayList<Integer> order = new ArrayList<>();
     for (Segment seg : getSmallSegments()) {
       for (int pointIndex = 0; pointIndex < path.size(); pointIndex++) {
         Point p = path.get(pointIndex);
         double d = seg.dist(p);
-        if (d < EPS_TOUCH) {
+        if (d < eps) {
           touchedAtAll += 1;
           order.add(pointIndex);
           break;
@@ -41,8 +40,13 @@ public abstract class AbstactPoints implements ISegmentProvider {
         touchedInOrder++;
       }
     }
-    Integer lastIndex = order.get(order.size() - 1);
+    Integer lastIndex = (order.size() > 0) ? order.get(order.size() - 1) : 0;
     return new PathResult(touchedAtAll, touchedInOrder, lastIndex);
+  }
+
+  @Override
+  public PathResult smallSegmentsTouchedByPoints(List<Point> path) {
+    return smallSegmentsTouchedByPoints(path, EPS_TOUCH);
   }
 
 }

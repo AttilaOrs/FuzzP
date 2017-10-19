@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import UnifiedGpProblmes.Robo.Simulator.Lines;
-import UnifiedGpProblmes.Robo.Simulator.ThreeLineSensorOneInfraredRobo;
-import UnifiedGpProblmes.Robo.Simulator.ToRead.Points;
+import UnifiedGpProblmes.Robo.Simulator.BigRobo;
+import UnifiedGpProblmes.Robo.Simulator.LineReader;
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Segments;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Walls;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
@@ -51,8 +51,8 @@ public class RoboPetriVizualizerInfra extends Application {
 
     Pane canvas = new Pane();
     Scene scene = new Scene(canvas, 1000, 1000, Color.WHITE);
-    Points segments = Lines.getPoint();
-    s = new TriangleRoboWithSensors(canvas, segments, new ThreeLineSensorOneInfraredRobo(segments, Walls.getWalls()));
+    Segments segments = LineReader.getProblem();
+    s = new TriangleRoboWithSensors(canvas, new BigRobo(segments, Walls.getWalls()));
     LinesVizualzier viz = new LinesVizualzier(canvas, segments, javafx.scene.paint.Color.BLUE);
     LinesVizualzier viz2 = new LinesVizualzier(canvas, Walls.getWalls(), javafx.scene.paint.Color.BROWN);
 
@@ -111,10 +111,10 @@ public class RoboPetriVizualizerInfra extends Application {
   private static void loadMain() {
     PetriNetJsonSaver<UnifiedPetriNet> load = new PetriNetJsonSaver<UnifiedPetriNet>();
     RoboPetriVizualizerInfra.net = load.load("Petri.json", UnifiedPetriNet.class);
-    inpsPlaceId = Arrays.asList(470, 486, 493, 497);
+    inpsPlaceId = Arrays.asList(213, 214, 221, 224);
 
-    fiOut = 456;
-    seOut = 469;
+    fiOut = 202;
+    seOut = 214;
     launch();
   }
 }

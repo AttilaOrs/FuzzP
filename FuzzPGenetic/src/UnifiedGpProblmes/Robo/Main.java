@@ -19,9 +19,9 @@ import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifromCrossOver;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
 import UnifiedGpProblmes.ArtificalAnt.AntFitnes;
-import UnifiedGpProblmes.Robo.Simulator.Lines;
-import UnifiedGpProblmes.Robo.Simulator.ToRead.Points;
-import UnifiedGpProblmes.Robo.Simulator.ToRead.Walls;
+import UnifiedGpProblmes.Robo.Simulator.LineReader;
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Court;
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Segments;
 import commonUtil.PlotUtils;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
@@ -93,7 +93,7 @@ public class Main {
     MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
         survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
     SimpleGA.iteration = 131;
-    SimpleGA.population = 10000;
+    SimpleGA.population = 1000;
     long start = System.currentTimeMillis();
     algo.theAlgo();
     long stop = System.currentTimeMillis();
@@ -169,14 +169,14 @@ public class Main {
     case fiveSensor:
       return FiveSensorLineFallowerFitnes.getProblemSpecification();
     case threeSensorOneInfra:
-      return ThreeLineSensorOneInfraredFitnes.getProblemSpecification();
+      return MultiCourtFitness.getProblemSpecification();
     }
     return null;
 
   }
 
 
-  static Points p = Lines.getPoint();
+  static Segments p = LineReader.getProblem();
 
   public static AbstactFitness generateFitnes() {
     switch (current) {
@@ -185,7 +185,7 @@ public class Main {
     case fiveSensor:
       return new FiveSensorLineFallowerFitnes(p.myClone());
     case threeSensorOneInfra:
-      return new ThreeLineSensorOneInfraredFitnes(p.myClone(), Walls.getWalls());
+      return new MultiCourtFitness(Court.getFirst(), Court.getSecond(), Court.getThird(), Court.getFourth());
     }
     return null;
   }

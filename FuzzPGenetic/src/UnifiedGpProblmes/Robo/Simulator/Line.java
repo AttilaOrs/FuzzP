@@ -26,7 +26,7 @@ public class Line {
 
   public Optional<Point> commonWith(Line o) {
     double den = B * o.A - o.B * A;
-    if (den < 0.0000000000000000000000000000001) {
+    if (Math.abs(den) < 0.00000000000000000000000000000000001) {
       return Optional.empty();
     }
     double y = (o.C * A - C * o.A) / den;
