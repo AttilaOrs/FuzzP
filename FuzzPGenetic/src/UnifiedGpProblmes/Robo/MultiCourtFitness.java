@@ -62,7 +62,7 @@ public class MultiCourtFitness extends AbstactFitness {
     int s = evalSimple(third, exec, simpleCheckpoints);
     int w = 0;
     int q = 0;
-    if (f + s > 75) {
+    if (f + s > 58) {
       w = evalWalls(fourth, exec);
     }
     if (f + s + w > 120) {
