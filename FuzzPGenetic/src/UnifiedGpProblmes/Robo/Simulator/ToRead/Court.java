@@ -28,7 +28,7 @@ public class Court {
 
   public static Court getThird() {
     if (third == null) {
-      third = readFromJson("ssCourt.json");
+      third = readFromJson("thCourt.json");
     }
     return third;
   }
@@ -73,7 +73,7 @@ public class Court {
     System.out.println(getFirst().lines.getSmallSegments().size());
     System.out.println(getSecond().lines.getSmallSegments().size());
     System.out.println(getThird().lines.getSmallSegments().size());
-    System.out.println(getFourth().walls.getSmallSegments().size());
+    System.out.println(getFourth().lines.getSmallSegments().size());
 
 
   }

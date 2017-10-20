@@ -8,9 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import UnifiedGpProblmes.Robo.Simulator.BigRobo;
-import UnifiedGpProblmes.Robo.Simulator.LineReader;
-import UnifiedGpProblmes.Robo.Simulator.ToRead.Segments;
-import UnifiedGpProblmes.Robo.Simulator.ToRead.Walls;
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Court;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -44,17 +42,18 @@ public class RoboPetriVizualizerInfra extends Application {
   double diffCmd = 0.0;
   int cntr = 0;
   List<Optional<Double>> sensorsOut = Arrays.asList(Optional.empty(), Optional.empty(), Optional.empty(),
-      Optional.empty());
+      Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 
   @Override
   public void start(Stage stage) {
 
     Pane canvas = new Pane();
     Scene scene = new Scene(canvas, 1000, 1000, Color.WHITE);
-    Segments segments = LineReader.getProblem();
-    s = new TriangleRoboWithSensors(canvas, new BigRobo(segments, Walls.getWalls()));
-    LinesVizualzier viz = new LinesVizualzier(canvas, segments, javafx.scene.paint.Color.BLUE);
-    LinesVizualzier viz2 = new LinesVizualzier(canvas, Walls.getWalls(), javafx.scene.paint.Color.BROWN);
+
+    Court cour = Court.getSecond();
+    s = new TriangleRoboWithSensors(canvas, new BigRobo(cour));
+    LinesVizualzier viz = new LinesVizualzier(canvas, cour.getLines(), javafx.scene.paint.Color.BLUE);
+    LinesVizualzier viz2 = new LinesVizualzier(canvas, cour.getWalls(), javafx.scene.paint.Color.BROWN);
 
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
         new UnifiedPetrinetCacheTableResultWrapper(net,
@@ -97,7 +96,7 @@ public class RoboPetriVizualizerInfra extends Application {
         commonCmd = 0.0;
         diffCmd = 0.0;
         System.out.println((cntr++) + " " +
-            segments.smallSegmentsTouchedByPoints(s.getCurrentPathPoints()));
+            cour.getLines().smallSegmentsTouchedByPoints(s.getCurrentPathPoints()));
       }
     }));
     timeline.setCycleCount(Timeline.INDEFINITE);
@@ -111,10 +110,10 @@ public class RoboPetriVizualizerInfra extends Application {
   private static void loadMain() {
     PetriNetJsonSaver<UnifiedPetriNet> load = new PetriNetJsonSaver<UnifiedPetriNet>();
     RoboPetriVizualizerInfra.net = load.load("Petri.json", UnifiedPetriNet.class);
-    inpsPlaceId = Arrays.asList(213, 214, 221, 224);
+    inpsPlaceId = Arrays.asList(210, 215, 218, 222, 226, 227, 228);
 
-    fiOut = 202;
-    seOut = 214;
+    fiOut = 197;
+    seOut = 207;
     launch();
   }
 }

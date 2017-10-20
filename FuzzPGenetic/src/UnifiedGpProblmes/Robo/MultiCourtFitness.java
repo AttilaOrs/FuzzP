@@ -23,7 +23,7 @@ import core.common.tokencache.TokenCacheDisabling;
 public class MultiCourtFitness extends AbstactFitness {
 
   private static final List<Integer> simpleCheckpoints = Arrays.asList(5, 10);
-  private static final List<Integer> bigCheckpoint = Arrays.asList(5, 15, 20, 40, 60);
+  private static final List<Integer> bigCheckpoint = Arrays.asList(5, 10, 15, 20, 30, 40, 55, 70, 90, 110, 130);
   private Court first;
   private Court second;
   private Court third;
@@ -58,15 +58,15 @@ public class MultiCourtFitness extends AbstactFitness {
     exec.setRecorder(rec);
     rez.addActionIfPossible(0, i -> commonCmd = i.getValue());
     rez.addActionIfPossible(1, i -> diffCmd = i.getValue());
-    int f = evalSimple(second, exec, simpleCheckpoints);
-    int s = evalSimple(third, exec, simpleCheckpoints);
+    int f = evalSimple(second, exec, simpleCheckpoints, false);
+    int s = evalSimple(third, exec, simpleCheckpoints, false);
     int w = 0;
     int q = 0;
-    if (f + s > 58) {
-      w = evalWalls(fourth, exec);
+    if (f + s > 50) {
+      w = evalSimple(fourth, exec, simpleCheckpoints, true);
     }
-    if (f + s + w > 120) {
-      q = evalSimple(first, exec, bigCheckpoint);
+    if (f + s + w > 70) {
+      q = evalSimple(first, exec, bigCheckpoint, true);
     }
     super.updateCreatureWithSimplification(creature, rez, rec);
     double multi2 = super.fireCountMulti(rec, allRun);
@@ -74,7 +74,7 @@ public class MultiCourtFitness extends AbstactFitness {
 
   }
 
-  private int evalSimple(Court c, SyncronousUnifiedPetriExecutor exec, List<Integer> checkpoints) {
+  private int evalSimple(Court c, SyncronousUnifiedPetriExecutor exec, List<Integer> checkpoints, boolean chance) {
     exec.resetSimulator();
 
     commonCmd = 0.0;
@@ -82,9 +82,8 @@ public class MultiCourtFitness extends AbstactFitness {
     BigRobo robo = new BigRobo(c);
     List<Optional<Double>> sensorsOut = Collections.nCopies(ps.getOuputCount(), Optional.empty());
         Map<Integer, UnifiedToken> inp = new HashMap<>();
-    boolean chance = true;
     int i;
-    int finalTickNr = 200;
+    int finalTickNr = 100;
     for (i = 0; i < finalTickNr; i++) {
       inp.clear();
       for (int ii = 0; ii < sensorsOut.size(); ii++) {
@@ -105,12 +104,12 @@ public class MultiCourtFitness extends AbstactFitness {
 
       commonCmd = 0.0;
       diffCmd = 0.0;
-      if (i % 200 == 0) {
+      if (i % 100 == 0) {
         PathResult l = c.getLines().smallSegmentsTouchedByPoints(robo.getVisitedPoints());
         int ii = (i / 200);
         if (ii < checkpoints.size()) {
           if (l.touchedAtAll >= checkpoints.get(ii)) {
-            finalTickNr += 200;
+            finalTickNr += 100;
             chance = true;
           } else if (chance) {
             chance = false;
@@ -124,41 +123,6 @@ public class MultiCourtFitness extends AbstactFitness {
     return pathRez.touchedInOrder;
   }
 
-  private int evalWalls(Court c, SyncronousUnifiedPetriExecutor exec) {
-    exec.resetSimulator();
-
-    commonCmd = 0.0;
-    diffCmd = 0.0;
-    BigRobo robo = new BigRobo(c);
-    List<Optional<Double>> sensorsOut = Collections.nCopies(ps.getOuputCount(), Optional.empty());
-    Map<Integer, UnifiedToken> inp = new HashMap<>();
-    int i;
-    int finalTickNr = 500;
-    for (i = 0; i < finalTickNr; i++) {
-      inp.clear();
-      for (int ii = 0; ii < sensorsOut.size(); ii++) {
-        rez.addToInpIfPossible(inp, ii, UnifiedToken.fromOptional(sensorsOut.get(ii)));
-      }
-      try {
-        exec.runTick(inp);
-      } catch (Throwable t) {
-        throw t;
-      }
-
-      double commandR = commonCmd + diffCmd / 2.0;
-      double commandL = commonCmd - diffCmd / 2.0;
-      sensorsOut = robo.simulate(commandR, commandL);
-      if (robo.touchedTheWalls()) {
-        break;
-      }
-
-      commonCmd = 0.0;
-      diffCmd = 0.0;
-    }
-    PathResult pathRez = c.getWalls().smallSegmentsTouchedByPoints(robo.getVisitedPoints(), 0.25);
-    allRun += i;
-    return pathRez.touchedAtAll;
-  }
 
   public static ProblemSpecification getProblemSpecification() {
 
