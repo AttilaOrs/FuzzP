@@ -15,6 +15,7 @@ public class SelectRandomBasedOnUsageAndDepth {
   public INode<NodeType> selectNode(UsageStats usage, Random rnd){
     
 		 List<INode<NodeType>> sorted = usage.getNodeSet().stream()
+        .filter(e -> !e.isLeaf())
 				.sorted((INode<NodeType> en1, INode<NodeType> en2) -> Double.compare(usage.getUsage(en1)/((double) usage.getSize(en1)), usage.getUsage(en2)/((double) usage.getSize(en2))))
 				.collect(Collectors.toList());
 		HashMap<INode<NodeType>, Double> ranking = new HashMap<>();
