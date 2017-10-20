@@ -2,17 +2,26 @@ package UnifiedGp.GpIndi.UsageStats;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.Nodes.NodeType;
+import UnifiedGp.Tree.Visitors.RandomNodeSelector;
 import UnifiedGp.Tree.Visitors.UsageStats;
 
 public class SelectRandomBasedOnUsageAndDepth {
   
   
-  public INode<NodeType> selectNode(UsageStats usage, Random rnd){
+  public INode<NodeType> selectNode(UsageStats usage, Random rnd, IInnerNode<NodeType> iInnerNode) {
+    if (usage == null) {
+      RandomNodeSelector<NodeType> l = new RandomNodeSelector<>();
+      Optional<INode<NodeType>> w = l.selectRandomNode(iInnerNode, node -> !iInnerNode.equals(node) && !node.isLeaf(),
+          rnd);
+      return w.isPresent() ? w.get() : null;
+    }
     
 		 List<INode<NodeType>> sorted = usage.getNodeSet().stream()
         .filter(e -> !e.isLeaf())

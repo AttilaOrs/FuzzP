@@ -53,6 +53,8 @@ public class MultiobjectiveMulioperatorGA<TCreature extends IGPGreature> extends
               .limit((long) (eliteNr * fitnesNormalWeigths[hack])).collect(Collectors.toList());
           List<int[]> elitsSurv = elite.stream().map(entry -> new int[] { entry.getKey(), nextIndex() })
               .collect(Collectors.toList());
+          // String st = elite.stream().map(i -> i.getKey() + " " +
+          // i.getValue()[0]).collect(Collectors.joining("\n"));
           pool.survive(elitsSurv);
         }
 
