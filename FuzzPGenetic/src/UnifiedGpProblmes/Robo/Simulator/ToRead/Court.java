@@ -69,6 +69,11 @@ public class Court {
     return walls;
   }
 
+  public Court myClone() {
+    return new Court(lines.myClone(), walls.myClone());
+
+  }
+
   public static void main(String[] args) {
     System.out.println(getFirst().lines.getSmallSegments().size());
     System.out.println(getSecond().lines.getSmallSegments().size());

@@ -185,7 +185,8 @@ public class Main {
     case fiveSensor:
       return new FiveSensorLineFallowerFitnes(p.myClone());
     case threeSensorOneInfra:
-      return new MultiCourtFitness(Court.getFirst(), Court.getSecond(), Court.getThird(), Court.getFourth());
+      return new MultiCourtFitness(Court.getFirst().myClone(), Court.getSecond().myClone(), Court.getThird().myClone(),
+          Court.getFourth().myClone());
     }
     return null;
   }
