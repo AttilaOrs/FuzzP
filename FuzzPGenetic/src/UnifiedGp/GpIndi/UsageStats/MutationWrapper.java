@@ -7,6 +7,7 @@ import structure.operators.ICreatureMutator;
 
 public class MutationWrapper implements ICreatureMutator<UnifiedGpIndiWithUsageStats> {
 
+
   private ICreatureMutator<UnifiedGpIndi> original;
 
   private MutationWrapper(ICreatureMutator<UnifiedGpIndi> original) {
@@ -17,6 +18,10 @@ public class MutationWrapper implements ICreatureMutator<UnifiedGpIndiWithUsageS
   public UnifiedGpIndiWithUsageStats mutate(UnifiedGpIndiWithUsageStats creature, Random random) {
     UnifiedGpIndi rez = original.mutate(creature, random);
     return new UnifiedGpIndiWithUsageStats(rez.getRoot());
+  }
+
+  public static MutationWrapper wrap(ICreatureMutator<UnifiedGpIndi> original) {
+    return new MutationWrapper(original);
   }
 
 }

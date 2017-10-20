@@ -20,7 +20,7 @@ public class CrossOverWrapper implements ICreatureBreeder<UnifiedGpIndiWithUsage
         new UnifiedGpIndiWithUsageStats(rez[1].getRoot()) };
   }
 
-  public CrossOverWrapper wrap(ICreatureBreeder<UnifiedGpIndi> original) {
+  public static CrossOverWrapper wrap(ICreatureBreeder<UnifiedGpIndi> original) {
     return new CrossOverWrapper(original);
   }
 
