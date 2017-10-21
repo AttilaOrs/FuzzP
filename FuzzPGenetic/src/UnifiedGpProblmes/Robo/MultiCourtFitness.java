@@ -22,8 +22,8 @@ import core.common.tokencache.TokenCacheDisabling;
 
 public class MultiCourtFitness extends AbstactFitness {
 
-  private static final List<Integer> simpleCheckpoints = Arrays.asList(5, 10);
-  private static final List<Integer> bigCheckpoint = Arrays.asList(5, 10, 15, 20, 30, 40, 55, 70, 90, 110, 130);
+  private static final List<Integer> simpleCheckpoints = Arrays.asList(0, 5, 10);
+  private static final List<Integer> bigCheckpoint = Arrays.asList(0, 5, 10, 15, 20, 30, 40, 55, 70, 90, 110, 130);
   private Court first;
   private Court second;
   private Court third;
@@ -62,7 +62,7 @@ public class MultiCourtFitness extends AbstactFitness {
     int s = evalSimple(third, exec, simpleCheckpoints, false);
     int w = 0;
     int q = 0;
-    if (f + s > 50) {
+    if (f + s > 45) {
       w = evalSimple(fourth, exec, simpleCheckpoints, true);
     }
     if (f + s + w > 70) {

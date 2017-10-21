@@ -50,7 +50,7 @@ public class RoboPetriVizualizerInfra extends Application {
     Pane canvas = new Pane();
     Scene scene = new Scene(canvas, 1000, 1000, Color.WHITE);
 
-    Court cour = Court.getSecond();
+    Court cour = Court.getFourth();
     s = new TriangleRoboWithSensors(canvas, new BigRobo(cour));
     LinesVizualzier viz = new LinesVizualzier(canvas, cour.getLines(), javafx.scene.paint.Color.BLUE);
     LinesVizualzier viz2 = new LinesVizualzier(canvas, cour.getWalls(), javafx.scene.paint.Color.BROWN);
@@ -110,10 +110,10 @@ public class RoboPetriVizualizerInfra extends Application {
   private static void loadMain() {
     PetriNetJsonSaver<UnifiedPetriNet> load = new PetriNetJsonSaver<UnifiedPetriNet>();
     RoboPetriVizualizerInfra.net = load.load("Petri.json", UnifiedPetriNet.class);
-    inpsPlaceId = Arrays.asList(210, 215, 218, 222, 226, 227, 228);
+    inpsPlaceId = Arrays.asList(338, 347, 349, 353, 355, 357);
 
-    fiOut = 197;
-    seOut = 207;
+    fiOut = 294;
+    seOut = 309;
     launch();
   }
 }
