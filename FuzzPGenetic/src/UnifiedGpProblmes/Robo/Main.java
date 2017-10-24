@@ -74,14 +74,14 @@ public class Main {
 
     ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
     fitnesses.add(() -> firntsSup.get());
-    ISelector otherSelector = new LinearRankSelection();
-    ISelector survSelector = new LinearRankSelection();
+    ISelector otherSelector = new LinearRankSelection(1.5);
+    ISelector survSelector = new LinearRankSelection(1.5);
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
     AbstactFitness.APPLY_SIZE_LIMIT = true;
     AbstactFitness.FIRED_TR_LIMIT = true;
     AbstactFitness.HARD_LIMIT = false;
-    AbstactFitness.SIZE_LIMIT_START = 500;
-    AbstactFitness.SIZE_LIMIT = 600;
+    AbstactFitness.SIZE_LIMIT_START = 300;
+    AbstactFitness.SIZE_LIMIT = 500;
     
     
 

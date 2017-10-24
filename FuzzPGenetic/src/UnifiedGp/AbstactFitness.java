@@ -56,7 +56,7 @@ public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
   
   protected double fireCountMulti(FiredTranitionRecorder<UnifiedToken> rec, int mooves) {
     double multi2 = 1.0;
-    int ss = mooves * 500;
+    int ss = mooves * 300;
     if (FIRED_TR_LIMIT && rec.getTransitionFiredCount() > ss) {
       multi2 = 1.0 - (1.0 * (rec.getTransitionFiredCount() - ss)) / (2.0 * ss);
     }
