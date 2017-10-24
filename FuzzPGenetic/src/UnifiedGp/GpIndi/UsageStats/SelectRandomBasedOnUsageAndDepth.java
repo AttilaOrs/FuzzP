@@ -25,7 +25,7 @@ public class SelectRandomBasedOnUsageAndDepth {
     
 		 List<INode<NodeType>> sorted = usage.getNodeSet().stream()
         .filter(e -> !e.isLeaf())
-				.sorted((INode<NodeType> en1, INode<NodeType> en2) -> Double.compare(usage.getUsage(en1)/((double) usage.getSize(en1)), usage.getUsage(en2)/((double) usage.getSize(en2))))
+				.sorted((INode<NodeType> en1, INode<NodeType> en2) -> Double.compare(nodeFitnes(usage, en1), nodeFitnes(usage, en2)))
 				.collect(Collectors.toList());
 		HashMap<INode<NodeType>, Double> ranking = new HashMap<>();
 		double sum = 0.0;
@@ -43,6 +43,18 @@ public class SelectRandomBasedOnUsageAndDepth {
 		  }
 		}
     return null;
+  }
+
+  private double nodeFitnes(UsageStats usage, INode<NodeType> en1) {
+    int i = usage.getUsage(en1);
+    int allTickNr = usage.getAllTickNr();
+    if (i > allTickNr * 3) {
+      if (i > allTickNr * 10) {
+        return 0.000001;
+      }
+      i = allTickNr * 3;
+    }
+    return i / ((double) usage.getSize(en1));
   }
   
   private static final double sp =1.5;

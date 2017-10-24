@@ -1,7 +1,6 @@
 package UnifiedGp.Tree.Visitors;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,13 +10,24 @@ import UnifiedGp.Tree.Nodes.NodeType;
 
 public class UsageStats {
   private final Map<INode<NodeType>, UsageAndDepth> usageMap;
+  private int allTickNr;
 
-  public UsageStats() {
+
+  public UsageStats(int allTickNr) {
     usageMap = new HashMap<>();
+    this.allTickNr = allTickNr;
   }
   
+  public int getAllTickNr() {
+    return allTickNr;
+  }
+
   public Set<INode<NodeType>> getNodeSet(){
     return usageMap.keySet();
+  }
+
+  public void remove(INode<NodeType> toRemove) {
+    usageMap.remove(toRemove);
   }
 
   public void add(INode<NodeType> node, int usage, int depth, int size) {

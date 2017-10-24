@@ -1,14 +1,12 @@
 package UnifiedGp.Tree.Visitors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import com.sun.prism.j2d.J2DPipeline;
 
 import UnifiedGp.TestUtils;
 import UnifiedGp.GpIndi.UsageStats.SelectRandomBasedOnUsageAndDepth;
@@ -55,7 +53,7 @@ public class NodeUsageMergerTest {
     DynamicallySimplifiedPetriNetBuilder builder = new DynamicallySimplifiedPetriNetBuilder();
     IInnerNode<NodeType> newRoot = builder.createSimplifiedTree(root, counterRecorder.getFiredTransition(),convRez.nodeTransitionMapping.get());
     
-    UsageStats i = NodeUsageMerger.merge(root, overallRez, newRoot, new UsageStats());
+    UsageStats i = NodeUsageMerger.merge(root, overallRez, newRoot, new UsageStats(overallRez.getAllTickNr()));
     
     assertThat("overall depth", i.getDepth(newRoot) == 3);
     assertThat("overall run", i.getUsage(newRoot) == 3);

@@ -82,20 +82,14 @@ public class UsageMeasureMain {
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
 
     double[] crossWeigth = new double[] { 0.33, 0.33, 0.33 };
-    if (runNr % 5 == 0) {
+    if (runNr % 3 == 0) {
       crossWeigth = new double[] { 0.0, 0.0, 1.0 };
     }
-    if (runNr % 5 == 1) {
-      crossWeigth = new double[] { 0.0, 1.0, 0.0 };
+    if (runNr % 3 == 1) {
+      crossWeigth = new double[] { 0.5, 0.5, 0.0 };
     }
-    if (runNr % 5 == 2) {
-      crossWeigth = new double[] { 1.0, 0.0, 0.0 };
-    }
-    if (runNr % 5 == 3) {
+    if (runNr % 3 == 2) {
       crossWeigth = new double[] { 0.33, 0.33, 0.33 };
-    }
-    if (runNr % 5 == 4) {
-      crossWeigth = new double[] { 0.25, 0.25, 0.5 };
     }
 
     CreatureParallelPool<UnifiedGpIndiWithUsageStats> pool = new CreatureParallelPool<>(gens,

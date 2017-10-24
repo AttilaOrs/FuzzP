@@ -6,11 +6,8 @@ import UnifiedGp.ProblemSpecification;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.Nodes.NodeType;
-import UnifiedGp.Tree.Visitors.DynamicallySimplifiedPetriNetBuilder;
 import UnifiedGp.Tree.Visitors.NodeUsageAsociator;
-import UnifiedGp.Tree.Visitors.NodeUsageMerger;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
-import UnifiedGp.Tree.Visitors.StaticSimplifierPetriBuilder;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
 import UnifiedGp.Tree.Visitors.UsageStats;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -22,16 +19,16 @@ public abstract class AbstactFitnessWithUsage implements ICreatureFitnes<Unified
 
   protected ToPetriNet tp;
   protected ProblemSpecification ps;
-  protected DynamicallySimplifiedPetriNetBuilder dynamicSimplifier;
-  protected StaticSimplifierPetriBuilder staticSimplifier;
+  protected DynamicSymplifierBuilderWithStats dynamicSimplifier;
+  protected StaticSimplifierWithStats staticSimplifier;
   private PetriConversationResult rez;
 
   private NodeUsageAsociator assoc;
 
   public AbstactFitnessWithUsage(ProblemSpecification ps) {
     tp = new ToPetriNet(ps, true, AbstactFitness.RESET_LOOP);
-    dynamicSimplifier = new DynamicallySimplifiedPetriNetBuilder();
-    staticSimplifier = new StaticSimplifierPetriBuilder();
+    dynamicSimplifier = new DynamicSymplifierBuilderWithStats();
+    staticSimplifier = new StaticSimplifierWithStats();
     assoc = new NodeUsageAsociator();
   }
 
@@ -66,14 +63,15 @@ public abstract class AbstactFitnessWithUsage implements ICreatureFitnes<Unified
 
   protected void updateCreatureWithSimplification(UnifiedGpIndiWithUsageStats creature, PetriConversationResult rez,
       FireCounterRecorder<UnifiedToken> tk) {
-    IInnerNode<NodeType> dynamiclySimpliedRoot = dynamicSimplifier.createSimplifiedTree(creature.getRoot(),
-        tk.getFiredTransition(), rez.nodeTransitionMapping.get());
     UsageStats oldStats = assoc.calcUsage(creature.getRoot(), tk, rez.nodeTransitionMapping.get());
+    IInnerNode<NodeType> dynamiclySimpliedRoot = dynamicSimplifier.createSimplifiedTree(creature.getRoot(),
+        tk.getFiredTransition(), rez.nodeTransitionMapping.get(), oldStats);
+
+    UsageStats statAfterDynamicSimpl = dynamicSimplifier.getNewUsageStats();
 
 
-    IInnerNode<NodeType> newRoot = staticSimplifier.simplifyTree(dynamiclySimpliedRoot);
-    UsageStats mm = NodeUsageMerger.merge(creature.getRoot(), oldStats, newRoot, new UsageStats());
-      creature.setUsageStats(mm);
+    IInnerNode<NodeType> newRoot = staticSimplifier.simplifyTree(dynamiclySimpliedRoot, statAfterDynamicSimpl);
+    creature.setUsageStats(staticSimplifier.getNewStat());
     creature.setRoot(newRoot);
   }
 
