@@ -1,15 +1,8 @@
 package UnifiedGpProblmes.Robo.Visualizer;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import UnifiedGpProblmes.Robo.Simulator.BigRobo;
-import UnifiedGpProblmes.Robo.Simulator.LineReader;
+import UnifiedGpProblmes.Robo.Simulator.InfraOnlyRobo;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Court;
-import UnifiedGpProblmes.Robo.Simulator.ToRead.Point;
-import UnifiedGpProblmes.Robo.Simulator.ToRead.Segment;
-import UnifiedGpProblmes.Robo.Simulator.ToRead.Segments;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -39,16 +32,11 @@ public class RoboVisualizer extends Application {
     Pane canvas = new Pane();
     Scene scene = new Scene(canvas, 1000, 1000, Color.WHITE);
     // Court f = Court.getFirst();
-    Segments ww = LineReader.getPoint("sm5.json", 0.70, new Point(-0.20, -0.10));
-    ArrayList<Segment> i = new ArrayList<>(ww.getLineSegments());
-    i.add(new Segment(new Point(-0.20, -0.10), new Point(0.22, -0.10)));
-    ww = new Segments(i);
-    
-    Segments ss = new Segments(Arrays.asList());
-    Court f = new Court(ss, ww);
+
+    Court f = Court.getMaze();
 
     s = new TriangleRoboWithSensors(canvas,
-        new BigRobo(f));
+        new InfraOnlyRobo(f));
     LinesVizualzier viz = new LinesVizualzier(canvas, f.getLines(), javafx.scene.paint.Color.BLUE);
     LinesVizualzier viz2 = new LinesVizualzier(canvas, f.getWalls(), javafx.scene.paint.Color.BROWN);
 

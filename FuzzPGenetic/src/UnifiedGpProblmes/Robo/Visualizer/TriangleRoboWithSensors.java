@@ -57,6 +57,11 @@ public class TriangleRoboWithSensors {
 
   public List<Optional<Double>> setCommandAndUpdate(double commandR, double commandL) {
     List<Optional<Double>> r = roboSim.simulate(commandR, commandL);
+    if (roboSim.touchedTheWalls()) {
+      robo.setFill(javafx.scene.paint.Color.YELLOW);
+    } else {
+      robo.setFill(javafx.scene.paint.Color.BLACK);
+    }
     robo.setRotate(toDegrees(roboSim.getRoboMoovmentSim().getAlfa()));
     robo.setCenterX(xOnCansvas(roboSim.getRoboMoovmentSim().getX()));
     robo.setCenterY(yOnCansvas(roboSim.getRoboMoovmentSim().getY()));
@@ -100,6 +105,10 @@ public class TriangleRoboWithSensors {
   
   public List<Point> getCurrentPathPoints(){
     return roboSim.getVisitedPoints();
+  }
+
+  public IRobo getRobo() {
+    return this.roboSim;
   }
 
 }

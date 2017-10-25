@@ -1,6 +1,6 @@
 package UnifiedGpProblmes.Robo;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,37 +10,29 @@ import UnifiedGp.AbstactFitness;
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.ProblemSpecificationImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
-import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGpProblmes.Robo.Simulator.BigRobo;
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Court;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.ISegmentProvider.PathResult;
-import UnifiedGpProblmes.Robo.Simulator.ToRead.Segments;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
 import core.common.recoder.FiredTranitionRecorder;
 import core.common.tokencache.TokenCacheDisabling;
 
-public class ThreeLineSensorOneInfraredFitnes extends AbstactFitness {
+public class MazeFitnes extends AbstactFitness {
 
-  private Segments lines;
-  private Segments walls;
-  private static final int TICK_NR = 201;
-
-  public ThreeLineSensorOneInfraredFitnes(Segments line, Segments walls) {
+  private Court maze;
+  private double commonCmd;
+  private double diffCmd;
+  private int allRun;
+  public MazeFitnes(Court maze) {
     super(getProblemSpecification());
-    this.lines = line;
-    this.walls = walls;
+    this.maze = maze;
   }
-
-  double commonCmd = 0.0;
-  double diffCmd = 0.0;
-  private PetriConversationResult rez;
-
-  static int cntr = 0;
-  final static List<Integer> checkpoints = Arrays.asList(0, 5, 15, 20, 40);
 
   @Override
   public double evaluate(UnifiedGpIndi creature) {
+    allRun = 0;
     FiredTranitionRecorder<UnifiedToken> rec = new FiredTranitionRecorder<>();
     rez = super.convert(creature);
     int size = creature.getSizes().size();
@@ -53,16 +45,25 @@ public class ThreeLineSensorOneInfraredFitnes extends AbstactFitness {
             () -> new TokenCacheDisabling<>(5)),
         false, true);
     exec.setRecorder(rec);
-
     rez.addActionIfPossible(0, i -> commonCmd = i.getValue());
     rez.addActionIfPossible(1, i -> diffCmd = i.getValue());
-    BigRobo robo = new BigRobo(lines, walls);
-    List<Optional<Double>> sensorsOut = Arrays.asList(Optional.empty(), Optional.empty(), Optional.empty(),
-        Optional.empty());
+    double f = evalSimple(maze, exec, false);
+    super.updateCreatureWithSimplification(creature, rez, rec);
+    double multi2 = super.fireCountMulti(rec, allRun);
+    return f * multi * multi2;
+  }
+
+  private double evalSimple(Court c, SyncronousUnifiedPetriExecutor exec, boolean chance) {
+    exec.resetSimulator();
+
+    commonCmd = 0.0;
+    diffCmd = 0.0;
+    BigRobo robo = new BigRobo(c);
+    List<Optional<Double>> sensorsOut = Collections.nCopies(ps.getOuputCount(), Optional.empty());
     Map<Integer, UnifiedToken> inp = new HashMap<>();
-    int finalTickNr = TICK_NR;
-    boolean chance = true;
     int i;
+    int finalTickNr = 301;
+    int pain = 0;
     for (i = 0; i < finalTickNr; i++) {
       inp.clear();
       for (int ii = 0; ii < sensorsOut.size(); ii++) {
@@ -71,7 +72,6 @@ public class ThreeLineSensorOneInfraredFitnes extends AbstactFitness {
       try {
         exec.runTick(inp);
       } catch (Throwable t) {
-        System.out.println(creature.getRoot());
         throw t;
       }
 
@@ -79,53 +79,42 @@ public class ThreeLineSensorOneInfraredFitnes extends AbstactFitness {
       double commandL = commonCmd - diffCmd / 2.0;
       sensorsOut = robo.simulate(commandR, commandL);
       if (robo.touchedTheWalls()) {
-        break;
+        pain += 10;
       }
 
       commonCmd = 0.0;
       diffCmd = 0.0;
-      if (i % 200 == 0) {
-        PathResult l = lines.smallSegmentsTouchedByPoints(robo.getVisitedPoints());
-        int ii = (i / 200);
-        if (ii < checkpoints.size()) {
-          if (l.touchedAtAll >= checkpoints.get(ii)) {
-            finalTickNr += 200;
-            chance = true;
-          } else if (chance) {
-            chance = false;
-            finalTickNr += 200;
-          }
+      if (i == 300) {
+        PathResult smallRez = c.getLines().smallSegmentsTouchedByPoints(robo.getVisitedPoints(),0.07);
+        if (smallRez.touchedAtAll > 30) {
+          finalTickNr += 700;
         }
       }
     }
-    PathResult pathRez = lines.smallSegmentsTouchedByPoints(robo.getVisitedPoints());
-
-    super.updateCreatureWithSimplification(creature, rez, rec);
-    double multi2 = super.fireCountMulti(rec, i);
-    return calcBasicFitness(pathRez) * multi * multi2;
-  }
-
-  private double calcBasicFitness(PathResult pathRez) {
-    return pathRez.touchedInOrder;
+    PathResult pathRez = c.getLines().smallSegmentsTouchedByPoints(robo.getVisitedPoints(), 0.07);
+    allRun += i;
+    int toRet = pathRez.touchedInOrder - pain;
+    if (toRet > 0) {
+      return toRet +2.0;
+    } else if (pathRez.touchedInOrder > 0){
+      return 2.0 - 1.0 / pathRez.touchedInOrder;
+    } else if (pathRez.touchedAtAll > 0) {
+      return 1.0 - 1.0 / pathRez.touchedAtAll;
+    }
+    return 0.0;
   }
 
   public static ProblemSpecification getProblemSpecification() {
 
     Map<Integer, Double> inpScale = new HashMap<>();
-    inpScale.put(0, 1.0);
-    inpScale.put(1, 1.0);
-    inpScale.put(2, 1.0);
+    inpScale.put(0, 5.0);
+    inpScale.put(1, 5.0);
+    inpScale.put(2, 5.0);
     inpScale.put(3, 5.0);
+    inpScale.put(4, 5.0);
     Map<Integer, Double> outScale = new HashMap<>();
     outScale.put(0, 10.0);
     outScale.put(1, 20.0);
     return new ProblemSpecificationImpl(10.0, 4, inpScale, outScale);
-
   }
-
-  @Override
-  public PetriConversationResult getRez() {
-    return rez;
-  }
-
 }

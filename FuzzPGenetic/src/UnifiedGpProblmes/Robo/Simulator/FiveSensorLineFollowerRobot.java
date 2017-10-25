@@ -61,4 +61,8 @@ public class FiveSensorLineFollowerRobot implements IRobo {
     return Collections.EMPTY_LIST;
   }
 
+  public boolean touchedTheWalls() {
+    return false;
+  }
+
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Point;
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Segment;
 
 public interface IRobo {
 
@@ -16,5 +17,7 @@ public interface IRobo {
   RoboMovmentSimulator getRoboMoovmentSim();
 
   List<Optional<Double>> simulate(double commandR, double commandL);
+
+  boolean touchedTheWalls();
 
 }

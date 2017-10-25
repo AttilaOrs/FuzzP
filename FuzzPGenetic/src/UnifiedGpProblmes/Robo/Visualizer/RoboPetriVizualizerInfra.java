@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import UnifiedGpProblmes.Robo.Simulator.BigRobo;
+import UnifiedGpProblmes.Robo.Simulator.InfraOnlyRobo;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Court;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
@@ -42,7 +42,7 @@ public class RoboPetriVizualizerInfra extends Application {
   double diffCmd = 0.0;
   int cntr = 0;
   List<Optional<Double>> sensorsOut = Arrays.asList(Optional.empty(), Optional.empty(), Optional.empty(),
-      Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+      Optional.empty(), Optional.empty());
 
   @Override
   public void start(Stage stage) {
@@ -50,8 +50,8 @@ public class RoboPetriVizualizerInfra extends Application {
     Pane canvas = new Pane();
     Scene scene = new Scene(canvas, 1000, 1000, Color.WHITE);
 
-    Court cour = Court.getFourth();
-    s = new TriangleRoboWithSensors(canvas, new BigRobo(cour));
+    Court cour = Court.getMaze();
+    s = new TriangleRoboWithSensors(canvas, new InfraOnlyRobo(cour));
     LinesVizualzier viz = new LinesVizualzier(canvas, cour.getLines(), javafx.scene.paint.Color.BLUE);
     LinesVizualzier viz2 = new LinesVizualzier(canvas, cour.getWalls(), javafx.scene.paint.Color.BROWN);
 
@@ -60,7 +60,9 @@ public class RoboPetriVizualizerInfra extends Application {
             () -> new TokenCacheDisabling<>(5)),
         false, true);
     net.addActionForOuputTransition(fiOut, i -> commonCmd = i.getValue());
-    net.addActionForOuputTransition(seOut, i -> diffCmd = i.getValue());
+    if (seOut != -1) {
+      net.addActionForOuputTransition(seOut, i -> diffCmd = i.getValue());
+    }
     FullRecorder<UnifiedToken> tk = new FullRecorder<>();
     exec.setRecorder(tk);
 
@@ -96,7 +98,8 @@ public class RoboPetriVizualizerInfra extends Application {
         commonCmd = 0.0;
         diffCmd = 0.0;
         System.out.println((cntr++) + " " +
-            cour.getLines().smallSegmentsTouchedByPoints(s.getCurrentPathPoints()));
+            cour.getLines().smallSegmentsTouchedByPoints(s.getCurrentPathPoints()) + " "
+            + s.getRobo().touchedTheWalls());
       }
     }));
     timeline.setCycleCount(Timeline.INDEFINITE);
@@ -110,10 +113,10 @@ public class RoboPetriVizualizerInfra extends Application {
   private static void loadMain() {
     PetriNetJsonSaver<UnifiedPetriNet> load = new PetriNetJsonSaver<UnifiedPetriNet>();
     RoboPetriVizualizerInfra.net = load.load("Petri.json", UnifiedPetriNet.class);
-    inpsPlaceId = Arrays.asList(338, 347, 349, 353, 355, 357);
+    inpsPlaceId = Arrays.asList(-1, -1, -1, -1, -1);
 
-    fiOut = 294;
-    seOut = 309;
+    fiOut = 20;
+    seOut = -1;
     launch();
   }
 }

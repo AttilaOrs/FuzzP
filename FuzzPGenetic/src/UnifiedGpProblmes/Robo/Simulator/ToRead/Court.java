@@ -2,15 +2,19 @@ package UnifiedGpProblmes.Robo.Simulator.ToRead;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
+
+import commonUtil.PlotUtils;
 
 public class Court {
   private static Court first = null;
   private static Court second = null;
   private static Court third = null;
   private static Court fourth = null;
+  private static Court maze = null;
 
   public static Court getFirst() {
     if (first == null) {
@@ -38,6 +42,13 @@ public class Court {
       fourth = readFromJson("fourthCourt.json");
     }
     return fourth;
+  }
+
+  public static Court getMaze() {
+    if (maze == null) {
+      maze = readFromJson("maze.json");
+    }
+    return maze;
   }
 
   private static Court readFromJson(String file) {
@@ -75,11 +86,30 @@ public class Court {
   }
 
   public static void main(String[] args) {
-    System.out.println(getFirst().lines.getSmallSegments().size());
-    System.out.println(getSecond().lines.getSmallSegments().size());
-    System.out.println(getThird().lines.getSmallSegments().size());
-    System.out.println(getFourth().lines.getSmallSegments().size());
 
+    ArrayList<Segment> i = new ArrayList<>();
+    i.add(new Segment(new Point(-2.10, -0.10), new Point(0.30, -0.10)));
+    i.add(new Segment(new Point(-2.10, 2.50), new Point(0.30, 2.50)));
+    i.add(new Segment(new Point(0.30, -0.10), new Point(0.30, 2.50)));
+    i.add(new Segment(new Point(-0.30, -0.10), new Point(-0.30, 2.10)));
+    i.add(new Segment(new Point(-0.90, 0.50), new Point(-0.90, 2.50)));
+    i.add(new Segment(new Point(-1.50, -0.10), new Point(-1.50, 2.10)));
+    i.add(new Segment(new Point(-2.10, -0.10), new Point(-2.10, 2.50)));
+    Segments ww = new Segments(i);
+
+    ArrayList<Segment> w = new ArrayList<>();
+    w.add(new Segment(new Point(0, 0), new Point(0, 2.30)));
+    w.add(new Segment(new Point(0, 2.30), new Point(-0.60, 2.30)));
+    w.add(new Segment(new Point(-0.60, 2.30), new Point(-0.60, 0.20)));
+    w.add(new Segment(new Point(-0.60, 0.20), new Point(-1.20, 0.20)));
+    w.add(new Segment(new Point(-1.20, 0.20), new Point(-1.20, 2.30)));
+    w.add(new Segment(new Point(-1.20, 2.30), new Point(-1.80, 2.30)));
+    w.add(new Segment(new Point(-1.80, 2.30), new Point(-1.80, 0.20)));
+    Segments ss = new Segments(w);
+    Court c = new Court(ss, ww);
+    Gson g = new Gson();
+    String jsnStr = g.toJson(c);
+    PlotUtils.writeToFile("maze.json", jsnStr);
 
   }
 

@@ -92,8 +92,8 @@ public class Main {
     double[] crossWeigth = new double[] { 0.5, 0.5 };
     MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
         survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
-    SimpleGA.iteration = 151;
-    SimpleGA.population = 8000;
+    SimpleGA.iteration = 150;
+    SimpleGA.population = 3000;
     long start = System.currentTimeMillis();
     algo.theAlgo();
     long stop = System.currentTimeMillis();
@@ -157,10 +157,10 @@ public class Main {
   }
 
   private static enum problem {
-    twoSensor, fiveSensor, threeSensorOneInfra
+    twoSensor, fiveSensor, bigRobo, infraOnly
   };
 
-  private static final problem current = problem.threeSensorOneInfra;
+  private static final problem current = problem.infraOnly;
 
   public static ProblemSpecification createProblemSpec() {
     switch (current) {
@@ -168,8 +168,10 @@ public class Main {
       return TwoSensorsLineFallowerFitnes.getProblemSpecification();
     case fiveSensor:
       return FiveSensorLineFallowerFitnes.getProblemSpecification();
-    case threeSensorOneInfra:
+    case bigRobo:
       return MultiCourtFitness.getProblemSpecification();
+    case infraOnly:
+      return MazeFitnes.getProblemSpecification();
     }
     return null;
 
@@ -184,9 +186,11 @@ public class Main {
       return new TwoSensorsLineFallowerFitnes(p.myClone());
     case fiveSensor:
       return new FiveSensorLineFallowerFitnes(p.myClone());
-    case threeSensorOneInfra:
+    case bigRobo:
       return new MultiCourtFitness(Court.getFirst().myClone(), Court.getSecond().myClone(), Court.getThird().myClone(),
           Court.getFourth().myClone());
+    case infraOnly:
+      return new MazeFitnes(Court.getMaze());
     }
     return null;
   }

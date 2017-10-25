@@ -118,7 +118,7 @@ public class MultiCourtFitness extends AbstactFitness {
         }
       }
     }
-    PathResult pathRez = c.getLines().smallSegmentsTouchedByPoints(robo.getVisitedPoints());
+    PathResult pathRez = c.getLines().smallSegmentsTouchedByPoints(robo.getVisitedPoints(), 0.07);
     allRun += i;
     return pathRez.touchedInOrder;
   }
