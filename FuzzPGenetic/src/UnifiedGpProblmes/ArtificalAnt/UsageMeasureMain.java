@@ -73,9 +73,9 @@ public class UsageMeasureMain {
     fitnesses.add(() -> new ArtificalAntFitnesForUsage());
     ISelector otherSelector = new LinearRankSelection();
     ISelector survSelector = new LinearRankSelection();
-    AntFitnes.HARD_LIMIT = true;
-    AntFitnes.APPLY_SIZE_LIMIT = false;
-    AntFitnes.SIZE_LIMIT = 400;
+    AntFitnes.HARD_LIMIT = false;
+    AntFitnes.APPLY_SIZE_LIMIT = true;
+    AntFitnes.SIZE_LIMIT = 300;
     AntFitnes.SIZE_LIMIT_START = 400;
     AntFitnes.FIRED_TR_LIMIT = true;
 
