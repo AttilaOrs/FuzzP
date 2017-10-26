@@ -24,7 +24,7 @@ public class UETPNLisp {
       InputStream stream = new FileInputStream(file);
       return createFrom(stream);
     } catch (FileNotFoundException e) {
-      throw new RuntimeException("Error with file reading " + file.toString());
+      throw new RuntimeException("Error with file reading , file not found!!" + file.toString());
     }
   }
 

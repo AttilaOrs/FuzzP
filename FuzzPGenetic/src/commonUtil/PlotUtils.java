@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import UnifiedGpProblmes.Robo.Simulator.ToRead.Point;
 import de.erichseifert.gral.data.DataSeries;
 import de.erichseifert.gral.data.DataTable;
 import de.erichseifert.gral.graphics.DrawingContext;
@@ -26,7 +27,6 @@ import de.erichseifert.gral.plots.lines.DefaultLineRenderer2D;
 import de.erichseifert.gral.plots.lines.LineRenderer;
 
 public class PlotUtils {
-
 
   public static final Shape pointShape;
   public static final List<Color> colorsUSed;
@@ -46,8 +46,8 @@ public class PlotUtils {
     colorsUSed.add(Color.PINK);
     colorsUSed.add(Color.YELLOW);
 
-
   }
+
   public static void plot(Map<String, List<Double>> what, String fileName) {
 
     XYPlot plot = new XYPlot();
@@ -55,7 +55,7 @@ public class PlotUtils {
     double maxKey = 0.0;
     double maxValue = 0.0;
 
-    for(String name : what.keySet()){
+    for (String name : what.keySet()) {
       DataTable dataTable = new DataTable(Double.class, Double.class);
       List<Double> data = what.get(name);
       for (int i = 0; i < data.size(); i++) {
@@ -79,10 +79,10 @@ public class PlotUtils {
 
     writeOut(fileName, plot, maxKey, maxValue);
 
-	}
+  }
 
   private static void writeOut(String fileName, XYPlot plot, double maxKey, double maxValue) {
-    plot.getAxis(XYPlot.AXIS_X).setMin(maxKey / -10.0);
+    plot.getAxis(XYPlot.AXIS_X).setMin(-3.0);
     plot.getAxis(XYPlot.AXIS_Y).setMin(maxValue / -10.0);
     plot.getAxis(XYPlot.AXIS_X).setMax(maxKey + maxKey / 25.0);
     plot.getAxis(XYPlot.AXIS_Y).setMax(maxValue + maxValue / 25.0);
@@ -107,8 +107,9 @@ public class PlotUtils {
 
   private static double maxKey = 0.0;
   private static double maxValue = 0.0;
+
   public static void plot2(Map<String, Map<Double, Double>> what,
-			String fileName) {
+      String fileName) {
     XYPlot plot = new XYPlot();
     int cntr = 0;
     maxKey = 0.0;
@@ -132,10 +133,10 @@ public class PlotUtils {
 
     writeOut(fileName, plot, maxKey, maxValue);
 
-	}
+  }
 
   public static void hist(Map<String, Map<Integer, Integer>> what,
-			String fileName) {
+      String fileName) {
 
     XYPlot plot = new XYPlot();
     int cntr = 0;
@@ -162,18 +163,41 @@ public class PlotUtils {
     // plot.setLegendLocation(Location.EAST);
 
     writeOut(fileName, plot, maxKey, maxValue);
-	}
-	public static void writeToFile(String fileName, String content) {
-		try {
-			File file = new File(fileName);
+  }
+
+  public static void writeToFile(String fileName, String content) {
+    try {
+      File file = new File(fileName);
       if (file.getParentFile() != null) {
         file.getParentFile().mkdirs();
       }
-			BufferedWriter output = new BufferedWriter(new FileWriter(file));
-			output.write(content);
-			output.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+      BufferedWriter output = new BufferedWriter(new FileWriter(file));
+      output.write(content);
+      output.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static void plotPoint(List<Point> visitedPoints, String fileName) {
+    XYPlot plot = new XYPlot();
+    int cntr = 0;
+    maxKey = 3.0;
+    maxValue = 3.0;
+    DataTable dataTable = new DataTable(Double.class, Double.class);
+    visitedPoints.forEach(p -> dataTable.add(p.x, p.y));
+
+    DataSeries series = new DataSeries("path", dataTable, 0, 1);
+    plot.add(series);
+    plot.getPointRenderers(series).get(0).setColor(colorsUSed.get(cntr % colorsUSed.size()));
+    plot.getPointRenderers(series).get(0).setShape(pointShape);
+    LineRenderer ll = new DefaultLineRenderer2D();
+    plot.setLineRenderers(series, ll);
+    plot.getLineRenderers(series).get(0).setColor(colorsUSed.get(cntr % colorsUSed.size()));
+    cntr++;
+    plot.setLegendVisible(true);
+
+    writeOut(fileName, plot, maxKey, maxValue);
+  }
+
 }

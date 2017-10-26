@@ -35,6 +35,10 @@ public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
     this.ps = ps;
   }
 
+  public PetriConversationResult getLastRez() {
+    return rez;
+  }
+
   protected PetriConversationResult convert(UnifiedGpIndi creature) {
     rez = tp.toNet(creature.getRoot());
     return rez;

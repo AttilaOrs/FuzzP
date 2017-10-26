@@ -10,7 +10,7 @@ import UnifiedGp.AbstactFitness;
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.ProblemSpecificationImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
-import UnifiedGpProblmes.Robo.Simulator.BigRobo;
+import UnifiedGpProblmes.Robo.Simulator.InfraOnlyRobo;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Court;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.ISegmentProvider.PathResult;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -58,7 +58,7 @@ public class MazeFitnes extends AbstactFitness {
 
     commonCmd = 0.0;
     diffCmd = 0.0;
-    BigRobo robo = new BigRobo(c);
+    InfraOnlyRobo robo = new InfraOnlyRobo(c);
     List<Optional<Double>> sensorsOut = Collections.nCopies(ps.getOuputCount(), Optional.empty());
     Map<Integer, UnifiedToken> inp = new HashMap<>();
     int i;
@@ -88,6 +88,12 @@ public class MazeFitnes extends AbstactFitness {
         PathResult smallRez = c.getLines().smallSegmentsTouchedByPoints(robo.getVisitedPoints(),0.07);
         if (smallRez.touchedAtAll > 30) {
           finalTickNr += 700;
+        }
+      }
+      if (i == 1000) {
+        PathResult smallRez = c.getLines().smallSegmentsTouchedByPoints(robo.getVisitedPoints(), 0.07);
+        if (smallRez.touchedAtAll > 80) {
+          finalTickNr += 1000;
         }
       }
     }
