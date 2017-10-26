@@ -14,15 +14,17 @@ import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
 import core.Drawable.TransitionPlaceNameStore;
+import core.UnifiedPetriLogic.DrawableUnifiedPetriNetWithExternalNames;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.common.recoder.FullRecorder;
+import dotDrawer.PetriDotDrawerVertical;
 
 public class UETPNLispVisualzer {
 
   public static void main(String[] args) {
     INode<NodeType> root = UETPNLisp.fromFile(new File("first.uls"));
-    ToPetriNet tpn = new ToPetriNet(createProblemSpecification());
+    ToPetriNet tpn = new ToPetriNet(createProblemSpecification(), true, false);
     PetriConversationResult rez = tpn.toNet((IInnerNode<NodeType>) root);
     FullRecorder<UnifiedToken> rec = new FullRecorder<>();
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
@@ -39,6 +41,9 @@ public class UETPNLispVisualzer {
       exec.runTick(inp);
     }
     UnifiedVizualizer.visualize(rez.net, rec, TransitionPlaceNameStore.createOrdinarNames(rez.net));
+    PetriDotDrawerVertical drawer = new PetriDotDrawerVertical(
+        new DrawableUnifiedPetriNetWithExternalNames(rez.net, TransitionPlaceNameStore.createOrdinarNames(rez.net)));
+    drawer.makeImage("secondExample");
 
   }
 
