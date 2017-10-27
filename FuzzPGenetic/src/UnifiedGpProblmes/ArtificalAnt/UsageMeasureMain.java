@@ -75,21 +75,27 @@ public class UsageMeasureMain {
     ISelector survSelector = new LinearRankSelection();
     AntFitnes.HARD_LIMIT = false;
     AntFitnes.APPLY_SIZE_LIMIT = true;
-    AntFitnes.SIZE_LIMIT = 300;
-    AntFitnes.SIZE_LIMIT_START = 400;
+    AntFitnes.SIZE_LIMIT = 400;
+    AntFitnes.SIZE_LIMIT_START = 500;
     AntFitnes.FIRED_TR_LIMIT = true;
 
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
 
     double[] crossWeigth = new double[] { 0.33, 0.33, 0.33 };
-    if (runNr % 3 == 0) {
+    if (runNr % 5 == 0) {
       crossWeigth = new double[] { 0.0, 0.0, 1.0 };
     }
-    if (runNr % 3 == 1) {
+    if (runNr % 5 == 1) {
       crossWeigth = new double[] { 0.5, 0.5, 0.0 };
     }
-    if (runNr % 3 == 2) {
+    if (runNr % 5 == 2) {
       crossWeigth = new double[] { 0.33, 0.33, 0.33 };
+    }
+    if (runNr % 5 == 3) {
+      crossWeigth = new double[] { 0.0, 1.0, 0.0 };
+    }
+    if (runNr % 5 == 4) {
+      crossWeigth = new double[] { 1.0, 0.0, 0.0 };
     }
 
     CreatureParallelPool<UnifiedGpIndiWithUsageStats> pool = new CreatureParallelPool<>(gens,
@@ -101,7 +107,7 @@ public class UsageMeasureMain {
         otherSelector,
         survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
     SimpleGA.iteration = 100;
-    SimpleGA.population = 500;
+    SimpleGA.population = 2000;
     algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();
     algo.theAlgo();
