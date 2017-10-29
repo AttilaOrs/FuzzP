@@ -5,7 +5,7 @@ import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.Nodes.NodeType;
-import UnifiedGpProblmes.Robo.MazeFitnes;
+import UnifiedGpProblmes.Robo.Fitnesses.MazeFitnes;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Court;
 
 public class RoboRunner {

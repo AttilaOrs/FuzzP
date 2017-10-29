@@ -19,6 +19,10 @@ import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifromCrossOver;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
 import UnifiedGpProblmes.ArtificalAnt.AntFitnes;
+import UnifiedGpProblmes.Robo.Fitnesses.FiveSensorLineFallowerFitnes;
+import UnifiedGpProblmes.Robo.Fitnesses.MazeFitnes;
+import UnifiedGpProblmes.Robo.Fitnesses.MultiCourtFitness;
+import UnifiedGpProblmes.Robo.Fitnesses.TwoSensorsLineFallowerFitnes;
 import UnifiedGpProblmes.Robo.Simulator.LineReader;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Court;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Segments;
@@ -74,8 +78,8 @@ public class Main {
 
     ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
     fitnesses.add(() -> firntsSup.get());
-    ISelector otherSelector = new LinearRankSelection(1.5);
-    ISelector survSelector = new LinearRankSelection(1.5);
+    ISelector otherSelector = new LinearRankSelection();
+    ISelector survSelector = new LinearRankSelection();
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
     AbstactFitness.APPLY_SIZE_LIMIT = true;
     AbstactFitness.FIRED_TR_LIMIT = true;

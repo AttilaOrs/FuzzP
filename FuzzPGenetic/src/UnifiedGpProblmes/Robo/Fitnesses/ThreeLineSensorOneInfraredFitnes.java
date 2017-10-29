@@ -1,4 +1,4 @@
-package UnifiedGpProblmes.Robo;
+package UnifiedGpProblmes.Robo.Fitnesses;
 
 import java.util.Arrays;
 import java.util.HashMap;

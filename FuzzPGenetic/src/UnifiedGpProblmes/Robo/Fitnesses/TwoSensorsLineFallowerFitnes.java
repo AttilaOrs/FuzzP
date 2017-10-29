@@ -1,4 +1,4 @@
-package UnifiedGpProblmes.Robo;
+package UnifiedGpProblmes.Robo.Fitnesses;
 
 import static java.util.Optional.empty;
 

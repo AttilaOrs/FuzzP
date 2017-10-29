@@ -18,7 +18,7 @@ import UnifiedGp.Tree.Nodes.InputType;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.OutType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
-import UnifiedGpProblmes.Robo.TwoSensorsLineFallowerFitnes;
+import UnifiedGpProblmes.Robo.Fitnesses.TwoSensorsLineFallowerFitnes;
 import UnifiedGpProblmes.Robo.Simulator.LineReader;
 import UnifiedGpProblmes.Robo.Simulator.TwoSensorLineFallowerRobot;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Segments;

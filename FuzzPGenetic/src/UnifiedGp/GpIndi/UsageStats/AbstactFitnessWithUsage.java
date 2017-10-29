@@ -31,7 +31,7 @@ public abstract class AbstactFitnessWithUsage implements ICreatureFitnes<Unified
   protected ProblemSpecification ps;
   protected DynamicallySimplifiedPetriNetBuilder dynamicSimplifier;
   protected StaticSimplifierPetriBuilder staticSimplifier;
-  private PetriConversationResult rez;
+  protected PetriConversationResult rez;
 
   private NodeUsageAsociator assoc;
 
