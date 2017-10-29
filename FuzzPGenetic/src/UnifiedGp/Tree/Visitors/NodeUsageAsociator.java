@@ -28,7 +28,7 @@ public class NodeUsageAsociator {
 
   public UsageStats calcUsage(INode<NodeType> root, FireCounterRecorder<UnifiedToken> fireCounter,
       Map<INode<NodeType>, Integer> nodeToTransitionMapping) {
-    usage = new UsageStats();
+    usage = new UsageStats(fireCounter.nrOfAllicks());
     counter = fireCounter;
     this.nodeToTransitionMapping = nodeToTransitionMapping;
     visitor.visit(root);

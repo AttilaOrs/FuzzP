@@ -21,7 +21,7 @@ import core.common.tokencache.TokenCacheDisabling;
 
 public class AntFitnes extends AbstactFitness {
 
-  int MAX_MOOVES = 600;
+  static int MAX_MOOVES = 600;
 
   public AntFitnes() {
     super(problemSpecification());

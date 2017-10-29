@@ -2,20 +2,30 @@ package UnifiedGp.GpIndi.UsageStats;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.Nodes.NodeType;
+import UnifiedGp.Tree.Visitors.RandomNodeSelector;
 import UnifiedGp.Tree.Visitors.UsageStats;
 
 public class SelectRandomBasedOnUsageAndDepth {
   
   
-  public INode<NodeType> selectNode(UsageStats usage, Random rnd){
+  public INode<NodeType> selectNode(UsageStats usage, Random rnd, IInnerNode<NodeType> iInnerNode) {
+    if (usage == null) {
+      RandomNodeSelector<NodeType> l = new RandomNodeSelector<>();
+      Optional<INode<NodeType>> w = l.selectRandomNode(iInnerNode, node -> !iInnerNode.equals(node) && !node.isLeaf(),
+          rnd);
+      return w.isPresent() ? w.get() : null;
+    }
     
 		 List<INode<NodeType>> sorted = usage.getNodeSet().stream()
-				.sorted((INode<NodeType> en1, INode<NodeType> en2) -> Double.compare(usage.getUsage(en1)/((double) usage.getSize(en1)), usage.getUsage(en2)/((double) usage.getSize(en2))))
+        .filter(e -> !e.isLeaf())
+				.sorted((INode<NodeType> en1, INode<NodeType> en2) -> Double.compare(nodeFitnes(usage, en1), nodeFitnes(usage, en2)))
 				.collect(Collectors.toList());
 		HashMap<INode<NodeType>, Double> ranking = new HashMap<>();
 		double sum = 0.0;
@@ -33,6 +43,18 @@ public class SelectRandomBasedOnUsageAndDepth {
 		  }
 		}
     return null;
+  }
+
+  private double nodeFitnes(UsageStats usage, INode<NodeType> en1) {
+    int i = usage.getUsage(en1);
+    int allTickNr = usage.getAllTickNr();
+    if (i > allTickNr * 3) {
+      if (i > allTickNr * 10) {
+        return 0.000001;
+      }
+      i = allTickNr * 3;
+    }
+    return i / ((double) usage.getSize(en1));
   }
   
   private static final double sp =1.5;

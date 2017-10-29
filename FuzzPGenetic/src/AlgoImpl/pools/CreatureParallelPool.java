@@ -1,12 +1,14 @@
 package AlgoImpl.pools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 
 import structure.GPIndividSize;
 import structure.ICreatureFitnes;
@@ -151,6 +153,13 @@ public class CreatureParallelPool<TCreatue extends IGPGreature>
 		TaskType type;
 		int[] params;
 		int selector;
+
+    @Override
+    public String toString() {
+      String str = Arrays.stream(params).mapToObj(i -> Integer.toString(i)).collect(Collectors.joining(","));
+      return "{t " + type + " " + str + "}";
+
+    }
 	}
 
 	@Override

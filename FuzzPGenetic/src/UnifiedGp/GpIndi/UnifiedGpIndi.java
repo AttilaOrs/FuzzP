@@ -13,7 +13,7 @@ import structure.IGPGreature;
 
 public class UnifiedGpIndi implements IGPGreature {
 
-  private IInnerNode<NodeType> root;
+  protected IInnerNode<NodeType> root;
   private transient GPIndividSize size;
 
   public UnifiedGpIndi(IInnerNode<NodeType> root) {
