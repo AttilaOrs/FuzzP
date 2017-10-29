@@ -1,39 +1,21 @@
 package UnifiedGp.GpIndi;
 
+import java.util.List;
 import java.util.Random;
 
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.Nodes.NodeType;
-import UnifiedGp.Tree.Visitors.CopyReplace;
-import UnifiedGp.Tree.Visitors.RandomNodeSelector;
-import UnifiedGp.Tree.Visitors.StaticSimplifierPetriBuilder;
 import structure.operators.ICreatureBreeder;
 
-public class UnifiedGpIndiBreeder implements ICreatureBreeder<UnifiedGpIndi> {
-
-  public static final boolean defaultStaticSimplification = true;
-
-  private final RandomNodeSelector<NodeType> randomNodeSelector;
-  private final CopyReplace<NodeType> copyReplace;
-  private final boolean staticSimplificationEnabbled;
-  private final StaticSimplifierPetriBuilder simplifier;
-
+public class UnifiedGpIndiBreeder extends AbstactBreeder implements ICreatureBreeder<UnifiedGpIndi> {
 
   public UnifiedGpIndiBreeder() {
-    this(defaultStaticSimplification);
+    super();
 
   }
   public UnifiedGpIndiBreeder(boolean staticSimplificationEnabled) {
-    randomNodeSelector = new RandomNodeSelector<>();
-    copyReplace = new CopyReplace<>();
-    this.staticSimplificationEnabbled = staticSimplificationEnabled;
-    if (staticSimplificationEnabled) {
-      simplifier = new StaticSimplifierPetriBuilder();
-    } else {
-      simplifier = null;
-    }
-
+    super(staticSimplificationEnabled);
   }
 
   @Override
@@ -45,24 +27,10 @@ public class UnifiedGpIndiBreeder implements ICreatureBreeder<UnifiedGpIndi> {
         .selectRandomNode(father.getRoot(), node -> !father.getRoot().equals(node), rnd)
         .get();
 
-    return makeChildren(mother, father, motherSelected, fatherSelected);
+    List<INode<NodeType>> w = makeChildren(mother, father, motherSelected, fatherSelected);
+    return new UnifiedGpIndi[] { new UnifiedGpIndi((IInnerNode<NodeType>) w.get(0)),
+        new UnifiedGpIndi((IInnerNode<NodeType>) w.get(1)) };
 
-  }
-
-  protected UnifiedGpIndi[] makeChildren(UnifiedGpIndi mother, UnifiedGpIndi father, INode<NodeType> motherSelected,
-      INode<NodeType> fatherSelected) {
-    INode<NodeType> motherSelectedCopy = copyReplace.copyReplace(motherSelected, null, null);
-    INode<NodeType> fatherSelectedCopy = copyReplace.copyReplace(fatherSelected, null, null);
-
-    INode<NodeType> childOne = copyReplace.copyReplace(mother.getRoot(), motherSelected, fatherSelectedCopy);
-    INode<NodeType> childTwo = copyReplace.copyReplace(father.getRoot(), fatherSelected, motherSelectedCopy);
-    if(staticSimplificationEnabbled){
-      return new UnifiedGpIndi[] { new UnifiedGpIndi((simplifier.simplifyTree((IInnerNode<NodeType>) childOne))),
-          new UnifiedGpIndi(simplifier.simplifyTree((IInnerNode<NodeType>) childTwo)) };
-    }
-
-    return new UnifiedGpIndi[] { new UnifiedGpIndi((IInnerNode<NodeType>) childOne),
-        new UnifiedGpIndi((IInnerNode<NodeType>) childTwo) };
   }
 
 }

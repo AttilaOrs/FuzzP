@@ -4,8 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class FiredTranitionRecorder<TokenType> implements IGeneralPetriBehavoiurRecorder<TokenType> {
-  Set<Integer> fired = new HashSet<>();
-  long fireCntr = 0;
+  
+  Set<Integer> fired;
+  long fireCntr;
+  
+  public FiredTranitionRecorder() {
+    fired = new HashSet<>();
+    fireCntr = 0;
+  }
 
   @Override
   public void transitionFiredStarted(int transition) {

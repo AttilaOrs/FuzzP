@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import UnifiedGp.Tree.IInnerNode;
+import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.Nodes.NodeType;
 
 public class UnifiedGpIndiOnePointCrossover extends UnifiedGpIndiBreeder {
@@ -18,7 +19,10 @@ public class UnifiedGpIndiOnePointCrossover extends UnifiedGpIndiBreeder {
     }
     int rndIndex = rnd.nextInt(pairs.size());
 
-    return super.makeChildren(mother, father, pairs.get(rndIndex)[0], pairs.get(rndIndex)[1]);
+    List<INode<NodeType>> w = super.makeChildren(mother, father, pairs.get(rndIndex)[0], pairs.get(rndIndex)[1]);
+    return new UnifiedGpIndi[] { new UnifiedGpIndi((IInnerNode<NodeType>) w.get(0)),
+        new UnifiedGpIndi((IInnerNode<NodeType>) w.get(1)) };
+
   }
 
   private static List<IInnerNode[]> shapePairs(IInnerNode<NodeType> fi, IInnerNode<NodeType> se) {
