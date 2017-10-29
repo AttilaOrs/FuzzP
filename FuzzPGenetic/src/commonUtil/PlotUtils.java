@@ -82,10 +82,18 @@ public class PlotUtils {
   }
 
   private static void writeOut(String fileName, XYPlot plot, double maxKey, double maxValue) {
-    plot.getAxis(XYPlot.AXIS_X).setMin(-3.0);
-    plot.getAxis(XYPlot.AXIS_Y).setMin(maxValue / -10.0);
-    plot.getAxis(XYPlot.AXIS_X).setMax(maxKey + maxKey / 25.0);
-    plot.getAxis(XYPlot.AXIS_Y).setMax(maxValue + maxValue / 25.0);
+    if (maxKey != 0.0) {
+      plot.getAxis(XYPlot.AXIS_X).setMin(maxKey / -10.0);
+      plot.getAxis(XYPlot.AXIS_Y).setMin(maxValue / -10.0);
+      plot.getAxis(XYPlot.AXIS_X).setMax(maxKey + (maxKey / 25.0));
+      plot.getAxis(XYPlot.AXIS_Y).setMax(maxValue + (maxValue / 25.0));
+    } else {
+      plot.getAxis(XYPlot.AXIS_X).setMin(-5);
+      plot.getAxis(XYPlot.AXIS_Y).setMin(-5);
+      plot.getAxis(XYPlot.AXIS_X).setMax(+5);
+      plot.getAxis(XYPlot.AXIS_Y).setMax(+5);
+
+    }
 
     BufferedImage bImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
     Graphics2D g2d = (Graphics2D) bImage.getGraphics();
@@ -182,8 +190,6 @@ public class PlotUtils {
   public static void plotPoint(List<Point> visitedPoints, String fileName) {
     XYPlot plot = new XYPlot();
     int cntr = 0;
-    maxKey = 3.0;
-    maxValue = 3.0;
     DataTable dataTable = new DataTable(Double.class, Double.class);
     visitedPoints.forEach(p -> dataTable.add(p.x, p.y));
 
@@ -197,7 +203,7 @@ public class PlotUtils {
     cntr++;
     plot.setLegendVisible(true);
 
-    writeOut(fileName, plot, maxKey, maxValue);
+    writeOut(fileName, plot, 0, 0);
   }
 
 }

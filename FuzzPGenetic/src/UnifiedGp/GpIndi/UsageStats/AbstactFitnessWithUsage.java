@@ -30,6 +30,7 @@ public abstract class AbstactFitnessWithUsage implements ICreatureFitnes<Unified
     dynamicSimplifier = new DynamicSymplifierBuilderWithStats();
     staticSimplifier = new StaticSimplifierWithStats();
     assoc = new NodeUsageAsociator();
+    this.ps = ps;
   }
 
   protected PetriConversationResult convert(UnifiedGpIndi creature) {
