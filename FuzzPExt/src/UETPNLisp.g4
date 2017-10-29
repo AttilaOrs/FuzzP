@@ -37,6 +37,8 @@ inpType: 'br' #BlockingReader
        | 'nr' #NonblockingReader
        | 'eip' #EnableIfPhi
        | 'enp' #EnableIfNotPhi
+       | 'eiz' #EnableIfZero
+       | 'enz' #EnableIfNotZero
        | 'su' #ShiftUpIfEventTable
        | 'sd' #ShiftDownIfEventTable;
 

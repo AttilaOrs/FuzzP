@@ -12,6 +12,8 @@ public enum InputType
   ReaderNonBlocking(parseUnifiedTwoXOneTable(InputLeaf.readerNonBlocking),"nr"),
   EnableIfPhi(parseUnifiedTwoXOneTable(InputLeaf.enableIfPhiTable),"eip"),
   EnableIfNonPhi(parseUnifiedTwoXOneTable(InputLeaf.enableIfNonPhiTable),"enp"),
+  EnableIfZero(parseUnifiedTwoXOneTable(InputLeaf.enableIfZero),"eiz"),
+  EnableIfNotZero(parseUnifiedTwoXOneTable(InputLeaf.enableIfNotZero),"enz"),
   ShiftUp(parseUnifiedTwoXOneTable(InputLeaf.shiftUpIfEvenTable),"su"),
   ShiftDown(parseUnifiedTwoXOneTable(InputLeaf.shiftDownIfNonPhiTable),"sd");
 //@formatter:on 

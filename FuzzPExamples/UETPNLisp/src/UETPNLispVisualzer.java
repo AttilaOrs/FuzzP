@@ -35,7 +35,7 @@ public class UETPNLispVisualzer {
       inp.clear();
       for (int inpId = 0; inpId < 100; inpId++) {
         if (rnd.nextBoolean()) {
-          rez.addToInpIfPossible(inp, inpId, new UnifiedToken(rnd.nextDouble() * 2 - 1.0));
+          rez.addToInpIfPossible(inp, inpId, new UnifiedToken(rnd.nextDouble() * 4 - 2.0));
         }
       }
       exec.runTick(inp);

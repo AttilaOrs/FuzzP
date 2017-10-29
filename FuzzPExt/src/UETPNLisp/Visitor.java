@@ -205,7 +205,20 @@ public class Visitor extends UETPNLispBaseVisitor<Boolean> {
     visitChildren(ctx);
     lastInpType = InputType.EnableIfPhi;
     return true;
+  }
 
+  @Override
+  public Boolean visitEnableIfZero(UETPNLispParser.EnableIfZeroContext ctx) {
+    visitChildren(ctx);
+    lastInpType = InputType.EnableIfZero;
+    return true;
+  }
+
+  @Override
+  public Boolean visitEnableIfNotZero(UETPNLispParser.EnableIfNotZeroContext ctx) {
+    visitChildren(ctx);
+    lastInpType = InputType.EnableIfNotZero;
+    return true;
   }
 
   @Override

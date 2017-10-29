@@ -170,6 +170,20 @@ public interface UETPNLispVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitEnableIfNotPhi(UETPNLispParser.EnableIfNotPhiContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code EnableIfZero}
+	 * labeled alternative in {@link UETPNLispParser#inpType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEnableIfZero(UETPNLispParser.EnableIfZeroContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code EnableIfNotZero}
+	 * labeled alternative in {@link UETPNLispParser#inpType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEnableIfNotZero(UETPNLispParser.EnableIfNotZeroContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code ShiftUpIfEventTable}
 	 * labeled alternative in {@link UETPNLispParser#inpType}.
 	 * @param ctx the parse tree
