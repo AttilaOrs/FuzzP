@@ -21,6 +21,7 @@ import core.common.tokencache.TokenCacheDisabling;
 
 public class MazeFitnes extends AbstactFitness {
 
+  private static final double dist = 0.04;
   private Court maze;
   private double commonCmd;
   private double diffCmd;
@@ -85,19 +86,19 @@ public class MazeFitnes extends AbstactFitness {
       commonCmd = 0.0;
       diffCmd = 0.0;
       if (i == 300) {
-        PathResult smallRez = c.getLines().smallSegmentsTouchedByPoints(robo.getVisitedPoints(),0.07);
-        if (smallRez.touchedAtAll > 30) {
+        PathResult smallRez = c.getLines().smallSegmentsTouchedByPoints(robo.getVisitedPoints(), dist);
+        if (smallRez.touchedInOrder > 30) {
           finalTickNr += 700;
         }
       }
       if (i == 1000) {
-        PathResult smallRez = c.getLines().smallSegmentsTouchedByPoints(robo.getVisitedPoints(), 0.07);
-        if (smallRez.touchedAtAll > 80) {
+        PathResult smallRez = c.getLines().smallSegmentsTouchedByPoints(robo.getVisitedPoints(), dist);
+        if (smallRez.touchedInOrder > 80) {
           finalTickNr += 1000;
         }
       }
     }
-    PathResult pathRez = c.getLines().smallSegmentsTouchedByPoints(robo.getVisitedPoints(), 0.07);
+    PathResult pathRez = c.getLines().smallSegmentsTouchedByPoints(robo.getVisitedPoints(), dist);
     allRun += i;
     int toRet = pathRez.touchedInOrder - pain;
     if (toRet > 0) {

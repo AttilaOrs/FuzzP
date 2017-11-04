@@ -113,10 +113,10 @@ public class RoboPetriVizualizerInfra extends Application {
   private static void loadMain() {
     PetriNetJsonSaver<UnifiedPetriNet> load = new PetriNetJsonSaver<UnifiedPetriNet>();
     RoboPetriVizualizerInfra.net = load.load("Petri.json", UnifiedPetriNet.class);
-    inpsPlaceId = Arrays.asList(108, -1, 109, 113, 117);
+    inpsPlaceId = Arrays.asList(-1, 262, 266, 268, 274);
 
-    fiOut = 100;
-    seOut = 104;
+    fiOut = 256;
+    seOut = 264;
     launch();
   }
 }

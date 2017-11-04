@@ -92,12 +92,12 @@ public class MainWithUsageStat {
     ICreaturePool<UnifiedGpIndiWithUsageStats> pool = new CreatureParallelPool<>(gens, mutators, breeders, fitnesses);
     // otherSelector = (runNr % 2 == 0) ? otherSelector : pool;
 
-    double[] crossWeigth = new double[] { 0.5, 0.5, 0.5 };
+    double[] crossWeigth = new double[] { 0.1, 0.45, 0.45 };
     MultiobjectiveMulioperatorGA<UnifiedGpIndiWithUsageStats> algo = new MultiobjectiveMulioperatorGA<>(pool,
         otherSelector,
         survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
     SimpleGA.iteration = 150;
-    SimpleGA.population = 6000;
+    SimpleGA.population = 4000;
     long start = System.currentTimeMillis();
     algo.theAlgo();
     long stop = System.currentTimeMillis();

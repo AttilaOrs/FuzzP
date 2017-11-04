@@ -1,5 +1,3 @@
-
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,16 +12,15 @@ import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
 import core.Drawable.TransitionPlaceNameStore;
-import core.UnifiedPetriLogic.DrawableUnifiedPetriNetWithExternalNames;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.common.recoder.FullRecorder;
-import dotDrawer.PetriDotDrawerVertical;
 
-public class UETPNLispVisualzer {
+public class PiInUETPNLisp {
+  static Double command = 0.0;
 
   public static void main(String[] args) {
-    INode<NodeType> root = UETPNLisp.fromFile(new File("example.uls"));
+    INode<NodeType> root = UETPNLisp.fromFile(new File("pi_controller.uls"));
     ToPetriNet tpn = new ToPetriNet(createProblemSpecification(), true, false);
     PetriConversationResult rez = tpn.toNet((IInnerNode<NodeType>) root);
     FullRecorder<UnifiedToken> rec = new FullRecorder<>();
@@ -31,20 +28,21 @@ public class UETPNLispVisualzer {
     exec.setRecorder(rec);
     Random rnd = new Random();
     HashMap<Integer, UnifiedToken> inp = new HashMap<>();
+    rez.addActionIfPossible(0, t -> command = t.getValue());
+    double x = 0;
     for (int i = 0; i < 30; i++) {
       inp.clear();
-      for (int inpId = 0; inpId < 100; inpId++) {
-        if (rnd.nextBoolean()) {
-          rez.addToInpIfPossible(inp, inpId, new UnifiedToken(rnd.nextDouble() * 4 - 2.0));
-        }
-      }
+
+      double xnew = x * 0.67 + command * 0.35;
+      double out = x * 0.87 + command * 0.22;
+      x = xnew;
+      rez.addToInpIfPossible(inp, 0, new UnifiedToken(1.0));
+      rez.addToInpIfPossible(inp, 1, new UnifiedToken(out));
+      command = 0.0;
       exec.runTick(inp);
     }
     UnifiedVizualizer.visualize(rez.net, rec, TransitionPlaceNameStore.createOrdinarNames(rez.net));
 
-    PetriDotDrawerVertical drawer = new PetriDotDrawerVertical(
-        new DrawableUnifiedPetriNetWithExternalNames(rez.net, TransitionPlaceNameStore.createOrdinarNames(rez.net)));
-    drawer.makeImage("thirdEx");
 
   }
 
