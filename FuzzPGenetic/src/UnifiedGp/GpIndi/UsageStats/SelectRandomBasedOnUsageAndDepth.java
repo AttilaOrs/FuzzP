@@ -57,7 +57,7 @@ public class SelectRandomBasedOnUsageAndDepth {
     return i / ((double) usage.getSize(en1));
   }
   
-  private static final double sp =1.5;
+  private static final double sp = 2.0;
   
 	private Double rankOf(int index, int size) {
 		return 2.0 - sp + (2 * (sp - 1.0) * ((index ) / (size - 1.0)));

@@ -187,6 +187,14 @@ public class PlotUtils {
     }
   }
 
+  public static void writeToDatPoints(List<Point> visitedPoints, String fileName) {
+    StringBuilder bld = new StringBuilder();
+    for (Point p : visitedPoints) {
+      bld.append(p.x).append(" ").append(p.y).append("\n");
+    }
+    writeToFile(fileName + ".dat", bld.toString());
+  }
+
   public static void plotPoint(List<Point> visitedPoints, String fileName) {
     XYPlot plot = new XYPlot();
     int cntr = 0;
