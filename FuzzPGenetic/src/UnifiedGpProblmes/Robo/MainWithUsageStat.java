@@ -92,7 +92,7 @@ public class MainWithUsageStat {
     ICreaturePool<UnifiedGpIndiWithUsageStats> pool = new CreatureParallelPool<>(gens, mutators, breeders, fitnesses);
     // otherSelector = (runNr % 2 == 0) ? otherSelector : pool;
 
-    double[] crossWeigth = new double[] { 0.1, 0.45, 0.45 };
+    double[] crossWeigth = new double[] { 0.33, 0.33, 0.33 };
     MultiobjectiveMulioperatorGA<UnifiedGpIndiWithUsageStats> algo = new MultiobjectiveMulioperatorGA<>(pool,
         otherSelector,
         survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
