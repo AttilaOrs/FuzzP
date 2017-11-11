@@ -101,7 +101,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
         float[] oldRelation = relationWithOld.get(id);
         for (int index = 0; index < newRelation.length; index++) {
           Integer withWhoId = newIndexToId.get(index);
-          if (withWhoId == id) {
+          if (withWhoId.equals(id)) {
             newRelation[index] = 1;
           } else {
             float[] otherOldRelation = relationWithOld.get(withWhoId);

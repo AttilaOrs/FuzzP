@@ -60,7 +60,7 @@ public class TournamentSelection implements ISelector {
     while (toRet.size() < howMany) {
       Integer iOne = selectOne(res, basedOn, keys);
       Integer iTwo = selectOne(res, basedOn, keys);
-      while (iOne == iTwo) {
+      while (iOne.equals(iTwo)) {
         iTwo = selectOne(res, basedOn, keys);
       }
       int[] toPut = new int[arraySize];

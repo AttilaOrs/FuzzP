@@ -75,7 +75,7 @@ public class TriangleFuzzyfier implements FuzzyDriver {
     if ((defuzValues[0] >= vale) || (defuzValues[2] <= vale)) {
       return 0.0;
     }
-    if (vale == defuzValues[1]) {
+    if (vale.equals(defuzValues[1])) {
       return 1.0;
     } else if (vale < defuzValues[1]) {
       return calcWithLeft(defuzValues[1], defuzValues[0], vale);
