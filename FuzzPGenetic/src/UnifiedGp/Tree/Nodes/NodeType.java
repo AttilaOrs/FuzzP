@@ -29,4 +29,8 @@ public enum NodeType {
     return this == NodeType.PosNegSplit;
   }
 
+  public boolean isDelay() {
+    return this == NodeType.Delay;
+  }
+
 }
