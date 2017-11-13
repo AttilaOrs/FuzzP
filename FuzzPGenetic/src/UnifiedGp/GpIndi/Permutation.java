@@ -14,20 +14,23 @@ import structure.operators.ICreatureMutator;
 
 public class Permutation implements ICreatureMutator<UnifiedGpIndi> {
 
-  private static final boolean defaultStaticSimplification = true;
   private final RandomNodeSelector<NodeType> randomSelector;
   private final CopyReplace<NodeType> copyReplace;
   private final boolean staticSimplificationEnabbled;
   private final StaticSimplifierPetriBuilder simplifier;
   
   public Permutation() {
-    this(defaultStaticSimplification);
+    this(UnifiedGpIndiTreeMutator.defaultStaticSimplification);
   }
   
   public  Permutation(boolean staticSimplify){
     randomSelector = new RandomNodeSelector<>();
     staticSimplificationEnabbled = staticSimplify;
-    simplifier = new StaticSimplifierPetriBuilder();
+    if(staticSimplificationEnabbled){
+      simplifier = new StaticSimplifierPetriBuilder();
+    } else {
+      simplifier = null;
+    }
     copyReplace = new CopyReplace<>();
   }
   

@@ -25,8 +25,8 @@ public class UsageBasedCrossOver extends AbstactBreeder implements ICreatureBree
       Random rnd) {
     UsageStats motherStat = mother.getUsageStats();
     UsageStats fatherStat = father.getUsageStats();
-    INode<NodeType> motherSelected = select.selectNode(motherStat, rnd, mother.getRoot());
-    INode<NodeType> fatherSelected = select.selectNode(fatherStat, rnd, father.getRoot());
+    INode<NodeType> motherSelected = select.selectForCrossover(motherStat, rnd, mother.getRoot());
+    INode<NodeType> fatherSelected = select.selectForCrossover(fatherStat, rnd, father.getRoot());
     try{
       List<INode<NodeType>> rez = super.makeChildren(mother, father,
           (motherSelected != null) ? motherSelected : mother.getRoot(),

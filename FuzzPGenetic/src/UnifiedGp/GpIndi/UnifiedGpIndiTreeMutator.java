@@ -13,7 +13,7 @@ import structure.operators.ICreatureMutator;
 
 public class UnifiedGpIndiTreeMutator implements ICreatureMutator<UnifiedGpIndi> {
 
-  private static final boolean defaultStaticSimplification = true;
+  public static final boolean defaultStaticSimplification = true;
   private TreeBuilder<NodeType> builder;
   private RandomNodeSelector<NodeType> randomSelector;
   private CopyReplace<NodeType> copyReplace;

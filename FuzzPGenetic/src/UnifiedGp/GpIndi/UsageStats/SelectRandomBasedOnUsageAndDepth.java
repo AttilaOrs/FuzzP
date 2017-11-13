@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import UnifiedGp.Tree.IInnerNode;
@@ -15,7 +17,15 @@ import UnifiedGp.Tree.Visitors.UsageStats;
 public class SelectRandomBasedOnUsageAndDepth {
   
   
-  public INode<NodeType> selectNode(UsageStats usage, Random rnd, IInnerNode<NodeType> iInnerNode) {
+  private UsageStats currentUsage;
+
+  public INode<NodeType> selectForCrossover(UsageStats usage, Random rnd, IInnerNode<NodeType> iInnerNode){
+    this.currentUsage = usage;
+    return selectNode(usage, rnd, iInnerNode, this::nodeFitnesCross);
+  }
+  
+  
+  public INode<NodeType> selectNode(UsageStats usage, Random rnd, IInnerNode<NodeType> iInnerNode, Function< INode<NodeType> , Double> nodeFitnessFuncs) {
     if (usage == null) {
       RandomNodeSelector<NodeType> l = new RandomNodeSelector<>();
       Optional<INode<NodeType>> w = l.selectRandomNode(iInnerNode, node -> !iInnerNode.equals(node) && !node.isLeaf(),
@@ -25,7 +35,7 @@ public class SelectRandomBasedOnUsageAndDepth {
     
 		 List<INode<NodeType>> sorted = usage.getNodeSet().stream()
         .filter(e -> !e.isLeaf())
-				.sorted((INode<NodeType> en1, INode<NodeType> en2) -> Double.compare(nodeFitnes(usage, en1), nodeFitnes(usage, en2)))
+				.sorted((INode<NodeType> en1, INode<NodeType> en2) -> Double.compare(nodeFitnessFuncs.apply( en1), nodeFitnessFuncs.apply( en2)))
 				.collect(Collectors.toList());
 		HashMap<INode<NodeType>, Double> ranking = new HashMap<>();
 		double sum = 0.0;
@@ -45,16 +55,16 @@ public class SelectRandomBasedOnUsageAndDepth {
     return null;
   }
 
-  private double nodeFitnes(UsageStats usage, INode<NodeType> en1) {
-    int i = usage.getUsage(en1);
-    int allTickNr = usage.getAllTickNr();
+  private Double nodeFitnesCross( INode<NodeType> en1) {
+    int i = currentUsage.getUsage(en1);
+    int allTickNr = currentUsage.getAllTickNr();
     if (i > allTickNr * 3) {
       if (i > allTickNr * 10) {
         return 0.000001;
       }
       i = allTickNr * 3;
     }
-    return i / ((double) usage.getSize(en1));
+    return i / ((double) currentUsage.getSize(en1));
   }
   
   private static final double sp = 2.0;
