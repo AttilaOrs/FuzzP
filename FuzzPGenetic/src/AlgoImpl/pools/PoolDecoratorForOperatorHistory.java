@@ -262,4 +262,9 @@ public class PoolDecoratorForOperatorHistory<TCreatue extends IGPGreature> imple
     return realPool.getSizeStats();
   }
 
+  @Override
+  public Map<Integer, Double[]> getOldPopulationFitnes() {
+    return realPool.getOldPopulationFitnes();
+  }
+
 }

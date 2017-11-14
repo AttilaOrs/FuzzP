@@ -8,8 +8,8 @@ import core.common.recoder.FiredTranitionRecorder;
 
 public class CartFitnes extends AbstactFitness {
 
-  private static final int SIM_LENTH = 50;
-  private static final double INIT_POS = 10;
+  static final int SIM_LENTH = 50;
+  static final double INIT_POS = 10;
   private CartSimpluator sim;
 
   public CartFitnes() {

@@ -69,7 +69,7 @@ public class MainWithUsageStat {
         HALD_RANK_MAX_SIZE)));
 
     ArrayList<IOperatorFactory<ICreatureMutator<UnifiedGpIndiWithUsageStats>>> mutators = new ArrayList<>();
-    mutators.add(
+    mutators.add( 
         () -> MutationWrapper
             .wrap(new UnifiedGpIndiTreeMutator(new TreeBuilder<>(new TreeBuilderCongigGeneralImpl(spec.get())))));
 

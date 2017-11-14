@@ -11,6 +11,8 @@ import structure.operators.ICreatureMutator;
 public interface ICreaturePool<TCreature extends IGPGreature> {
 
   Map<Integer, Double[]> calculateFitness();
+  
+  Map<Integer, Double[]> getOldPopulationFitnes();
 
   void survive(List<int[]> idsToSurvive);
 

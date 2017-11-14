@@ -381,4 +381,9 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     return 0.5;
   }
 
+  @Override
+  public Map<Integer, Double[]> getOldPopulationFitnes() {
+    return wraped.getOldPopulationFitnes();
+  }
+
 }

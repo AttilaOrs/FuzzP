@@ -341,4 +341,9 @@ public class CreatureParallelPool<TCreatue extends IGPGreature>
         sum.depth / oldPool.size());
     return new GenerationSizeStats(min, max, avg, hist);
   }
+
+  @Override
+  public Map<Integer, Double[]> getOldPopulationFitnes() {
+    return new HashMap<>(oldResult);
+  }
 }
