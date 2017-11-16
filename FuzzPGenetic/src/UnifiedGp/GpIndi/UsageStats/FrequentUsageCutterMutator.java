@@ -6,6 +6,7 @@ import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.Nodes.BlockLeaf;
+import UnifiedGp.Tree.Nodes.InnerNode;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.CopyReplace;
 import UnifiedGp.Tree.Visitors.StaticSimplifierPetriBuilder;
@@ -38,11 +39,16 @@ public class FrequentUsageCutterMutator implements ICreatureMutator<UnifiedGpInd
     INode<NodeType> selectedNode = select.selectNode(creature.getUsageStats(), random, creature.getRoot(), node -> {
       int usage = creature.getUsageStats().getUsage(node);
       int size = creature.getUsageStats().getSize(node);
-      return (usage +1.0)/((double) size);
+      return (usage +1.0)/(size);
     });
     
     IInnerNode<NodeType> newRoot = (IInnerNode<NodeType>) copyReplace.copyReplace(creature.getRoot(), selectedNode, new BlockLeaf());
-    return new UnifiedGpIndiWithUsageStats((simplify)? simplifier.simplifyTree(newRoot):newRoot);
+
+    if (newRoot.isLeaf()) {
+      newRoot = new InnerNode(NodeType.Seq, newRoot, new BlockLeaf());
+    }
+    IInnerNode<NodeType> newRootInner = (newRoot);
+    return new UnifiedGpIndiWithUsageStats((simplify) ? simplifier.simplifyTree(newRootInner) : newRootInner);
   }
   
 

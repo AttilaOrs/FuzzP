@@ -11,19 +11,14 @@ import AlgoImpl.IterationLogger;
 import AlgoImpl.MultiobjectiveMulioperatorGA;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
-import AlgoImpl.Selectors.RouletteWheelSelection;
-import AlgoImpl.Selectors.SelectOnlyOneWrapper;
-import AlgoImpl.Selectors.TournamentSelection;
 import AlgoImpl.pools.CreaturePoolWithStreams;
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.Permutation;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
-import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
-import UnifiedGp.GpIndi.UnifiedGpSuplier;
 import UnifiedGp.GpIndi.UnifromCrossOver;
 import UnifiedGp.GpIndi.UsageStats.CrossOverWrapper;
 import UnifiedGp.GpIndi.UsageStats.FrequentUsageCutterMutator;
@@ -37,7 +32,6 @@ import UnifiedGp.Tree.Visitors.TreeBuilder;
 import UnifiedGpProblmes.ArtificalAnt.AntFitnes;
 import UnifiedGpProblmes.ArtificalAnt.ArtificalAntFitnesForUsage;
 import UnifiedGpProblmes.CartCentering.CarFitnesForUsage;
-import UnifiedGpProblmes.CartCentering.CartFitnes;
 import UnifiedGpProblmes.CartCentering.UnifiedPetriController;
 import UnifiedGpProblmes.FirstOrderSystem.FirstOrderFitnes;
 import UnifiedGpProblmes.FirstOrderSystem.FirstOrderFitnesForUsage;
@@ -48,7 +42,6 @@ import commonUtil.PlotUtils;
 import structure.ICreatureFitnes;
 import structure.ICreaturePool;
 import structure.IOperatorFactory;
-import structure.ISelector;
 import structure.operators.ICreatureBreeder;
 import structure.operators.ICreatureGenerator;
 import structure.operators.ICreatureMutator;
@@ -103,16 +96,24 @@ public class MeasreMain {
     List<String> confName = Arrays.asList("ClassicOnly_",  "Equal_", "UsageOnly_", "MosltyUsage_", "MosltyClassic_");
     
     
-    
-
     for (int i = 0; i < repeate; i++) {
       for (int j = 0; j < nameList.size(); j++) {
-        for(int m =0; m < confName.size(); m++ ){
-          String name = nameList.get(j) +   confName.get(m) + i;
-          confs.add(new MeasureConfig(2000, 100, name, probSpec.get(j), fitness.get(j), name+"/", crossConf.get(m), mutConf.get(m)));
+        for (int m = 0; m < confName.size(); m++) {
+          String name = nameList.get(j) + confName.get(m) + i;
+          confs.add(new MeasureConfig(500,
+              100, name, probSpec.get(j), fitness.get(j), name + "/", crossConf.get(m),
+              mutConf.get(m)));
         }
       }
     }
+
+    /*
+     * confs.add( new MeasureConfig(100, 100, "we",
+     * MultiplexerFitness::problemSpecification,
+     * MultiplexerFitnessForUsage::new, "wew/", new double[] { 0.0, 0.0, 1.0 },
+     * new double[] { 0.0, 0.0, 0.5, 0.5 }));
+     */
+
   }
 
   public static void main(String[] args) {
