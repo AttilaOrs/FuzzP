@@ -37,7 +37,6 @@ import UnifiedGpProblmes.FirstOrderSystem.FirstOrderFitnes;
 import UnifiedGpProblmes.FirstOrderSystem.FirstOrderFitnesForUsage;
 import UnifiedGpProblmes.Multiplexer.MultiplexerFitness;
 import UnifiedGpProblmes.Multiplexer.MultiplexerFitnessForUsage;
-import UnifiedGpProblmes.SymbolicRegression.SymbolicRegressionFitness;
 import commonUtil.PlotUtils;
 import structure.ICreatureFitnes;
 import structure.ICreaturePool;
@@ -87,7 +86,7 @@ public class MeasreMain {
   static {
     int repeate = 10;
     List<Supplier<ProblemSpecification>> probSpec = Arrays.asList(MultiplexerFitness::problemSpecification,
-        SymbolicRegressionFitness::problemsSpecification, UnifiedPetriController::create,
+         UnifiedPetriController::create,
         FirstOrderFitnes::createProblemSpecification, AntFitnes::problemSpecification);
     List<Supplier<ICreatureFitnes<UnifiedGpIndiWithUsageStats>>> fitness = Arrays.asList(MultiplexerFitnessForUsage::new, CarFitnesForUsage::new, FirstOrderFitnesForUsage::new, ArtificalAntFitnesForUsage::new);
     List<String> nameList = Arrays.asList("Multiplexer_",  "CartCenter_", "FirstOrder_", "Ant_");
@@ -107,12 +106,7 @@ public class MeasreMain {
       }
     }
 
-    /*
-     * confs.add( new MeasureConfig(100, 100, "we",
-     * MultiplexerFitness::problemSpecification,
-     * MultiplexerFitnessForUsage::new, "wew/", new double[] { 0.0, 0.0, 1.0 },
-     * new double[] { 0.0, 0.0, 0.5, 0.5 }));
-     */
+    
 
   }
 
@@ -170,7 +164,8 @@ public class MeasreMain {
     config += "size limit " + AntFitnes.SIZE_LIMIT + "\n";
      config +="cross config "+ Arrays.stream(conf.crossWeight).mapToObj(Double::toString).collect(Collectors.joining(",")) + "\n";
      config +="mut config "+ Arrays.stream(conf.mutWeight).mapToObj(Double::toString).collect(Collectors.joining(",")) + "\n";
-     config += "fitnes" + rez + "\n";
+     config+= "exp { " + pool.get(maxId).getRoot() +" }\n";
+     config += "fitnes " + rez + "\n";
     config += "duration: " + (stop - start) + " milliseconds " + "(" + TimeUnit.MILLISECONDS.toMinutes(stop - start)
         + " minutes)\n";
     

@@ -38,7 +38,7 @@ public class CarFitnesForUsage extends AbstactFitnessWithUsage{
       r = sim.sim(controller);
       super.updateCreatureWithSimplification(creature, rez,rec);
     }
-    return 1.0 /(1.0 +r);
+    return 100.0 /(1.0 +r);
   }
 
 }

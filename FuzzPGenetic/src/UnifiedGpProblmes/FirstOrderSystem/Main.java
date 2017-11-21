@@ -77,6 +77,7 @@ public class Main {
     scenarioSaver.save(new File("rezScenario.json"));
 
     System.out.println(fitness);
+    System.out.println(rez.getRoot().toString());
 
     // UnifiedVizualizer.visualize(convRez.net, rec,
     // TransitionPlaceNameStore.createOrdinarNames(convRez.net));
