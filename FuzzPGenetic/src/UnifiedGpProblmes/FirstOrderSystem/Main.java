@@ -46,7 +46,7 @@ public class Main {
 
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, new LinearRankSelection());
     SimpleGA.iteration = 100;
-    SimpleGA.population = 1000;
+    SimpleGA.population = 200;
     algo.theAlgo();
 
     /*

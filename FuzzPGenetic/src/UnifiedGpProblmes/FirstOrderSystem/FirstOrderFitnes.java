@@ -95,7 +95,7 @@ public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
 
       updateCreatureWithSimplification(creature, rez, tk);
 
-      return 1.0 / (1.0 + ref.calcError(ll.getEvolution()));
+      return 1.0 / (1.0 + ref.calcError(ll.getEvolution())    + ((rez.net.getNrOfTransition()> 100)?rez.net.getNrOfTransition():0) );
     }
     return 0;
   }
