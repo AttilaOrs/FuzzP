@@ -27,9 +27,9 @@ public class MarkovClusteringTest {
     }
 
     DMatrixRMaj createGraphMatrix = collect.createGraphMatrix(0, 8);
-    System.out.println(createGraphMatrix);
+    // System.out.println(createGraphMatrix);
     MarkovClustering clsut = new MarkovClustering(createGraphMatrix);
-    System.out.println(clsut.run());
+    // System.out.println(clsut.run());
 
 
   }
