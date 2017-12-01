@@ -1,9 +1,12 @@
 package core.UnifiedPetriLogic.tables;
 
 import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.FuzzyValue;
@@ -108,6 +111,38 @@ public class UnifiedTwoXTwoTable extends AbstractTable implements IGeneralTwoXTw
   @Override
   public boolean maybeExecutable(boolean[] ar) {
     return table.maybeExecutable(ar);
+  }
+
+  @Override
+  public Stream<FuzzyValue> getValues() {
+    return table.cellsOneByOne();
+  }
+
+  @Override
+  public IUnifiedTable newTableBasedOnValues(Iterator<FuzzyValue> vals) {
+    Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> fiRulaTabel = new EnumMap<>(FuzzyValue.class);
+    for (FuzzyValue keyOne : FuzzyValue.inOrder) {
+      fiRulaTabel.put(keyOne, new EnumMap<>(FuzzyValue.class));
+      for (FuzzyValue keyTwo : FuzzyValue.inOrder) {
+        if (getTables().get(0).get(keyOne).get(keyTwo).isPhi()) {
+          fiRulaTabel.get(keyOne).put(keyTwo, FuzzyValue.FF);
+        } else {
+          fiRulaTabel.get(keyOne).put(keyTwo, vals.next());
+        }
+      }
+    }
+    Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> seRulaTabel = new EnumMap<>(FuzzyValue.class);
+    for (FuzzyValue keyOne : FuzzyValue.inOrder) {
+      seRulaTabel.put(keyOne, new EnumMap<>(FuzzyValue.class));
+      for (FuzzyValue keyTwo : FuzzyValue.inOrder) {
+        if (getTables().get(1).get(keyOne).get(keyTwo).isPhi()) {
+          seRulaTabel.get(keyOne).put(keyTwo, FuzzyValue.FF);
+        } else {
+          seRulaTabel.get(keyOne).put(keyTwo, vals.next());
+        }
+      }
+    }
+    return new UnifiedTwoXTwoTable(fiRulaTabel, seRulaTabel, op);
   }
 
 }

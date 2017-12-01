@@ -21,6 +21,10 @@ public enum FuzzyValue {
     return fullName;
   }
 
+  public boolean isPhi() {
+    return this.equals(FF);
+  }
+
   public static List<FuzzyValue> inOrder = Arrays.asList(FuzzyValue.NL, FuzzyValue.NM, FuzzyValue.ZR, FuzzyValue.PM,
       FuzzyValue.PL, FuzzyValue.FF);
   public static List<FuzzyValue> inOrderWithoutPhi = Arrays.asList(FuzzyValue.NL, FuzzyValue.NM, FuzzyValue.ZR,
@@ -72,5 +76,22 @@ public enum FuzzyValue {
     }
     return null;
 
+  }
+
+  public static FuzzyValue fromInt(int val) {
+    switch (val) {
+    case 0:
+      return NL;
+    case 1:
+      return NM;
+    case 2:
+      return ZR;
+    case 3:
+      return PM;
+    case 4:
+      return PL;
+    default:
+      return FF;
+    }
   }
 }

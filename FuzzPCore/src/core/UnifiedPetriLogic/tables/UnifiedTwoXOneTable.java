@@ -1,9 +1,12 @@
 package core.UnifiedPetriLogic.tables;
 
 import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.FuzzyValue;
@@ -105,5 +108,26 @@ public class UnifiedTwoXOneTable extends AbstractTable implements IGeneralTwoXOn
 
   public static UnifiedTwoXOneTable onlyOp(Operator op) {
     return new UnifiedTwoXOneTable(TwoXOneTable.onlyPositiveLarge().getTable(), op);
+  }
+
+  @Override
+  public Stream<FuzzyValue> getValues() {
+    return table.cellsOneByOne();
+  }
+
+  @Override
+  public IUnifiedTable newTableBasedOnValues(Iterator<FuzzyValue> vals) {
+    Map<FuzzyValue, Map<FuzzyValue, FuzzyValue>> rulaTabel = new EnumMap<>(FuzzyValue.class);
+    for (FuzzyValue keyOne : FuzzyValue.inOrder) {
+      rulaTabel.put(keyOne, new EnumMap<>(FuzzyValue.class));
+      for (FuzzyValue keyTwo : FuzzyValue.inOrder) {
+        if (getTable().get(keyOne).get(keyTwo).isPhi()) {
+          rulaTabel.get(keyOne).put(keyTwo, FuzzyValue.FF);
+        } else {
+          rulaTabel.get(keyOne).put(keyTwo, vals.next());
+        }
+      }
+    }
+    return new UnifiedTwoXOneTable(rulaTabel, op);
   }
 }

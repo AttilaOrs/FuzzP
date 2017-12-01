@@ -2,8 +2,10 @@ package core.UnifiedPetriLogic.tables;
 
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import core.FuzzyPetriLogic.FuzzyToken;
 import core.FuzzyPetriLogic.FuzzyValue;
@@ -64,6 +66,33 @@ public class UnifiedOneXTwoTable implements IUnifiedTable, IGeneralOneXTwoTable 
   @Override
   public boolean maybeExecutable(boolean[] ar) {
     return table.maybeExecutable(ar);
+  }
+
+  @Override
+  public Stream<FuzzyValue> getValues() {
+    return table.cellsOneByOne();
+  }
+
+  @Override
+  public IUnifiedTable newTableBasedOnValues(Iterator<FuzzyValue> vals) {
+    Map<FuzzyValue, FuzzyValue> valTable1 = new EnumMap<>(FuzzyValue.class);
+    Map<FuzzyValue, FuzzyValue> valTable2 = new EnumMap<>(FuzzyValue.class);
+    for (FuzzyValue key : FuzzyValue.inOrder) {
+      if (getTables().get(0).get(key).isPhi()) {
+        valTable1.put(key, FuzzyValue.FF);
+      } else {
+        valTable1.put(key, vals.next());
+      }
+    }
+    for (FuzzyValue key : FuzzyValue.inOrder) {
+      if (getTables().get(1).get(key).isPhi()) {
+        valTable2.put(key, FuzzyValue.FF);
+      } else {
+        valTable2.put(key, vals.next());
+      }
+    }
+
+    return new UnifiedOneXTwoTable(valTable1, valTable2);
   }
 
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import core.common.generaltable.IGeneralTable;
 
-public interface IUnifiedTable extends IGeneralTable {
+public interface IUnifiedTable extends IGeneralTable, OptimizableTable {
 
   UnifiedToken[] execute(UnifiedToken[] inputs, IContex ct);
 

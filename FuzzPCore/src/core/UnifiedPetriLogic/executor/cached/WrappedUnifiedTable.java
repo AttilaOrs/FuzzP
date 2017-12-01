@@ -1,8 +1,11 @@
 package core.UnifiedPetriLogic.executor.cached;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import core.FuzzyPetriLogic.FuzzyValue;
 import core.UnifiedPetriLogic.IContex;
 import core.UnifiedPetriLogic.IUnifiedTable;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -51,6 +54,16 @@ public class WrappedUnifiedTable implements IUnifiedTable {
   @Override
   public boolean maybeExecutable(boolean[] ar) {
     return original.maybeExecutable(ar);
+  }
+
+  @Override
+  public Stream<FuzzyValue> getValues() {
+    return original.getValues();
+  }
+
+  @Override
+  public IUnifiedTable newTableBasedOnValues(Iterator<FuzzyValue> vals) {
+    return original.newTableBasedOnValues(vals);
   }
 
 }
