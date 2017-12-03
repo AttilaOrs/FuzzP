@@ -25,8 +25,8 @@ public class Generator implements ICreatureGenerator<BitIndi> {
     return new BitIndi(bits);
   }
 
-  boolean bitOf(int nr, int bits) {
-    return (nr >> bits) % 2 == 0;
+  public static boolean bitOf(int nr, int bits) {
+    return (nr >> bits) % 2 != 0;
   }
 
 }

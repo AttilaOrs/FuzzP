@@ -10,14 +10,14 @@ import core.UnifiedPetriLogic.IUnifiedTable;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedPetriNetCloner;
 
-public class Decoder {
+public class BitIndiDecoder {
 
 
   private final UnifiedPetriNet originalNet;
   private final List<Integer> trToOptimize;
   private final long nrOfFuzzyRules;
 
-  public Decoder(UnifiedPetriNet original, List<Integer> toOptimze) {
+  public BitIndiDecoder(UnifiedPetriNet original, List<Integer> toOptimze) {
     originalNet = original;
     trToOptimize = toOptimze;
     nrOfFuzzyRules = computeNrOfRules();
@@ -68,7 +68,13 @@ public class Decoder {
         val += (indi.getGenome().get(currentIndex * 3 + i) ? 1 : 0) << i;
       }
       currentIndex++;
-      return FuzzyValue.fromInt(val);
+      FuzzyValue toRet = FuzzyValue.fromInt(val);
+      if (toRet.isPhi()) {
+        System.err.println("Shoudn't decocode phi");
+
+      }
+      return toRet;
+
     }
 
   }

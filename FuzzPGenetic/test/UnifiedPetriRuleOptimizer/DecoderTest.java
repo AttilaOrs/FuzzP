@@ -30,7 +30,7 @@ public class DecoderTest {
     s.set(0, false);
     s.set(1, false);
     s.set(2, false);
-    Decoder d = new Decoder(net, Arrays.asList(t0));
+    BitIndiDecoder d = new BitIndiDecoder(net, Arrays.asList(t0));
     UnifiedPetriNet newNet = d.modified(new BitIndi(s));
 
     IUnifiedTable i = newNet.getTableForTransition(t0);
@@ -58,7 +58,7 @@ public class DecoderTest {
     UnifiedTwoXOneTable table2 = UnifiedTableParser.parseUnifiedTwoXOneTable(reciveTableStr);
     int t1 = net.addTransition(0, table2);
 
-    Decoder d = new Decoder(net, Arrays.asList(t0, t1));
+    BitIndiDecoder d = new BitIndiDecoder(net, Arrays.asList(t0, t1));
     assertTrue(6 == d.getNrOfRules());
 
     BitSet s = new BitSet();
