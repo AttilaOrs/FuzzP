@@ -27,6 +27,7 @@ import UnifiedGp.Tree.Nodes.MemoryLeaf;
 import UnifiedGp.Tree.Nodes.NegateLeaf;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Nodes.OutputLeaf;
+import UnifiedGp.Tree.Visitors.RuleOptimizationData.OptType;
 import core.UnifiedPetriLogic.IUnifiedTable;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -36,6 +37,8 @@ import core.UnifiedPetriLogic.tables.UnifiedOneXTwoTable;
 import core.UnifiedPetriLogic.tables.UnifiedTwoXOneTable;
 
 public class ToPetriNet {
+  
+  private static final boolean defaultRecordTransitionsToOptimize = false;
 
   private VisitorCostumizer<NodeType> cosutimzer;
   private BreadthFirstVisitor<NodeType> visitor;
@@ -46,9 +49,10 @@ public class ToPetriNet {
   private Map<Integer, List<Integer>> placesWaitingForOuputs;
   private Map<Integer, Integer> inpNameInpPlace;
   private Map<Integer, Integer> outNrToOutTr;
-  private boolean recordNodeTransitionMapping;
   private Map<INode<NodeType>, Integer> nodeTransitionMapping = null;
-  private boolean resetLoopEnabled;
+  private boolean recordNodeTransitionMapping, resetLoopEnabled, recordTransitionsToOtimize;
+
+  private RuleOptimizationData optData;
 
   public ToPetriNet(ScaleProvider scaleProvider) {
     this(scaleProvider, false, true);
@@ -75,6 +79,15 @@ public class ToPetriNet {
     visitor = new BreadthFirstVisitor<>(cosutimzer);
     this.recordNodeTransitionMapping = recordNodeTransitionMapping;
     this.resetLoopEnabled = resetLoopEnabled;
+    setRecordTransitionToOptimize( defaultRecordTransitionsToOptimize);
+  }
+  
+  public void setRecordTransitionToOptimize(boolean recordTransitionsToOtimize){
+    this.recordTransitionsToOtimize = recordTransitionsToOtimize;
+  }
+  
+  public RuleOptimizationData getDataForTransitionOptimization(){
+    return optData;
   }
 
   public PetriConversationResult toNet(IInnerNode<NodeType> type) {
@@ -84,6 +97,9 @@ public class ToPetriNet {
     placesWaitingForOuputs = new HashMap<>();
     if (recordNodeTransitionMapping) {
       nodeTransitionMapping = new HashMap<>();
+    }
+    if(recordTransitionsToOtimize){
+      this.optData = new RuleOptimizationData();
     }
     int firstPlace = netToMake.addPlace(scaleProvider.defaultScale());
     int lastPlace = netToMake.addPlace(scaleProvider.defaultScale());
@@ -100,6 +116,7 @@ public class ToPetriNet {
     outNrToOutTr = new HashMap<>();
     for (Integer outNr : placesWaitingForOuputs.keySet()) {
       int realOuputTransition = netToMake.addOuputTransition(UnifiedOneXOneTable.defaultTable());
+      optRegister(RuleOptimizationData.OptType.Aux, realOuputTransition);
       outNrToOutTr.put(outNr, realOuputTransition);
       List<Integer> places = placesWaitingForOuputs.get(outNr);
       for (int i = 0; i < places.size(); i++) {
@@ -111,11 +128,19 @@ public class ToPetriNet {
           int intermedateTr = netToMake.addTransition(0, UnifiedOneXOneTable.defaultTable());
           netToMake.addArcFromPlaceToTransition(currentPlace, intermedateTr);
           netToMake.addArcFromTransitionToPlace(intermedateTr, nextPlace);
+          optRegister(RuleOptimizationData.OptType.Aux, intermedateTr);
         }
       }
 
     }
 
+  }
+
+  private void optRegister(OptType type, Integer trId) {
+    if(recordTransitionsToOtimize){
+      optData.register(type, trId);
+    }
+    
   }
 
   private void resolveInputs() {
@@ -135,8 +160,10 @@ public class ToPetriNet {
           netToMake.addArcFromTransitionToPlace(tr, placeToPut);
           netToMake.addArcFromTransitionToPlace(tr, newLastPlace);
           lastPlace = newLastPlace;
+          optRegister(RuleOptimizationData.OptType.Aux, tr);
         } else {
           int tr = netToMake.addTransition(0, InputLeaf.inputTransmitterTwoXOne);
+          optRegister(RuleOptimizationData.OptType.Aux, tr);
           netToMake.addArcFromPlaceToTransition(lastPlace, tr);
           netToMake.addArcFromPlaceToTransition(placeToPut, tr);
           netToMake.addArcFromTransitionToPlace(tr, placeToPut);
@@ -150,6 +177,7 @@ public class ToPetriNet {
           .collect(toList())) {
 
         int tr = netToMake.addTransition(0, InputLeaf.inputTransmitterTwoXOne);
+        optRegister(RuleOptimizationData.OptType.Aux, tr);
         netToMake.addArcFromPlaceToTransition(lastIntermediatePlace, tr);
         netToMake.addArcFromPlaceToTransition(placeId, tr);
         lastIntermediatePlace = netToMake.addPlace(scaleProvider.defaultScale());
@@ -157,6 +185,7 @@ public class ToPetriNet {
       }
 
       int delatTr = netToMake.addTransition(1, UnifiedOneXOneTable.defaultTable());
+      optRegister(RuleOptimizationData.OptType.Aux, delatTr);
       netToMake.addArcFromPlaceToTransition(lastIntermediatePlace, delatTr);
       netToMake.addArcFromTransitionToPlace(delatTr, resetLoopInitalPlace);
       netToMake.setInitialMarkingForPlace(resetLoopInitalPlace, new UnifiedToken(0.0));
@@ -193,6 +222,7 @@ public class ToPetriNet {
     InnerNode op = (InnerNode) conc;
     int[] between = placesBetween.poll();
     int enterTr = netToMake.addTransition(0, getBeginingTableFor(op.getType()));
+    optRegister(RuleOptimizationData.OptType.SplitEnter, enterTr);
     netToMake.addArcFromPlaceToTransition(between[0], enterTr);
     int enterPlaceOne = netToMake.addPlace(scaleProvider.defaultScale());
     int enterPlaceTwo = netToMake.addPlace(scaleProvider.defaultScale());
@@ -202,6 +232,7 @@ public class ToPetriNet {
     int exitPlaceOne = netToMake.addPlace(scaleProvider.defaultScale());
     int exitPlaceTwo = netToMake.addPlace(scaleProvider.defaultScale());
     int exitTr = netToMake.addTransition(0, getEndTableFor(op.getType()));
+    optRegister(RuleOptimizationData.OptType.SplitExit, exitTr);
     netToMake.addArcFromTransitionToPlace(exitTr, between[1]);
     netToMake.addArcFromPlaceToTransition(exitPlaceOne, exitTr);
     netToMake.addArcFromPlaceToTransition(exitPlaceTwo, exitTr);
@@ -243,6 +274,7 @@ public class ToPetriNet {
     DelayLeaf delayLeaf = (DelayLeaf) ss;
     int[] between = placesBetween.poll();
     Integer delayTr = netToMake.addTransition(delayLeaf.getDelay(), UnifiedOneXOneTable.defaultTable());
+    optRegister(RuleOptimizationData.OptType.NoModif, delayTr);
     netToMake.addArcFromPlaceToTransition(between[0], delayTr);
     netToMake.addArcFromTransitionToPlace(delayTr, between[1]);
     if (recordNodeTransitionMapping) {
@@ -255,6 +287,7 @@ public class ToPetriNet {
     InputLeaf inputLeaf = (InputLeaf) ss;
     int[] between = placesBetween.poll();
     Integer inpTr = netToMake.addTransition(0, inputLeaf.getSubtype().table.myClone());
+    optRegister(RuleOptimizationData.OptType.Inp, inpTr);
     int inpPlace = netToMake.addPlace(scaleProvider.getScaleForInp(inputLeaf.inpNr()));
 
     netToMake.addArcFromPlaceToTransition(inpPlace, inpTr);
@@ -277,6 +310,7 @@ public class ToPetriNet {
     OutputLeaf outLeaf = (OutputLeaf) ss;
     int[] between = placesBetween.poll();
     int outTr = netToMake.addTransition(0, outLeaf.getSubtype().table.myClone());
+    optRegister(RuleOptimizationData.OptType.Out, outTr);
     int outPlace = netToMake.addPlace(scaleProvider.getScaleForOut(outLeaf.outNr()));
     
     netToMake.addArcFromPlaceToTransition(between[0], outTr);
@@ -297,6 +331,11 @@ public class ToPetriNet {
   private Boolean simpleVisit(INode<NodeType> ss) {
     int[] between = placesBetween.poll();
     int blokcTransition = netToMake.addTransition(0, getTaleForSimpleNode(ss.getType()));
+    if(NodeType.Negate.equals(ss.getType())){
+      optRegister(RuleOptimizationData.OptType.Modif, blokcTransition);
+    } else {
+      optRegister(RuleOptimizationData.OptType.NoModif, blokcTransition);
+    }
     netToMake.addArcFromPlaceToTransition(between[0], blokcTransition);
     netToMake.addArcFromTransitionToPlace(blokcTransition, between[1]);
     if (recordNodeTransitionMapping) {
@@ -324,8 +363,10 @@ public class ToPetriNet {
       if (recordNodeTransitionMapping) {
         nodeTransitionMapping.put(ss, tr);
       }
+      optRegister(RuleOptimizationData.OptType.NoModif, tr);
     } else {
       int entryTransition = netToMake.addTransition(0, UnifiedOneXTwoTable.defaultTable());
+      optRegister(RuleOptimizationData.OptType.NoModif, entryTransition);
       if (recordNodeTransitionMapping) {
         nodeTransitionMapping.put(ss, entryTransition);
       }
@@ -337,6 +378,7 @@ public class ToPetriNet {
 
       for(int i= 0; i < mem.getMemNr();i++){
         int tr = netToMake.addTransition(1, UnifiedOneXOneTable.defaultTable());
+        optRegister(RuleOptimizationData.OptType.NoModif, tr);
         int newPlace = netToMake.addPlace(scaleProvider.defaultScale());
         netToMake.addArcFromPlaceToTransition(lastPlace, tr);
         netToMake.addArcFromTransitionToPlace(tr, newPlace);
@@ -344,6 +386,7 @@ public class ToPetriNet {
         lastPlace = newPlace;
       }
       int exitTransition = netToMake.addTransition(0, InputType.ReaderBlocking.table.myClone());
+      optRegister(RuleOptimizationData.OptType.NoModif, exitTransition);
       netToMake.addArcFromPlaceToTransition(lastPlace, exitTransition);
       netToMake.addArcFromTransitionToPlace(exitTransition, between[1]);
       netToMake.addArcFromPlaceToTransition(controlPlace, exitTransition);
@@ -358,6 +401,7 @@ public class ToPetriNet {
     netToMake.setInitialMarkingForPlace(constPlace, new UnifiedToken(l.getConsValue()));
     int intermedaitePlace = netToMake.addPlace(scaleProvider.defaultScale());
     int copyTr = netToMake.addTransition(0, ConstantLeaf.copyTable.myClone());
+    optRegister(RuleOptimizationData.OptType.NoModif, copyTr);
     netToMake.addArcFromPlaceToTransition(constPlace,copyTr );
     netToMake.addArcFromPlaceToTransition(intermedaitePlace,copyTr );
     
@@ -365,6 +409,7 @@ public class ToPetriNet {
     netToMake.addArcFromTransitionToPlace(copyTr, intermedaitePlace);
     
     int recive = netToMake.addTransition(0, ConstantLeaf.recieveTable.myClone()) ;
+    optRegister(RuleOptimizationData.OptType.Modif, recive);
     
     netToMake.addArcFromPlaceToTransition(intermedaitePlace, recive);
     netToMake.addArcFromPlaceToTransition(between[0], recive);
@@ -380,6 +425,7 @@ public class ToPetriNet {
   private Boolean invVisit(INode<NodeType> ss) {
     int[] between = placesBetween.poll();
     int enterTr = netToMake.addTransition(0, UnifiedOneXTwoTable.defaultTable());
+    optRegister(RuleOptimizationData.OptType.SplitEnter, enterTr);
     netToMake.addArcFromPlaceToTransition(between[0], enterTr);
     int enterPlaceOne = netToMake.addPlace(scaleProvider.defaultScale());
     int enterPlaceTwo = netToMake.addPlace(scaleProvider.defaultScale());
@@ -388,6 +434,7 @@ public class ToPetriNet {
 
     int exitPlaceOne = netToMake.addPlace(scaleProvider.defaultScale());
     int exitTr = netToMake.addTransition(0, UnifiedTwoXOneTable.onlyOp(Operator.DIV));
+    optRegister(RuleOptimizationData.OptType.SplitExit, exitTr);
     netToMake.addArcFromTransitionToPlace(exitTr, between[1]);
     netToMake.addArcFromPlaceToTransition(exitPlaceOne, exitTr);
     netToMake.addArcFromPlaceToTransition(enterPlaceTwo, exitTr);

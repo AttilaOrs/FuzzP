@@ -489,6 +489,27 @@ public class ToPetriNetTest {
   }
 
   Double enableIfPhiRrez = null;
+  
+  @Test
+  public void optimizeData_test(){
+    toNet.setRecordTransitionToOptimize(true);
+    PetriConversationResult rez = toNet.toNet(complexInputOuptNet());
+    RuleOptimizationData data = toNet.getDataForTransitionOptimization();
+    assertTrue(data.allTransitions() == rez.net.getNrOfTransition());
+    
+    rez = toNet.toNet(splitNet());
+    data = toNet.getDataForTransitionOptimization();
+    assertTrue(data.allTransitions() == rez.net.getNrOfTransition());
+    
+    rez = toNet.toNet(inverseNet());
+    data = toNet.getDataForTransitionOptimization();
+    assertTrue(data.allTransitions() == rez.net.getNrOfTransition());
+    
+    rez = toNet.toNet(mathNet());
+    data = toNet.getDataForTransitionOptimization();
+    assertTrue(data.allTransitions() == rez.net.getNrOfTransition());
+    
+  }
 
 
 }
