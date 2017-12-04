@@ -3,6 +3,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import com.google.gson.Gson;
+
 import Main.UnifiedVizualizer;
 import UETPNLisp.UETPNLisp;
 import UnifiedGp.ProblemSpecificationImpl;
@@ -10,14 +12,16 @@ import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.INode;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
+import UnifiedGp.Tree.Visitors.RuleOptimizationData;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
 import UnifiedGpProblmes.FirstOrderSystem.ReferenceProvider;
+import commonUtil.PlotUtils;
 import core.Drawable.TransitionPlaceNameStore;
-import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.common.recoder.FullRecorder;
+import main.ScenarioSaverLoader;
 
 public class PiInUETPNLisp {
   static Double command = 0.0;
@@ -25,32 +29,39 @@ public class PiInUETPNLisp {
   public static void main(String[] args) {
     INode<NodeType> root = UETPNLisp.fromFile(new File("pi_controller.uls"));
     ToPetriNet tpn = new ToPetriNet(createProblemSpecification(), true, false);
+    tpn.setRecordTransitionToOptimize(true);
     PetriConversationResult rez = tpn.toNet((IInnerNode<NodeType>) root);
-
-    PetriNetJsonSaver<UnifiedPetriNet> loader = new PetriNetJsonSaver<>();
-    UnifiedPetriNet newNet = loader.load("piRez3.json", UnifiedPetriNet.class);
-    
+    RuleOptimizationData wow = tpn.getDataForTransitionOptimization();
     FullRecorder<UnifiedToken> rec = new FullRecorder<>();
-    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(newNet);
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(rez.net);
     exec.setRecorder(rec);
     Random rnd = new Random();
     HashMap<Integer, UnifiedToken> inp = new HashMap<>();
-    // rez.addActionIfPossible(0, t -> command = t.getValue());
-    newNet.addActionForOuputTransition(0, t -> command = t.getValue());
+    rez.addActionIfPossible(0, t -> command = t.getValue());
+    ReferenceProvider provider = new ReferenceProvider(3);
     double x = 0;
-    ReferenceProvider p = new ReferenceProvider();
-    
-      for (int i = 0; i < p.getRefSize(); i++) { inp.clear();
-      
+    for (int i = 0; i < provider.getRefSize(); i++) {
+      inp.clear();
+
       double xnew = x * 0.67 + command * 0.35;
       double out = x * 0.87 + command * 0.22;
       x = xnew;
-      inp.put(0, new UnifiedToken(out));
-      inp.put(1, new UnifiedToken(p.getReference(i)));
-      
-      command = 0.0; exec.runTick(inp); }
-     
-    UnifiedVizualizer.visualize(newNet, rec, TransitionPlaceNameStore.createOrdinarNames(rez.net));
+      rez.addToInpIfPossible(inp, 0, new UnifiedToken(provider.getReference(i)));
+      rez.addToInpIfPossible(inp, 1, new UnifiedToken(out));
+      command = 0.0;
+      exec.runTick(inp);
+    }
+    ScenarioSaverLoader<UnifiedPetriNet, UnifiedToken> saver = new ScenarioSaverLoader<>(UnifiedPetriNet.class);
+    saver.setPetriNet(rez.net);
+    saver.setFullRec(rec);
+    saver.save(new File("pi_secenario.json"));
+    Gson gson = new Gson();
+    String conversationData = gson.toJson(wow);
+    System.out.println(wow);
+    PlotUtils.writeToFile("pi_scenario_data.json", conversationData);
+    
+    
+    UnifiedVizualizer.visualize(rez.net, rec, TransitionPlaceNameStore.createOrdinarNames(rez.net));
 
 
   }
