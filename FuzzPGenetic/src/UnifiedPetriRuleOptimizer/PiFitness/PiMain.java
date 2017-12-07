@@ -53,7 +53,7 @@ public class PiMain {
       breeders.add(UnifromCrossoverBitIndi::new);
 
       ArrayList<IOperatorFactory<ICreatureFitnes<BitIndi>>> fitnesses = new ArrayList<>();
-      fitnesses.add(FirstOrderFitnes::new);
+      fitnesses.add(PiMain::createFitnes);
 
       ICreaturePool<BitIndi> pool = new CreaturePoolWithStreams<>(gens, mutators, breeders, fitnesses);
 
@@ -68,36 +68,40 @@ public class PiMain {
       String jsonStr = saver.makeString(newNEt);
       PlotUtils.writeToFile("piRez_n" + tryning + ".json", jsonStr);
       // FirstOrderFitnes fitnes = new FirstOrderFitnes();
-      double rez = fitnes.evaluate(i);
+      double rez = createFitnes().evaluate(i);
       PlotUtils.writeToFile("rez" + tryning + ".txt", Double.toString(rez));
     }
-    
+
   }
 
   private static BitIndiDecoder masterDecoder = null;
 
   public static FirstOrderFitnes createFitnes() {
     if (masterDecoder == null) {
-    ScenarioSaverLoader<UnifiedPetriNet, UnifiedToken> loader = new ScenarioSaverLoader<>(UnifiedPetriNet.class);
+      ScenarioSaverLoader<UnifiedPetriNet, UnifiedToken> loader = new ScenarioSaverLoader<>(UnifiedPetriNet.class);
       loader.load(new File("pi_secenario.json"), UnifiedToken::buildFromString);
       FullRecorder<UnifiedToken> rec = loader.getFullRec();
       UnifiedPetriNet net = loader.getPetriNet();
-      
-    String all = "";
 
-    try (BufferedReader br = new BufferedReader(new FileReader("pi_scenario_data.json"))) {
-      StringBuilder sb = new StringBuilder();
-      all = br.lines().collect(joining());
-    } catch (Exception e) {
-      System.err.println(e);
+      String all = "";
+
+      try (BufferedReader br = new BufferedReader(new FileReader("pi_scenario_data.json"))) {
+        StringBuilder sb = new StringBuilder();
+        all = br.lines().collect(joining());
+      } catch (Exception e) {
+        System.err.println(e);
+      }
+      Gson gg = new Gson();
+      RuleOptimizationData f = gg.fromJson(all, RuleOptimizationData.class);
+      ArrayList<Integer> trs = new ArrayList<>();
+      trs.addAll(f.getType(RuleOptimizationData.OptType.Inp));
+      trs.addAll(f.getType(RuleOptimizationData.OptType.Out));
+      trs.addAll(f.getType(RuleOptimizationData.OptType.SplitExit));
+      masterDecoder = new BitIndiDecoder(net, trs);
+      System.out.println(" nr of rules:: " + masterDecoder.getNrOfRules());
     }
-    Gson gg = new Gson();
-    RuleOptimizationData f = gg.fromJson(all, RuleOptimizationData.class);
-      
 
-    }
-
-    return null;
+    return new FirstOrderFitnes(masterDecoder.myClone(), 26, 35, 36);
   }
 
 }

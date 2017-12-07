@@ -24,4 +24,8 @@ public class RuleOptimizationData {
     return data.values().stream().mapToInt(trIdSet -> trIdSet.size()).sum();
   }
 
+  public Set<Integer> getType(OptType type) {
+    return data.get(type);
+  }
+
 }

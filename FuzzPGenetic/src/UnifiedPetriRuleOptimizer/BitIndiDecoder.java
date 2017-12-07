@@ -1,5 +1,6 @@
 package UnifiedPetriRuleOptimizer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +45,12 @@ public class BitIndiDecoder {
     }
     return UnifiedPetriNetCloner.cloneUnifiedPetriNetWithModifiedTabler(originalNet, tables);
 
+  }
+
+  public BitIndiDecoder myClone() {
+    UnifiedPetriNet cloned = UnifiedPetriNetCloner.cloneUnifiedPetriNet(originalNet);
+    ArrayList<Integer> wow = new ArrayList<>(trToOptimize);
+    return new BitIndiDecoder(cloned, wow);
   }
 
   public class IterBasedOnInidi implements Iterator<FuzzyValue> {
