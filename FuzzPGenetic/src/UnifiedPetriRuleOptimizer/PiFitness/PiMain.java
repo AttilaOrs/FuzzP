@@ -1,13 +1,11 @@
 package UnifiedPetriRuleOptimizer.PiFitness;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.stream.IntStream;
 
 import com.google.gson.Gson;
 
@@ -36,15 +34,12 @@ import structure.operators.ICreatureMutator;
 public class PiMain {
 
   public static void main(String[] args) {
+    initMasterDecoder();
     for (int tryning = 0; tryning < 100; tryning++) {
 
-      PiUnifiedPetriMaker maker = new PiUnifiedPetriMaker();
-      BitIndiDecoder decoder = new BitIndiDecoder(maker.net,
-          IntStream.range(0, maker.net.getNrOfTransition()).mapToObj(t -> t).collect(toList()));
-      System.out.println("nr of rules:: " + decoder.getNrOfRules());
 
       ArrayList<IOperatorFactory<ICreatureGenerator<BitIndi>>> gens = new ArrayList<>();
-      gens.add(() -> new Generator(decoder.getNrOfRules()));
+      gens.add(() -> new Generator(masterDecoder.getNrOfRules()));
 
       ArrayList<IOperatorFactory<ICreatureMutator<BitIndi>>> mutators = new ArrayList<>();
       mutators.add(Mutator::new);
@@ -63,7 +58,7 @@ public class PiMain {
       algo.theAlgo();
       Integer best = algo.getMaxId();
       BitIndi i = pool.get(best);
-      UnifiedPetriNet newNEt = decoder.modified(i);
+      UnifiedPetriNet newNEt = masterDecoder.modified(i);
       PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<UnifiedPetriNet>();
       String jsonStr = saver.makeString(newNEt);
       PlotUtils.writeToFile("piRez_n" + tryning + ".json", jsonStr);
@@ -76,8 +71,8 @@ public class PiMain {
 
   private static BitIndiDecoder masterDecoder = null;
 
-  public static FirstOrderFitnes createFitnes() {
-    if (masterDecoder == null) {
+  private static void initMasterDecoder() {
+
       ScenarioSaverLoader<UnifiedPetriNet, UnifiedToken> loader = new ScenarioSaverLoader<>(UnifiedPetriNet.class);
       loader.load(new File("pi_secenario.json"), UnifiedToken::buildFromString);
       FullRecorder<UnifiedToken> rec = loader.getFullRec();
@@ -99,6 +94,11 @@ public class PiMain {
       trs.addAll(f.getType(RuleOptimizationData.OptType.SplitExit));
       masterDecoder = new BitIndiDecoder(net, trs);
       System.out.println(" nr of rules:: " + masterDecoder.getNrOfRules());
+  }
+
+  public static FirstOrderFitnes createFitnes() {
+    if (masterDecoder == null) {
+      initMasterDecoder();
     }
 
     return new FirstOrderFitnes(masterDecoder.myClone(), 26, 35, 36);
