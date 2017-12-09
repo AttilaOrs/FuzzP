@@ -1,6 +1,5 @@
 package UnifiedPetriRuleOptimizer.PiFitness;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
 import core.common.recoder.FullRecorder;
 import core.common.tokencache.TokenCacheDisabling;
-import main.ScenarioSaverLoader;
 import structure.ICreatureFitnes;
 
 public class FirstOrderFitnes implements ICreatureFitnes<BitIndi> {
@@ -57,11 +55,13 @@ public class FirstOrderFitnes implements ICreatureFitnes<BitIndi> {
       sys.runTick();
     }
 
-    ScenarioSaverLoader<UnifiedPetriNet, UnifiedToken> scenarioSaver = new ScenarioSaverLoader<>(
-        UnifiedPetriNet.class);
-    scenarioSaver.setPetriNet(net);
-    scenarioSaver.setFullRec(rec);
-    scenarioSaver.save(new File("testPi.json"));
+
+    /*
+     * ScenarioSaverLoader<UnifiedPetriNet, UnifiedToken> scenarioSaver = new
+     * ScenarioSaverLoader<>( UnifiedPetriNet.class);
+     * scenarioSaver.setPetriNet(net); scenarioSaver.setFullRec(rec);
+     * scenarioSaver.save(new File("testPi.json"));
+     */
 
 
     return 100.0 / (1.0 + prov.calcError(sys.getEvolution()));
