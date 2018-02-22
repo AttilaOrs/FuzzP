@@ -1,18 +1,9 @@
 package UnifiedPetriRuleOptimizer.PiFitness;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import UnifiedGpProblmes.FirstOrderSystem.FirtsOrderSystem;
-import UnifiedGpProblmes.FirstOrderSystem.ReferenceProvider;
+import UnifiedGpProblmes.FirstOrderSystem.ReferenceProvider.Result;
 import UnifiedPetriRuleOptimizer.BitIndi;
 import UnifiedPetriRuleOptimizer.BitIndiDecoder;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
-import core.UnifiedPetriLogic.UnifiedToken;
-import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
-import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
-import core.common.recoder.FullRecorder;
-import core.common.tokencache.TokenCacheDisabling;
 import structure.ICreatureFitnes;
 
 public class FirstOrderFitnes implements ICreatureFitnes<BitIndi> {
@@ -32,28 +23,8 @@ public class FirstOrderFitnes implements ICreatureFitnes<BitIndi> {
   @Override
   public double evaluate(BitIndi creature) {
     UnifiedPetriNet net = decoder.modified(creature);
-    FirtsOrderSystem sys = new FirtsOrderSystem(0.67, 0.35, 0.87, 0.22);
-    ReferenceProvider prov = new ReferenceProvider(3);
-
-    net.addActionForOuputTransition(outTr, d -> {
-      sys.setCommand(d.getValue());
-    });
-
-    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
-        new UnifiedPetrinetCacheTableResultWrapper(net,
-            () -> new TokenCacheDisabling<>(5)),
-        false, true);
-    FullRecorder<UnifiedToken> rec = new FullRecorder<>();
-    exec.setRecorder(rec);
-
-    Map<Integer, UnifiedToken> inp = new HashMap<>();
-    for (int i = 0; i < prov.getRefSize(); i++) {
-      inp.clear();
-      inp.put(inp1, new UnifiedToken(sys.curentStatus()));
-      inp.put(inp2, new UnifiedToken(prov.getReference(i)));
-      exec.runTick(inp);
-      sys.runTick();
-    }
+    PiSimulator sim = new PiSimulator(outTr, inp1, inp2, false);
+    Result result = sim.simulate(net);
 
 
     /*
@@ -63,8 +34,11 @@ public class FirstOrderFitnes implements ICreatureFitnes<BitIndi> {
      * scenarioSaver.save(new File("testPi.json"));
      */
 
+    /* prov.calcError(sys.getEvolution()) */
 
-    return 100.0 / (1.0 + prov.calcError(sys.getEvolution()));
+    double fi = 100.0 / (1.0 + 0.5 * result.error + 0.4 * result.changeSum + 0.1 * result.steadyStateError);
+
+    return fi;
   }
 
 }

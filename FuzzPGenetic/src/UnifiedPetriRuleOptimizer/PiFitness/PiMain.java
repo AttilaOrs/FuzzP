@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
 
@@ -55,7 +56,10 @@ public class PiMain {
       SimpleGA<BitIndi> algo = new SimpleGA<>(pool, new LinearRankSelection());
       SimpleGA.iteration = 100;
       SimpleGA.population = 2000;
+      long start = System.currentTimeMillis();
       algo.theAlgo();
+      long stop = System.currentTimeMillis();
+
       Integer best = algo.getMaxId();
       BitIndi i = pool.get(best);
       UnifiedPetriNet newNEt = masterDecoder.modified(i);
@@ -64,7 +68,13 @@ public class PiMain {
       PlotUtils.writeToFile("piRez_n" + tryning + ".json", jsonStr);
       // FirstOrderFitnes fitnes = new FirstOrderFitnes();
       double rez = createFitnes().evaluate(i);
-      PlotUtils.writeToFile("rez" + tryning + ".txt", Double.toString(rez));
+      String g = Double.toString(rez) + "\n";
+      g += TimeUnit.MILLISECONDS.toMinutes(stop- start) + "\n";
+      g += (stop- start) + "\n";
+      
+      
+      
+      PlotUtils.writeToFile("rez" + tryning + ".txt", g);
     }
 
   }

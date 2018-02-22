@@ -5,6 +5,7 @@ import Main.UnifiedVizualizer;
 import UnifiedGp.ProblemSpecificationImpl;
 import UnifiedGpProblmes.FirstOrderSystem.FirtsOrderSystem;
 import UnifiedGpProblmes.FirstOrderSystem.ReferenceProvider;
+import UnifiedGpProblmes.FirstOrderSystem.ReferenceProvider.Result;
 import core.Drawable.TransitionPlaceNameStore;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
@@ -13,6 +14,7 @@ import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.common.recoder.FullRecorder;
 
 public class PiRezultView {
+  private static final String PI_REZ = "piRez_n99.json";
   static Double command = 0.0;
 
   public static void main(String[] args) {
@@ -20,7 +22,7 @@ public class PiRezultView {
     FirtsOrderSystem sys = new FirtsOrderSystem(0.67, 0.35, 0.87, 0.22);
     ReferenceProvider prov = new ReferenceProvider(3);
     PetriNetJsonSaver<UnifiedPetriNet> loader = new PetriNetJsonSaver<>();
-    UnifiedPetriNet newNet = loader.load("piRez_n99.json", UnifiedPetriNet.class);
+    UnifiedPetriNet newNet = loader.load(PI_REZ, UnifiedPetriNet.class);
 
     FullRecorder<UnifiedToken> rec = new FullRecorder<>();
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(newNet);
@@ -40,7 +42,11 @@ public class PiRezultView {
       sys.runTick();
 
     }
-    System.out.println(100.0 / (1 + prov.calcError(sys.getEvolution())));
+
+    Result wamp = prov.calcResult(sys.getEvolution());
+    System.out.println(">>> error:" + wamp.error);
+    System.out.println(">>> steady:" + wamp.steadyStateError);
+    System.out.println(">>> change:" + wamp.changeSum);
 
     UnifiedVizualizer.visualize(newNet, rec, TransitionPlaceNameStore.createOrdinarNames(newNet));
 
