@@ -47,7 +47,10 @@ public class Main {
     SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, new LinearRankSelection());
     SimpleGA.iteration = 100;
     SimpleGA.population = 1000;
+    long start = System.currentTimeMillis();
     algo.theAlgo();
+    long stop = System.currentTimeMillis();
+
 
     /*
      * IterationLogger logger = algo.getLogger();
@@ -65,8 +68,7 @@ public class Main {
     ToPetriNet toPetri = new ToPetriNet(FirstOrderFitnes.createProblemSpecification());
     PetriConversationResult convRez = toPetri.toNet(rez.getRoot());
     PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<UnifiedPetriNet>();
-    saver.save(convRez.net,
-        "rez.json");
+    saver.save(convRez.net, "rez.json");
 
     FirstOrderFitnes fitnes = new FirstOrderFitnes(true);
     double fitness = fitnes.evaluate(rez);

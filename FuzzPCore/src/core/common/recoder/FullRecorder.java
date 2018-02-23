@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalDouble;
 import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
+import core.common.recoder.fullrecorderevents.AbstarctTokenMovment;
 import core.common.recoder.fullrecorderevents.IFullRecorderEvent;
 import core.common.recoder.fullrecorderevents.InputPuttedInPlace;
 import core.common.recoder.fullrecorderevents.OuputTransitionFired;
@@ -42,7 +45,7 @@ public class FullRecorder<TokenType extends FullRecordable<TokenType>>
   @Override
   public void tickFinished(List<Integer> delayStateOfTransition,
       List<TokenType> placeState) {
-    List<TokenType> placeStateClone = placeState.stream().map(ft -> (TokenType) ft.myClone())
+    List<TokenType> placeStateClone = placeState.stream().map(ft -> ft.myClone())
         .collect(Collectors.toList());
     List<Integer> delayStateClone = new ArrayList<>(delayStateOfTransition);
 
@@ -153,6 +156,25 @@ public class FullRecorder<TokenType extends FullRecordable<TokenType>>
       }
     }
     return toRet;
+  }
+
+  public String evolutionOfPlaceDatFormatOnceInTick(int placeID, ToDoubleFunction<FullRecordable<TokenType>> conv) {
+    StringBuilder bld = new StringBuilder();
+    bld.append("#tick\t place").append(placeID).append("\n");
+    int cntr = 0;
+    for (List<IFullRecorderEvent> eventsInATick : eventGroupedByTicks()) {
+      OptionalDouble avg = eventsInATick.stream()
+          .filter(i -> (i instanceof AbstarctTokenMovment) && ((AbstarctTokenMovment) i).place == placeID)
+          .map(i -> ((AbstarctTokenMovment) i).token)
+          .mapToDouble((ToDoubleFunction<? super FullRecordable>) conv)
+          .average();
+      
+      if(avg.isPresent()) {
+        bld.append(cntr).append("\t").append(avg.getAsDouble()).append("\n");
+      }
+      cntr++;
+    }
+    return bld.toString();
   }
 
 

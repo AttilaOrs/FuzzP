@@ -8,9 +8,6 @@ import java.util.function.Supplier;
 import AlgoImpl.IterationLogger;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
-import AlgoImpl.Selectors.RouletteWheelSelection;
-import AlgoImpl.Selectors.SelectOnlyOneWrapper;
-import AlgoImpl.Selectors.TournamentSelection;
 import AlgoImpl.pools.CreaturePoolWithStreams;
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
@@ -20,12 +17,7 @@ import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifiedGpSuplier;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
-import UnifiedGpProblmes.ArtificalAnt.AntFitnes;
-import UnifiedGpProblmes.CartCentering.CartFitnes;
-import UnifiedGpProblmes.CartCentering.UnifiedPetriController;
 import UnifiedGpProblmes.FirstOrderSystem.FirstOrderFitnes;
-import UnifiedGpProblmes.Multiplexer.MultiplexerFitness;
-import UnifiedGpProblmes.SymbolicRegression.SymbolicRegressionFitness;
 import commonUtil.PlotUtils;
 import structure.ICreatureFitnes;
 import structure.ICreaturePool;
@@ -56,34 +48,50 @@ public class MeasreMain {
   }
 
   public static final List<MeasureConfig> confs = new ArrayList<>();
-
   static {
-    int repeate = 5;
-    List<Supplier<ProblemSpecification>> probSpec = Arrays.asList(MultiplexerFitness::problemSpecification,
-        SymbolicRegressionFitness::problemsSpecification, UnifiedPetriController::create,
-        FirstOrderFitnes::createProblemSpecification, AntFitnes::problemSpecification);
-    List<Supplier<ICreatureFitnes<UnifiedGpIndi>>> fitnes = Arrays.asList(MultiplexerFitness::new,
-        SymbolicRegressionFitness::new, CartFitnes::new, FirstOrderFitnes::new, AntFitnes::new);
-    List<String> nameList = Arrays.asList("Multiplexer_", "SymbolicReg_", "CartCenter_", "FirstOrder_", "Ant_");
-    
-    List<String> selectorNames = Arrays.asList("Roulette", "Rank", "Tournamet", "RouletteOne", "RankOne",
-        "TournamentOne");
-    
-    List<ISelector> selectors = Arrays.asList(new RouletteWheelSelection(), new LinearRankSelection(),
-        new TournamentSelection(), new SelectOnlyOneWrapper(new RouletteWheelSelection()),
-        new SelectOnlyOneWrapper(new LinearRankSelection()), new SelectOnlyOneWrapper(new TournamentSelection()));
-    
-
-    for (int i = 0; i < repeate; i++) {
-      for (int j = 0; j < nameList.size(); j++) {
-        for (int s = 0; s < selectorNames.size(); s++) {
-          confs.add(new MeasureConfig(500, 100, nameList.get(j) + selectorNames.get(s) + "_" + i, probSpec.get(j),
-              fitnes.get(j), selectors.get(s)));
-        }
-      }
+    int repeate = 50;
+    List<Supplier<ProblemSpecification>> probSpec = Arrays.asList(FirstOrderFitnes::createProblemSpecification);
+    List<Supplier<ICreatureFitnes<UnifiedGpIndi>>> fitnes = Arrays.asList(FirstOrderFitnes::new);
+    List<String> nameList = Arrays.asList("FirstOrder_");
+    List<ISelector> selectors = Arrays.asList(new LinearRankSelection());
+    for (int i = 0; i < 50; i++) {
+      confs.add(new MeasureConfig(2000, 100, "FirstOdrerClassic_" + i, FirstOrderFitnes::createProblemSpecification,
+          FirstOrderFitnes::new, new LinearRankSelection()));
 
     }
+
   }
+
+  /*
+   * static { int repeate = 5; List<Supplier<ProblemSpecification>> probSpec =
+   * Arrays.asList(MultiplexerFitness::problemSpecification,
+   * SymbolicRegressionFitness::problemsSpecification,
+   * UnifiedPetriController::create,
+   * FirstOrderFitnes::createProblemSpecification,
+   * AntFitnes::problemSpecification);
+   * List<Supplier<ICreatureFitnes<UnifiedGpIndi>>> fitnes =
+   * Arrays.asList(MultiplexerFitness::new, SymbolicRegressionFitness::new,
+   * CartFitnes::new, FirstOrderFitnes::new, AntFitnes::new); List<String>
+   * nameList = Arrays.asList("Multiplexer_", "SymbolicReg_", "CartCenter_",
+   * "FirstOrder_", "Ant_");
+   * 
+   * List<String> selectorNames = Arrays.asList("Roulette", "Rank", "Tournamet",
+   * "RouletteOne", "RankOne", "TournamentOne");
+   * 
+   * List<ISelector> selectors = Arrays.asList(new RouletteWheelSelection(), new
+   * LinearRankSelection(), new TournamentSelection(), new
+   * SelectOnlyOneWrapper(new RouletteWheelSelection()), new
+   * SelectOnlyOneWrapper(new LinearRankSelection()), new
+   * SelectOnlyOneWrapper(new TournamentSelection()));
+   * 
+   * 
+   * for (int i = 0; i < repeate; i++) { for (int j = 0; j < nameList.size();
+   * j++) { for (int s = 0; s < selectorNames.size(); s++) { confs.add(new
+   * MeasureConfig(500, 100, nameList.get(j) + selectorNames.get(s) + "_" + i,
+   * probSpec.get(j), fitnes.get(j), selectors.get(s))); } }
+   * 
+   * } }
+   */
 
   public static void main(String[] args) {
     for (MeasureConfig conf : confs) {

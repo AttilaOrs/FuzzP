@@ -3,14 +3,16 @@ package UnifiedPetriRuleOptimizer.PiFitness;
 import java.io.File;
 
 import UnifiedGpProblmes.FirstOrderSystem.ReferenceProvider.Result;
+import commonUtil.PlotUtils;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
+import core.common.recoder.FullRecorder;
 import main.ScenarioSaverLoader;
 
 public class ConvertNetToScenarioMain {
 
-  public static final String fromPath = "/home/ors/Desktop/bprez/~4/piRez_n3.json";
+  public static final String fromPath = "/home/ors/Desktop/bprez/newEra/piRez_n32.json";
   public static final String toPath = "fi_test.json";
 
   public static void main(String[] args) {
@@ -27,7 +29,15 @@ public class ConvertNetToScenarioMain {
 
     ScenarioSaverLoader<UnifiedPetriNet, UnifiedToken> saver = new ScenarioSaverLoader<>(UnifiedPetriNet.class);
 
-    saver.setFullRec(sim.getRecorder());
+    FullRecorder<UnifiedToken> recorder = sim.getRecorder();
+    String str = recorder.evolutionOfPlaceDatFormatOnceInTick(35, t -> ((UnifiedToken) t).getValue());
+    PlotUtils.writeToFile("inp1.dat", str);
+    str = recorder.evolutionOfPlaceDatFormatOnceInTick(36, t -> ((UnifiedToken) t).getValue());
+    PlotUtils.writeToFile("inp2.dat", str);
+    str = recorder.evolutionOfPlaceDatFormatOnceInTick(7, t -> ((UnifiedToken) t).getValue());
+    PlotUtils.writeToFile("out.dat", str);
+
+    saver.setFullRec(recorder);
     saver.setPetriNet(net);
 
     saver.save(new File(toPath));

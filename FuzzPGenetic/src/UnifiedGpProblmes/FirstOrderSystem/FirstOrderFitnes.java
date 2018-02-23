@@ -12,6 +12,7 @@ import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.DynamicallySimplifiedPetriNetBuilder;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
+import UnifiedGpProblmes.FirstOrderSystem.ReferenceProvider.Result;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
@@ -59,7 +60,7 @@ public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
     PetriConversationResult rez = tp.toNet(creature.getRoot());
 
     if (rez.outNrToOutTr.containsKey(0)) {
-      FirtsOrderSystem ll = new FirtsOrderSystem(0.5, 0.7, 0.2, 0.3);
+      FirtsOrderSystem ll = new FirtsOrderSystem(0.67, 0.35, 0.87, 0.22);
       ReferenceProvider ref = new ReferenceProvider();
       rez.net.addActionForOuputTransition(rez.outNrToOutTr.get(0), d -> {
         ll.setCommand(d.getValue());
@@ -94,8 +95,10 @@ public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
 
 
       updateCreatureWithSimplification(creature, rez, tk);
+      Result result = ref.calcResult(ll.getEvolution());
 
-      return 1.0 / (1.0 + ref.calcError(ll.getEvolution()));
+
+      return 100.0 / (1.0 + 0.5 * result.error + 0.4 * result.changeSum + 0.1 * result.steadyStateError);
     }
     return 0;
   }
