@@ -158,7 +158,7 @@ public class FullRecorder<TokenType extends FullRecordable<TokenType>>
     return toRet;
   }
 
-  public String evolutionOfPlaceDatFormatOnceInTick(int placeID, ToDoubleFunction<FullRecordable<TokenType>> conv) {
+  public String evolutionOfPlaceDatFormatOnceInTick(int placeID, ToDoubleFunction<? super FullRecordable> conv) {
     StringBuilder bld = new StringBuilder();
     bld.append("#tick\t place").append(placeID).append("\n");
     int cntr = 0;
@@ -166,7 +166,7 @@ public class FullRecorder<TokenType extends FullRecordable<TokenType>>
       OptionalDouble avg = eventsInATick.stream()
           .filter(i -> (i instanceof AbstarctTokenMovment) && ((AbstarctTokenMovment) i).place == placeID)
           .map(i -> ((AbstarctTokenMovment) i).token)
-          .mapToDouble((ToDoubleFunction<? super FullRecordable>) conv)
+          .mapToDouble(conv)
           .average();
       
       if(avg.isPresent()) {

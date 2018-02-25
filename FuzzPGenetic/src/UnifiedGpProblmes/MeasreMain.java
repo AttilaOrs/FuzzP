@@ -3,22 +3,28 @@ package UnifiedGpProblmes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import AlgoImpl.IterationLogger;
+import AlgoImpl.MultiobjectiveMulioperatorGA;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
 import AlgoImpl.pools.CreaturePoolWithStreams;
+import UnifiedGp.AbstactFitness;
 import UnifiedGp.ProblemSpecification;
+import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
-import UnifiedGp.GpIndi.UnifiedGpSuplier;
+import UnifiedGp.GpIndi.UnifromCrossOver;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
 import UnifiedGpProblmes.FirstOrderSystem.FirstOrderFitnes;
 import commonUtil.PlotUtils;
+import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
+import core.UnifiedPetriLogic.UnifiedPetriNet;
 import structure.ICreatureFitnes;
 import structure.ICreaturePool;
 import structure.IOperatorFactory;
@@ -93,30 +99,42 @@ public class MeasreMain {
    * } }
    */
 
+  private static final int HALD_RANK_MAX_SIZE = 7;
   public static void main(String[] args) {
     for (MeasureConfig conf : confs) {
       ArrayList<IOperatorFactory<ICreatureGenerator<UnifiedGpIndi>>> gens = new ArrayList<>();
-      gens.add(() -> new UnifiedGpSuplier(createTreeBuilder(conf.specificationSuplier.get())));
+      gens.add(() -> new HalfRampHalfFull(new TreeBuilderCongigGeneralImpl(conf.specificationSuplier.get()),
+          HALD_RANK_MAX_SIZE));
 
       ArrayList<IOperatorFactory<ICreatureMutator<UnifiedGpIndi>>> mutators = new ArrayList<>();
       mutators.add(() -> new UnifiedGpIndiTreeMutator(createTreeBuilder(conf.specificationSuplier.get())));
 
       ArrayList<IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>>> breeders = new ArrayList<>();
       breeders.add(() -> new UnifiedGpIndiBreeder());
+      breeders.add(() -> new UnifromCrossOver(0.5));
 
       ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
       fitnesses.add(conf.fitnessSuplier::get);
 
       ICreaturePool<UnifiedGpIndi> pool = new CreaturePoolWithStreams<UnifiedGpIndi>(gens, mutators, breeders,
           fitnesses);
+      SimpleGA.REMOVE_ELITE_FROM_POP = false;
+      AbstactFitness.APPLY_SIZE_LIMIT = true;
+      AbstactFitness.FIRED_TR_LIMIT = true;
+      AbstactFitness.HARD_LIMIT = false;
+      AbstactFitness.SIZE_LIMIT_START = 300;
+      AbstactFitness.SIZE_LIMIT = 500;
 
-      SimpleGA<UnifiedGpIndi> algo = new SimpleGA<>(pool, conf.selector);
+      double[] crossWeigth = new double[] { 0.5, 0.5 };
+      MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, conf.selector,
+          conf.selector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
       SimpleGA.iteration = conf.iter;
       SimpleGA.population = conf.pop;
+      long start = System.currentTimeMillis();
       algo.theAlgo();
+      long stop = System.currentTimeMillis();
 
       String name = conf.name + "_i" + SimpleGA.iteration + "_p" + SimpleGA.population + "_";
-
       IterationLogger logger = algo.getLogger();
       PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree"), name + "bloat_tree.svg");
       PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"), name + "bloat_time.svg");
@@ -124,6 +142,9 @@ public class MeasreMain {
       PlotUtils.writeToFile(name + "bloat_tree.txt", logger.getLogsForPlottingContatinigStrings("tree").toString());
       PlotUtils.writeToFile(name + "bloat_time.txt", logger.getLogsForPlottingContatinigStrings("time").toString());
       PlotUtils.writeToFile(name + "fitnes.txt", logger.getLogsForPlottingContatinigStrings("fit").toString());
+      Integer maxId = algo.getMaxId();
+      UnifiedGpIndi rez = pool.get(maxId);
+      finalizeFirstOrder(rez, name, stop - start);
 
     }
 
@@ -131,6 +152,22 @@ public class MeasreMain {
 
   public static TreeBuilder<NodeType> createTreeBuilder(ProblemSpecification sp) {
     return new TreeBuilder<>(new TreeBuilderCongigGeneralImpl(sp));
+  }
+
+  private static double finalizeFirstOrder(UnifiedGpIndi rez, String path, long m) {
+    AbstactFitness mm = new FirstOrderFitnes(true);
+    double rr = mm.evaluate(rez);
+    PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<>();
+    String l = saver.makeString(mm.getRez().net);
+    PlotUtils.writeToFile(path + "_Petri.json", l);
+    String ss = mm.getRez().inpNrToInpPlace.toString() + "\n" + mm.getRez().outNrToOutTr.toString();
+    PlotUtils.writeToFile(path + "_Mapping.txt", ss);
+    String finalRez = rr + "\n";
+    finalRez += TimeUnit.MILLISECONDS.toMinutes(m);
+    finalRez += m;
+    PlotUtils.writeToFile(path + "_rez.txt", finalRez);
+    return rr;
+
   }
 
 

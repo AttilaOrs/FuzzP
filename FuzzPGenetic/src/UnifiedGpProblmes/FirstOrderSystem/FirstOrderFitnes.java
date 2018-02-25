@@ -4,11 +4,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import UnifiedGp.AbstactFitness;
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.ProblemSpecificationImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
-import UnifiedGp.Tree.IInnerNode;
-import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.DynamicallySimplifiedPetriNetBuilder;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
@@ -20,9 +19,8 @@ import core.common.recoder.FiredTranitionRecorder;
 import core.common.recoder.FullRecorder;
 import core.common.recoder.MultiRecorder;
 import core.common.tokencache.TokenCacheDisabling;
-import structure.ICreatureFitnes;
 
-public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
+public class FirstOrderFitnes extends AbstactFitness {
 
 
   private ToPetriNet tp;
@@ -37,28 +35,25 @@ public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
   }
 
   public FirstOrderFitnes(boolean useRecorder) {
+    super(createProblemSpecification());
     ps = createProblemSpecification();
     tp = new ToPetriNet(ps, true, true);
     this.useRecorder = useRecorder;
     simplifier = new DynamicallySimplifiedPetriNetBuilder();
   }
 
-  public static ProblemSpecificationImpl createProblemSpecification() {
-    Map<Integer, Double> inpScale = new HashMap<>();
-    inpScale.put(0, 2.0);
-    inpScale.put(1, 2.0);
-    Map<Integer, Double> outScale = new HashMap<>();
-    outScale.put(0, 2.0);
-
-    return new ProblemSpecificationImpl(2.0, 5, inpScale, outScale);
-  }
 
   static int cntr = 0;
 
   @Override
   public double evaluate(UnifiedGpIndi creature) {
-    PetriConversationResult rez = tp.toNet(creature.getRoot());
+    int size = creature.getSizes().size();
+    double sizeMulitlier = super.sizeMulti(size);
+    if (sizeMulitlier == 0.0) {
+      return 0.0;
+    }
 
+    PetriConversationResult rez = tp.toNet(creature.getRoot());
     if (rez.outNrToOutTr.containsKey(0)) {
       FirtsOrderSystem ll = new FirtsOrderSystem(0.67, 0.35, 0.87, 0.22);
       ReferenceProvider ref = new ReferenceProvider();
@@ -75,8 +70,8 @@ public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
       FiredTranitionRecorder<UnifiedToken> tk = new FiredTranitionRecorder<>();
       if (useRecorder) {
         recorder = new FullRecorder<>();
-        MultiRecorder<UnifiedToken> multi = new MultiRecorder<>(Arrays.asList(recorder, tk));
-        exec.setRecorder(multi);
+        MultiRecorder<UnifiedToken> multiRecorder = new MultiRecorder<>(Arrays.asList(recorder, tk));
+        exec.setRecorder(multiRecorder);
       } else {
         exec.setRecorder(tk);
       }
@@ -96,23 +91,27 @@ public class FirstOrderFitnes implements ICreatureFitnes<UnifiedGpIndi> {
 
       updateCreatureWithSimplification(creature, rez, tk);
       Result result = ref.calcResult(ll.getEvolution());
+      double fireMulitplier = super.fireCountMulti(tk, ref.getRefSize());
 
 
-      return 100.0 / (1.0 + 0.5 * result.error + 0.4 * result.changeSum + 0.1 * result.steadyStateError);
+      double fitnes = 100.0 / (1.0 + 0.5 * result.error + 0.4 * result.changeSum + 0.1 * result.steadyStateError);
+      return fireMulitplier * fitnes * sizeMulitlier;
     }
     return 0;
   }
 
-  private void updateCreatureWithSimplification(UnifiedGpIndi creature, PetriConversationResult rez,
-      FiredTranitionRecorder<UnifiedToken> tk) {
-    IInnerNode<NodeType> newRoot = simplifier.createSimplifiedTree(creature.getRoot(),
-        tk.getFiredTransition(), rez.nodeTransitionMapping.get());
-
-    creature.setRoot(newRoot);
-  }
 
   public FullRecorder<UnifiedToken> getRecorder() {
     return recorder;
   }
 
+  public static ProblemSpecificationImpl createProblemSpecification() {
+    Map<Integer, Double> inpScale = new HashMap<>();
+    inpScale.put(0, 2.0);
+    inpScale.put(1, 2.0);
+    Map<Integer, Double> outScale = new HashMap<>();
+    outScale.put(0, 2.0);
+
+    return new ProblemSpecificationImpl(2.0, 5, inpScale, outScale);
+  }
 }
