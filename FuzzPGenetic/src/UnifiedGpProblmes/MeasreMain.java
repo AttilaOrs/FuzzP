@@ -138,7 +138,7 @@ public class MeasreMain {
       IterationLogger logger = algo.getLogger();
       PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree"), name + "bloat_tree.svg");
       PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("time"), name + "bloat_time.svg");
-      PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("fit"), name + "fitnes.svg");
+      PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("Fit"), name + "fitnes.svg");
       PlotUtils.writeToFile(name + "bloat_tree.txt", logger.getLogsForPlottingContatinigStrings("tree").toString());
       PlotUtils.writeToFile(name + "bloat_time.txt", logger.getLogsForPlottingContatinigStrings("time").toString());
       PlotUtils.writeToFile(name + "fitnes.txt", logger.getLogsForPlottingContatinigStrings("fit").toString());

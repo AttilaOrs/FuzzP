@@ -53,7 +53,7 @@ public class FirstOrderFitnes extends AbstactFitness {
       return 0.0;
     }
 
-    PetriConversationResult rez = tp.toNet(creature.getRoot());
+    PetriConversationResult rez = super.convert(creature);
     if (rez.outNrToOutTr.containsKey(0)) {
       FirtsOrderSystem ll = new FirtsOrderSystem(0.67, 0.35, 0.87, 0.22);
       ReferenceProvider ref = new ReferenceProvider();
