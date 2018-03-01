@@ -5,6 +5,7 @@ import UnifiedGp.Tree.IInnerNode;
 import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.DynamicallySimplifiedPetriNetBuilder;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
+import UnifiedGp.Tree.Visitors.RuleOptimizationData;
 import UnifiedGp.Tree.Visitors.StaticSimplifierPetriBuilder;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
@@ -33,6 +34,14 @@ public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
     dynamicSimplifier = new DynamicallySimplifiedPetriNetBuilder();
     staticSimplifier = new StaticSimplifierPetriBuilder();
     this.ps = ps;
+  }
+
+  public void setRecordForOptimize(boolean ws) {
+    tp.setRecordTransitionToOptimize(ws);
+  }
+
+  public RuleOptimizationData getOptimizationData() {
+    return tp.getDataForTransitionOptimization();
   }
 
   public PetriConversationResult getLastRez() {

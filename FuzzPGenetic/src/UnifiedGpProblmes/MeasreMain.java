@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import com.google.gson.Gson;
+
 import AlgoImpl.IterationLogger;
 import AlgoImpl.MultiobjectiveMulioperatorGA;
 import AlgoImpl.SimpleGA;
@@ -20,6 +22,7 @@ import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifromCrossOver;
 import UnifiedGp.Tree.Nodes.NodeType;
+import UnifiedGp.Tree.Visitors.RuleOptimizationData;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
 import UnifiedGpProblmes.FirstOrderSystem.FirstOrderFitnes;
 import commonUtil.PlotUtils;
@@ -156,7 +159,9 @@ public class MeasreMain {
 
   private static double finalizeFirstOrder(UnifiedGpIndi rez, String path, long m) {
     AbstactFitness mm = new FirstOrderFitnes(true);
+    mm.setRecordForOptimize(true);
     double rr = mm.evaluate(rez);
+
     PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<>();
     String l = saver.makeString(mm.getRez().net);
     PlotUtils.writeToFile(path + "_Petri.json", l);
@@ -165,7 +170,13 @@ public class MeasreMain {
     String finalRez = rr + "\n";
     finalRez += TimeUnit.MILLISECONDS.toMinutes(m);
     finalRez += m;
+    finalRez += rez.getRoot().toString();
     PlotUtils.writeToFile(path + "_rez.txt", finalRez);
+
+    RuleOptimizationData data = mm.getOptimizationData();
+    Gson gg = new Gson();
+    String dataJson = gg.toJson(data);
+    PlotUtils.writeToFile(path + "_OptData.json", dataJson);
     return rr;
 
   }

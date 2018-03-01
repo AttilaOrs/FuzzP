@@ -12,11 +12,15 @@ import main.ScenarioSaverLoader;
 
 public class ConvertNetToScenarioMain {
 
-  public static final String fromPath = "/home/ors/Desktop/bprez/newEra/piRez_n32.json";
+  public static final int INP0 = 225;
+  public static final int INP1 = 229;
+  public static final int OUT0 = 219;
+
+  public static final String fromPath = "/home/ors/Desktop/bprez/2/FirstOdrerClassic_47_i100_p2000__Petri.json";
   public static final String toPath = "fi_test.json";
 
   public static void main(String[] args) {
-    PiSimulator sim = new PiSimulator(26, 35, 36, true);
+    PiSimulator sim = new PiSimulator(OUT0, INP0, INP1, true);
     PetriNetJsonSaver<UnifiedPetriNet> loader = new PetriNetJsonSaver<UnifiedPetriNet>();
     UnifiedPetriNet net = loader.load(fromPath, UnifiedPetriNet.class);
 
@@ -30,11 +34,11 @@ public class ConvertNetToScenarioMain {
     ScenarioSaverLoader<UnifiedPetriNet, UnifiedToken> saver = new ScenarioSaverLoader<>(UnifiedPetriNet.class);
 
     FullRecorder<UnifiedToken> recorder = sim.getRecorder();
-    String str = recorder.evolutionOfPlaceDatFormatOnceInTick(35, t -> ((UnifiedToken) t).getValue());
+    String str = recorder.evolutionOfPlaceDatFormatOnceInTick(INP0, t -> ((UnifiedToken) t).getValue());
     PlotUtils.writeToFile("inp1.dat", str);
-    str = recorder.evolutionOfPlaceDatFormatOnceInTick(36, t -> ((UnifiedToken) t).getValue());
+    str = recorder.evolutionOfPlaceDatFormatOnceInTick(INP1, t -> ((UnifiedToken) t).getValue());
     PlotUtils.writeToFile("inp2.dat", str);
-    str = recorder.evolutionOfPlaceDatFormatOnceInTick(7, t -> ((UnifiedToken) t).getValue());
+    str = recorder.evolutionOfPlaceDatFormatOnceInTick(OUT0, t -> ((UnifiedToken) t).getValue());
     PlotUtils.writeToFile("out.dat", str);
 
     saver.setFullRec(recorder);
