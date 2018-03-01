@@ -12,11 +12,11 @@ import main.ScenarioSaverLoader;
 
 public class ConvertNetToScenarioMain {
 
-  public static final int INP0 = 225;
-  public static final int INP1 = 229;
-  public static final int OUT0 = 219;
+  public static final int INP0 = 162;
+  public static final int INP1 = 166;
+  public static final int OUT0 = 154;
 
-  public static final String fromPath = "/home/ors/Desktop/bprez/2/FirstOdrerClassic_47_i100_p2000__Petri.json";
+  public static final String fromPath = "/home/ors/Desktop/bprez/3/FirstOdrerClassic_5_i100_p2000__Petri.json";
   public static final String toPath = "fi_test.json";
 
   public static void main(String[] args) {

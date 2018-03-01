@@ -166,6 +166,7 @@ public class FullRecorder<TokenType extends FullRecordable<TokenType>>
       OptionalDouble avg = eventsInATick.stream()
           .filter(i -> (i instanceof AbstarctTokenMovment) && ((AbstarctTokenMovment) i).place == placeID)
           .map(i -> ((AbstarctTokenMovment) i).token)
+          .filter(t -> !t.isPhi())
           .mapToDouble(conv)
           .average();
       

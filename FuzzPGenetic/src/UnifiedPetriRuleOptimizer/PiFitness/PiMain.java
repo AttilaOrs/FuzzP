@@ -34,6 +34,12 @@ import structure.operators.ICreatureMutator;
 
 public class PiMain {
 
+  private static final int OUT0_TR_NR = 154;
+  private static final int INP0_PL_NR = 162;
+  private static final int INP1_PL_NR = 166;
+  private static final String PI_NET_OPTIMIZATION_DATA = "FirstOdrerClassic_5_i100_p2000__OptData.json";
+  private static final String PI_NET_JSON = "fi_test.json";
+
   public static void main(String[] args) {
     initMasterDecoder();
     for (int tryning = 0; tryning < 100; tryning++) {
@@ -84,13 +90,13 @@ public class PiMain {
   private static void initMasterDecoder() {
 
       ScenarioSaverLoader<UnifiedPetriNet, UnifiedToken> loader = new ScenarioSaverLoader<>(UnifiedPetriNet.class);
-      loader.load(new File("pi_secenario.json"), UnifiedToken::buildFromString);
+    loader.load(new File(PI_NET_JSON), UnifiedToken::buildFromString);
       FullRecorder<UnifiedToken> rec = loader.getFullRec();
       UnifiedPetriNet net = loader.getPetriNet();
 
       String all = "";
 
-      try (BufferedReader br = new BufferedReader(new FileReader("pi_scenario_data.json"))) {
+      try (BufferedReader br = new BufferedReader(new FileReader(PI_NET_OPTIMIZATION_DATA))) {
         StringBuilder sb = new StringBuilder();
         all = br.lines().collect(joining());
       } catch (Exception e) {
@@ -111,7 +117,7 @@ public class PiMain {
       initMasterDecoder();
     }
 
-    return new FirstOrderFitnes(masterDecoder.myClone(), 26, 35, 36);
+    return new FirstOrderFitnes(masterDecoder.myClone(), OUT0_TR_NR, INP0_PL_NR, INP1_PL_NR);
   }
 
 }
