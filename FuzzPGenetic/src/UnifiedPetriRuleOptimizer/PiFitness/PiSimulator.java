@@ -29,7 +29,9 @@ public class PiSimulator {
   }
 
   public Result simulate(UnifiedPetriNet net) {
-    FirtsOrderSystem sys = new FirtsOrderSystem(0.67, 0.35, 0.87, 0.22);
+
+    FirtsOrderSystem sys = new FirtsOrderSystem(0.9, 0.67, 0.2, 0.1);
+    // FirtsOrderSystem sys = new FirtsOrderSystem(0.67, 0.35, 0.87, 0.22);
     ReferenceProvider prov = new ReferenceProvider(3);
 
     net.addActionForOuputTransition(outTr, d -> {

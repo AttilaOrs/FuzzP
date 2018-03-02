@@ -1,7 +1,9 @@
 package UnifiedPetriRuleOptimizer.PiFitness;
 
 import java.io.File;
+import java.util.stream.Collectors;
 
+import UnifiedGpProblmes.FirstOrderSystem.FirtsOrderSystem;
 import UnifiedGpProblmes.FirstOrderSystem.ReferenceProvider.Result;
 import commonUtil.PlotUtils;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
@@ -16,10 +18,27 @@ public class ConvertNetToScenarioMain {
   public static final int INP1 = 166;
   public static final int OUT0 = 154;
 
-  public static final String fromPath = "/home/ors/Desktop/bprez/3/FirstOdrerClassic_5_i100_p2000__Petri.json";
-  public static final String toPath = "fi_test.json";
+  public static final String fromPath = "/home/ors/Desktop/bprez/newEraPiGpNet/piRez_n50.json";
+  public static final String toPath = "fi_test_new.json";
 
   public static void main(String[] args) {
+    convert();
+    // simulatePi();
+  }
+
+  private static void simulatePi() {
+    // FirtsOrderSystem sys = new FirtsOrderSystem(0.9, 0.67, 0.2, 0.1);
+    FirtsOrderSystem sys = new FirtsOrderSystem(0.67, 0.35, 0.87, 0.22);
+    sys.setCommand(1.0);
+    for (int i = 0; i <= 60; i++) {
+      sys.setCommand(1.0);
+      sys.runTick();
+    }
+    String w = sys.getEvolution().stream().map(d -> String.valueOf(d)).collect(Collectors.joining("\n"));
+    PlotUtils.writeToFile("pi_evol1.dat", w);
+  }
+
+  private static void convert() {
     PiSimulator sim = new PiSimulator(OUT0, INP0, INP1, true);
     PetriNetJsonSaver<UnifiedPetriNet> loader = new PetriNetJsonSaver<UnifiedPetriNet>();
     UnifiedPetriNet net = loader.load(fromPath, UnifiedPetriNet.class);
@@ -35,11 +54,11 @@ public class ConvertNetToScenarioMain {
 
     FullRecorder<UnifiedToken> recorder = sim.getRecorder();
     String str = recorder.evolutionOfPlaceDatFormatOnceInTick(INP0, t -> ((UnifiedToken) t).getValue());
-    PlotUtils.writeToFile("inp1.dat", str);
+    PlotUtils.writeToFile("inp1_new.dat", str);
     str = recorder.evolutionOfPlaceDatFormatOnceInTick(INP1, t -> ((UnifiedToken) t).getValue());
-    PlotUtils.writeToFile("inp2.dat", str);
+    PlotUtils.writeToFile("inp2_new.dat", str);
     str = recorder.evolutionOfPlaceDatFormatOnceInTick(OUT0, t -> ((UnifiedToken) t).getValue());
-    PlotUtils.writeToFile("out.dat", str);
+    PlotUtils.writeToFile("out_new.dat", str);
 
     saver.setFullRec(recorder);
     saver.setPetriNet(net);
