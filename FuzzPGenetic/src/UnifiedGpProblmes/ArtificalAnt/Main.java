@@ -10,6 +10,7 @@ import AlgoImpl.MultiobjectiveMulioperatorGA;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
 import AlgoImpl.pools.CreatureParallelPool;
+import UnifiedGp.AbstactFitness;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
@@ -70,11 +71,12 @@ public class Main {
     fitnesses.add(() -> new AntFitnes());
     ISelector otherSelector = new LinearRankSelection();
     ISelector survSelector = new LinearRankSelection();
-    AntFitnes.HARD_LIMIT = true;
-    AntFitnes.APPLY_SIZE_LIMIT = false;
-    AntFitnes.SIZE_LIMIT = 400;
-    AntFitnes.SIZE_LIMIT_START = 400;
-    AntFitnes.FIRED_TR_LIMIT = true;
+    SimpleGA.REMOVE_ELITE_FROM_POP = false;
+    AbstactFitness.APPLY_SIZE_LIMIT = true;
+    AbstactFitness.FIRED_TR_LIMIT = true;
+    AbstactFitness.HARD_LIMIT = false;
+    AbstactFitness.SIZE_LIMIT_START = 250;
+    AbstactFitness.SIZE_LIMIT = 600;
 
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
     
@@ -87,7 +89,7 @@ public class Main {
     MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
         survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
     SimpleGA.iteration = 100;
-    SimpleGA.population = 2000;
+    SimpleGA.population = 5000;
     algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();
     algo.theAlgo();
