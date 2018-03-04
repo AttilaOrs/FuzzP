@@ -3,12 +3,13 @@ package UnifiedGpProblmes.ArtificalAnt;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import com.google.gson.Gson;
+
 import AlgoImpl.IterationLogger;
 import AlgoImpl.MultiobjectiveMulioperatorGA;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
 import AlgoImpl.pools.CreatureParallelPool;
-import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
@@ -16,8 +17,11 @@ import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifromCrossOver;
 import UnifiedGp.Tree.Nodes.NodeType;
+import UnifiedGp.Tree.Visitors.RuleOptimizationData;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
 import commonUtil.PlotUtils;
+import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
+import core.UnifiedPetriLogic.UnifiedPetriNet;
 import structure.ICreatureFitnes;
 import structure.IOperatorFactory;
 import structure.ISelector;
@@ -75,32 +79,27 @@ public class Main {
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
     
     double[] crossWeigth = new double[]{0.5, 0.5};
-    if (runNr % 2 == 0) {
-      crossWeigth = new double[] { 1.0, 0.0 };
-    }
-    if (runNr % 2 == 1) {
-      crossWeigth = new double[] { 0.25, 0.75 };
-    }
     
 
-    PoolWrapperForTheorteticalDistance<UnifiedGpIndi> pool = new PoolWrapperForTheorteticalDistance<>(
-        new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders, fitnesses), otherSelector, 1);
-    otherSelector = (runNr % 4 >= 2) ? pool : otherSelector;
+    CreatureParallelPool<UnifiedGpIndi> pool = new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders,
+        fitnesses);
 
     MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
         survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
     SimpleGA.iteration = 100;
-    SimpleGA.population = 100;
+    SimpleGA.population = 2000;
     algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();
     algo.theAlgo();
     long stop = System.currentTimeMillis();
 
 
+    long startTime = System.currentTimeMillis();
     Integer i = algo.getMaxId();
+    long stopTime = System.currentTimeMillis();
 
     UnifiedGpIndi rez = pool.get(i);
-    int rezFitnes = finalize(rez, runNr);
+    int rezFitnes = finalize(rez, runNr, path, stopTime - startTime);
     String config = "population " + SimpleGA.population + "\n";
     config += "iteration " + SimpleGA.iteration + "\n";
     config += "size limit " + AntFitnes.SIZE_LIMIT + "\n";
@@ -135,22 +134,33 @@ public class Main {
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("Fit"), path + FITNESS);
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree size"), path + SIZE);
     PlotUtils.hist(algo.getSizeHistLog(), path + SIZE_HIST);
-    IterationLogger poolLogger = pool.getLogger();
-    PlotUtils.plot(poolLogger.getLogsForPlottingContatinigStrings("dist"), path + DIVERSITY);
-    PlotUtils.plot(poolLogger.getLogsForPlottingContatinigStrings("cat"), path + SIMILARTY_CAT);
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings(IterationLogger.MEM_USE), path + MEM_USE);
-    PlotUtils.plot(logger.getLogsForPlottingContatinigStrings(IterationLogger.GC_SEC), path + GC_FILE);
 
   }
 
-  private static int finalize(UnifiedGpIndi rez, int runNr) {
+  private static int finalize(UnifiedGpIndi rez, int runNr, String path, long time) {
     AntFitnes f = new AntFitnes();
+    f.setRecordForOptimize(true);
     f.tableSup = () -> new MutableStateLogged(GridReader.copyGrid());
-    f.evaluate(rez);
+    double rr = f.evaluate(rez);
     System.out.println(f.table.getFoodEaten() + " out of " + GridReader.getNumberOfFoodCells());
     System.out.println(f.table.getMovesTaken());
+
     // ((MutableStateLogged) f.table).writeToFileWithXs(new File("antMoove" +
     // runNr + ".txt"));
+    PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<>();
+    String l = saver.makeString(f.getRez().net);
+    PlotUtils.writeToFile(path + "_Petri.json", l);
+    String ss = f.getRez().inpNrToInpPlace.toString() + "\n" + f.getRez().outNrToOutTr.toString();
+    PlotUtils.writeToFile(path + "_Mapping.txt", ss);
+    String finalRez = rr + "\n";
+    finalRez += TimeUnit.MILLISECONDS.toMinutes(time);
+    finalRez += time;
+    finalRez += rez.getRoot().toString();
+    PlotUtils.writeToFile(path + "_rez.txt", finalRez);
+    RuleOptimizationData data = f.getOptimizationData();
+    Gson gg = new Gson();
+    String dataJson = gg.toJson(data);
+    PlotUtils.writeToFile(path + "_OptData.json", dataJson);
     return f.table.getFoodEaten();
 
   }
