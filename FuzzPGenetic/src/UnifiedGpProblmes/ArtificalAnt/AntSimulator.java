@@ -74,7 +74,7 @@ public class AntSimulator {
       });
     }
     if (outRight != -1) {
-      net.addActionForOuputTransition(outLeft, t -> {
+      net.addActionForOuputTransition(outRight, t -> {
         if (move > 2) {
           move = 2;
         }
