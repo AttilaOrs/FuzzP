@@ -158,7 +158,7 @@ public class MeasreMain {
   }
 
   private static double finalizeFirstOrder(UnifiedGpIndi rez, String path, long m) {
-    AbstactFitness mm = new FirstOrderFitnes(true);
+    FirstOrderFitnes mm = new FirstOrderFitnes(true);
     mm.setRecordForOptimize(true);
     double rr = mm.evaluate(rez);
 

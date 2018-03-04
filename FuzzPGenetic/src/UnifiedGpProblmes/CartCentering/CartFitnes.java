@@ -5,8 +5,9 @@ import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.common.recoder.FiredTranitionRecorder;
+import structure.ICreatureFitnes;
 
-public class CartFitnes extends AbstactFitness {
+public class CartFitnes extends AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
 
   private static final int SIM_LENTH = 50;
   private static final double INIT_POS = 10;

@@ -18,8 +18,9 @@ import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
 import core.common.recoder.FiredTranitionRecorder;
 import core.common.tokencache.TokenCacheDisabling;
+import structure.ICreatureFitnes;
 
-public class MazeFitnes extends AbstactFitness {
+public class MazeFitnes extends AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
 
   private static final double dist = 0.04;
   private Court maze;

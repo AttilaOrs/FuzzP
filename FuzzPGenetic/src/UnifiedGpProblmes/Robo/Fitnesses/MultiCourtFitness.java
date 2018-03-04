@@ -19,8 +19,9 @@ import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
 import core.common.recoder.FiredTranitionRecorder;
 import core.common.tokencache.TokenCacheDisabling;
+import structure.ICreatureFitnes;
 
-public class MultiCourtFitness extends AbstactFitness {
+public class MultiCourtFitness extends AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
 
   private static final List<Integer> simpleCheckpoints = Arrays.asList(0, 5, 10);
   private static final List<Integer> bigCheckpoint = Arrays.asList(0, 5, 10, 15, 20, 30, 40, 55, 70, 90, 110, 130);

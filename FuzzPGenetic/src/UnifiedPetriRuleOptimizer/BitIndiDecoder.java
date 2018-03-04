@@ -1,12 +1,20 @@
 package UnifiedPetriRuleOptimizer;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import com.google.gson.Gson;
+
+import UnifiedGp.Tree.Visitors.RuleOptimizationData;
+import UnifiedGp.Tree.Visitors.RuleOptimizationData.OptType;
 import core.FuzzyPetriLogic.FuzzyValue;
+import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.IUnifiedTable;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedPetriNetCloner;
@@ -85,4 +93,29 @@ public class BitIndiDecoder {
     }
 
   }
+
+  public static BitIndiDecoder initDecoderBasedOnFiles(String piNetJsonFilePath, String optimizatanJsonFilePath,
+      RuleOptimizationData.OptType... optTypes) {
+
+    PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<>();
+    UnifiedPetriNet net = saver.load(piNetJsonFilePath, UnifiedPetriNet.class);
+
+    String all = "";
+
+    try (BufferedReader br = new BufferedReader(new FileReader(optimizatanJsonFilePath))) {
+      StringBuilder sb = new StringBuilder();
+      all = br.lines().collect(Collectors.joining());
+    } catch (Exception e) {
+      System.err.println(e);
+    }
+    Gson gg = new Gson();
+    RuleOptimizationData f = gg.fromJson(all, RuleOptimizationData.class);
+    ArrayList<Integer> trs = new ArrayList<>();
+    for (OptType v : optTypes) {
+      trs.addAll(f.getType(v));
+    }
+    return new BitIndiDecoder(net, trs);
+
+  }
+
 }

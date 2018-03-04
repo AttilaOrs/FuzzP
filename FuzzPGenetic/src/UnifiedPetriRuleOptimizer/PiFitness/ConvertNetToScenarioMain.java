@@ -18,8 +18,9 @@ public class ConvertNetToScenarioMain {
   public static final int INP1 = 166;
   public static final int OUT0 = 154;
 
-  public static final String fromPath = "/home/ors/Desktop/bprez/newEraPiGpNet/piRez_n50.json";
-  public static final String toPath = "fi_test_new.json";
+  public static final String fromPath = "/home/ors/Desktop/bprez/different_system/piRez_n22.json";
+
+  public static final String toPath = "fi_test_diff_opt.json";
 
   public static void main(String[] args) {
     convert();
@@ -54,11 +55,11 @@ public class ConvertNetToScenarioMain {
 
     FullRecorder<UnifiedToken> recorder = sim.getRecorder();
     String str = recorder.evolutionOfPlaceDatFormatOnceInTick(INP0, t -> ((UnifiedToken) t).getValue());
-    PlotUtils.writeToFile("inp1_new.dat", str);
+    PlotUtils.writeToFile("inp1_diff_opt.dat", str);
     str = recorder.evolutionOfPlaceDatFormatOnceInTick(INP1, t -> ((UnifiedToken) t).getValue());
-    PlotUtils.writeToFile("inp2_new.dat", str);
+    PlotUtils.writeToFile("inp2_diff_opt.dat", str);
     str = recorder.evolutionOfPlaceDatFormatOnceInTick(OUT0, t -> ((UnifiedToken) t).getValue());
-    PlotUtils.writeToFile("out_new.dat", str);
+    PlotUtils.writeToFile("out_diff_opt.dat", str);
 
     saver.setFullRec(recorder);
     saver.setPetriNet(net);

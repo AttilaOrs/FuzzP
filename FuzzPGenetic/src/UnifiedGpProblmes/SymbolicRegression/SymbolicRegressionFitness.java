@@ -14,8 +14,9 @@ import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
 import core.common.recoder.FiredTranitionRecorder;
 import core.common.tokencache.TokenCacheDisabling;
+import structure.ICreatureFitnes;
 
-public class SymbolicRegressionFitness extends AbstactFitness {
+public class SymbolicRegressionFitness extends AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
 
   private Double lastRez;
 

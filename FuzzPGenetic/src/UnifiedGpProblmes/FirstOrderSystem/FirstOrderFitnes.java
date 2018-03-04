@@ -19,8 +19,9 @@ import core.common.recoder.FiredTranitionRecorder;
 import core.common.recoder.FullRecorder;
 import core.common.recoder.MultiRecorder;
 import core.common.tokencache.TokenCacheDisabling;
+import structure.ICreatureFitnes;
 
-public class FirstOrderFitnes extends AbstactFitness {
+public class FirstOrderFitnes extends AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
 
 
   private ToPetriNet tp;

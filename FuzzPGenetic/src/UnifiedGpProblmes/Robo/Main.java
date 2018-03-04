@@ -147,14 +147,15 @@ public class Main {
   }
 
   private static double finalize(UnifiedGpIndi rez, String path) {
-    AbstactFitness mm = generateFitnes();
+    ICreatureFitnes<UnifiedGpIndi> mm = generateFitnes();
     double rr = mm.evaluate(rez);
     // ((MutableStateLogged) f.table).writeToFileWithXs(new File("antMoove" +
     // runNr + ".txt"));
     PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<>();
-    String l = saver.makeString(mm.getRez().net);
+    String l = saver.makeString(((AbstactFitness) mm).getRez().net);
     PlotUtils.writeToFile(path + "Petri.json", l);
-    String ss = mm.getRez().inpNrToInpPlace.toString() + "\n" + mm.getRez().outNrToOutTr.toString();
+    String ss = ((AbstactFitness) mm).getRez().inpNrToInpPlace.toString() + "\n"
+        + ((AbstactFitness) mm).getRez().outNrToOutTr.toString();
     PlotUtils.writeToFile(path + "Mapping.txt", ss);
     return rr;
 
@@ -184,7 +185,7 @@ public class Main {
 
   static Segments p = LineReader.getProblem();
 
-  public static AbstactFitness generateFitnes() {
+  public static ICreatureFitnes<UnifiedGpIndi> generateFitnes() {
     switch (current) {
     case twoSensor:
       return new TwoSensorsLineFallowerFitnes(p.myClone());

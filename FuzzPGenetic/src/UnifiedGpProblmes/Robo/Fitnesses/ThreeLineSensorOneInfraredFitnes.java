@@ -19,8 +19,9 @@ import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
 import core.common.recoder.FiredTranitionRecorder;
 import core.common.tokencache.TokenCacheDisabling;
+import structure.ICreatureFitnes;
 
-public class ThreeLineSensorOneInfraredFitnes extends AbstactFitness {
+public class ThreeLineSensorOneInfraredFitnes extends AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
 
   private Segments lines;
   private Segments walls;

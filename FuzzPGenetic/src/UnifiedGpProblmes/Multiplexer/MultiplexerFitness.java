@@ -16,8 +16,9 @@ import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
 import core.common.recoder.FiredTranitionRecorder;
+import structure.ICreatureFitnes;
 
-public class MultiplexerFitness extends AbstactFitness {
+public class MultiplexerFitness extends AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
 
   private boolean full;
 

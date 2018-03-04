@@ -52,7 +52,9 @@ public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenT
   }
 
   public void setRecorder(IGeneralPetriBehavoiurRecorder<TTokenType> rec) {
-    this.recorder = rec;
+    if (rec != null) {
+      this.recorder = rec;
+    }
   }
 
   protected abstract void checkPetriNet();

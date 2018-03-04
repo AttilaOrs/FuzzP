@@ -10,9 +10,8 @@ import UnifiedGp.Tree.Visitors.StaticSimplifierPetriBuilder;
 import UnifiedGp.Tree.Visitors.ToPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.common.recoder.FiredTranitionRecorder;
-import structure.ICreatureFitnes;
 
-public abstract class AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
+public abstract class AbstactFitness {
 
   public static boolean RESET_LOOP = true;
 
