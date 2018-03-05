@@ -88,8 +88,8 @@ public class Main {
 
     MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
         survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
-    SimpleGA.iteration = 100;
-    SimpleGA.population = 5000;
+    SimpleGA.iteration = 10;
+    SimpleGA.population = 100;
     algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();
     algo.theAlgo();
@@ -101,7 +101,7 @@ public class Main {
     long stopTime = System.currentTimeMillis();
 
     UnifiedGpIndi rez = pool.get(i);
-    int rezFitnes = finalize(rez, runNr, path, stopTime - startTime);
+    double rezFitnes = finalize(rez, runNr, path, stopTime - startTime);
     String config = "population " + SimpleGA.population + "\n";
     config += "iteration " + SimpleGA.iteration + "\n";
     config += "size limit " + AntFitnes.SIZE_LIMIT + "\n";
@@ -139,13 +139,14 @@ public class Main {
 
   }
 
-  private static int finalize(UnifiedGpIndi rez, int runNr, String path, long time) {
+  private static double finalize(UnifiedGpIndi rez, int runNr, String path, long time) {
     AntFitnes f = new AntFitnes();
     f.setRecordForOptimize(true);
     f.tableSup = () -> new MutableStateLogged(GridReader.copyGrid());
     double rr = f.evaluate(rez);
-    System.out.println(f.table.getFoodEaten() + " out of " + GridReader.getNumberOfFoodCells());
-    System.out.println(f.table.getMovesTaken());
+    // System.out.println(f.table.getFoodEaten() + " out of " +
+    // GridReader.getNumberOfFoodCells());
+    // System.out.println(f.table.getMovesTaken());
 
     // ((MutableStateLogged) f.table).writeToFileWithXs(new File("antMoove" +
     // runNr + ".txt"));
@@ -163,7 +164,7 @@ public class Main {
     Gson gg = new Gson();
     String dataJson = gg.toJson(data);
     PlotUtils.writeToFile(path + "_OptData.json", dataJson);
-    return f.table.getFoodEaten();
+    return rr;
 
   }
 
