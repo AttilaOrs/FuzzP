@@ -45,6 +45,10 @@ public class Simulator {
     return sum;
   }
 
+  public int getLength() {
+    return points.length;
+  }
+
   public Map<String, Map<Double, Double>> sim(Function<Double, Double> comp) {
     Map<Double, Double> orig = new HashMap<>();
     Map<Double, Double> sim = new HashMap<>();

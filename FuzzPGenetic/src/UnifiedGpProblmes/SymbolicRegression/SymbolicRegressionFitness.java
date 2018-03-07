@@ -26,6 +26,11 @@ public class SymbolicRegressionFitness extends AbstactFitness implements ICreatu
 
   @Override
   public double evaluate(UnifiedGpIndi creature) {
+    int size = creature.getSizes().size();
+    double multi = sizeMulti(size);
+    if (multi == 0.0) {
+      return 0.0;
+    }
     PetriConversationResult rez = super.convert(creature);
     FiredTranitionRecorder<UnifiedToken> rec = new FiredTranitionRecorder<>();
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
@@ -39,7 +44,9 @@ public class SymbolicRegressionFitness extends AbstactFitness implements ICreatu
       Simulator sim = new Simulator();
       Double sum = sim.compare(dodo(rez, exec, inp));
 
-      return 1.0 / (1.0 + sum);
+      double multi2 = fireCountMulti(rec, sim.getLength());
+
+      return (1.0 / (1.0 + sum)) * multi * multi2;
     }
     return 0;
   }
