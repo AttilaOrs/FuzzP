@@ -49,6 +49,7 @@ public class PlotUtils {
   }
 
   public static void plot(Map<String, List<Double>> what, String fileName) {
+    createDirs(fileName);
 
     XYPlot plot = new XYPlot();
     int cntr = 0;
@@ -118,6 +119,7 @@ public class PlotUtils {
 
   public static void plot2(Map<String, Map<Double, Double>> what,
       String fileName) {
+    createDirs(fileName);
     XYPlot plot = new XYPlot();
     int cntr = 0;
     maxKey = 0.0;
@@ -145,6 +147,7 @@ public class PlotUtils {
 
   public static void hist(Map<String, Map<Integer, Integer>> what,
       String fileName) {
+    createDirs(fileName);
 
     XYPlot plot = new XYPlot();
     int cntr = 0;
@@ -175,16 +178,21 @@ public class PlotUtils {
 
   public static void writeToFile(String fileName, String content) {
     try {
-      File file = new File(fileName);
-      if (file.getParentFile() != null) {
-        file.getParentFile().mkdirs();
-      }
+      File file = createDirs(fileName);
       BufferedWriter output = new BufferedWriter(new FileWriter(file));
       output.write(content);
       output.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  private static File createDirs(String fileName) {
+    File file = new File(fileName);
+    if (file.getParentFile() != null) {
+      file.getParentFile().mkdirs();
+    }
+    return file;
   }
 
   public static void writeToDatPoints(List<Point> visitedPoints, String fileName) {
