@@ -49,8 +49,8 @@ public class Main {
       ICreaturePool<BitIndi> pool = new CreaturePoolWithStreams<>(gens, mutators, breeders, fitnesses);
 
       SimpleGA<BitIndi> algo = new SimpleGA<>(pool, new LinearRankSelection());
-      SimpleGA.iteration = 10;
-      SimpleGA.population = 100;
+      SimpleGA.iteration = 100;
+      SimpleGA.population = 3000;
       long start = System.currentTimeMillis();
       algo.theAlgo();
       long stop = System.currentTimeMillis();
