@@ -6,7 +6,7 @@ apply plugin: 'eclipse'
 
 version=getVersionName()
 sourceSets.main.java.srcDirs = ['src' ]
-mainClassName = "UnifiedGpProblmes.SymbolicRegression.Main"
+mainClassName = "UnifiedPetriRuleOptimizer.SymbolocRegression.Main"
 project.ext.set("allJvmArgs", ["-Xms=1024m", "-Xmx=3000m"])
 
 sourceSets {
