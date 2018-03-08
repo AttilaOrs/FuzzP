@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 
-public class Simulator {
+public class FuntionSimulator {
 
   private static double[] rands = new double[] { 0.09855312166810393, 0.9950588555695256, 0.6073980593871112,
       -0.9837926970414893, -0.2382793156804328, 0.38336515499510415, -0.4063627442623805, -0.5790158885833625,
@@ -27,7 +27,7 @@ public class Simulator {
   private Function<Double, Double> func;
   private double[] points;
 
-  public Simulator() {
+  public FuntionSimulator() {
     func = defaultFunc;
     points = rands;
   }

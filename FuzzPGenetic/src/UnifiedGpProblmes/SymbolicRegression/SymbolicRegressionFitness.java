@@ -41,7 +41,7 @@ public class SymbolicRegressionFitness extends AbstactFitness implements ICreatu
     boolean b = rez.addActionIfPossible(0, d -> lastRez = d.getValue());
     Map<Integer, UnifiedToken> inp = new HashMap<>();
     if (rez.hasInp(0) && b) {
-      Simulator sim = new Simulator();
+      FuntionSimulator sim = new FuntionSimulator();
       Double sum = sim.compare(dodo(rez, exec, inp));
 
       double multi2 = fireCountMulti(rec, sim.getLength());
@@ -61,7 +61,7 @@ public class SymbolicRegressionFitness extends AbstactFitness implements ICreatu
     exec.setRecorder(rec);
     boolean b = rez.addActionIfPossible(0, d -> lastRez = d.getValue());
     Map<Integer, UnifiedToken> inp = new HashMap<>();
-    Simulator sim = new Simulator();
+    FuntionSimulator sim = new FuntionSimulator();
     return sim.sim(dodo(rez, exec, inp));
   }
 
