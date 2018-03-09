@@ -55,6 +55,7 @@ public class PlotUtils {
     int cntr = 0;
     double maxKey = 0.0;
     double maxValue = 0.0;
+    double minValue = Double.MAX_VALUE;
 
     for (String name : what.keySet()) {
       DataTable dataTable = new DataTable(Double.class, Double.class);
@@ -62,6 +63,7 @@ public class PlotUtils {
       for (int i = 0; i < data.size(); i++) {
         dataTable.add(((double) i), data.get(i));
         maxValue = (data.get(i) > maxValue) ? data.get(i) : maxValue;
+        minValue = (data.get(i) < minValue) ? data.get(i) : minValue;
       }
       maxKey = (data.size() > maxKey) ? data.size() : maxKey;
       DataSeries series = new DataSeries(name, dataTable, 0, 1);
@@ -76,16 +78,16 @@ public class PlotUtils {
     }
 
     plot.setLegendVisible(true);
-    // plot.setLegendLocation(Location.EAST);
+    plot.setLegendDistance(10.0);
 
-    writeOut(fileName, plot, maxKey, maxValue);
+    writeOut(fileName, plot, maxKey, maxValue, minValue);
 
   }
 
-  private static void writeOut(String fileName, XYPlot plot, double maxKey, double maxValue) {
+  private static void writeOut(String fileName, XYPlot plot, double maxKey, double maxValue, double minValue) {
     if (maxKey != 0.0) {
       plot.getAxis(XYPlot.AXIS_X).setMin(maxKey / -10.0);
-      plot.getAxis(XYPlot.AXIS_Y).setMin(maxValue / -10.0);
+      plot.getAxis(XYPlot.AXIS_Y).setMin(minValue - Math.abs((minValue / 25.0)));
       plot.getAxis(XYPlot.AXIS_X).setMax(maxKey + (maxKey / 25.0));
       plot.getAxis(XYPlot.AXIS_Y).setMax(maxValue + (maxValue / 25.0));
     } else {
@@ -116,6 +118,7 @@ public class PlotUtils {
 
   private static double maxKey = 0.0;
   private static double maxValue = 0.0;
+  private static double minValue = 0.0;
 
   public static void plot2(Map<String, Map<Double, Double>> what,
       String fileName) {
@@ -124,12 +127,14 @@ public class PlotUtils {
     int cntr = 0;
     maxKey = 0.0;
     maxValue = 0.0;
+    minValue = Double.MAX_VALUE;
     for (String title : what.keySet()) {
       DataTable dataTable = new DataTable(Double.class, Double.class);
       Map<Double, Double> curentMap = what.get(title);
       curentMap.keySet().stream().sorted().forEach(key -> {
         maxKey = (maxKey < key) ? key : maxKey;
         maxValue = (maxValue < curentMap.get(key)) ? curentMap.get(key) : maxKey;
+        minValue = (minValue > curentMap.get(key)) ? curentMap.get(key) : minValue;
         dataTable.add(key, curentMap.get(key));
       });
       DataSeries series = new DataSeries(title, dataTable, 0, 1);
@@ -141,7 +146,7 @@ public class PlotUtils {
     plot.setLegendVisible(true);
     // plot.setLegendLocation(Location.EAST);
 
-    writeOut(fileName, plot, maxKey, maxValue);
+    writeOut(fileName, plot, maxKey, maxValue, minValue);
 
   }
 
@@ -173,7 +178,7 @@ public class PlotUtils {
     plot.setLegendVisible(true);
     // plot.setLegendLocation(Location.EAST);
 
-    writeOut(fileName, plot, maxKey, maxValue);
+    writeOut(fileName, plot, maxKey, maxValue, 0.0);
   }
 
   public static void writeToFile(String fileName, String content) {
@@ -219,7 +224,7 @@ public class PlotUtils {
     cntr++;
     plot.setLegendVisible(true);
 
-    writeOut(fileName, plot, 0, 0);
+    writeOut(fileName, plot, 0, 0, 0);
   }
 
 }
