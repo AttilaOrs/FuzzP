@@ -58,7 +58,7 @@ public class RoomFitnes extends AbstactFitness implements ICreatureFitnes<Unifie
     });
 
     double multi2 = super.fireCountMulti(rec, scenario.getScenarioLength());
-    double f = 0.7 / (1.0 + simRez.error) + 0.3 / (1.0 + simRez.heatrerOn);
+    double f = 0.7 / (1.0 + simRez.error) + 0.3 / (1.0 + simRez.offLimit);
     return f * multi2 * multi;
   }
 
