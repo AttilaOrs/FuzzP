@@ -7,10 +7,12 @@ import java.util.Random;
 public class RoomScenario {
   List<Double> outsideTemperature;
   List<Boolean> windowOpen;
+  List<Double> referenceTemp;
 
-  public RoomScenario(List<Double> outsideTempearture, List<Boolean> windowOpen) {
+  public RoomScenario(List<Double> outsideTempearture, List<Boolean> windowOpen, List<Double> referenceTemp) {
     this.outsideTemperature = outsideTempearture;
     this.windowOpen = windowOpen;
+    this.referenceTemp = referenceTemp;
   }
 
   public boolean getWindowOpen(int tick) {
@@ -25,9 +27,10 @@ public class RoomScenario {
     return outsideTemperature.size();
   }
 
-  private static RoomScenario scenarioBuilder(double startingTempInHour[], double windowChance[]) {
+  private static RoomScenario scenarioBuilder(double startingTempInHour[], double windowChance[], double[] refsHourly) {
 
     List<Double> outsideTemperature = new ArrayList<>();
+    List<Double> refs = new ArrayList<>();
     List<Boolean> windowOpen = new ArrayList<>();
     Random rnd = new Random();
     for (int hour = 0; hour < startingTempInHour.length - 1; hour++) {
@@ -37,9 +40,10 @@ public class RoomScenario {
         double temp = startTemp + ((endTemp - startTemp) * minute) / 60.0 + rnd.nextDouble() * 0.1;
         outsideTemperature.add(temp);
         windowOpen.add(rnd.nextDouble() < windowChance[hour]);
+        refs.add(refsHourly[hour]);
       }
     }
-    return new RoomScenario(outsideTemperature, windowOpen);
+    return new RoomScenario(outsideTemperature, windowOpen, refs);
   }
 
 
@@ -50,24 +54,42 @@ public class RoomScenario {
     double windowChance[] = new double[] { 0.02, 0.01, 0.01, 0.01, 0.01, 0.01, 0.02, 0.02,
         0.08, 0.08, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
         0.05, 0.05, 0.02, 0.02, 0.01, 0.01, 0.01 };
-    return scenarioBuilder(startingTempInHour, windowChance);
+
+    double refsHourly[] = new double[] { 17, 17, 21, 20, 23, 21, 18, 17,
+        22, 22, 17, 22, 19, 18, 17, 21, 22,
+        21, 16, 17, 17, 17, 17, 17 };
+
+    return scenarioBuilder(startingTempInHour, windowChance, refsHourly);
   }
 
   public static RoomScenario winterMorning() {
     double startingTempInHour[] = new double[] { -19.0, -17.0, -15.0, -12.0 };
     double windowChance[] = new double[] { 0.08, 0.04, 0.01, };
-    return scenarioBuilder(startingTempInHour, windowChance);
+    double refsHourly[] = new double[] { 18, 22, 21 };
+    return scenarioBuilder(startingTempInHour, windowChance, refsHourly);
   }
 
   public static RoomScenario extremeEvening() {
     double startingTempInHour[] = new double[] { -5.0, -18.0, -22.0, -27.0 };
     double windowChance[] = new double[] { 0.06, 0.03, 0.05, };
-    return scenarioBuilder(startingTempInHour, windowChance);
+    double refsHourly[] = new double[] { 22, 22, 17 };
+    return scenarioBuilder(startingTempInHour, windowChance, refsHourly);
+  }
 
+  public static RoomScenario fitnessScenario() {
+    double startingTempInHour[] = new double[] { -19.0, -17.0, -22.0, -15.0 };
+    double windowChance[] = new double[] { 0.15, 0.01, 0.08, };
+    double refsHourly[] = new double[] { 22, 17, 21 };
+    return scenarioBuilder(startingTempInHour, windowChance, refsHourly);
   }
 
   public RoomScenario myClone() {
-    return new RoomScenario(new ArrayList<>(outsideTemperature), new ArrayList<>(windowOpen));
+    return new RoomScenario(new ArrayList<>(outsideTemperature), new ArrayList<>(windowOpen),
+        new ArrayList<>(referenceTemp));
+  }
+
+  public double getReference(int tickNr) {
+    return this.referenceTemp.get(tickNr);
   }
 
 }

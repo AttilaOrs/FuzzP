@@ -98,8 +98,8 @@ public class Main {
       MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
           survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
       SimpleGA.iteration = 100;
-      SimpleGA.population = 2000;
-      algo.setEralyStoppingCondition(d -> d >= 89.0);
+      SimpleGA.population = 3000;
+      algo.setEralyStoppingCondition(d -> d >= 1.0);
       long start = System.currentTimeMillis();
       algo.theAlgo();
       long stop = System.currentTimeMillis();
@@ -190,7 +190,7 @@ public class Main {
 
 
   private static void generateNewScenarios() {
-    RoomScenario sc = RoomScenario.winterMorning();
+    RoomScenario sc = RoomScenario.fitnessScenario();
     Gson gs = new Gson();
     String morningJson = gs.toJson(sc);
     PlotUtils.writeToFile(MORNING_SCENARIO_FILE, morningJson);

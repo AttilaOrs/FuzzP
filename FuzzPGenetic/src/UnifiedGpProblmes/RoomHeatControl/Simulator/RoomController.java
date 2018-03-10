@@ -6,7 +6,7 @@ public interface RoomController {
     StartHeating, StopHeating, None
   }
 
-  ControllEvent control(double sensorReading);
+  ControllEvent control(double sensorReading, double reference);
 
 
 }

@@ -49,16 +49,17 @@ public class RoomFitnes extends AbstactFitness implements ICreatureFitnes<Unifie
     Map<Integer, UnifiedToken> inp = new HashMap<>();
     RoomSimulator sim = new RoomSimulator(scenario);
     sim.setIterationLogger(logger);
-    Rezult simRez = sim.simulate(c -> {
+    Rezult simRez = sim.simulate((temp, ref) -> {
       lastEvent = RoomController.ControllEvent.None;
       inp.clear();
-      rez.addToInpIfPossible(inp, 0, new UnifiedToken(c));
+      rez.addToInpIfPossible(inp, 0, new UnifiedToken(temp));
+      rez.addToInpIfPossible(inp, 1, new UnifiedToken(ref));
       exec.runTick(inp);
       return lastEvent;
     });
 
     double multi2 = super.fireCountMulti(rec, scenario.getScenarioLength());
-    double f = 0.7 / (1.0 + simRez.error) + 0.3 / (1.0 + simRez.offLimit);
+    double f = 0.7 / (1.0 + simRez.incorrectState) + 0.3 / (1.0 + simRez.offLimit);
     return f * multi2 * multi;
   }
 
@@ -66,6 +67,7 @@ public class RoomFitnes extends AbstactFitness implements ICreatureFitnes<Unifie
 
     Map<Integer, Double> inpScale = new HashMap<>();
     inpScale.put(0, 30.0);
+    inpScale.put(1, 30.0);
     Map<Integer, Double> outScale = new HashMap<>();
     outScale.put(0, 1.0);
     outScale.put(1, 2.0);
