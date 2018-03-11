@@ -37,8 +37,8 @@ import structure.operators.ICreatureMutator;
 
 public class Main {
 
-  private static final String MORNING_SCENARIO_FILE = "MorningRoomScenario.json";
-  private static final String EVENING_SCENARIO_FILE = "EveningRoomScenario.json";
+  public static final String MORNING_SCENARIO_FILE = "MorningRoomScenario.json";
+  public static final String EVENING_SCENARIO_FILE = "EveningRoomScenario.json";
   private static final int HALD_RANK_MAX_SIZE = 7;
   private static final String CONFIG_REZ = "ConfRez.txt";
   private static final String SIZE_HIST = "sizeHistLog";

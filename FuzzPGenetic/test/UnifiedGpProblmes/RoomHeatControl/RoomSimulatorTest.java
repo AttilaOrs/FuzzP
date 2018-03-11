@@ -2,6 +2,8 @@ package UnifiedGpProblmes.RoomHeatControl;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
+
 import org.junit.Test;
 
 import AlgoImpl.IterationLogger;
@@ -34,9 +36,17 @@ public class RoomSimulatorTest {
   }
 
   @Test
-  public void test_bang_bang() {
+  public void test_bang_bang() throws FileNotFoundException {
     IterationLogger logger = new IterationLogger();
-    RoomSimulator w = new RoomSimulator(RoomScenario.winterMorning());
+
+    /*
+     * Gson gs = new Gson(); JsonReader reader = new JsonReader(new
+     * FileReader(Main.MORNING_SCENARIO_FILE)); RoomScenario moringScneario =
+     * gs.fromJson(reader, RoomScenario.class);
+     * 
+     * RoomSimulator w = new RoomSimulator(moringScneario);
+     */
+    RoomSimulator w = new RoomSimulator(RoomScenario.fitnessScenario());
     w.setIterationLogger(logger);
     double delta = 0.5;
     Rezult rez = w.simulate((c, d) -> {
@@ -48,7 +58,13 @@ public class RoomSimulatorTest {
       }
       return RoomController.ControllEvent.None;
     });
+    double f = 0.7 / (1.0 + rez.incorrectState) + 0.3 / (1.0 + rez.offLimit);
     assertTrue(rez.incorrectState < 10);
+    /*
+     * System.out.println(f); System.out.println(rez);
+     * PlotUtils.plot(logger.getLogsForPlottingContatinigStrings(""),
+     * "test_RoomSimulatorTest.jpg");
+     */
   }
 
 }
