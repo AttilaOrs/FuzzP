@@ -46,6 +46,7 @@ public class RoomSimulatorTest {
      * 
      * RoomSimulator w = new RoomSimulator(moringScneario);
      */
+
     RoomSimulator w = new RoomSimulator(RoomScenario.fitnessScenario());
     w.setIterationLogger(logger);
     double delta = 0.5;

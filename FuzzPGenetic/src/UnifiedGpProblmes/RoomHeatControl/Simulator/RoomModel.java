@@ -11,12 +11,15 @@ public class RoomModel {
 
   private static final double StartingOutsideTemp = -3.0;
 
-  private static final double StartingHEatingWaterTemp = 30.0;
+  /* initially was 30 */
+
+  private static final double StartingHEatingWaterTemp = 40.0;
 
   /*
    * if the delta between heating water and room temperature is 1C than the room
    * temperature will go up <heaterConstant> in each minute
    */
+
   private static final double heaterConstant = 0.01;
   /*
    * if the delta between outside temperature and room temperature is 1C than
@@ -27,10 +30,12 @@ public class RoomModel {
    * if the delta between outside temperature and room temperature is 1C than
    * and the window is opened the room temperature will drop <windowConstant> in
    * each minute
+   * 
+   * initaillt it was 0.01
    */
-  private static final double windowConstant = 0.01;
+  private static final double windowConstant = 0.03;
 
-  private static final int delayOfSensor = 2;
+  private static final int delayOfSensor = 3;
 
   double currentTemaprature;
   Queue<Double> pastTemperatures;
