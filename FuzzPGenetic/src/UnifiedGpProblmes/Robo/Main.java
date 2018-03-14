@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import com.google.gson.Gson;
+
 import AlgoImpl.IterationLogger;
 import AlgoImpl.MultiobjectiveMulioperatorGA;
 import AlgoImpl.SimpleGA;
@@ -17,6 +19,7 @@ import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifromCrossOver;
+import UnifiedGp.Tree.Visitors.RuleOptimizationData;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
 import UnifiedGpProblmes.ArtificalAnt.AntFitnes;
 import UnifiedGpProblmes.Robo.Fitnesses.FiveSensorLineFallowerFitnes;
@@ -148,7 +151,10 @@ public class Main {
 
   private static double finalize(UnifiedGpIndi rez, String path) {
     ICreatureFitnes<UnifiedGpIndi> mm = generateFitnes();
+    AbstactFitness abs = (AbstactFitness) mm;
+    abs.setRecordForOptimize(true);
     double rr = mm.evaluate(rez);
+
     // ((MutableStateLogged) f.table).writeToFileWithXs(new File("antMoove" +
     // runNr + ".txt"));
     PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<>();
@@ -157,6 +163,10 @@ public class Main {
     String ss = ((AbstactFitness) mm).getRez().inpNrToInpPlace.toString() + "\n"
         + ((AbstactFitness) mm).getRez().outNrToOutTr.toString();
     PlotUtils.writeToFile(path + "Mapping.txt", ss);
+    RuleOptimizationData optData = abs.getOptimizationData();
+    Gson gg = new Gson();
+    String dataJson = gg.toJson(optData);
+    PlotUtils.writeToFile(path + "_OptData.json", dataJson);
     return rr;
 
   }
