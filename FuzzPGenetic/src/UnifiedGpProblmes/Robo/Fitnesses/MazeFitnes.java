@@ -61,7 +61,7 @@ public class MazeFitnes extends AbstactFitness implements ICreatureFitnes<Unifie
     commonCmd = 0.0;
     diffCmd = 0.0;
     InfraOnlyRobo robo = new InfraOnlyRobo(c);
-    List<Optional<Double>> sensorsOut = Collections.nCopies(ps.getOuputCount(), Optional.empty());
+    List<Optional<Double>> sensorsOut = Collections.nCopies(ps.getInputCount(), Optional.empty());
     Map<Integer, UnifiedToken> inp = new HashMap<>();
     int i;
     int finalTickNr = 301;

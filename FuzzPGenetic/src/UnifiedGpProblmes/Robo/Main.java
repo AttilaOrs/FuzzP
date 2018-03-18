@@ -205,7 +205,7 @@ public class Main {
       return new MultiCourtFitness(Court.getFirst().myClone(), Court.getSecond().myClone(), Court.getThird().myClone(),
           Court.getFourth().myClone());
     case infraOnly:
-      return new MazeFitnes(Court.getMaze());
+      return new MazeFitnes(Court.getMaze().myClone());
     }
     return null;
   }
