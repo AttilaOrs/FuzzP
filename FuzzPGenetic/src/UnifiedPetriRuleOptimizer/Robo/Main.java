@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.LinearRankSelection;
-import AlgoImpl.pools.CreaturePoolWithStreams;
+import AlgoImpl.pools.CreatureParallelPool;
 import UnifiedGp.Tree.Visitors.RuleOptimizationData;
 import UnifiedGpProblmes.Robo.Simulator.ToRead.Court;
 import UnifiedPetriRuleOptimizer.BitIndi;
@@ -50,11 +50,11 @@ public class Main {
       ArrayList<IOperatorFactory<ICreatureFitnes<BitIndi>>> fitnesses = new ArrayList<>();
       fitnesses.add(Main::generateFitnes);
 
-      ICreaturePool<BitIndi> pool = new CreaturePoolWithStreams<>(gens, mutators, breeders, fitnesses);
+      ICreaturePool<BitIndi> pool = new CreatureParallelPool<>(gens, mutators, breeders, fitnesses);
 
       SimpleGA<BitIndi> algo = new SimpleGA<>(pool, new LinearRankSelection());
       SimpleGA.iteration = 100;
-      SimpleGA.population = 2000;
+      SimpleGA.population = 3000;
       long start = System.currentTimeMillis();
       algo.theAlgo();
       long stop = System.currentTimeMillis();
