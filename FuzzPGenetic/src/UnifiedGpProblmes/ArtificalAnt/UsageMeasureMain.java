@@ -75,8 +75,8 @@ public class UsageMeasureMain {
     ISelector survSelector = new LinearRankSelection();
     AntFitnes.HARD_LIMIT = false;
     AntFitnes.APPLY_SIZE_LIMIT = true;
-    AntFitnes.SIZE_LIMIT = 400;
-    AntFitnes.SIZE_LIMIT_START = 500;
+    AntFitnes.SIZE_LIMIT = 500;
+    AntFitnes.SIZE_LIMIT_START = 300;
     AntFitnes.FIRED_TR_LIMIT = true;
 
     SimpleGA.REMOVE_ELITE_FROM_POP = false;

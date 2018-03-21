@@ -48,11 +48,11 @@ public class SelectRandomBasedOnUsageAndDepth {
   private double nodeFitnes(UsageStats usage, INode<NodeType> en1) {
     int i = usage.getUsage(en1);
     int allTickNr = usage.getAllTickNr();
-    if (i > allTickNr * 3) {
-      if (i > allTickNr * 10) {
+    if (i > allTickNr * 5) {
+      if (i > allTickNr * 7) {
         return 0.000001;
       }
-      i = allTickNr * 3;
+      i = allTickNr * 5;
     }
     return i / ((double) usage.getSize(en1));
   }
