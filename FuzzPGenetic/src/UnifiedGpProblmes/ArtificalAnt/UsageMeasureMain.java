@@ -11,7 +11,6 @@ import AlgoImpl.Selectors.LinearRankSelection;
 import AlgoImpl.pools.CreatureParallelPool;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
-import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.GpIndi.UnifiedGpIndiBreeder;
 import UnifiedGp.GpIndi.UnifiedGpIndiTreeMutator;
 import UnifiedGp.GpIndi.UnifromCrossOver;
@@ -99,15 +98,13 @@ public class UsageMeasureMain {
     }
 
     CreatureParallelPool<UnifiedGpIndiWithUsageStats> pool = new CreatureParallelPool<>(gens,
-        mutators,
-        breeders,
-        fitnesses);
+        mutators, breeders, fitnesses);
 
     MultiobjectiveMulioperatorGA<UnifiedGpIndiWithUsageStats> algo = new MultiobjectiveMulioperatorGA<>(pool,
-        otherSelector,
-        survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
+        otherSelector, survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth,
+        new double[] { 1.0 });
     SimpleGA.iteration = 100;
-    SimpleGA.population = 2000;
+    SimpleGA.population = 5000;
     algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();
     algo.theAlgo();
@@ -115,7 +112,7 @@ public class UsageMeasureMain {
 
     Integer i = algo.getMaxId();
 
-    UnifiedGpIndi rez = pool.get(i);
+    UnifiedGpIndiWithUsageStats rez = pool.get(i);
     int rezFitnes = finalize(rez, runNr);
     String config = "population " + SimpleGA.population + "\n";
     config += "iteration " + SimpleGA.iteration + "\n";
@@ -135,6 +132,7 @@ public class UsageMeasureMain {
     config += "duration: " + (stop - start) + " milliseconds " + "(" + TimeUnit.MILLISECONDS.toMinutes(stop - start)
         + " minutes)\n";
     config += crossWeigth[0] + " " + crossWeigth[1] + " " + crossWeigth[2];
+    config += "\n" + rez.getRoot();
 
     PlotUtils.writeToFile(path + CONFIG_REZ, config);
 
@@ -156,15 +154,11 @@ public class UsageMeasureMain {
 
   }
 
-  private static int finalize(UnifiedGpIndi rez, int runNr) {
-    AntFitnes f = new AntFitnes();
-    f.tableSup = () -> new MutableStateLogged(GridReader.copyGrid());
-    f.evaluate(rez);
-    System.out.println(f.table.getFoodEaten() + " out of " + GridReader.getNumberOfFoodCells());
-    System.out.println(f.table.getMovesTaken());
-    // ((MutableStateLogged) f.table).writeToFileWithXs(new File("antMoove" +
-    // runNr + ".txt"));
-    return f.table.getFoodEaten();
+  private static int finalize(UnifiedGpIndiWithUsageStats rez, int runNr) {
+    ArtificalAntFitnesForUsage f = new ArtificalAntFitnesForUsage();
+    double q = f.evaluate(rez);
+
+    return (int) q;
 
   }
 
