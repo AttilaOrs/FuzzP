@@ -12,6 +12,7 @@ public class RoomModel {
   private static final double StartingOutsideTemp = -3.0;
 
   /* initially was 30 */
+  /* changed 40 */
 
   private static final double StartingHEatingWaterTemp = 40.0;
 
@@ -31,7 +32,7 @@ public class RoomModel {
    * and the window is opened the room temperature will drop <windowConstant> in
    * each minute
    * 
-   * initaillt it was 0.01
+   * initaillt it was 0.01 changed 0.03
    */
   private static final double windowConstant = 0.03;
 

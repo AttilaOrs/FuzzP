@@ -50,8 +50,9 @@ public class Main {
   private static final String LEAFS = "tree_leaf";
   private static final String OPS = "tree_ops";
   private static final String DEPTH = "tree_depth";
-  private static RoomScenario moringScneario = null;
-  private static RoomScenario eveningScenario = null;
+
+  protected static RoomScenario moringScneario = null;
+  protected static RoomScenario eveningScenario = null;
 
   public static void main(String args[]) {
     try {
@@ -180,7 +181,7 @@ public class Main {
     return fitnes;
   }
 
-  private static void initScenarios() throws FileNotFoundException {
+  public static void initScenarios() throws FileNotFoundException {
     Gson gs = new Gson();
     JsonReader reader = new JsonReader(new FileReader(MORNING_SCENARIO_FILE));
     moringScneario = gs.fromJson(reader, RoomScenario.class);

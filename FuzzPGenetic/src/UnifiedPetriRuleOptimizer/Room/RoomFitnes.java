@@ -39,6 +39,15 @@ public class RoomFitnes implements ICreatureFitnes<BitIndi> {
   @Override
   public double evaluate(BitIndi creature) {
     UnifiedPetriNet net = decoder.modified(creature);
+    Rezult simRez = simulateNet(net);
+
+
+    double f = 0.7 / (1.0 + simRez.incorrectState) + 0.3 / (1.0 + simRez.offLimit);
+
+    return f;
+  }
+
+  public Rezult simulateNet(UnifiedPetriNet net) {
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
         new UnifiedPetrinetCacheTableResultWrapper(net,
             () -> new TokenCacheDisabling<>(5)),
@@ -58,11 +67,7 @@ public class RoomFitnes implements ICreatureFitnes<BitIndi> {
       exec.runTick(inp);
       return lastEvent;
     });
-
-
-    double f = 0.7 / (1.0 + simRez.incorrectState) + 0.3 / (1.0 + simRez.offLimit);
-
-    return f;
+    return simRez;
   }
 
   public void setLogger(IterationLogger logger) {

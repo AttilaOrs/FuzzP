@@ -87,4 +87,27 @@ public class IterationLogger {
     return false;
   }
 
+  public String exportToDat(String... pattrsn) {
+    StringBuilder bld = new StringBuilder();
+    Map<String, List<Double>> logs = getLogsForPlottingContatinigStrings(pattrsn);
+    int maxCount = logs.entrySet().stream().map(e -> e.getValue().size()).mapToInt(i -> i).max().getAsInt();
+    String header = logs.keySet().stream().collect(Collectors.joining(" "));
+    bld.append("#tick ").append(header).append("\n");
+    for (int i = 0; i < maxCount; i++) {
+      bld.append(i).append(" ");
+      for (Entry<String, List<Double>> e : logs.entrySet()) {
+        if (e.getValue().size() > i) {
+          bld.append(e.getValue().get(i)).append(" ");
+        } else {
+          bld.append(0).append(" ");
+        }
+        
+      }
+      bld.append("\n");
+    }
+
+    return bld.toString();
+  }
+
+
 }

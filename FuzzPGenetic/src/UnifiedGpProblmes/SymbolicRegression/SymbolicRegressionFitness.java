@@ -3,12 +3,14 @@ package UnifiedGpProblmes.SymbolicRegression;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.ProblemSpecification;
 import UnifiedGp.ProblemSpecificationImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.Tree.Visitors.PetriConversationResult;
+import core.UnifiedPetriLogic.UnifiedPetriNet;
 import core.UnifiedPetriLogic.UnifiedToken;
 import core.UnifiedPetriLogic.executor.SyncronousUnifiedPetriExecutor;
 import core.UnifiedPetriLogic.executor.cached.UnifiedPetrinetCacheTableResultWrapper;
@@ -63,6 +65,31 @@ public class SymbolicRegressionFitness extends AbstactFitness implements ICreatu
     Map<Integer, UnifiedToken> inp = new HashMap<>();
     FuntionSimulator sim = new FuntionSimulator();
     return sim.sim(dodo(rez, exec, inp));
+  }
+
+  public Map<String, Map<Double, Double>> makeLog(UnifiedPetriNet net) {
+    FiredTranitionRecorder<UnifiedToken> rec = new FiredTranitionRecorder<>();
+    SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(
+        new UnifiedPetrinetCacheTableResultWrapper(net,
+            () -> new TokenCacheDisabling<>(5)),
+        false, true);
+    exec.setRecorder(rec);
+    int outTr = IntStream.range(0, net.getNrOfTransition()).filter(i -> net.isOuputTransition(i)).findAny()
+        .getAsInt();
+    int inpPl = IntStream.range(0, net.getNrOfPlaces()).filter(i -> net.isInputPlace(i)).findAny()
+        .getAsInt();
+
+    net.addActionForOuputTransition(outTr, d -> lastRez = d.getValue());
+    Map<Integer, UnifiedToken> inp = new HashMap<>();
+    FuntionSimulator sim = new FuntionSimulator();
+    return sim.sim(d -> {
+      lastRez = null;
+      inp.clear();
+      inp.put(inpPl, new UnifiedToken(d));
+      exec.runTick(inp);
+      return lastRez;
+    });
+
   }
 
   private Function<Double, Double> dodo(PetriConversationResult rez, SyncronousUnifiedPetriExecutor exec,

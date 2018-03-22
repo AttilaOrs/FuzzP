@@ -4,6 +4,7 @@ import static java.lang.Math.abs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
@@ -50,8 +51,8 @@ public class FuntionSimulator {
   }
 
   public Map<String, Map<Double, Double>> sim(Function<Double, Double> comp) {
-    Map<Double, Double> orig = new HashMap<>();
-    Map<Double, Double> sim = new HashMap<>();
+    Map<Double, Double> orig = new LinkedHashMap<>();
+    Map<Double, Double> sim = new LinkedHashMap<>();
     for (double i = -1.0; i <= 1.0; i += 0.01) {
       orig.put(i, func.apply(i));
       Double rez = comp.apply(i);
