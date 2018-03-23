@@ -12,9 +12,10 @@ import UnifiedGp.Tree.Nodes.NodeType;
 import UnifiedGp.Tree.Visitors.RandomNodeSelector;
 import UnifiedGp.Tree.Visitors.UsageStats;
 
-public class SelectRandomBasedOnUsageAndDepth {
+public class SelectRandomBasedOnUsageAndDepth implements UsageSelector {
   
   
+  @Override
   public INode<NodeType> selectNode(UsageStats usage, Random rnd, IInnerNode<NodeType> iInnerNode) {
     if (usage == null) {
       RandomNodeSelector<NodeType> l = new RandomNodeSelector<>();
@@ -36,16 +37,18 @@ public class SelectRandomBasedOnUsageAndDepth {
 		}
 		double i = rnd.nextDouble()*sum;
 		double tempS = 0.0;
+
 		for(INode<NodeType> muve: ranking.keySet()){
 		  tempS += ranking.get(muve);
 		  if(tempS> i){
 		    return muve;
 		  }
 		}
+
     return null;
   }
 
-  private double nodeFitnes(UsageStats usage, INode<NodeType> en1) {
+  protected double nodeFitnes(UsageStats usage, INode<NodeType> en1) {
     int i = usage.getUsage(en1);
     int allTickNr = usage.getAllTickNr();
     if (i > allTickNr * 5) {
@@ -60,6 +63,9 @@ public class SelectRandomBasedOnUsageAndDepth {
   private static final double sp = 2.0;
   
 	private Double rankOf(int index, int size) {
+	  if(size<2) {
+      return 1.0;
+	  }
 		return 2.0 - sp + (2 * (sp - 1.0) * ((index ) / (size - 1.0)));
 	}
   

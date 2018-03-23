@@ -17,11 +17,17 @@ import UnifiedGp.GpIndi.UnifromCrossOver;
 import UnifiedGp.GpIndi.UsageStats.CrossOverWrapper;
 import UnifiedGp.GpIndi.UsageStats.GeneratorWrapperForUsage;
 import UnifiedGp.GpIndi.UsageStats.MutationWrapper;
+import UnifiedGp.GpIndi.UsageStats.SelectRandomHighlyUsed;
+import UnifiedGp.GpIndi.UsageStats.SelectRandomNonused;
 import UnifiedGp.GpIndi.UsageStats.UnifiedGpIndiWithUsageStats;
 import UnifiedGp.GpIndi.UsageStats.UsageBasedCrossOver;
+import UnifiedGp.GpIndi.UsageStats.UsageBasedMutator;
 import UnifiedGp.Tree.Nodes.NodeType;
+import UnifiedGp.Tree.Visitors.PetriConversationResult;
 import UnifiedGp.Tree.Visitors.TreeBuilder;
 import commonUtil.PlotUtils;
+import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
+import core.UnifiedPetriLogic.UnifiedPetriNet;
 import structure.ICreatureFitnes;
 import structure.IOperatorFactory;
 import structure.ISelector;
@@ -62,6 +68,8 @@ public class UsageMeasureMain {
 
     ArrayList<IOperatorFactory<ICreatureMutator<UnifiedGpIndiWithUsageStats>>> mutators = new ArrayList<>();
     mutators.add(() -> MutationWrapper.wrap(new UnifiedGpIndiTreeMutator(createTreeBuilder())));
+    mutators.add(() -> new UsageBasedMutator(createTreeBuilder(), true, 3, new SelectRandomNonused()));
+    mutators.add(() -> new UsageBasedMutator(createTreeBuilder(), true, 4, new SelectRandomHighlyUsed()));
 
     ArrayList<IOperatorFactory<ICreatureBreeder<UnifiedGpIndiWithUsageStats>>> breeders = new ArrayList<>();
     breeders.add(() -> CrossOverWrapper.wrap(new UnifiedGpIndiBreeder()));
@@ -81,30 +89,24 @@ public class UsageMeasureMain {
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
 
     double[] crossWeigth = new double[] { 0.33, 0.33, 0.33 };
-    if (runNr % 5 == 0) {
-      crossWeigth = new double[] { 0.0, 0.0, 1.0 };
-    }
-    if (runNr % 5 == 1) {
-      crossWeigth = new double[] { 0.5, 0.5, 0.0 };
-    }
-    if (runNr % 5 == 2) {
-      crossWeigth = new double[] { 0.33, 0.33, 0.33 };
-    }
-    if (runNr % 5 == 3) {
-      crossWeigth = new double[] { 0.0, 1.0, 0.0 };
-    }
-    if (runNr % 5 == 4) {
-      crossWeigth = new double[] { 1.0, 0.0, 0.0 };
-    }
+    double[] mutWeight = new double[] { 0.20, 0.40, 0.40 };
+    /*
+     * if (runNr % 5 == 0) { crossWeigth = new double[] { 0.0, 0.0, 1.0 }; } if
+     * (runNr % 5 == 1) { crossWeigth = new double[] { 0.5, 0.5, 0.0 }; } if
+     * (runNr % 5 == 2) { crossWeigth = new double[] { 0.33, 0.33, 0.33 }; } if
+     * (runNr % 5 == 3) { crossWeigth = new double[] { 0.0, 1.0, 0.0 }; } if
+     * (runNr % 5 == 4) { crossWeigth = new double[] { 1.0, 0.0, 0.0 }; }
+     */
 
     CreatureParallelPool<UnifiedGpIndiWithUsageStats> pool = new CreatureParallelPool<>(gens,
         mutators, breeders, fitnesses);
 
     MultiobjectiveMulioperatorGA<UnifiedGpIndiWithUsageStats> algo = new MultiobjectiveMulioperatorGA<>(pool,
         otherSelector, survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth,
-        new double[] { 1.0 });
+        mutWeight);
     SimpleGA.iteration = 100;
     SimpleGA.population = 5000;
+
     algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();
     algo.theAlgo();
@@ -113,7 +115,7 @@ public class UsageMeasureMain {
     Integer i = algo.getMaxId();
 
     UnifiedGpIndiWithUsageStats rez = pool.get(i);
-    int rezFitnes = finalize(rez, runNr);
+    int rezFitnes = finalize(rez, runNr, path);
     String config = "population " + SimpleGA.population + "\n";
     config += "iteration " + SimpleGA.iteration + "\n";
     config += "size limit " + AntFitnes.SIZE_LIMIT + "\n";
@@ -154,10 +156,12 @@ public class UsageMeasureMain {
 
   }
 
-  private static int finalize(UnifiedGpIndiWithUsageStats rez, int runNr) {
+  private static int finalize(UnifiedGpIndiWithUsageStats rez, int runNr, String path) {
     ArtificalAntFitnesForUsage f = new ArtificalAntFitnesForUsage();
     double q = f.evaluate(rez);
-
+    PetriConversationResult netConv = f.getRez();
+    PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<>();
+    saver.save(netConv.net, path + "Petri.json");
     return (int) q;
 
   }
