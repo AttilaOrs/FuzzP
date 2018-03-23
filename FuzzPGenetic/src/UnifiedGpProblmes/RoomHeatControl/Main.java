@@ -39,6 +39,7 @@ public class Main {
 
   public static final String MORNING_SCENARIO_FILE = "MorningRoomScenario.json";
   public static final String EVENING_SCENARIO_FILE = "EveningRoomScenario.json";
+  public static final String FITNESS_SCENARIO_FILE = "FitnessScenario.json";
   private static final int HALD_RANK_MAX_SIZE = 7;
   private static final String CONFIG_REZ = "ConfRez.txt";
   private static final String SIZE_HIST = "sizeHistLog";
@@ -53,6 +54,7 @@ public class Main {
 
   protected static RoomScenario moringScneario = null;
   protected static RoomScenario eveningScenario = null;
+  private static RoomScenario fitnessScenario = null;
 
   public static void main(String args[]) {
     try {
@@ -79,7 +81,7 @@ public class Main {
       breeders.add(() -> new UnifromCrossOver(0.5));
 
       ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
-      fitnesses.add(() -> new RoomFitnes(moringScneario.myClone()));
+      fitnesses.add(() -> new RoomFitnes(fitnessScenario.myClone()));
       ISelector otherSelector = new LinearRankSelection();
       ISelector survSelector = new LinearRankSelection();
       SimpleGA.REMOVE_ELITE_FROM_POP = false;
@@ -187,6 +189,8 @@ public class Main {
     moringScneario = gs.fromJson(reader, RoomScenario.class);
     reader = new JsonReader(new FileReader(EVENING_SCENARIO_FILE));
     eveningScenario = gs.fromJson(reader, RoomScenario.class);
+    reader = new JsonReader(new FileReader(FITNESS_SCENARIO_FILE));
+    fitnessScenario = gs.fromJson(reader, RoomScenario.class);
   }
 
 
@@ -194,10 +198,17 @@ public class Main {
     RoomScenario sc = RoomScenario.fitnessScenario();
     Gson gs = new Gson();
     String morningJson = gs.toJson(sc);
+
     PlotUtils.writeToFile(MORNING_SCENARIO_FILE, morningJson);
     RoomScenario evning = RoomScenario.extremeEvening();
     String evString = gs.toJson(evning);
-    PlotUtils.writeToFile(EVENING_SCENARIO_FILE, evString);
+    PlotUtils.writeToFile(EVENING_SCENARIO_FILE,
+        evString);
+
+    sc = RoomScenario.presentationScenario();
+    evString = gs.toJson(sc);
+    PlotUtils.writeToFile(FITNESS_SCENARIO_FILE, evString);
+
   }
 
 }

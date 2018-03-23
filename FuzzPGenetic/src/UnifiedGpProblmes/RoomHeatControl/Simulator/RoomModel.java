@@ -7,14 +7,14 @@ import java.util.Queue;
 public class RoomModel {
   /* Room model for one minute */
 
-  private static final double StartingTemperature = 24.0;
+  private static final double StartingTemperature = 22.0;
 
   private static final double StartingOutsideTemp = -3.0;
 
   /* initially was 30 */
   /* changed 40 */
 
-  private static final double StartingHEatingWaterTemp = 40.0;
+  private static final double StartingHEatingWaterTemp = 30.0;
 
   /*
    * if the delta between heating water and room temperature is 1C than the room
@@ -34,7 +34,7 @@ public class RoomModel {
    * 
    * initaillt it was 0.01 changed 0.03
    */
-  private static final double windowConstant = 0.03;
+  private static final double windowConstant = 0.01;
 
   private static final int delayOfSensor = 3;
 

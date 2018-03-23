@@ -83,6 +83,13 @@ public class RoomScenario {
     return scenarioBuilder(startingTempInHour, windowChance, refsHourly);
   }
 
+  public static RoomScenario presentationScenario() {
+    double startingTempInHour[] = new double[] { -19.0, -17.0, -22.0, -15.0 };
+    double windowChance[] = new double[] { 0.12, 0.20, 0.10, };
+    double refsHourly[] = new double[] { 22, 20, 21 };
+    return scenarioBuilder(startingTempInHour, windowChance, refsHourly);
+  }
+
   public RoomScenario myClone() {
     return new RoomScenario(new ArrayList<>(outsideTemperature), new ArrayList<>(windowOpen),
         new ArrayList<>(referenceTemp));

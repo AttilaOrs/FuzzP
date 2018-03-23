@@ -3,6 +3,7 @@ package UnifiedGpProblmes.RoomHeatControl;
 import java.io.FileNotFoundException;
 
 import AlgoImpl.IterationLogger;
+import UnifiedGpProblmes.RoomHeatControl.Simulator.RoomScenario;
 import UnifiedPetriRuleOptimizer.Room.RoomFitnes;
 import commonUtil.PlotUtils;
 import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
@@ -20,7 +21,7 @@ public class PlotterMain {
     PetriNetJsonSaver<UnifiedPetriNet> loader = new PetriNetJsonSaver<>();
     UnifiedPetriNet net = loader.load(file, UnifiedPetriNet.class);
 
-    RoomFitnes fit = new RoomFitnes(null, inps, outs, Main.moringScneario);
+    RoomFitnes fit = new RoomFitnes(null, inps, outs, RoomScenario.presentationScenario());
     IterationLogger logger = new IterationLogger();
     fit.setLogger(logger);
     fit.simulateNet(net);
