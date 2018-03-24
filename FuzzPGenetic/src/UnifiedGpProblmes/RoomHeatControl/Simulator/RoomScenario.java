@@ -32,6 +32,7 @@ public class RoomScenario {
     List<Double> outsideTemperature = new ArrayList<>();
     List<Double> refs = new ArrayList<>();
     List<Boolean> windowOpen = new ArrayList<>();
+    boolean windowCurrenltuOpen = false;
     Random rnd = new Random();
     for (int hour = 0; hour < startingTempInHour.length - 1; hour++) {
       double startTemp = startingTempInHour[hour];
@@ -39,7 +40,20 @@ public class RoomScenario {
       for (int minute = 0; minute < 60; minute++) {
         double temp = startTemp + ((endTemp - startTemp) * minute) / 60.0 + rnd.nextDouble() * 0.1;
         outsideTemperature.add(temp);
-        windowOpen.add(rnd.nextDouble() < windowChance[hour]);
+        if (windowCurrenltuOpen == false && rnd.nextDouble() < windowChance[hour]) {
+          windowCurrenltuOpen = true;
+          windowOpen.add(true);
+        } else if (windowCurrenltuOpen == false) {
+          windowOpen.add(false);
+        }
+        if (windowCurrenltuOpen) {
+          if (rnd.nextDouble() < 0.60) {
+            windowOpen.add(true);
+          } else {
+            windowOpen.add(false);
+            windowCurrenltuOpen = false;
+          }
+        }
         refs.add(refsHourly[hour]);
       }
     }
@@ -84,9 +98,9 @@ public class RoomScenario {
   }
 
   public static RoomScenario presentationScenario() {
-    double startingTempInHour[] = new double[] { -19.0, -17.0, -22.0, -15.0 };
-    double windowChance[] = new double[] { 0.12, 0.20, 0.10, };
-    double refsHourly[] = new double[] { 22, 20, 21 };
+    double startingTempInHour[] = new double[] { -19.0, -17.0, -22.0, -15.0, -17.0 };
+    double windowChance[] = new double[] { 0.12, 0.07, 0.15, 0.10 };
+    double refsHourly[] = new double[] { 22, 20, 21, 19 };
     return scenarioBuilder(startingTempInHour, windowChance, refsHourly);
   }
 

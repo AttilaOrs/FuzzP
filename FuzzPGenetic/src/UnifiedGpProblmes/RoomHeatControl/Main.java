@@ -101,7 +101,7 @@ public class Main {
       MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
           survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
       SimpleGA.iteration = 100;
-      SimpleGA.population = 5000;
+      SimpleGA.population = 3000;
       algo.setEralyStoppingCondition(d -> d >= 1.0);
       long start = System.currentTimeMillis();
       algo.theAlgo();
@@ -152,6 +152,13 @@ public class Main {
   }
 
   private static double finalize(UnifiedGpIndi rez, String path, long l) {
+
+    RoomFitnes realFit = new RoomFitnes(fitnessScenario.myClone());
+    IterationLogger fitnessLogger = new IterationLogger();
+    realFit.setLogger(fitnessLogger);
+    realFit.setRecordForOptimize(true);
+    double fitnesReal = realFit.evaluate(rez);
+
     RoomFitnes fit = new RoomFitnes(moringScneario.myClone());
     IterationLogger moringLogger = new IterationLogger();
     fit.setLogger(moringLogger);
@@ -162,10 +169,11 @@ public class Main {
     IterationLogger evnenLogger = new IterationLogger();
     fitEvn.setLogger(evnenLogger);
     double fitnesEvn = fitEvn.evaluate(rez);
-    String rezStr = fitnes + "\n" + fitnesEvn + "\n" + rez.getRoot().toString();
+    String rezStr = realFit + "\n" + fitnes + "\n" + fitnesEvn + "\n" + rez.getRoot().toString();
     writeToFile(path + "rez.txt", rezStr);
 
     PlotUtils.plot(moringLogger.getLogsForPlottingContatinigStrings(""), path + "moring");
+    PlotUtils.plot(fitnessLogger.getLogsForPlottingContatinigStrings(""), path + "real");
     PlotUtils.plot(evnenLogger.getLogsForPlottingContatinigStrings(""), path + "evening");
 
     Gson gs = new Gson();
@@ -199,15 +207,16 @@ public class Main {
     Gson gs = new Gson();
     String morningJson = gs.toJson(sc);
 
-    PlotUtils.writeToFile(MORNING_SCENARIO_FILE, morningJson);
-    RoomScenario evning = RoomScenario.extremeEvening();
-    String evString = gs.toJson(evning);
-    PlotUtils.writeToFile(EVENING_SCENARIO_FILE,
-        evString);
+    /*
+     * PlotUtils.writeToFile(MORNING_SCENARIO_FILE, morningJson); RoomScenario
+     * evning = RoomScenario.extremeEvening(); String evString =
+     * gs.toJson(evning); PlotUtils.writeToFile(EVENING_SCENARIO_FILE,
+     * evString);
+     */
 
     sc = RoomScenario.presentationScenario();
-    evString = gs.toJson(sc);
-    PlotUtils.writeToFile(FITNESS_SCENARIO_FILE, evString);
+    String newScen = gs.toJson(sc);
+    PlotUtils.writeToFile(FITNESS_SCENARIO_FILE, newScen);
 
   }
 
