@@ -14,14 +14,14 @@ public class RoomModel {
   /* initially was 30 */
   /* changed 40 */
 
-  private static final double StartingHEatingWaterTemp = 30.0;
+  private static final double StartingHEatingWaterTemp = 60.0;
 
   /*
    * if the delta between heating water and room temperature is 1C than the room
    * temperature will go up <heaterConstant> in each minute
    */
 
-  private static final double heaterConstant = 0.01;
+  private static final double heaterConstant = 0.0085;
   /*
    * if the delta between outside temperature and room temperature is 1C than
    * the room temperature will drop <wallConstant> in each minute

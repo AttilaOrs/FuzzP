@@ -169,7 +169,7 @@ public class Main {
     IterationLogger evnenLogger = new IterationLogger();
     fitEvn.setLogger(evnenLogger);
     double fitnesEvn = fitEvn.evaluate(rez);
-    String rezStr = realFit + "\n" + fitnes + "\n" + fitnesEvn + "\n" + rez.getRoot().toString();
+    String rezStr = fitnesReal + "\n" + fitnes + "\n" + fitnesEvn + "\n" + rez.getRoot().toString();
     writeToFile(path + "rez.txt", rezStr);
 
     PlotUtils.plot(moringLogger.getLogsForPlottingContatinigStrings(""), path + "moring");
@@ -188,7 +188,7 @@ public class Main {
 
     writeToFile(path + "mapping.txt", mapping);
 
-    return fitnes;
+    return fitnesReal;
   }
 
   public static void initScenarios() throws FileNotFoundException {
