@@ -88,8 +88,12 @@ public class UsageMeasureMain {
 
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
 
+    /* original enhaced ratio */
     double[] crossWeigth = new double[] { 0.33, 0.33, 0.33 };
     double[] mutWeight = new double[] { 0.20, 0.40, 0.40 };
+
+    crossWeigth = new double[] { 0.40, 0.20, 0.40 };
+    mutWeight = new double[] { 0.10, 0.45, 0.45 };
     /*
      * if (runNr % 5 == 0) { crossWeigth = new double[] { 0.0, 0.0, 1.0 }; } if
      * (runNr % 5 == 1) { crossWeigth = new double[] { 0.5, 0.5, 0.0 }; } if
