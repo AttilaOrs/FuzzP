@@ -6,6 +6,7 @@ import static commonUtil.PlotUtils.writeToFile;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
@@ -81,7 +82,8 @@ public class Main {
       breeders.add(() -> new UnifromCrossOver(0.5));
 
       ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
-      fitnesses.add(() -> new RoomFitnes(fitnessScenario.myClone()));
+      fitnesses
+          .add(() -> new RoomFitnessMultiScenario(Arrays.asList(fitnessScenario, moringScneario, eveningScenario)));
       ISelector otherSelector = new LinearRankSelection();
       ISelector survSelector = new LinearRankSelection();
       SimpleGA.REMOVE_ELITE_FROM_POP = false;
@@ -101,7 +103,7 @@ public class Main {
       MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
           survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
       SimpleGA.iteration = 100;
-      SimpleGA.population = 3000;
+      SimpleGA.population = 5000;
       algo.setEralyStoppingCondition(d -> d >= 1.0);
       long start = System.currentTimeMillis();
       algo.theAlgo();
