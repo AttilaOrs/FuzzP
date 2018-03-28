@@ -82,8 +82,8 @@ public class UsageMeasureMain {
     ISelector survSelector = new LinearRankSelection();
     AntFitnes.HARD_LIMIT = false;
     AntFitnes.APPLY_SIZE_LIMIT = true;
-    AntFitnes.SIZE_LIMIT = 500;
-    AntFitnes.SIZE_LIMIT_START = 300;
+    AntFitnes.SIZE_LIMIT = 600;
+    AntFitnes.SIZE_LIMIT_START = 350;
     AntFitnes.FIRED_TR_LIMIT = true;
 
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
@@ -109,7 +109,7 @@ public class UsageMeasureMain {
         otherSelector, survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth,
         mutWeight);
     SimpleGA.iteration = 100;
-    SimpleGA.population = 5000;
+    SimpleGA.population = 7000;
 
     algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();
