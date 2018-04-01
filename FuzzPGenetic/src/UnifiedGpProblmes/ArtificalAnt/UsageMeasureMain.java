@@ -1,6 +1,7 @@
 package UnifiedGpProblmes.ArtificalAnt;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -82,8 +83,8 @@ public class UsageMeasureMain {
     ISelector survSelector = new LinearRankSelection();
     AntFitnes.HARD_LIMIT = false;
     AntFitnes.APPLY_SIZE_LIMIT = true;
-    AntFitnes.SIZE_LIMIT = 600;
-    AntFitnes.SIZE_LIMIT_START = 350;
+    AntFitnes.SIZE_LIMIT = 500;
+    AntFitnes.SIZE_LIMIT_START = 300;
     AntFitnes.FIRED_TR_LIMIT = true;
 
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
@@ -162,10 +163,15 @@ public class UsageMeasureMain {
 
   private static int finalize(UnifiedGpIndiWithUsageStats rez, int runNr, String path) {
     ArtificalAntFitnesForUsage f = new ArtificalAntFitnesForUsage();
+    MutableStateLogged logged = new MutableStateLogged(GridReader.copyGrid());
+    f.setMutableStateSuplier(() -> logged);
     double q = f.evaluate(rez);
     PetriConversationResult netConv = f.getRez();
     PetriNetJsonSaver<UnifiedPetriNet> saver = new PetriNetJsonSaver<>();
-    saver.save(netConv.net, path + "Petri.json");
+    String fileName = path + "Petri.json";
+    PlotUtils.createDirs(fileName);
+    saver.save(netConv.net, fileName);
+    logged.writeToFileWithXs(new File(path + "_ant_way.txt"));
     return (int) q;
 
   }

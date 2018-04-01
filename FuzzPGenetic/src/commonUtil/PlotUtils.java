@@ -192,7 +192,7 @@ public class PlotUtils {
     }
   }
 
-  private static File createDirs(String fileName) {
+  public static File createDirs(String fileName) {
     File file = new File(fileName);
     if (file.getParentFile() != null) {
       file.getParentFile().mkdirs();

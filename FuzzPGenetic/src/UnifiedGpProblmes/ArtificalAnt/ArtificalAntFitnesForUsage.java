@@ -20,9 +20,14 @@ public class ArtificalAntFitnesForUsage extends AbstactFitnessWithUsage {
   private int moove;
   protected Supplier<MutableState> tableSup;
   private MutableState table;
+
   public ArtificalAntFitnesForUsage() {
     super(AntFitnes.problemSpecification());
     tableSup = () -> new MutableState(GridReader.copyGrid());
+  }
+
+  public void setMutableStateSuplier(Supplier<MutableState> sup) {
+    this.tableSup = sup;
   }
 
   @Override
