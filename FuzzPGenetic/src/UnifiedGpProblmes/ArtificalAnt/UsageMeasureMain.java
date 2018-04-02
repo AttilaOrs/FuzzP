@@ -110,7 +110,7 @@ public class UsageMeasureMain {
         otherSelector, survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth,
         mutWeight);
     SimpleGA.iteration = 100;
-    SimpleGA.population = 7000;
+    SimpleGA.population = 2000;
 
     algo.setEralyStoppingCondition(d -> d >= 89.0);
     long start = System.currentTimeMillis();
