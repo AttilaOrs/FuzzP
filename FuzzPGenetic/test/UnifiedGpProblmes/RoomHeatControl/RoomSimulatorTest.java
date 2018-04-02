@@ -47,7 +47,7 @@ public class RoomSimulatorTest {
      * RoomSimulator w = new RoomSimulator(moringScneario);
      */
 
-    RoomSimulator w = new RoomSimulator(RoomScenario.fitnessScenario());
+    RoomSimulator w = new RoomSimulator(RoomScenario.winterMorning());
     w.setIterationLogger(logger);
     double delta = 0.5;
     Rezult rez = w.simulate((c, d) -> {
@@ -60,7 +60,7 @@ public class RoomSimulatorTest {
       return RoomController.ControllEvent.None;
     });
     double f = 0.7 / (1.0 + rez.incorrectState) + 0.3 / (1.0 + rez.offLimit);
-    assertTrue(rez.incorrectState < 10);
+    assertTrue(rez.incorrectState < 30);
     /*
      * System.out.println(f); System.out.println(rez);
      * PlotUtils.plot(logger.getLogsForPlottingContatinigStrings(""),
