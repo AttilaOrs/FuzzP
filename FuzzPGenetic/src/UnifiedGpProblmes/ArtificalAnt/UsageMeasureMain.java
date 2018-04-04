@@ -69,8 +69,8 @@ public class UsageMeasureMain {
 
     ArrayList<IOperatorFactory<ICreatureMutator<UnifiedGpIndiWithUsageStats>>> mutators = new ArrayList<>();
     mutators.add(() -> MutationWrapper.wrap(new UnifiedGpIndiTreeMutator(createTreeBuilder())));
-    mutators.add(() -> new UsageBasedMutator(createTreeBuilder(), true, 3, new SelectRandomNonused()));
-    mutators.add(() -> new UsageBasedMutator(createTreeBuilder(), true, 4, new SelectRandomHighlyUsed()));
+    mutators.add(() -> new UsageBasedMutator(createTreeBuilder(), true, 2, new SelectRandomNonused()));
+    mutators.add(() -> new UsageBasedMutator(createTreeBuilder(), true, 2, new SelectRandomHighlyUsed()));
 
     ArrayList<IOperatorFactory<ICreatureBreeder<UnifiedGpIndiWithUsageStats>>> breeders = new ArrayList<>();
     breeders.add(() -> CrossOverWrapper.wrap(new UnifiedGpIndiBreeder()));
@@ -95,6 +95,10 @@ public class UsageMeasureMain {
 
     crossWeigth = new double[] { 0.40, 0.20, 0.40 };
     mutWeight = new double[] { 0.10, 0.45, 0.45 };
+
+    crossWeigth = new double[] { 0.60, 0.10, 0.30 };
+    mutWeight = new double[] { 0.20, 0.30, 0.50 };
+
     /*
      * if (runNr % 5 == 0) { crossWeigth = new double[] { 0.0, 0.0, 1.0 }; } if
      * (runNr % 5 == 1) { crossWeigth = new double[] { 0.5, 0.5, 0.0 }; } if
