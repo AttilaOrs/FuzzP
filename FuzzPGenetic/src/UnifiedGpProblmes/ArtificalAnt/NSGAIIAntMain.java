@@ -133,7 +133,7 @@ public class NSGAIIAntMain {
 
     Set<Integer> firstFront = algo.getFirstFront();
     for (Integer indi : firstFront) {
-      finalize(pool.get(indi), indi, path + "/FF/", 0);
+      finalize(pool.get(indi), indi, path + "/FF/" + indi, 0);
       
     }
 
