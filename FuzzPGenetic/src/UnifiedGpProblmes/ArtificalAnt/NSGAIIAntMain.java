@@ -86,8 +86,8 @@ public class NSGAIIAntMain {
     NSGAII<UnifiedGpIndi> algo = new NSGAII<>(pool, new MultiplierTransformer(), new double[]{1.0}, crossWeigth,
         new double[]{1.0});
 
-    NSGAII.NSGAII_ITER = 100;
-    NSGAII.NSGAII_POP = 1600;
+    NSGAII.NSGAII_ITER = 150;
+    NSGAII.NSGAII_POP = 2400;
 
 
     long start = System.currentTimeMillis();
@@ -131,11 +131,12 @@ public class NSGAIIAntMain {
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree size"), path + SIZE);
     PlotUtils.hist(algo.getSizeHistLog(), path + SIZE_HIST);
 
-    Set<Integer> firstFront = algo.getFirstFront();
-    for (Integer indi : firstFront) {
-      finalize(pool.get(indi), indi, path + "/FF/" + indi, 0);
-      
-    }
+    /*
+     * Set<Integer> firstFront = algo.getFirstFront(); for (Integer indi :
+     * firstFront) { finalize(pool.get(indi), indi, path + "/FF/" + indi, 0);
+     * 
+     * }
+     */
 
   }
 
