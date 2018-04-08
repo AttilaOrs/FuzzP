@@ -118,7 +118,7 @@ public class SimpleGA<TCreature extends IGPGreature> {
         pool.generate(0, nextIndex(), newEachRound);
 
 			}
-			res = pool.calculateFitness();
+			res = pool.calculateFitnessAndDeleteOldGeneration();
       GenerationSizeStats size = pool.getSizeStats();
       long timeStop = System.nanoTime();
 

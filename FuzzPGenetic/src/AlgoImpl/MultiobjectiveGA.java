@@ -40,11 +40,11 @@ public class MultiobjectiveGA<TCreature extends IGPGreature> extends SimpleGA<TC
     return normal;
   }
 
-  private String getTopicNameMax(int i) {
+  protected String getTopicNameMax(int i) {
     return MAX_FIT_PATT + i;
   }
 
-  private String getTopicNameAvg(int i) {
+  protected String getTopicNameAvg(int i) {
     return AVG_FIT_PATT + i;
   }
 
@@ -100,7 +100,7 @@ public class MultiobjectiveGA<TCreature extends IGPGreature> extends SimpleGA<TC
         }
 
       }
-      res = transform(pool.calculateFitness());
+      res = transform(pool.calculateFitnessAndDeleteOldGeneration());
 
       long timeStop = System.nanoTime();
 
@@ -123,8 +123,9 @@ public class MultiobjectiveGA<TCreature extends IGPGreature> extends SimpleGA<TC
   }
 
   protected void logIterationResults(int iter, Map<Integer, Double[]> res) {
-    double[] maxs = new double[res.size()];
-    double[] sums = new double[res.size()];
+    int size = res.values().stream().mapToInt(r -> r.length).findAny().getAsInt();
+    double[] maxs = new double[size];
+    double[] sums = new double[size];
     for (Double[] oneRes : res.values()) {
       for (int q = 0; q < oneRes.length; q++) {
         sums[q] += oneRes[q];
@@ -134,7 +135,7 @@ public class MultiobjectiveGA<TCreature extends IGPGreature> extends SimpleGA<TC
       }
     }
 
-    for (int q = 0; q < fitnesNormalWeigths.length; q++) {
+    for (int q = 0; q < size; q++) {
       logger.addLogToTopic(getTopicNameMax(q), maxs[q]);
       logger.addLogToTopic(getTopicNameAvg(q), sums[q] / res.size());
     }

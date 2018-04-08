@@ -3,7 +3,7 @@ package structure;
 public class SizeFitnes<Tcreature extends IGPGreature> implements ICreatureFitnes<Tcreature> {
 
   public static int acceptableSize = 10;
-  public static int maxSize = 100;
+  public static int maxSize = 600;
 
   @Override
   public double evaluate(Tcreature creature) {
@@ -18,6 +18,6 @@ public class SizeFitnes<Tcreature extends IGPGreature> implements ICreatureFitne
     if (sum >= maxSize) {
       return 0.0;
     }
-    return 1.0 - ((double) (sum - acceptableSize) / (maxSize - acceptableSize));
+    return 1.0 - ((sum - acceptableSize) / (maxSize - acceptableSize));
   }
 }

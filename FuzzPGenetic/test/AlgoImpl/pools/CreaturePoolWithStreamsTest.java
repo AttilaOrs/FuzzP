@@ -54,7 +54,7 @@ public class CreaturePoolWithStreamsTest {
     underTest.generate(0, 0, 2);
     underTest.generate(1, 2, 2);
 
-    Map<Integer, Double[]> res = underTest.calculateFitness();
+    Map<Integer, Double[]> res = underTest.calculateFitnessAndDeleteOldGeneration();
 
     Assert.assertArrayEquals(res.get(0), new Double[] { 6.0, 0.0 });
     Assert.assertArrayEquals(res.get(1), new Double[] { 6.0, 0.0 });
@@ -67,7 +67,7 @@ public class CreaturePoolWithStreamsTest {
   public void crossover_test() {
     underTest.generate(0, 0, 2);
     underTest.generate(1, 2, 2);
-    Map<Integer, Double[]> res = underTest.calculateFitness();
+    Map<Integer, Double[]> res = underTest.calculateFitnessAndDeleteOldGeneration();
 
     ArrayList<int[]> crossOverids1 = new ArrayList<>();
     crossOverids1.add(new int[] { 0, 2, 5, 6 });
@@ -78,7 +78,7 @@ public class CreaturePoolWithStreamsTest {
     crossOverids2.add(new int[] { 3, 1, 10, 22 });
     underTest.crossover(1, crossOverids2);
 
-    res = underTest.calculateFitness();
+    res = underTest.calculateFitnessAndDeleteOldGeneration();
     Assert.assertArrayEquals(res.get(5), new Double[] { 3.0, 3.0 });
     Assert.assertArrayEquals(res.get(6), new Double[] { 3.0, 3.0 });
     Assert.assertArrayEquals(res.get(9), new Double[] { 3.0, 3.0 });
@@ -95,7 +95,7 @@ public class CreaturePoolWithStreamsTest {
   public void mutation_test() {
     underTest.generate(0, 0, 2);
     underTest.generate(1, 2, 2);
-    Map<Integer, Double[]> res = underTest.calculateFitness();
+    Map<Integer, Double[]> res = underTest.calculateFitnessAndDeleteOldGeneration();
 
     ArrayList<int[]> mutationIds = new ArrayList<>();
     mutationIds.add(new int[] { 0, 7 });
@@ -105,7 +105,7 @@ public class CreaturePoolWithStreamsTest {
     mutationIds2.add(new int[] { 1, 8 });
     mutationIds2.add(new int[] { 3, 11 });
     underTest.mutate(1, mutationIds2);
-    res = underTest.calculateFitness();
+    res = underTest.calculateFitnessAndDeleteOldGeneration();
 
     Assert.assertArrayEquals(res.get(7), new Double[] { 5.0, 1.0 });
     Assert.assertArrayEquals(res.get(10), new Double[] { 0.0, 6.0 });
@@ -116,7 +116,7 @@ public class CreaturePoolWithStreamsTest {
 
   public void noTest() {
     underTest.generate(0, 0, 100000000);
-    Map<Integer, Double[]> res = underTest.calculateFitness();
+    Map<Integer, Double[]> res = underTest.calculateFitnessAndDeleteOldGeneration();
 
   }
 

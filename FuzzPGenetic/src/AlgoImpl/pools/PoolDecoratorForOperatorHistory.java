@@ -73,8 +73,21 @@ public class PoolDecoratorForOperatorHistory<TCreatue extends IGPGreature> imple
   }
 
   @Override
-  public Map<Integer, Double[]> calculateFitness() {
-    Map<Integer, Double[]> res = realPool.calculateFitness();
+  public Map<Integer, Double[]> calculateFitnessAndDeleteOldGeneration() {
+    Map<Integer, Double[]> res = realPool.calculateFitnessAndDeleteOldGeneration();
+    if (transformer != null) {
+      res = transformer.transform(res);
+    }
+    calculateAvarges(res);
+    logAvarages();
+    resetSavedIds();
+
+    return res;
+  }
+
+  @Override
+  public Map<Integer, Double[]> calculateFitnessAndMergeOldGenWithNew() {
+    Map<Integer, Double[]> res = realPool.calculateFitnessAndMergeOldGenWithNew();
     if (transformer != null) {
       res = transformer.transform(res);
     }

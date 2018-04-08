@@ -169,8 +169,7 @@ public class CreaturePoolWithStreams<TCreatue extends IGPGreature>
 		}
 	}
 
-	@Override
-	public HashMap<Integer, Double[]> calculateFitness() {
+  public void doFitnessCalc() {
 		try {
 			pool.submit(
 					() -> {
@@ -182,6 +181,11 @@ public class CreaturePoolWithStreams<TCreatue extends IGPGreature>
 			e.printStackTrace();
 		}
 		freeUpManagers();
+  }
+
+  @Override
+  public HashMap<Integer, Double[]> calculateFitnessAndDeleteOldGeneration() {
+    doFitnessCalc();
 		oldResult = curentResult;
 		curentResult = new ConcurrentHashMap<>();
 		oldPool = curentPool;
@@ -190,6 +194,18 @@ public class CreaturePoolWithStreams<TCreatue extends IGPGreature>
 		toRet.putAll(oldResult);
 		return toRet;
 	}
+
+  @Override
+  public Map<Integer, Double[]> calculateFitnessAndMergeOldGenWithNew() {
+    doFitnessCalc();
+    oldResult.putAll(curentResult);
+    oldPool.putAll(curentPool);
+    curentResult = new ConcurrentHashMap<>();
+    curentPool = new ConcurrentHashMap<>();
+    HashMap<Integer, Double[]> toRet = new HashMap<>();
+    toRet.putAll(oldResult);
+    return toRet;
+  }
 
 	private void freeUpManagers() {
 		breederManagers.forEach(m -> m.allOpsAreFree());

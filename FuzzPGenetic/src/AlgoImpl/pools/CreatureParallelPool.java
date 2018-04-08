@@ -84,7 +84,7 @@ public class CreatureParallelPool<TCreatue extends IGPGreature>
 	}
 
 	@Override
-	public HashMap<Integer, Double[]> calculateFitness() {
+	public HashMap<Integer, Double[]> calculateFitnessAndDeleteOldGeneration() {
 		waitThreadsToFinish();
 		oldResult = curentResult;
 		curentResult = new ConcurrentHashMap<>();
@@ -94,6 +94,19 @@ public class CreatureParallelPool<TCreatue extends IGPGreature>
 		toRet.putAll(oldResult);
 		return toRet;
 	}
+
+  @Override
+  public Map<Integer, Double[]> calculateFitnessAndMergeOldGenWithNew() {
+    waitThreadsToFinish();
+    oldResult.putAll(curentResult);
+    oldPool.putAll(curentPool);
+    curentResult = new ConcurrentHashMap<>();
+    curentPool = new ConcurrentHashMap<>();
+    HashMap<Integer, Double[]> toRet = new HashMap<>();
+    toRet.putAll(oldResult);
+    return toRet;
+  }
+
 
 	@Override
 	public void survive(List<int[]> idsToSurvive) {
@@ -341,4 +354,5 @@ public class CreatureParallelPool<TCreatue extends IGPGreature>
         sum.depth / oldPool.size());
     return new GenerationSizeStats(min, max, avg, hist);
   }
+
 }

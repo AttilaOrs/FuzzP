@@ -10,7 +10,9 @@ import structure.operators.ICreatureMutator;
 
 public interface ICreaturePool<TCreature extends IGPGreature> {
 
-  Map<Integer, Double[]> calculateFitness();
+  Map<Integer, Double[]> calculateFitnessAndDeleteOldGeneration();
+
+  Map<Integer, Double[]> calculateFitnessAndMergeOldGenWithNew();
 
   void survive(List<int[]> idsToSurvive);
 

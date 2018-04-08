@@ -62,8 +62,8 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
   }
 
   @Override
-  public Map<Integer, Double[]> calculateFitness() {
-    Map<Integer, Double[]> i = wraped.calculateFitness();
+  public Map<Integer, Double[]> calculateFitnessAndDeleteOldGeneration() {
+    Map<Integer, Double[]> i = wraped.calculateFitnessAndDeleteOldGeneration();
     double newMax = i.values().stream().mapToDouble(arr -> arr[0]).summaryStatistics().getMax();
     if (newMax - oldMax > 0.00000000000000001) {
       discoveryCounter = 7;
@@ -379,6 +379,11 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
       return 1.0;
     }
     return 0.5;
+  }
+
+  @Override
+  public Map<Integer, Double[]> calculateFitnessAndMergeOldGenWithNew() {
+    throw new RuntimeException(" unsupported unimplemneted");
   }
 
 }

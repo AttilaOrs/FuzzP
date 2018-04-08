@@ -98,7 +98,7 @@ public class MultiobjectiveMulioperatorGA<TCreature extends IGPGreature> extends
         }
 
       }
-      res = transform(pool.calculateFitness());
+      res = transform(pool.calculateFitnessAndDeleteOldGeneration());
       long timeStop = System.nanoTime();
 
       logMemoryAndGc();
