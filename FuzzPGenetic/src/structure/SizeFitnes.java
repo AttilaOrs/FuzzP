@@ -1,8 +1,10 @@
 package structure;
 
+import static java.lang.Math.sqrt;
+
 public class SizeFitnes<Tcreature extends IGPGreature> implements ICreatureFitnes<Tcreature> {
 
-  public static int acceptableSize = 10;
+  public static int acceptableSize = 20;
   public static int maxSize = 600;
 
   @Override
@@ -18,6 +20,6 @@ public class SizeFitnes<Tcreature extends IGPGreature> implements ICreatureFitne
     if (sum >= maxSize) {
       return 0.0;
     }
-    return 1.0 - ((sum - acceptableSize) / (maxSize - acceptableSize));
+    return sqrt(sqrt((1.0 - ((sum - acceptableSize) / (maxSize - acceptableSize)))));
   }
 }

@@ -52,7 +52,7 @@ public class NSGAIIAntMain {
     }
   }
 
-  static double prob = 50.0;
+  static double prob = 30.0;
   private static final int HALD_RANK_MAX_SIZE = 7;
 
   public static void doStuff(String path, int runNr) {
