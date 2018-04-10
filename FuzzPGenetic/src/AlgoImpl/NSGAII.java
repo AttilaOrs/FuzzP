@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ForkJoinPool;
 import java.util.Map.Entry;
 
 import AlgoImpl.Selectors.NSGAIISelector;
@@ -25,12 +26,12 @@ public class NSGAII<TCreature extends IGPGreature> extends MultiobjectiveGA<TCre
   private NSGAIISelector nsgaSelector;
 
   public NSGAII(ICreaturePool<TCreature> pool, IFitnesTransformer transformer, double[] generatorWeigths,
-      double[] crossoverWeights, double[] mutationWeights) {
+      double[] crossoverWeights, double[] mutationWeights, ForkJoinPool threadPool) {
     super(pool, null, null, new double[]{1.0}, transformer);
     this.generatorNormalWeigths = normalise(generatorWeigths);
     this.crossoverNormalWeigths = normalise(crossoverWeights);
     this.mutatationNormalWeigths = normalise(mutationWeights);
-    nsgaSelector = new NSGAIISelector();
+    nsgaSelector = new NSGAIISelector(threadPool);
     logger = new IterationLogger(
         Arrays.asList(getTopicNameMax(0), getTopicNameAvg(0), getTopicNameMax(1), IterationLogger.POP_SIZE));
   }

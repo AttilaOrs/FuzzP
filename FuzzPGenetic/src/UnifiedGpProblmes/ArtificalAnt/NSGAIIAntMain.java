@@ -10,6 +10,7 @@ import AlgoImpl.IterationLogger;
 import AlgoImpl.MultiplierTransformer;
 import AlgoImpl.NSGAII;
 import AlgoImpl.pools.CreatureParallelPool;
+import AlgoImpl.pools.CreaturePoolWithStreams;
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
@@ -80,11 +81,11 @@ public class NSGAIIAntMain {
 
     double[] crossWeigth = new double[]{0.5, 0.5};
 
-    CreatureParallelPool<UnifiedGpIndi> pool = new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders,
+    CreaturePoolWithStreams<UnifiedGpIndi> pool = new CreaturePoolWithStreams<UnifiedGpIndi>(gens, mutators, breeders,
         fitnesses);
     
     NSGAII<UnifiedGpIndi> algo = new NSGAII<>(pool, new MultiplierTransformer(), new double[]{1.0}, crossWeigth,
-        new double[]{1.0});
+        new double[]{1.0}, pool.getForkJoinPool());
 
     NSGAII.NSGAII_ITER = 150;
     NSGAII.NSGAII_POP = 2400;

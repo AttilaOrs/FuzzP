@@ -84,6 +84,10 @@ public class CreaturePoolWithStreams<TCreatue extends IGPGreature>
 		rnd = new Random();
 		pool = new ForkJoinPool(THREAD_NR);
 	}
+	
+	public ForkJoinPool getForkJoinPool() {
+	  return pool;
+	}
 
 	private <MagicOp> ArrayList<OpManager<MagicOp>> makeManagers(
 			ArrayList<IOperatorFactory<MagicOp>> factories) {

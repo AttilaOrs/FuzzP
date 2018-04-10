@@ -4,15 +4,25 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
+
 public class NSGAIISelector {
+	
+	private ForkJoinPool myPool;
+
+	public NSGAIISelector(ForkJoinPool myPool) {
+		this.myPool = myPool;
+	}
 
 
   private static final double EPSILON = 0.0001;
@@ -25,10 +35,12 @@ public class NSGAIISelector {
 
   private Random rnd = new Random();
 
-  public void initialize(Map<Integer, Double[]> res) {
-    assert (res.values().iterator().next().length == 2);
+  public void initialize(Map<Integer, Double[]> originalRes) {
+    assert (originalRes.values().iterator().next().length >= 2);
+    Map<Integer, Double[]>  res = new ConcurrentHashMap<>();
+    res.putAll(originalRes);
     fronts = new ArrayList<>();
-    ranks = new HashMap<>();
+    ranks = new ConcurrentHashMap<>();
     population = new ArrayList<>(res.keySet());
     Map<Integer, IntermediateEntry> inter = createIntermediateRes(res);
 
@@ -53,74 +65,77 @@ public class NSGAIISelector {
   }
 
   private void calculateCroudingDistance(Map<Integer, Double[]> res) {
-    for (Set<Integer> front : fronts) {
-      List<Integer> sortedFirst = front.stream().sorted((i1, i2) -> Double.compare(res.get(i1)[0], res.get(i2)[0]))
-          .collect(toList());
-      List<Integer> sortedSecond = front.stream().sorted((i1, i2) -> Double.compare(res.get(i1)[1], res.get(i2)[1]))
-          .collect(toList());
-      DoubleSummaryStatistics stat = front.stream().mapToDouble(i -> res.get(i)[0]).summaryStatistics();
-      final double firsMin = stat.getMin();
-      final double firsMax = stat.getMax();
-      stat = front.stream().mapToDouble(i -> res.get(i)[1]).summaryStatistics();
-      final double secondMin = stat.getMin();
-      final double secondMax = stat.getMax();
-
-      ranks.get(sortedFirst.get(0)).distance = 42424242424242.0;
-      ranks.get(sortedFirst.get(sortedFirst.size() - 1)).distance = 42424242424242.0;
-      for (int i = 1; i < sortedFirst.size() - 1; i++) {
-        ranks.get(
-            sortedFirst.get(i)).distance += (res.get(sortedFirst.get(i + 1))[0] - res.get(sortedFirst.get(i - 1))[0])
-                / (firsMax - firsMin);
-      }
-
-      ranks.get(sortedSecond.get(0)).distance = 42424242424242.0;
-      ranks.get(sortedSecond.get(sortedSecond.size() - 1)).distance = 42424242424242.0;
-      for (int i = 1; i < sortedSecond.size() - 1; i++) {
-        ranks.get(
-            sortedSecond.get(i)).distance += (res.get(sortedSecond.get(i + 1))[1] - res.get(sortedSecond.get(i - 1))[1])
-                / (secondMax - secondMin);
-      }
-
-    }
+    int lenght = res.values().stream().mapToInt(fit -> fit.length).findAny().getAsInt();
+    try {
+		myPool.submit(() ->{
+			fronts.parallelStream().forEach(front ->{
+				for(int fi = 0; fi< lenght; fi++) {
+				  final int fitnes = fi;
+				  List<Integer> sortedFirst = front.stream().sorted((i1, i2) -> 
+				     Double.compare(res.get(i1)[fitnes], res.get(i2)[fitnes]))
+					  .collect(toList());
+				  DoubleSummaryStatistics stat = front.stream().mapToDouble(i -> res.get(i)[0]).summaryStatistics();
+				  final double firsMin = stat.getMin();
+				  final double firsMax = stat.getMax();
+				  ranks.get(sortedFirst.get(0)).distance = 42424242424242.0;
+				  ranks.get(sortedFirst.get(sortedFirst.size() - 1)).distance = 42424242424242.0;
+				  for (int i = 1; i < sortedFirst.size() - 1; i++) {
+					ranks.get(
+						sortedFirst.get(i)).distance += (res.get(sortedFirst.get(i + 1))[fi] - res.get(sortedFirst.get(i - 1))[fi])
+							/ (firsMax - firsMin);
+				  }
+				}
+			});
+		}).get();
+	} catch (InterruptedException | ExecutionException e) {
+		e.printStackTrace();
+	}
 
   }
 
-  int biggerOrEqual(Double d1, Double d2) {
-    if (d1 - d2 > EPSILON) {
-      return 2;
-    }
-    if (Math.abs(d1 - d2) < EPSILON) {
-      return 1;
-    }
-    return 0;
+  
+  protected boolean dominated(Double[] one, Double[] two) {
+	  boolean hasOneBigger = false;
+	  for(int i =0; i < one.length; i++) {
+		  if(one[i]-two[i]>EPSILON) {
+			  hasOneBigger = true;
+		  } else if(Math.abs(one[i] - two[i]) > EPSILON) {
+			  return false;
+		  }
+	  }
+	  return hasOneBigger;
   }
 
   protected Map<Integer, IntermediateEntry> createIntermediateRes(Map<Integer, Double[]> res) {
-    Map<Integer, IntermediateEntry> intermediateResult = new HashMap<>();
-    Set<Integer> firstFront = new HashSet<>();
+    Map<Integer, IntermediateEntry> intermediateResult = new ConcurrentHashMap<>();
+    Set<Integer> firstFront = new ConcurrentSkipListSet<>();
+    try {
+		myPool.submit(() ->{
+			res.keySet().parallelStream().forEach(keyPrincipal -> {
+			  IntermediateEntry principalEntry = new IntermediateEntry();
+			  for (Integer keySecondary : res.keySet()) {
+				if (keyPrincipal != keySecondary) {
+				  Double[] principalFitnes = res.get(keyPrincipal);
+				  Double[] secondaryFitnes = res.get(keySecondary);
+				  if (dominated(principalFitnes, secondaryFitnes)) {
+					principalEntry.domunatedByMe.add(keySecondary);
+				  } else if (dominated(secondaryFitnes, principalFitnes)) {
+					principalEntry.domintaionCount++;
+				  }
 
-    for (Integer keyPrincipal : res.keySet()) {
-      IntermediateEntry principalEntry = new IntermediateEntry();
-      for (Integer keySecondary : res.keySet()) {
-        if (keyPrincipal != keySecondary) {
-          Double[] principalFitnes = res.get(keyPrincipal);
-          Double[] secondaryFitnes = res.get(keySecondary);
-          if (biggerOrEqual(principalFitnes[0], secondaryFitnes[0])
-              + biggerOrEqual(principalFitnes[1], secondaryFitnes[1]) >= 3) {
-            principalEntry.domunatedByMe.add(keySecondary);
-          } else if (biggerOrEqual(secondaryFitnes[0], principalFitnes[0])
-              + biggerOrEqual(secondaryFitnes[1], principalFitnes[1]) >= 3) {
-            principalEntry.domintaionCount++;
-          }
+				}
+			  }
+			  if (principalEntry.domintaionCount == 0) {
+				firstFront.add(keyPrincipal);
+				ranks.put(keyPrincipal, new RankAndDistance(0));
+			  }
+			  intermediateResult.put(keyPrincipal, principalEntry);
+			});
+		}).get();
+	} catch (InterruptedException | ExecutionException e) {
+		e.printStackTrace();
+	}
 
-        }
-      }
-      if (principalEntry.domintaionCount == 0) {
-        firstFront.add(keyPrincipal);
-        ranks.put(keyPrincipal, new RankAndDistance(0));
-      }
-      intermediateResult.put(keyPrincipal, principalEntry);
-    }
     fronts.add(firstFront);
     return intermediateResult;
   }
