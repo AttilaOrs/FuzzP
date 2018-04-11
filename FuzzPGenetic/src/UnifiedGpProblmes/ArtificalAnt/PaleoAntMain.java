@@ -1,7 +1,6 @@
 package UnifiedGpProblmes.ArtificalAnt;
 
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
@@ -9,10 +8,8 @@ import com.google.gson.Gson;
 import AlgoImpl.IterationLogger;
 import AlgoImpl.MultiplierTransformer;
 import AlgoImpl.PaleoMultiobejctiveAlgo;
-import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
 import AlgoImpl.Selectors.PaleoSelectors.PaleoSelector;
 import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
-import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.CreaturePoolWithStreams;
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
@@ -92,9 +89,9 @@ public class PaleoAntMain {
     PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool, new MultiplierTransformer(), new double[]{1.0}, crossWeigth,
         new double[]{1.0}, selector);
 
-    PaleoMultiobejctiveAlgo.PALEO_ITER = 50;
-    PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 100;
-    PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 100;
+    PaleoMultiobejctiveAlgo.PALEO_ITER = 150;
+    PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 2400;
+    PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 2400;
 
 
     long start = System.currentTimeMillis();
