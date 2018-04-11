@@ -1,17 +1,14 @@
 package AlgoImpl.Selectors.PaleoSelectors;
 
 import static java.util.stream.Collectors.toList;
-import static org.mockito.Matchers.intThat;
 
 import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
