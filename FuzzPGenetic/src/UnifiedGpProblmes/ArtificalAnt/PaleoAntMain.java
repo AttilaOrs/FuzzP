@@ -8,7 +8,10 @@ import com.google.gson.Gson;
 
 import AlgoImpl.IterationLogger;
 import AlgoImpl.MultiplierTransformer;
-import AlgoImpl.NSGAII;
+import AlgoImpl.PaleoMultiobejctiveAlgo;
+import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
+import AlgoImpl.Selectors.PaleoSelectors.PaleoSelector;
+import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
 import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.CreaturePoolWithStreams;
 import UnifiedGp.AbstactFitness;
@@ -31,7 +34,7 @@ import structure.operators.ICreatureBreeder;
 import structure.operators.ICreatureGenerator;
 import structure.operators.ICreatureMutator;
 
-public class NSGAIIAntMain {
+public class PaleoAntMain {
 
   private static final String CONFIG_REZ = "ConfRez.txt";
   private static final String DIVERSITY = "diversity";
@@ -48,7 +51,7 @@ public class NSGAIIAntMain {
 
   public static void main(String[] args) {
     for (int i = 0; i < 60; i++) {
-      doStuff("antNSGA" + i + "/", i);
+      doStuff("antPaleo" + i + "/", i);
     }
   }
 
@@ -83,12 +86,15 @@ public class NSGAIIAntMain {
 
     CreaturePoolWithStreams<UnifiedGpIndi> pool = new CreaturePoolWithStreams<UnifiedGpIndi>(gens, mutators, breeders,
         fitnesses);
+    PaleoSelector selector = new SPEAIISelector(pool.getForkJoinPool());
     
-    NSGAII<UnifiedGpIndi> algo = new NSGAII<>(pool, new MultiplierTransformer(), new double[]{1.0}, crossWeigth,
-        new double[]{1.0}, pool.getForkJoinPool());
 
-    NSGAII.NSGAII_ITER = 150;
-    NSGAII.NSGAII_POP = 2400;
+    PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool, new MultiplierTransformer(), new double[]{1.0}, crossWeigth,
+        new double[]{1.0}, selector);
+
+    PaleoMultiobejctiveAlgo.PALEO_ITER = 50;
+    PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 100;
+    PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 100;
 
 
     long start = System.currentTimeMillis();
@@ -96,16 +102,16 @@ public class NSGAIIAntMain {
     long stop = System.currentTimeMillis();
 
 
-    long startTime = System.currentTimeMillis();
     Integer i = algo.getBestBasedOn(0);
-    long stopTime = System.currentTimeMillis();
 
     UnifiedGpIndi rez = pool.get(i);
-    double rezFitnes = finalize(rez, runNr, path, stopTime - startTime);
-    String config = "population " + NSGAII.NSGAII_POP + "\n";
-    config += "iteration " + NSGAII.NSGAII_POP + "\n";
+    double rezFitnes = finalize(rez, runNr, path, start - stop);
+    String config = "population surv" + PaleoMultiobejctiveAlgo.PALEO_SURV_POP + "\n";
+    config += "population new " + PaleoMultiobejctiveAlgo.PALEO_NEW_POP + "\n";
+    config += "iteration " + PaleoMultiobejctiveAlgo.PALEO_ITER + "\n";
     config += "size limit " + AntFitnes.SIZE_LIMIT + "\n";
-    config += "ops " + NSGAII.NSGAII_CROSS + " " + NSGAII.NSGAII_MUT + "\n";
+    config += "paleo selector " + selector.getClass().getSimpleName() + "\n";
+    config += "ops " + PaleoMultiobejctiveAlgo.PALEO_CROSS + " " + PaleoMultiobejctiveAlgo.PALEO_MUT + "\n";
     config += "cross " + breeders.get(0).generate().getClass().getSimpleName() + "\n";
     config += "cross " + breeders.get(1).generate().getClass().getSimpleName() + " " + prob + "\n";
     config += "crossWeights " + crossWeigth[0] + " " + crossWeigth[1] + "\n";
@@ -121,8 +127,6 @@ public class NSGAIIAntMain {
     PlotUtils.writeToFile(path + CONFIG_REZ, config);
 
 
-    // UnifiedVizualizer.visualize(convRez.net, rec,
-    // TransitionPlaceNameStore.createOrdinarNames(convRez.net));
     IterationLogger logger = algo.getLogger();
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree depth"), path + DEPTH);
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree ops"), path + OPS);

@@ -1,6 +1,7 @@
-package AlgoImpl.Selectors;
+package AlgoImpl.Selectors.PaleoSelectors;
 
 import static java.util.stream.Collectors.toList;
+import static org.mockito.Matchers.intThat;
 
 import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
@@ -16,25 +17,18 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 
-public class NSGAIISelector {
+public class NSGAIISelector extends AbstactMultiobejctiveSelector {
 	
-	private ForkJoinPool myPool;
-
-	public NSGAIISelector(ForkJoinPool myPool) {
-		this.myPool = myPool;
-	}
-
-
-  private static final double EPSILON = 0.0001;
+  public NSGAIISelector(ForkJoinPool myPool) {
+    super(myPool);
+  }
 
   protected List<Set<Integer>> fronts;
 
   private Map<Integer, RankAndDistance> ranks;
 
-  private List<Integer> population;
 
-  private Random rnd = new Random();
-
+  @Override
   public void initialize(Map<Integer, Double[]> originalRes) {
     assert (originalRes.values().iterator().next().length >= 2);
     Map<Integer, Double[]>  res = new ConcurrentHashMap<>();
@@ -42,19 +36,21 @@ public class NSGAIISelector {
     fronts = new ArrayList<>();
     ranks = new ConcurrentHashMap<>();
     population = new ArrayList<>(res.keySet());
-    Map<Integer, IntermediateEntry> inter = createIntermediateRes(res);
+    IntermedateResult inter = createIntermediateRes(res);
+    fronts.add(inter.firstFront);
+    inter.firstFront.stream().forEach(i -> ranks.put(i, new RankAndDistance(0)));
+    Map<Integer, IntermediateEntry> intermediateResultMap = inter.intermediateResultMap;
 
     int frontIndex = 0;
     while (fronts.get(frontIndex).size() != 0) {
       HashSet<Integer> newFront = new HashSet<>();
       for (Integer previousFronMeber : fronts.get(frontIndex)) {
-        for (Integer dominated : inter.get(previousFronMeber).domunatedByMe) {
-          inter.get(dominated).domintaionCount -= 1;
-          if(inter.get(dominated).domintaionCount == 0) {
+        for (Integer dominated : intermediateResultMap.get(previousFronMeber).domunatedByMe) {
+          intermediateResultMap.get(dominated).domintaionCount -= 1;
+          if (intermediateResultMap.get(dominated).domintaionCount == 0) {
             ranks.put(dominated, new RankAndDistance(frontIndex + 1));
             newFront.add(dominated);
           }
-
         }
       }
       fronts.add(newFront);
@@ -94,52 +90,9 @@ public class NSGAIISelector {
   }
 
   
-  protected boolean dominated(Double[] one, Double[] two) {
-	  boolean hasOneBigger = false;
-	  for(int i =0; i < one.length; i++) {
-		  if(one[i]-two[i]>EPSILON) {
-			  hasOneBigger = true;
-		  } else if(Math.abs(one[i] - two[i]) > EPSILON) {
-			  return false;
-		  }
-	  }
-	  return hasOneBigger;
-  }
 
-  protected Map<Integer, IntermediateEntry> createIntermediateRes(Map<Integer, Double[]> res) {
-    Map<Integer, IntermediateEntry> intermediateResult = new ConcurrentHashMap<>();
-    Set<Integer> firstFront = new ConcurrentSkipListSet<>();
-    try {
-		myPool.submit(() ->{
-			res.keySet().parallelStream().forEach(keyPrincipal -> {
-			  IntermediateEntry principalEntry = new IntermediateEntry();
-			  for (Integer keySecondary : res.keySet()) {
-				if (keyPrincipal != keySecondary) {
-				  Double[] principalFitnes = res.get(keyPrincipal);
-				  Double[] secondaryFitnes = res.get(keySecondary);
-				  if (dominated(principalFitnes, secondaryFitnes)) {
-					principalEntry.domunatedByMe.add(keySecondary);
-				  } else if (dominated(secondaryFitnes, principalFitnes)) {
-					principalEntry.domintaionCount++;
-				  }
 
-				}
-			  }
-			  if (principalEntry.domintaionCount == 0) {
-				firstFront.add(keyPrincipal);
-				ranks.put(keyPrincipal, new RankAndDistance(0));
-			  }
-			  intermediateResult.put(keyPrincipal, principalEntry);
-			});
-		}).get();
-	} catch (InterruptedException | ExecutionException e) {
-		e.printStackTrace();
-	}
-
-    fronts.add(firstFront);
-    return intermediateResult;
-  }
-
+  @Override
   public List<int[]> selectNondeterministicly(int howMany, int arraysSize) {
     List<int[]> toRet = new ArrayList<>();
     int frontCntr = 0;
@@ -169,20 +122,9 @@ public class NSGAIISelector {
 
   }
 
-  public List<int[]> selectOne(int howMany, int arraySize) {
-    List<int[]> toRet = new ArrayList<>();
-    for (int i = 0; i < howMany; i++) {
-      int firstIndi = population.get(rnd.nextInt(population.size()));
-      int secondIndi = population.get(rnd.nextInt(population.size()));
-      int selected = compare(firstIndi, secondIndi);
-      int arr[] = new int[arraySize];
-      arr[0] = selected;
-      toRet.add(arr);
-    }
-    return toRet;
-  }
 
-  private int compare(int firstIndi, int secondIndi) {
+  @Override
+  protected int compareIndi(int firstIndi, int secondIndi) {
     RankAndDistance fiRank = ranks.get(firstIndi);
     RankAndDistance seRank = ranks.get(secondIndi);
     if (fiRank.rank < seRank.rank) {
@@ -197,36 +139,7 @@ public class NSGAIISelector {
     return secondIndi;
   }
 
-  public List<int[]> selectPairs(int howMany, int arraySize) {
-    List<int[]> toRet = new ArrayList<>();
-    for (int i = 0; i < howMany; i++) {
-      int firstIndi = population.get(rnd.nextInt(population.size()));
-      int secondIndi = population.get(rnd.nextInt(population.size()));
-      int selected = compare(firstIndi, secondIndi);
-      int selected2 = selected;
-      while (selected2 == selected) {
-        firstIndi = population.get(rnd.nextInt(population.size()));
-        secondIndi = population.get(rnd.nextInt(population.size()));
-        selected2 = compare(firstIndi, secondIndi);
-      }
 
-      int arr[] = new int[arraySize];
-      arr[0] = selected;
-      arr[1] = selected2;
-      toRet.add(arr);
-    }
-    return toRet;
-  }
-
-  protected static class IntermediateEntry {
-    int domintaionCount = 0;
-    HashSet<Integer> domunatedByMe = new HashSet<>();
-
-    @Override
-    public String toString() {
-      return "Entry [domintaionCount=" + domintaionCount + ", domunatedByMe=" + domunatedByMe + "]";
-    }
-  }
 
   protected static class RankAndDistance {
     int rank;
@@ -244,6 +157,7 @@ public class NSGAIISelector {
 
   }
 
+  @Override
   public Set<Integer> getFirstFront() {
     return fronts.get(0);
   }

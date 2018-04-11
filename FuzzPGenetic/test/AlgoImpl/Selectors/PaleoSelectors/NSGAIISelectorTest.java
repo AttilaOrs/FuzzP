@@ -1,4 +1,4 @@
-package AlgoImpl.Selectors;
+package AlgoImpl.Selectors.PaleoSelectors;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
+
+import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
 
 public class NSGAIISelectorTest {
 
