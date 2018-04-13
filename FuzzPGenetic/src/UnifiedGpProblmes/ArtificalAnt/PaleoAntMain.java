@@ -1,13 +1,16 @@
 package UnifiedGpProblmes.ArtificalAnt;
 
 import java.util.ArrayList;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import com.google.gson.Gson;
 
 import AlgoImpl.IterationLogger;
 import AlgoImpl.MultiplierTransformer;
 import AlgoImpl.PaleoMultiobejctiveAlgo;
+import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
 import AlgoImpl.Selectors.PaleoSelectors.PaleoSelector;
 import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
 import AlgoImpl.pools.CreaturePoolWithStreams;
@@ -48,14 +51,18 @@ public class PaleoAntMain {
 
   public static void main(String[] args) {
     for (int i = 0; i < 60; i++) {
-      doStuff("antPaleo" + i + "/", i);
+      if (i % 2 == 0) {
+        doStuff("NSGII/antPaleo" + i + "/", i, join -> new NSGAIISelector(join));
+      } else {
+        doStuff("SPEAII/antPaleo" + i + "/", i, join -> new SPEAIISelector(join));
+      }
     }
   }
 
   static double prob = 30.0;
   private static final int HALD_RANK_MAX_SIZE = 7;
 
-  public static void doStuff(String path, int runNr) {
+  public static void doStuff(String path, int runNr, Function<ForkJoinPool, PaleoSelector> selectorFactory) {
 
     ArrayList<IOperatorFactory<ICreatureGenerator<UnifiedGpIndi>>> gens = new ArrayList<>();
     gens.add(() -> new HalfRampHalfFull(new TreeBuilderCongigGeneralImpl(AntFitnes.problemSpecification()),
@@ -83,15 +90,15 @@ public class PaleoAntMain {
 
     CreaturePoolWithStreams<UnifiedGpIndi> pool = new CreaturePoolWithStreams<UnifiedGpIndi>(gens, mutators, breeders,
         fitnesses);
-    PaleoSelector selector = new SPEAIISelector(pool.getForkJoinPool());
+    PaleoSelector selector = selectorFactory.apply(pool.getForkJoinPool());
     
 
     PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool, new MultiplierTransformer(), new double[]{1.0}, crossWeigth,
         new double[]{1.0}, selector);
 
-    PaleoMultiobejctiveAlgo.PALEO_ITER = 150;
-    PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 2400;
-    PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 2400;
+    PaleoMultiobejctiveAlgo.PALEO_ITER = 100;
+    PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 4000;
+    PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 4000;
 
 
     long start = System.currentTimeMillis();
