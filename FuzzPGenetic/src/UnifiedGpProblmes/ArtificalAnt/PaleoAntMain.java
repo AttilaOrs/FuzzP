@@ -13,7 +13,7 @@ import AlgoImpl.PaleoMultiobejctiveAlgo;
 import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
 import AlgoImpl.Selectors.PaleoSelectors.PaleoSelector;
 import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
-import AlgoImpl.pools.CreaturePoolWithStreams;
+import AlgoImpl.pools.CreatureParallelPool;
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
@@ -88,9 +88,9 @@ public class PaleoAntMain {
 
     double[] crossWeigth = new double[]{0.5, 0.5};
 
-    CreaturePoolWithStreams<UnifiedGpIndi> pool = new CreaturePoolWithStreams<UnifiedGpIndi>(gens, mutators, breeders,
+    CreatureParallelPool<UnifiedGpIndi> pool = new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders,
         fitnesses);
-    PaleoSelector selector = selectorFactory.apply(pool.getForkJoinPool());
+    PaleoSelector selector = selectorFactory.apply(new ForkJoinPool(16));
     
 
     PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool, new MultiplierTransformer(), new double[]{1.0}, crossWeigth,
