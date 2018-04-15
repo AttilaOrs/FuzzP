@@ -96,9 +96,9 @@ public class PaleoAntMain {
     PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool, new MultiplierTransformer(), new double[]{1.0}, crossWeigth,
         new double[]{1.0}, selector);
 
-    PaleoMultiobejctiveAlgo.PALEO_ITER = 100;
-    PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 4000;
-    PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 4000;
+    PaleoMultiobejctiveAlgo.PALEO_ITER = 150;
+    PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 6000;
+    PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 6000;
 
 
     long start = System.currentTimeMillis();
