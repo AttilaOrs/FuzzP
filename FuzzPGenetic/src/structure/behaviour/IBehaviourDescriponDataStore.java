@@ -2,7 +2,7 @@ package structure.behaviour;
 
 import java.util.Set;
 
-interface IBehaviourDescriponDataStore<TBehaviourDescription> {
+public interface IBehaviourDescriponDataStore<TBehaviourDescription> {
 
   public void store(Integer id, TBehaviourDescription descriton);
 

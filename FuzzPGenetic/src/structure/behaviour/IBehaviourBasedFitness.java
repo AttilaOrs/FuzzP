@@ -1,8 +1,6 @@
 package structure.behaviour;
 
-interface IBehaviourBasedFitness<TCreature, TBehaviourDescription> {
-
-  boolean reeavluateAfterSurvival();
+public interface IBehaviourBasedFitness<TCreature, TBehaviourDescription> {
 
   void setStore(IBehaviourDescriponDataStore<TBehaviourDescription> store);
 

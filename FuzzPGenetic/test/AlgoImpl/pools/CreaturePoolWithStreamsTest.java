@@ -1,5 +1,7 @@
 package AlgoImpl.pools;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
@@ -19,7 +21,7 @@ import structure.operators.ICreatureGenerator;
 import structure.operators.ICreatureMutator;
 
 public class CreaturePoolWithStreamsTest {
-  ICreaturePool<TestCreature> underTest;
+  protected ICreaturePool<TestCreature> underTest;
 
   protected ArrayList<IOperatorFactory<ICreatureGenerator<TestCreature>>> generators;
   protected ArrayList<IOperatorFactory<ICreatureMutator<TestCreature>>> mutators;
@@ -88,6 +90,33 @@ public class CreaturePoolWithStreamsTest {
     Assert.assertArrayEquals(res.get(8), new Double[] { 2.0, 4.0 });
     Assert.assertArrayEquals(res.get(10), new Double[] { 2.0, 4.0 });
     Assert.assertArrayEquals(res.get(22), new Double[] { 4.0, 2.0 });
+
+  }
+
+  @Test
+  public void oldPoolMergeTest() {
+    underTest.generate(0, 0, 10);
+    underTest.generate(1, 10, 20);
+    underTest.calculateFitnessAndDeleteOldGeneration();
+
+    ArrayList<int[]> crossOverids1 = new ArrayList<>();
+    crossOverids1.add(new int[]{0, 1, 21, 22});
+    crossOverids1.add(new int[]{3, 10, 23, 24});
+    underTest.crossover(0, crossOverids1);
+    ArrayList<int[]> crossOverids2 = new ArrayList<>();
+    crossOverids2.add(new int[]{12, 13, 25, 26});
+    crossOverids2.add(new int[]{4, 16, 27, 28});
+    underTest.crossover(1, crossOverids2);
+    ArrayList<int[]> mutationIds = new ArrayList<>();
+    mutationIds.add(new int[]{2, 29});
+    underTest.mutate(0, mutationIds);
+    ArrayList<int[]> mutationIds2 = new ArrayList<>();
+    mutationIds.add(new int[]{18, 20});
+    underTest.mutate(1, mutationIds2);
+
+    Map<Integer, Double[]> rez = underTest.calculateFitnessAndMergeOldGenWithNew();
+
+    assertTrue(rez.size() == 30);
 
   }
 
