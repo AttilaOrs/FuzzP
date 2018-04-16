@@ -19,7 +19,7 @@ import structure.ICreatureFitnes;
 
 public class AntFitnes extends AbstactFitness implements ICreatureFitnes<UnifiedGpIndi> {
 
-  static int MAX_MOOVES = 600;
+  public static final int MAX_MOOVES = 600;
 
   public AntFitnes() {
     super(problemSpecification());
@@ -28,7 +28,7 @@ public class AntFitnes extends AbstactFitness implements ICreatureFitnes<Unified
   }
 
   protected MutableState table;
-  protected Supplier<MutableState> tableSup;
+  public Supplier<MutableState> tableSup;
   public PetriConversationResult originalRez;
   public FiredTranitionRecorder<UnifiedToken> rec;
   public FullRecorder<UnifiedToken> recc;
@@ -48,7 +48,6 @@ public class AntFitnes extends AbstactFitness implements ICreatureFitnes<Unified
                                                                                   * recc
                                                                                   */));
     originalRez = calcFitnes(creature, multiRec);
-    String originalStr = creature.getRoot().toString();
     super.updateCreatureWithSimplification(creature, originalRez, rec);
 
     /*

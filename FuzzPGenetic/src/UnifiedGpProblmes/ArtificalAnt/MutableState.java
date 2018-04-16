@@ -17,7 +17,7 @@ package UnifiedGpProblmes.ArtificalAnt;
  */
 
 /** Represents the grid and the ant's position within it. */
-class MutableState {
+public class MutableState {
 
   private boolean[][] grid;
   private int incX = 0;
@@ -26,7 +26,7 @@ class MutableState {
   private int foodEaten;
   private int movesTaken;
 
-  MutableState(boolean[][] grid) {
+  public MutableState(boolean[][] grid) {
     this.grid = grid;
   }
 

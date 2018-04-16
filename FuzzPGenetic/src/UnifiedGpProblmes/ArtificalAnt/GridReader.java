@@ -27,7 +27,7 @@ import java.util.List;
  * Contains details of a two-dimensional grid where some cells contain food and
  * other cells are empty.
  */
-class GridReader {
+public class GridReader {
   private static final File SOURCE_FILE = new File("grid.txt");
   private static final int GRID_LENGTH = 32;
   private static final boolean[][] GRID;
@@ -50,7 +50,7 @@ class GridReader {
     return NUM_FOOD_CELLS;
   }
 
-  static boolean[][] copyGrid() {
+  public static boolean[][] copyGrid() {
     boolean[][] copy = new boolean[GRID_LENGTH][GRID_LENGTH];
     for (int i = 0; i < GRID_LENGTH; i++) {
       copy[i] = Arrays.copyOf(GRID[i], GRID_LENGTH);

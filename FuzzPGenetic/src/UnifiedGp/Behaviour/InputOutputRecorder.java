@@ -14,6 +14,7 @@ public class InputOutputRecorder implements IGeneralPetriBehavoiurRecorder<Unifi
   Map<Integer, UnifiedToken> currentInp;
   Map<Integer, UnifiedToken> currentOut;
 
+
   public InputOutputRecorder() {
     inps = new ArrayList<>();
     outs = new ArrayList<>();
@@ -38,4 +39,19 @@ public class InputOutputRecorder implements IGeneralPetriBehavoiurRecorder<Unifi
   public void inputPuttedInPlace(int placeId, UnifiedToken tk) {
     currentInp.put(placeId, tk.myClone());
   };
+
+  public static InputOutputRecorder fakeRecorder(int tick) {
+    InputOutputRecorder f = new InputOutputRecorder();
+    for (int i = 0; i < tick; i++) {
+      f.tickFinished(null, null);
+    }
+    return f;
+  }
+
+  public static void fakeTicks(InputOutputRecorder rec, int upToTicks) {
+    while (rec.inps.size() < upToTicks) {
+      rec.tickFinished(null, null);
+    }
+
+  }
 }

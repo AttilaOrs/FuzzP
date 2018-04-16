@@ -20,6 +20,6 @@ public class SizeFitnes<Tcreature extends IGPGreature> implements ICreatureFitne
     if (sum >= maxSize) {
       return 0.0;
     }
-    return sqrt(sqrt((1.0 - ((sum - acceptableSize) / (maxSize - acceptableSize)))));
+    return sqrt(sqrt((1.0 - ((sum - acceptableSize) / ((double) (maxSize - acceptableSize))))));
   }
 }

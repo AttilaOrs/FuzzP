@@ -10,7 +10,7 @@ public class MutableStateLogged extends MutableState {
   int[][] way;
   int cntr;
 
-  MutableStateLogged(boolean[][] grid) {
+  public MutableStateLogged(boolean[][] grid) {
     super(grid);
     way = new int[GridReader.getGridLength()][];
     for (int i = 0; i < GridReader.getGridLength(); i++) {
