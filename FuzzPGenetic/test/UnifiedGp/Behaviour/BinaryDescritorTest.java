@@ -27,7 +27,7 @@ public class BinaryDescritorTest {
   private int placeIdInpTwo;
   private int outOne;
 
-  public class TestDescriptor extends BinaryDescritor<BinaryDescrition> {
+  public class TestDescriptor extends BinaryDescritor<BinaryDescrition, IGPGreature> {
 
     public TestDescriptor(ProblemSpecification ps, int bitsForChannel,
         BiFunction<BitSet, Integer, BinaryDescrition> constructor) {

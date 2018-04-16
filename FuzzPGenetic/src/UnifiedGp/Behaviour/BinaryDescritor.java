@@ -10,9 +10,11 @@ import core.UnifiedPetriLogic.UnifiedToken;
 import structure.IGPGreature;
 import structure.behaviour.IBeahviourDescriptor;
 
-public abstract class BinaryDescritor<TDesc extends BinaryDescrition> extends AbstactFitness
+public abstract class BinaryDescritor<TDesc extends BinaryDescrition, TCreature extends IGPGreature>
+    extends
+      AbstactFitness
     implements
-      IBeahviourDescriptor<TDesc, IGPGreature> {
+      IBeahviourDescriptor<TDesc, TCreature> {
 
   private int bitsForChannel;
   private BiFunction<BitSet, Integer, TDesc> constructor;
