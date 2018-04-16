@@ -1,12 +1,18 @@
 package AlgoImpl.pools;
 
+import static java.lang.Math.abs;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,12 +22,11 @@ import structure.ICreatureFitnes;
 import structure.ICreaturePool;
 import structure.IGPGreature;
 import structure.IOperatorFactory;
-import structure.ISelector;
 import structure.operators.ICreatureBreeder;
 import structure.operators.ICreatureGenerator;
 import structure.operators.ICreatureMutator;
 
-public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implements ICreaturePool<T>, ISelector {
+public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implements ICreaturePool<T> {
   private ICreaturePool<T> wraped;
 
   Map<Integer, float[]> currentThDistance;
@@ -36,56 +41,86 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
 
   private Map<Integer, Integer> newIdToIndex;
 
-  private ISelector originalSelector;
-
   private IterationLogger log;
 
-  private double oldMax;
+  private boolean addAsFitness;
 
-  private int discoveryCounter;
+  private ForkJoinPool threadPool;
 
-  private int combo;
-
-  public PoolWrapperForTheorteticalDistance(ICreaturePool<T> wraped, ISelector originalSelector, int combo) {
+  public PoolWrapperForTheorteticalDistance(ICreaturePool<T> wraped, ForkJoinPool threadPool) {
+    this(wraped, threadPool, true);
+  }
+  public PoolWrapperForTheorteticalDistance(ICreaturePool<T> wraped, ForkJoinPool threadPool, boolean addAsFitnes) {
     this.wraped = wraped;
     firstIter = true;
     crossOver = new ArrayList<>();
     mutate = new ArrayList<>();
     generate = new ArrayList<>();
     survive = new ArrayList<>();
-    this.originalSelector = originalSelector;
     log = new IterationLogger();
-    oldMax = 0.0;
-    discoveryCounter = 0;
-    this.combo = combo;
-
+    this.addAsFitness = addAsFitnes;
+    this.threadPool = threadPool;
   }
 
   @Override
   public Map<Integer, Double[]> calculateFitnessAndDeleteOldGeneration() {
-    Map<Integer, Double[]> i = wraped.calculateFitnessAndDeleteOldGeneration();
-    double newMax = i.values().stream().mapToDouble(arr -> arr[0]).summaryStatistics().getMax();
-    if (newMax - oldMax > 0.00000000000000001) {
-      discoveryCounter = 7;
+    Map<Integer, Double[]> originalRes = wraped.calculateFitnessAndDeleteOldGeneration();
+    calcMatrix(false);
+    double[] sts = logStats();
+    if (!addAsFitness) {
+      return originalRes;
     }
-    oldMax = newMax;
-
-    calcMatrix();
-    logStats();
-    return i;
+    Map<Integer, Double[]> toRet = updateFitness(originalRes, sts);
+    return toRet;
   }
+
+  @Override
+  public Map<Integer, Double[]> calculateFitnessAndMergeOldGenWithNew() {
+    Map<Integer, Double[]> originalRes = wraped.calculateFitnessAndMergeOldGenWithNew();
+    calcMatrix(true);
+    double[] sts = logStats();
+    if (!addAsFitness) {
+      return originalRes;
+    }
+    Map<Integer, Double[]> toRet = updateFitness(originalRes, sts);
+    return toRet;
+  }
+
+  private Map<Integer, Double[]> updateFitness(Map<Integer, Double[]> originalRes, double[] sts) {
+    Map<Integer, Double[]> toRet = new HashMap<>();
+    for (Integer id : originalRes.keySet()) {
+      float[] f = currentThDistance.get(id);
+      Double newFitnes = 0.0;
+      for (int i = 0; i < f.length; i++) {
+        newFitnes += f[i];
+      }
+      newFitnes = (newFitnes / f.length);
+      int originalSize = originalRes.get(id).length;
+
+      Double[] newFitnesses = Arrays.copyOf(originalRes.get(id), originalSize + 1);
+      if (sts[1] - sts[0] < 0.0000001) {
+        newFitnesses[originalSize] = 1.0;
+      } else {
+        newFitnesses[originalSize] = abs(1.0 - (newFitnes - sts[0]) / (sts[1] - sts[0]));
+      }
+      toRet.put(id, newFitnesses);
+
+    }
+    return toRet;
+  }
+
 
   public IterationLogger getLogger() {
     return log;
   }
 
-  private void calcMatrix() {
+  private void calcMatrix(boolean mergeOld) {
     if (firstIter) {
       initializeFileds();
       firstIter = false;
       generate.clear();
     } else {
-      Map<Integer, float[]> relationWithOld = calcRelationWithOldGen();
+      Map<Integer, float[]> relationWithOld = calcRelationWithOldGen(mergeOld);
       newIndexToId = new HashMap<>();
       newIdToIndex = new HashMap<>();
       
@@ -95,38 +130,46 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
         newIndexToId.put(cntr++, id);
       }
       currentThDistance.clear();
+      try {
+        threadPool.submit(() -> {
+          relationWithOld.keySet().parallelStream().forEach(id -> {
 
-      for (Integer id : relationWithOld.keySet()) {
-        float[] newRelation = new float[newIndexToId.size()];
-        float[] oldRelation = relationWithOld.get(id);
-        for (int index = 0; index < newRelation.length; index++) {
-          Integer withWhoId = newIndexToId.get(index);
-          if (withWhoId.equals(id)) {
-            newRelation[index] = 1;
-          } else {
-            float[] otherOldRelation = relationWithOld.get(withWhoId);
-            float common = 0.0f;
-            float notCommon = 0.0f;
-            for(int ii = 0; ii < oldRelation.length; ii++){
-              float m = 0.0f;
-              m = (oldRelation[ii] * otherOldRelation[ii]);
-              common += m;
-              notCommon += oldRelation[ii] + otherOldRelation[ii] - 2 * m;
-            }
-            float all = 0.0f;
-            if (common != 0.0f) {
-              all = common / (common + notCommon);
-            }
+            float[] newRelation = new float[newIndexToId.size()];
+            float[] oldRelation = relationWithOld.get(id);
+            for (int index = 0; index < newRelation.length; index++) {
+              Integer withWhoId = newIndexToId.get(index);
+              if (withWhoId.equals(id)) {
+                newRelation[index] = 1;
+              } else {
+                float[] otherOldRelation = relationWithOld.get(withWhoId);
+                float common = 0.0f;
+                float notCommon = 0.0f;
+                for (int ii = 0; ii < oldRelation.length; ii++) {
+                  float m = 0.0f;
+                  m = (oldRelation[ii] * otherOldRelation[ii]);
+                  common += m;
+                  notCommon += oldRelation[ii] + otherOldRelation[ii] - 2 * m;
+                }
+                float all = 0.0f;
+                if (common != 0.0f) {
+                  all = common / (common + notCommon);
+                }
 
-            newRelation[index] = all;
+                newRelation[index] = all;
+            }
           }
-        }
-        /*
-         * for (int i = 0; i < newRelation.length; i++) { newRelation[i] =
-         * newRelation[i] / newRelationSum; }
-         */
-        currentThDistance.put(id, newRelation);
+            /*
+             * for (int i = 0; i < newRelation.length; i++) { newRelation[i] =
+             * newRelation[i] / newRelationSum; }
+             */
+            currentThDistance.put(id, newRelation);
+          });
+        }).get();
+      } catch (InterruptedException | ExecutionException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
       }
+
     }
   }
 
@@ -142,7 +185,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     categoryMap.put("0.25<", f -> f > 0.025);
   }
 
-  void logStats() {
+  double[] logStats() {
     double min = 100.0;
     double max = 0.0;
     double sum = 0.0;
@@ -178,8 +221,8 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     for (Entry<String, Integer> catCount : categoryCount.entrySet()) {
       log.addLogToTopic("cat" + catCount.getKey(), catCount.getValue().doubleValue() / 2.0);
     }
-    // System.out.println(" " + min + " " + max + " " + sum /
-    // currentThDistance.size());
+    System.out.println("th dist:  " + min + " " + max + " " + sum / currentThDistance.size());
+    return new double[]{min, max};
 
   }
 
@@ -209,8 +252,11 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     return bld.toString();
   }
 
-  private Map<Integer, float[]> calcRelationWithOldGen() {
+  private Map<Integer, float[]> calcRelationWithOldGen(boolean mergeOld) {
     Map<Integer, float[]> relationWithOld = new HashMap<>();
+    if (mergeOld) {
+      relationWithOld.putAll(currentThDistance);
+    }
     for (int[] surv : survive) {
       float[] rel = currentThDistance.get(surv[0]);
       relationWithOld.put(surv[1], rel);
@@ -247,7 +293,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
   }
 
   private void initializeFileds() {
-    currentThDistance = new HashMap<>();
+    currentThDistance = new ConcurrentHashMap<>();
     newIdToIndex = new HashMap<>();
     newIndexToId = new HashMap<>();
     for (Integer i = 0; i < generate.size(); i++) {
@@ -324,66 +370,19 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     return wraped.getSizeStats();
   }
 
-  @Override
-  public List<int[]> selectOne(Map<Integer, Double[]> res, int basedOn, int howMany, int arraySize) {
-    return originalSelector.selectOne(res, basedOn, howMany, arraySize);
-  }
-
-  @Override
-  public List<int[]> selectPairs(Map<Integer, Double[]> res, int basedOn, int howMany, int arraySize) {
-    // System.out.println("original");
-    // printFirness(res);
-    List<int[]> selectedForMating = originalSelector.selectOne(res, basedOn, howMany, arraySize);
-    for (int selectedForMatingIndex = 0; selectedForMatingIndex < selectedForMating.size(); selectedForMatingIndex++) {
-      int slectedId = selectedForMating.get(selectedForMatingIndex)[0];
-      // System.out.println(">>>" + slectedId);
-      float[] dist = currentThDistance.get(slectedId);
-      Map<Integer, Double[]> newFitnes = new HashMap<>();
-      for (Integer i : res.keySet()) {
-        double currentNewFitnes = res.get(i)[basedOn] * func(dist[newIdToIndex.get(i)]);
-        if (combo == 1) {
-          currentNewFitnes += res.get(i)[basedOn];
-        }
-        newFitnes.put(i, new Double[] { currentNewFitnes });
-      }
-      // printFirness(newFitnes);
-
-      List<int[]> l = originalSelector.selectOne(newFitnes, 0, 1, 1);
-      // System.out.println("<<<" + l.get(0)[0]);
-
-      selectedForMating.get(selectedForMatingIndex)[1] = l.get(0)[0];
-    }
-    return selectedForMating;
-
-  }
 
   private void printFirness(Map<Integer, Double[]> res) {
     StringBuilder bld = new StringBuilder();
     for (Integer key : res.keySet()) {
-      bld.append(key).append(">>").append(res.get(key)[0]).append(" ");
+      bld.append(key).append(">>");
+      for (int i = 0; i < res.get(key).length; i++) {
+        bld.append(formatter.format(res.get(key)[i])).append(" ");
+      }
+      bld.append("\n");
     }
     System.out.println(bld.toString());
   }
 
-  private Double func(float f) {
-    if (f > 0.038f) {
-      return 0.1;
-    }
-    if (f > 0.010f) {
-      return 0.25;
-    }
-    if (f > 0.003f) {
-      return 0.50;
-    }
-    if (f > 0.00001f) {
-      return 1.0;
-    }
-    return 0.5;
-  }
 
-  @Override
-  public Map<Integer, Double[]> calculateFitnessAndMergeOldGenWithNew() {
-    throw new RuntimeException(" unsupported unimplemneted");
-  }
 
 }

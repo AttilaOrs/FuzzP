@@ -14,6 +14,7 @@ import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
 import AlgoImpl.Selectors.PaleoSelectors.PaleoSelector;
 import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
 import AlgoImpl.pools.CreatureParallelPool;
+import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
@@ -48,9 +49,10 @@ public class PaleoAntMain {
   private static final String LEAFS = "tree_leaf";
   private static final String OPS = "tree_ops";
   private static final String DEPTH = "tree_depth";
-
+  private static final String DIST = "dist";
+  private static final String DIST_CAT = "dist_cat";
   public static void main(String[] args) {
-    for (int i = 0; i < 60; i++) {
+    for (int i = 0; i < 1; i++) {
       if (i % 2 == 0) {
         doStuff("NSGII/antPaleo" + i + "/", i, join -> new NSGAIISelector(join));
       } else {
@@ -90,15 +92,20 @@ public class PaleoAntMain {
 
     CreatureParallelPool<UnifiedGpIndi> pool = new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders,
         fitnesses);
-    PaleoSelector selector = selectorFactory.apply(new ForkJoinPool(16));
+    ForkJoinPool forkJoin = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
+    PoolWrapperForTheorteticalDistance<UnifiedGpIndi> distancePool = new PoolWrapperForTheorteticalDistance<>(pool,
+        forkJoin);
+
+    PaleoSelector selector = selectorFactory.apply(forkJoin);
     
 
-    PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool, new MultiplierTransformer(), new double[]{1.0}, crossWeigth,
+    PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(distancePool,
+        new MultiplierTransformer(forkJoin), new double[]{1.0}, crossWeigth,
         new double[]{1.0}, selector);
 
     PaleoMultiobejctiveAlgo.PALEO_ITER = 150;
-    PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 6000;
-    PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 6000;
+    PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 2400;
+    PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 2400;
 
 
     long start = System.currentTimeMillis();
@@ -139,6 +146,8 @@ public class PaleoAntMain {
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("Fit"), path + FITNESS);
     PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree size"), path + SIZE);
     PlotUtils.hist(algo.getSizeHistLog(), path + SIZE_HIST);
+    PlotUtils.plot(distancePool.getLogger().getLogsForPlottingContatinigStrings("dist"), path + DIST);
+    PlotUtils.plot(distancePool.getLogger().getLogsForPlottingContatinigStrings("cat"), path + DIST_CAT);
 
     /*
      * Set<Integer> firstFront = algo.getFirstFront(); for (Integer indi :
@@ -146,6 +155,7 @@ public class PaleoAntMain {
      * 
      * }
      */
+    forkJoin.shutdown();
 
   }
 
