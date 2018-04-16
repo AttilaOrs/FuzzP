@@ -18,13 +18,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import AlgoImpl.IterationLogger;
-import structure.ICreatureFitnes;
 import structure.ICreaturePool;
 import structure.IGPGreature;
-import structure.IOperatorFactory;
-import structure.operators.ICreatureBreeder;
-import structure.operators.ICreatureGenerator;
-import structure.operators.ICreatureMutator;
 
 public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implements ICreaturePool<T> {
   private ICreaturePool<T> wraped;
@@ -336,23 +331,23 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
   }
 
   @Override
-  public ArrayList<IOperatorFactory<ICreatureGenerator<T>>> getGenerators() {
-    return wraped.getGenerators();
+  public List<String> getGeneratorsNames() {
+    return wraped.getGeneratorsNames();
   }
 
   @Override
-  public ArrayList<IOperatorFactory<ICreatureMutator<T>>> getMutators() {
-    return wraped.getMutators();
+  public List<String> getMutatorsNames() {
+    return wraped.getMutatorsNames();
   }
 
   @Override
-  public ArrayList<IOperatorFactory<ICreatureBreeder<T>>> getBreeders() {
-    return wraped.getBreeders();
+  public List<String> getBreedersNames() {
+    return wraped.getBreedersNames();
   }
 
   @Override
-  public ArrayList<IOperatorFactory<ICreatureFitnes<T>>> getFitnesCals() {
-    return wraped.getFitnesCals();
+  public List<String> getFitnesCalsNames() {
+    return wraped.getFitnesCalsNames();
   }
 
   @Override

@@ -1,12 +1,7 @@
 package structure;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import structure.operators.ICreatureBreeder;
-import structure.operators.ICreatureGenerator;
-import structure.operators.ICreatureMutator;
 
 public interface ICreaturePool<TCreature extends IGPGreature> {
 
@@ -22,13 +17,13 @@ public interface ICreaturePool<TCreature extends IGPGreature> {
 
   void generate(int whichGenerator, int firstId, int howMany);
 
-  public ArrayList<IOperatorFactory<ICreatureGenerator<TCreature>>> getGenerators();
+  public List<String> getGeneratorsNames();
 
-  public ArrayList<IOperatorFactory<ICreatureMutator<TCreature>>> getMutators();
+  public List<String> getMutatorsNames();
 
-  public ArrayList<IOperatorFactory<ICreatureBreeder<TCreature>>> getBreeders();
+  public List<String> getBreedersNames();
 
-  public ArrayList<IOperatorFactory<ICreatureFitnes<TCreature>>> getFitnesCals();
+  public List<String> getFitnesCalsNames();
 
   TCreature get(int id);
 

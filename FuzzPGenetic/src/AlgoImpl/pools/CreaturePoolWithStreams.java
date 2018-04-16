@@ -1,5 +1,7 @@
 package AlgoImpl.pools;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,23 +28,23 @@ public class CreaturePoolWithStreams<TCreatue extends IGPGreature>
   private static final int THREAD_NR = Runtime.getRuntime().availableProcessors() * 2;
 
 	@Override
-  public ArrayList<IOperatorFactory<ICreatureGenerator<TCreatue>>> getGenerators() {
-		return generators;
+  public List<String> getGeneratorsNames() {
+    return generators.stream().map(gen -> gen.generate()).map(g -> g.getClass().getSimpleName()).collect(toList());
 	}
 
 	@Override
-  public ArrayList<IOperatorFactory<ICreatureMutator<TCreatue>>> getMutators() {
-		return mutators;
+  public List<String> getMutatorsNames() {
+    return mutators.stream().map(gen -> gen.generate()).map(g -> g.getClass().getSimpleName()).collect(toList());
 	}
 
 	@Override
-  public ArrayList<IOperatorFactory<ICreatureBreeder<TCreatue>>> getBreeders() {
-		return breeders;
+  public List<String> getBreedersNames() {
+    return breeders.stream().map(gen -> gen.generate()).map(g -> g.getClass().getSimpleName()).collect(toList());
 	}
 
 	@Override
-  public ArrayList<IOperatorFactory<ICreatureFitnes<TCreatue>>> getFitnesCals() {
-		return fitnesses;
+  public List<String> getFitnesCalsNames() {
+    return fitnesses.stream().map(gen -> gen.generate()).map(g -> g.getClass().getSimpleName()).collect(toList());
 	}
 
 	ArrayList<IOperatorFactory<ICreatureGenerator<TCreatue>>> generators;

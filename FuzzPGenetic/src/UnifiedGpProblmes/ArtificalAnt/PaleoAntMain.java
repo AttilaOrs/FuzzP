@@ -52,7 +52,7 @@ public class PaleoAntMain {
   private static final String DIST = "dist";
   private static final String DIST_CAT = "dist_cat";
   public static void main(String[] args) {
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 100; i++) {
       if (i % 2 == 0) {
         doStuff("NSGII/antPaleo" + i + "/", i, join -> new NSGAIISelector(join));
       } else {

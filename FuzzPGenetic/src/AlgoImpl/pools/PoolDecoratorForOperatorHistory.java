@@ -8,14 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import AlgoImpl.IterationLogger;
-import structure.ICreatureFitnes;
 import structure.ICreaturePool;
 import structure.IFitnesTransformer;
 import structure.IGPGreature;
-import structure.IOperatorFactory;
-import structure.operators.ICreatureBreeder;
-import structure.operators.ICreatureGenerator;
-import structure.operators.ICreatureMutator;
 
 public class PoolDecoratorForOperatorHistory<TCreatue extends IGPGreature> implements ICreaturePool<TCreatue> {
 
@@ -54,20 +49,20 @@ public class PoolDecoratorForOperatorHistory<TCreatue extends IGPGreature> imple
   }
 
   private void resolveNames() {
-    for (int i = 0; i < getBreeders().size(); i++) {
-      breedNames.put(0, getBreeders().get(i).generate().getClass().getName());
+    for (int i = 0; i < getBreedersNames().size(); i++) {
+      breedNames.put(0, getBreedersNames().get(i));
     }
 
-    for (int i = 0; i < getMutators().size(); i++) {
-      mutNames.put(0, getMutators().get(i).generate().getClass().getName());
+    for (int i = 0; i < getMutatorsNames().size(); i++) {
+      mutNames.put(0, getMutatorsNames().get(i));
     }
 
-    for (int i = 0; i < getFitnesCals().size(); i++) {
-      fitnessNames.put(0, getFitnesCals().get(i).generate().getClass().getName());
+    for (int i = 0; i < getFitnesCalsNames().size(); i++) {
+      fitnessNames.put(0, getFitnesCalsNames().get(i));
     }
 
-    for (int i = 0; i < getGenerators().size(); i++) {
-      generatorNames.put(0, getGenerators().get(i).generate().getClass().getName());
+    for (int i = 0; i < getGeneratorsNames().size(); i++) {
+      generatorNames.put(0, getGeneratorsNames().get(i));
     }
 
   }
@@ -251,23 +246,23 @@ public class PoolDecoratorForOperatorHistory<TCreatue extends IGPGreature> imple
   }
 
   @Override
-  public ArrayList<IOperatorFactory<ICreatureGenerator<TCreatue>>> getGenerators() {
-    return realPool.getGenerators();
+  public List<String> getGeneratorsNames() {
+    return realPool.getGeneratorsNames();
   }
 
   @Override
-  public ArrayList<IOperatorFactory<ICreatureMutator<TCreatue>>> getMutators() {
-    return realPool.getMutators();
+  public List<String> getMutatorsNames() {
+    return realPool.getMutatorsNames();
   }
 
   @Override
-  public ArrayList<IOperatorFactory<ICreatureBreeder<TCreatue>>> getBreeders() {
-    return realPool.getBreeders();
+  public List<String> getBreedersNames() {
+    return realPool.getBreedersNames();
   }
 
   @Override
-  public ArrayList<IOperatorFactory<ICreatureFitnes<TCreatue>>> getFitnesCals() {
-    return realPool.getFitnesCals();
+  public List<String> getFitnesCalsNames() {
+    return realPool.getFitnesCalsNames();
   }
 
   @Override
