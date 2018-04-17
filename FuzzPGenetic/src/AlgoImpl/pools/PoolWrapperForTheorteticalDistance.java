@@ -61,7 +61,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
   public Map<Integer, Double[]> calculateFitnessAndDeleteOldGeneration() {
     Map<Integer, Double[]> originalRes = wraped.calculateFitnessAndDeleteOldGeneration();
     calcMatrix(false);
-    double[] sts = logStats();
+    double[] sts = logStats(true);
     if (!addAsFitness) {
       return originalRes;
     }
@@ -73,7 +73,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
   public Map<Integer, Double[]> calculateFitnessAndMergeOldGenWithNew() {
     Map<Integer, Double[]> originalRes = wraped.calculateFitnessAndMergeOldGenWithNew();
     calcMatrix(true);
-    double[] sts = logStats();
+    double[] sts = logStats(false);
     if (!addAsFitness) {
       return originalRes;
     }
@@ -173,14 +173,13 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
   static {
     // categoryMap.put("<0.001", f -> f < 0.001f);
     // categoryMap.put("[0.001,0.005)", f -> f >= 0.001f && f < 0.005);
-    categoryMap.put("[0.005,0.01)", f -> f >= 0.05 && f < 0.01);
-    categoryMap.put("[0.01,0.015)", f -> f >= 0.01 && f < 0.015);
-    categoryMap.put("[0.015,0.02)", f -> f >= 0.015 && f < 0.020);
-    categoryMap.put("[0.02,0.025]", f -> f >= 0.02 && f <= 0.025);
-    categoryMap.put("0.25<", f -> f > 0.025);
+    categoryMap.put("<0.015]", f -> f <= 0.015);
+    categoryMap.put("(0.015,0.25]", f -> f > 0.015 && f <= 0.25);
+    categoryMap.put("(0.25,0.50]", f -> f > 0.25 && f <= 0.50);
+    categoryMap.put("(0.50<", f -> f > 0.50);
   }
 
-  double[] logStats() {
+  double[] logStats(boolean b) {
     double min = 100.0;
     double max = 0.0;
     double sum = 0.0;
@@ -210,13 +209,15 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
       }
 
     }
-    log.addLogToTopic("min avg dist", min);
-    log.addLogToTopic("max avg dist", max);
-    log.addLogToTopic("sum avg dist", sum / currentThDistance.size());
-    for (Entry<String, Integer> catCount : categoryCount.entrySet()) {
-      log.addLogToTopic("cat" + catCount.getKey(), catCount.getValue().doubleValue() / 2.0);
+    if (b) {
+      log.addLogToTopic("min avg dist", min);
+      log.addLogToTopic("max avg dist", max);
+      log.addLogToTopic("sum avg dist", sum / currentThDistance.size());
+      for (Entry<String, Integer> catCount : categoryCount.entrySet()) {
+        log.addLogToTopic("cat" + catCount.getKey(), catCount.getValue().doubleValue() / 2.0);
+      }
+      System.out.println("th dist:  " + min + " " + max + " " + sum / currentThDistance.size());
     }
-    System.out.println("th dist:  " + min + " " + max + " " + sum / currentThDistance.size());
     return new double[]{min, max};
 
   }

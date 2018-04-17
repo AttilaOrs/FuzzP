@@ -12,7 +12,6 @@ import AlgoImpl.MultiplierTransformer;
 import AlgoImpl.PaleoMultiobejctiveAlgo;
 import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
 import AlgoImpl.Selectors.PaleoSelectors.PaleoSelector;
-import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
 import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import UnifiedGp.AbstactFitness;
@@ -53,11 +52,12 @@ public class PaleoAntMain {
   private static final String DIST_CAT = "dist_cat";
   public static void main(String[] args) {
     for (int i = 0; i < 100; i++) {
-      if (i % 2 == 0) {
-        doStuff("NSGII/antPaleo" + i + "/", i, join -> new NSGAIISelector(join));
-      } else {
-        doStuff("SPEAII/antPaleo" + i + "/", i, join -> new SPEAIISelector(join));
-      }
+      doStuff("NSGII/antPaleo" + i + "/", i, join -> new NSGAIISelector(join));
+      /*
+       * if (i % 2 == 0) { doStuff("NSGII/antPaleo" + i + "/", i, join -> new
+       * NSGAIISelector(join)); } else { doStuff("SPEAII/antPaleo" + i + "/", i,
+       * join -> new SPEAIISelector(join)); }
+       */
     }
   }
 
