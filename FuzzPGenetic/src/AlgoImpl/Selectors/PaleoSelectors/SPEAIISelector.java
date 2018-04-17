@@ -63,7 +63,7 @@ public class SPEAIISelector extends AbstactMultiobejctiveSelector {
     population = assignedFitnes.keySet().stream()
         .sorted((i1, i2) -> compare(assignedFitnes.get(i1), assignedFitnes.get(i2)))
         .collect(toList());
-    bestIds = IntStream.generate(() -> 0).limit(nrOfFitnessValues).mapToObj(i -> i)
+    bestIds = IntStream.generate(() -> -1).limit(nrOfFitnessValues).mapToObj(i -> i)
         .collect(Collectors.toList());
     double[] maxFitness = new double[nrOfFitnessValues];
     for (Integer indiId : originalRes.keySet()) {

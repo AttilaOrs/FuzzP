@@ -367,17 +367,6 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
   }
 
 
-  private void printFirness(Map<Integer, Double[]> res) {
-    StringBuilder bld = new StringBuilder();
-    for (Integer key : res.keySet()) {
-      bld.append(key).append(">>");
-      for (int i = 0; i < res.get(key).length; i++) {
-        bld.append(formatter.format(res.get(key)[i])).append(" ");
-      }
-      bld.append("\n");
-    }
-    System.out.println(bld.toString());
-  }
 
 
 

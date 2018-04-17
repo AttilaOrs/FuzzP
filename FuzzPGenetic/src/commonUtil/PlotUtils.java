@@ -12,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,19 @@ public class PlotUtils {
     colorsUSed.add(Color.PINK);
     colorsUSed.add(Color.YELLOW);
 
+  }
+
+  private static final NumberFormat formatter = new DecimalFormat("#0.000");
+  public static void printFirness(Map<Integer, Double[]> res) {
+    StringBuilder bld = new StringBuilder();
+    for (Integer key : res.keySet()) {
+      bld.append(key).append(">>");
+      for (int i = 0; i < res.get(key).length; i++) {
+        bld.append(formatter.format(res.get(key)[i])).append(" ");
+      }
+      bld.append("\n");
+    }
+    System.out.println(bld.toString());
   }
 
   public static void plot(Map<String, List<Double>> what, String fileName) {

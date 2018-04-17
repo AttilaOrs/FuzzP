@@ -20,7 +20,8 @@ public class AntSizeFitness implements IBehaviourBasedFitness<UnifiedGpIndi, Ant
 
   @Override
   public double evaluate(Integer id) {
-    return 0;
+    AntBinaryDescription w = store.get(id);
+    return calcualte(w.getSize());
   }
 
   private double calcualte(int sum) {
