@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 import AlgoImpl.IterationLogger;
 import AlgoImpl.MultiplierTransformer;
 import AlgoImpl.PaleoMultiobejctiveAlgo;
-import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
 import AlgoImpl.Selectors.PaleoSelectors.PaleoSelector;
 import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
@@ -57,13 +56,11 @@ public class BehaviourMain {
   private static final String DEPTH = "tree_depth";
   private static final String DIST = "dist";
   private static final String DIST_CAT = "dist_cat";
+
   public static void main(String[] args) {
+    PoolWrapperForTheorteticalDistance.MERGE_WITH_LAST = true;
     for (int i = 0; i < 100; i++) {
-      if (i % 2 == 0) {
-        doStuff("NSGII/antPaleo" + i + "/", i, join -> new NSGAIISelector(join));
-      } else {
-        doStuff("SPEAII/antPaleo" + i + "/", i, join -> new SPEAIISelector(join));
-      }
+      doStuff("SPEAII/ant" + i + "/", i, join -> new SPEAIISelector(join));
     }
   }
 
@@ -103,7 +100,7 @@ public class BehaviourMain {
         gens, mutators, breeders, bfitnesCals, descriptorFactory);
     ForkJoinPool forkJoin = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> distancePool = new PoolWrapperForTheorteticalDistance<>(bpool,
-        forkJoin, false);
+        forkJoin, true);
 
     PaleoSelector selector = selectorFactory.apply(forkJoin);
 

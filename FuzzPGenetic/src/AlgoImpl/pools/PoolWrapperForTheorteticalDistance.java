@@ -22,6 +22,7 @@ import structure.ICreaturePool;
 import structure.IGPGreature;
 
 public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implements ICreaturePool<T> {
+  public static boolean MERGE_WITH_LAST = false;
   private ICreaturePool<T> wraped;
 
   Map<Integer, float[]> currentThDistance;
@@ -65,7 +66,9 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     if (!addAsFitness) {
       return originalRes;
     }
-    Map<Integer, Double[]> toRet = updateFitness(originalRes, sts);
+    Map<Integer, Double[]> toRet = (!MERGE_WITH_LAST)
+        ? updateFitness(originalRes, sts)
+        : updateFitnessMergeWithLast(originalRes, sts);
     return toRet;
   }
 
@@ -77,10 +80,34 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
     if (!addAsFitness) {
       return originalRes;
     }
-    Map<Integer, Double[]> toRet = updateFitness(originalRes, sts);
+    Map<Integer, Double[]> toRet = (!MERGE_WITH_LAST)
+        ? updateFitness(originalRes, sts)
+        : updateFitnessMergeWithLast(originalRes, sts);
     return toRet;
   }
 
+  private Map<Integer, Double[]> updateFitnessMergeWithLast(Map<Integer, Double[]> originalRes, double[] sts) {
+    Map<Integer, Double[]> toRet = new HashMap<>();
+    for (Integer id : originalRes.keySet()) {
+      float[] f = currentThDistance.get(id);
+      Double newFitnes = 0.0;
+      for (int i = 0; i < f.length; i++) {
+        newFitnes += f[i];
+      }
+      newFitnes = (newFitnes / f.length);
+      int originalSize = originalRes.get(id).length;
+
+      Double[] newFitnesses = Arrays.copyOf(originalRes.get(id), originalSize);
+      if (sts[1] - sts[0] < 0.0000001) {
+        newFitnesses[originalSize - 1] += 1.0;
+      } else {
+        newFitnesses[originalSize - 1] += abs(1.0 - (newFitnes - sts[0]) / (sts[1] - sts[0]));
+      }
+      toRet.put(id, newFitnesses);
+
+    }
+    return toRet;
+  }
   private Map<Integer, Double[]> updateFitness(Map<Integer, Double[]> originalRes, double[] sts) {
     Map<Integer, Double[]> toRet = new HashMap<>();
     for (Integer id : originalRes.keySet()) {
