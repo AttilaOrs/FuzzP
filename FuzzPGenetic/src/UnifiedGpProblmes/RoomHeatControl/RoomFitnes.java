@@ -71,7 +71,7 @@ public class RoomFitnes extends AbstactFitness implements ICreatureFitnes<Unifie
     inpScale.put(1, 30.0);
     Map<Integer, Double> outScale = new HashMap<>();
     outScale.put(0, 1.0);
-    outScale.put(1, 2.0);
+    outScale.put(1, 1.0);
     return new ProblemSpecificationImpl(10.0, 4, inpScale, outScale);
   }
 
