@@ -90,9 +90,8 @@ public class Main {
 
 
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatControllSimpleDescription>>> bfitnesCals = new ArrayList<>();
-      bfitnesCals.add(OverallFitness::new);
-      bfitnesCals.add(() -> new OverallFitness((d1, d2) -> 0.70 * d1 + 0.30 * d2));
-      bfitnesCals.add(() -> new OverallFitness((d1, d2) -> 0.70 * d2 + 0.30 * d1));
+      bfitnesCals.add(() -> new OverallFitness((d1, d2) -> 0.90 * d1 + 0.10 * d2));
+      bfitnesCals.add(() -> new OverallFitness((d1, d2) -> 0.90 * d2 + 0.10 * d1));
       bfitnesCals.add(OverallWithSizeFitness::new);
 
       IOperatorFactory<IBeahviourDescriptor<FullHeatControllSimpleDescription, UnifiedGpIndi>> descriptorFactory = () -> new FullHeastControllSimpleDescriptor(
