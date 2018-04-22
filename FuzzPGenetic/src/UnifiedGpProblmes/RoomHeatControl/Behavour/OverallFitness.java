@@ -29,6 +29,9 @@ public class OverallFitness implements IBehaviourBasedFitness<UnifiedGpIndi, Ful
   @Override
   public double evaluate(Integer id) {
     FullHeatControllSimpleDescription i = store.get(id);
+    if (i.sizeMulti == 0.0) {
+      return 0.0;
+    }
     return f.apply((((i.totalTick - i.roomInCorrentSate) * 1.0) / i.totalTick),
         (((i.totalTick - i.tankInCorrentTemp) * 1.0) / i.totalTick)) * i.sizeMulti;
   }

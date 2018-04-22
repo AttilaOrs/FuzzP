@@ -17,6 +17,9 @@ public class TankOnlyFitnes implements IBehaviourBasedFitness<UnifiedGpIndi, Ful
   @Override
   public double evaluate(Integer id) {
     FullHeatControllSimpleDescription i = store.get(id);
+    if (i.sizeMulti == 0.0) {
+      return 0.0;
+    }
     return (((i.totalTick - i.tankInCorrentTemp) * i.sizeMulti) / i.totalTick);
   }
 

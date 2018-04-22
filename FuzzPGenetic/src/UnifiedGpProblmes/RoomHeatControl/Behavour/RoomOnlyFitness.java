@@ -17,6 +17,9 @@ public class RoomOnlyFitness implements IBehaviourBasedFitness<UnifiedGpIndi, Fu
   @Override
   public double evaluate(Integer id) {
     FullHeatControllSimpleDescription i = store.get(id);
+    if (i.sizeMulti == 0.0) {
+      return 0.0;
+    }
     return (((i.totalTick - i.roomInCorrentSate) * i.sizeMulti) / i.totalTick);
   }
 

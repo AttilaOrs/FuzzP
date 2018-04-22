@@ -36,9 +36,10 @@ public class FullHeastControllSimpleDescriptor extends AbstactFitness
   @Override
   public FullHeatControllSimpleDescription evaluate(UnifiedGpIndi creature) {
     int size = creature.getSizes().size();
+    int allTick = scenarios.stream().mapToInt(sc -> sc.getScenarioLength()).sum();
     double multi = sizeMulti(size);
     if (multi == 0.0) {
-      return new FullHeatControllSimpleDescription(0, 0, 1000, 0.0, size);
+      return new FullHeatControllSimpleDescription(allTick, allTick, allTick, 0.0, size);
     }
 
     FiredTranitionRecorder<UnifiedToken> rec = new FiredTranitionRecorder<>();
@@ -53,7 +54,6 @@ public class FullHeastControllSimpleDescriptor extends AbstactFitness
     Map<Integer, UnifiedToken> inp = new HashMap<>();
     int nrOfIncorrectState = 0;
     int waterOffLimit = 0;
-    int allTick = 0;
 
     for (RoomScenario scenario : scenarios) {
       FullSimulator sim = new FullSimulator(scenario);
@@ -72,7 +72,6 @@ public class FullHeastControllSimpleDescriptor extends AbstactFitness
       });
       nrOfIncorrectState += simRez.roomIncorrectState;
       waterOffLimit += simRez.waterOffLimit;
-      allTick += scenario.getScenarioLength();
     }
 
     super.updateCreatureWithSimplification(creature, rez, rec);

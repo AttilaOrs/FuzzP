@@ -15,4 +15,9 @@ public class FullHeatControllSimpleDescription {
     this.size = size;
   }
 
+  @Override
+  public String toString() {
+    return "FullHeatControllSimpleDescription [roomInCorrentSate=" + roomInCorrentSate + ", tankInCorrentTemp="
+        + tankInCorrentTemp + ", totalTick=" + totalTick + ", sizeMulti=" + sizeMulti + ", size=" + size + "]";
+  }
 }
