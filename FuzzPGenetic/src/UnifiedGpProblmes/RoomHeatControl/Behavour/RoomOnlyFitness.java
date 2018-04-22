@@ -20,7 +20,8 @@ public class RoomOnlyFitness implements IBehaviourBasedFitness<UnifiedGpIndi, Fu
     if (i.sizeMulti == 0.0) {
       return 0.0;
     }
-    return (((i.totalTick - i.roomInCorrentSate) * i.sizeMulti) / i.totalTick);
+    double d = ((i.roomInGoodState) * i.sizeMulti) / i.totalTick;
+    return d;
   }
 
 }

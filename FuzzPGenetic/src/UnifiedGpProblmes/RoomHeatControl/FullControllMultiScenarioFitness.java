@@ -60,7 +60,7 @@ public class FullControllMultiScenarioFitness extends AbstactFitness implements 
     rez.addActionIfPossible(2, c -> gasCmd = c.getValue());
 
     Map<Integer, UnifiedToken> inp = new HashMap<>();
-    int nrOfIncorrectState = 0;
+    int nrOfInGoodState = 0;
     int waterOffLimit = 0;
     int allTick = 0;
     if (saveBehave) {
@@ -87,14 +87,14 @@ public class FullControllMultiScenarioFitness extends AbstactFitness implements 
         
         return new Control(lastEvent, gasCmd);
       });
-      nrOfIncorrectState += simRez.roomIncorrectState;
+      nrOfInGoodState += simRez.roomInGoodState;
       waterOffLimit += simRez.waterOffLimit;
       allTick += scenario.getScenarioLength();
     }
 
     super.updateCreatureWithSimplification(creature, rez, rec);
     double multi2 = super.fireCountMulti(rec, allTick);
-    return ((allTick - nrOfIncorrectState) + (allTick - waterOffLimit)) * multi * multi2;
+    return (nrOfInGoodState + (allTick - waterOffLimit)) * multi * multi2;
   }
 
   public FullControllMultiScenarioFitness(ProblemSpecification ps, List<RoomScenario> scenarios,

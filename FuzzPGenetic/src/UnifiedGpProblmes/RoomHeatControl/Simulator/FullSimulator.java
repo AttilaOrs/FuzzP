@@ -102,7 +102,7 @@ public class FullSimulator {
     public final double roomError;
     public final int heatrerOn;
     public final int roomOfLimit;
-    public final int roomIncorrectState;
+    public final int roomInGoodState;
     public final double waterError;
     public final int waterOffLimit;
 
@@ -111,7 +111,7 @@ public class FullSimulator {
       this.roomError = roomError;
       this.heatrerOn = heatrerOn;
       this.roomOfLimit = roomOfLimit;
-      this.roomIncorrectState = roomIncorrectState;
+      this.roomInGoodState = roomIncorrectState;
       this.waterError = waterError;
       this.waterOffLimit = waterOffLimit;
     }
@@ -119,9 +119,10 @@ public class FullSimulator {
     @Override
     public String toString() {
       return "Rezult [roomError=" + roomError + ", heatrerOn=" + heatrerOn + ", roomOfLimit=" + roomOfLimit
-          + ", roomIncorrectState=" + roomIncorrectState + ", waterError=" + waterError + ", waterOffLimit="
-          + waterOffLimit + "]";
+          + ", roomInGoodState=" + roomInGoodState + ", waterError=" + waterError + ", waterOffLimit=" + waterOffLimit
+          + "]";
     }
+
 
 
   }

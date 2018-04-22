@@ -20,7 +20,9 @@ public class TankOnlyFitnes implements IBehaviourBasedFitness<UnifiedGpIndi, Ful
     if (i.sizeMulti == 0.0) {
       return 0.0;
     }
-    return (((i.totalTick - i.tankInCorrentTemp) * i.sizeMulti) / i.totalTick);
+    double hint = 1.0/(1.0+i.waterErrot);
+    double d = (((i.totalTick - i.tankOffLimit) + hint / 10.0) * i.sizeMulti) / i.totalTick;
+    return (((i.totalTick - i.tankOffLimit) * i.sizeMulti) / i.totalTick);
   }
 
 }
