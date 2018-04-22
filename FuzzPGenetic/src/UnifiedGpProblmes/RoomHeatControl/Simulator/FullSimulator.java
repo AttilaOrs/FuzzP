@@ -9,8 +9,8 @@ import UnifiedGpProblmes.RoomHeatControl.Simulator.FullHeatController.ControllEv
 public class FullSimulator {
 
   public static final double deltaAllowedRoom = 0.5;
-  public static final double waterRef = 65.0;
-  public static final double deltaAllowedWater = 10.0;
+  public static final double waterRef = 60.0;
+  public static final double deltaAllowedWater = 3.0;
 
   public static final String ROOM_TEMP = " room temp";
   public static final String OUTSIDE_TEMP = " out temp";

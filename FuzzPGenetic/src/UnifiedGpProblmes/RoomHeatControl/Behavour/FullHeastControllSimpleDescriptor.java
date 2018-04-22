@@ -33,14 +33,13 @@ public class FullHeastControllSimpleDescriptor extends AbstactFitness
 
   FullHeatController.ControllEvent lastEvent = FullHeatController.ControllEvent.None;
   double gasCmd = 0.0;
-  // (@ o:c:2 (# (? b d:3) o:c:0))
   @Override
   public FullHeatControllSimpleDescription evaluate(UnifiedGpIndi creature) {
     int size = creature.getSizes().size();
     int allTick = scenarios.stream().mapToInt(sc -> sc.getScenarioLength()).sum();
     double multi = sizeMulti(size);
     if (multi == 0.0) {
-      return new FullHeatControllSimpleDescription(allTick, allTick, 0.0, allTick, 0.0, size);
+      return new FullHeatControllSimpleDescription(allTick, 10000.0, allTick, 10000.0, allTick, 0.0, size);
     }
 
     FiredTranitionRecorder<UnifiedToken> rec = new FiredTranitionRecorder<>();
@@ -56,6 +55,7 @@ public class FullHeastControllSimpleDescriptor extends AbstactFitness
     int nrOfGoodState = 0;
     int waterOffLimit = 0;
     double waterError = 0.0;
+    double roomTempEroor = 0.0;
 
     for (RoomScenario scenario : scenarios) {
       FullSimulator sim = new FullSimulator(scenario);
@@ -75,11 +75,14 @@ public class FullHeastControllSimpleDescriptor extends AbstactFitness
       nrOfGoodState += simRez.roomInGoodState;
       waterOffLimit += simRez.waterOffLimit;
       waterError += simRez.waterError;
+      roomTempEroor += simRez.roomError;
     }
 
     super.updateCreatureWithSimplification(creature, rez, rec);
     double multi2 = super.fireCountMulti(rec, allTick);
-    return new FullHeatControllSimpleDescription(nrOfGoodState, waterOffLimit, waterError, allTick, multi2, size);
+    return new FullHeatControllSimpleDescription(nrOfGoodState, roomTempEroor, waterOffLimit, waterError, allTick,
+        multi2,
+        size);
   }
 
 }

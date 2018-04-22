@@ -7,7 +7,9 @@ public class FullHeatControllSimpleDescription {
   final double sizeMulti;
   final int size;
   final double waterErrot;
-  public FullHeatControllSimpleDescription(int roomInGoodState, int tankOffLimit, double waterError,
+  final double roomTempError;
+  public FullHeatControllSimpleDescription(int roomInGoodState, double roomTempError, int tankOffLimit,
+      double waterError,
       int totalScenarios, double sizeMulti, int size) {
     this.roomInGoodState = roomInGoodState;
     this.tankOffLimit = tankOffLimit;
@@ -15,12 +17,13 @@ public class FullHeatControllSimpleDescription {
     this.sizeMulti = sizeMulti;
     this.size = size;
     this.waterErrot = waterError;
+    this.roomTempError = roomTempError;
   }
-
   @Override
   public String toString() {
     return "FullHeatControllSimpleDescription [roomInGoodState=" + roomInGoodState + ", tankOffLimit=" + tankOffLimit
         + ", totalTick=" + totalTick + ", sizeMulti=" + sizeMulti + ", size=" + size + ", waterErrot=" + waterErrot
-        + "]";
+        + ", roomTempError=" + roomTempError + "]";
   }
+
 }

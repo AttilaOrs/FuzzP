@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import AlgoImpl.IterationLogger;
-import AlgoImpl.MultiplierTransformer;
 import AlgoImpl.PaleoMultiobejctiveAlgo;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
@@ -116,7 +115,7 @@ public class Main {
           forkJoin);
       SPEAIISelector paleoSelector = new SPEAIISelector(forkJoin);
       PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
-          new MultiplierTransformer(forkJoin), new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
+          null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
       PaleoMultiobejctiveAlgo.PALEO_ITER = 150;
       PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 2400;
@@ -129,7 +128,7 @@ public class Main {
       long startTime = System.currentTimeMillis();
       Set<Integer> firstFront = algo.getFirstFront();
       int maxId = -1;
-      double maxFitnes = 0.0;
+      double maxFitnes = -1000.0;
       OverallFitness f = new OverallFitness();
       f.setStore(pool.getStore());
 
@@ -145,6 +144,8 @@ public class Main {
       long stopTime = System.currentTimeMillis();
 
       UnifiedGpIndi rez = pool.get(maxId);
+      System.out.println(rez);
+      System.out.println(">>" + rez.getRoot());
       double rezFitnes = finalize(rez, path, stopTime - startTime);
       String config = "population surv" + PaleoMultiobejctiveAlgo.PALEO_SURV_POP + "\n";
       config += "population new " + PaleoMultiobejctiveAlgo.PALEO_NEW_POP + "\n";
