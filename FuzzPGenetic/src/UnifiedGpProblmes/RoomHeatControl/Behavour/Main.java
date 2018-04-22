@@ -21,6 +21,7 @@ import AlgoImpl.PaleoMultiobejctiveAlgo;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
 import AlgoImpl.pools.CreatureParallelPool;
+import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import AlgoImpl.pools.behaviour.BehaviourParalellPool;
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
@@ -109,10 +110,13 @@ public class Main {
 
       BehaviourParalellPool<UnifiedGpIndi, FullHeatControllSimpleDescription> pool = new BehaviourParalellPool<UnifiedGpIndi, FullHeatControllSimpleDescription>(
           gens, mutators, breeders, bfitnesCals, descriptorFactory);
+
       ForkJoinPool forkJoin = new ForkJoinPool(CreatureParallelPool.THREAD_NR);
 
+      PoolWrapperForTheorteticalDistance<UnifiedGpIndi> distPool = new PoolWrapperForTheorteticalDistance<>(pool,
+          forkJoin);
       SPEAIISelector paleoSelector = new SPEAIISelector(forkJoin);
-      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
+      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(distPool,
           new MultiplierTransformer(forkJoin), new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
       PaleoMultiobejctiveAlgo.PALEO_ITER = 150;

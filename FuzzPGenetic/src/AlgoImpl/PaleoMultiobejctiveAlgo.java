@@ -3,15 +3,11 @@ package AlgoImpl;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ForkJoinPool;
 
-import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
 import AlgoImpl.Selectors.PaleoSelectors.PaleoSelector;
-
-import java.util.Map.Entry;
-
 import structure.ICreaturePool;
 import structure.IFitnesTransformer;
 import structure.IGPGreature;
@@ -66,7 +62,7 @@ public class PaleoMultiobejctiveAlgo<TCreature extends IGPGreature> extends Mult
       timeStart = System.nanoTime();
       curentIndex = 0;
       paleoSelector.initialize(res);
-      System.out.println("iter::: " + iter + "current first front: " + paleoSelector.getFirstFront());
+      System.out.println("iter::: " + iter + "current first front: " + paleoSelector.getFirstFront().size());
 
       for (int mutIndex = 0; mutIndex < mutatationNormalWeigths.length; mutIndex++) {
         int howMany = (int) (mutNr * mutatationNormalWeigths[mutIndex]);
