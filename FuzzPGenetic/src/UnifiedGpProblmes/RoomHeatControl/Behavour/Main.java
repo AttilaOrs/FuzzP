@@ -100,8 +100,8 @@ public class Main {
       AbstactFitness.APPLY_SIZE_LIMIT = true;
       AbstactFitness.FIRED_TR_LIMIT = true;
       AbstactFitness.HARD_LIMIT = false;
-      AbstactFitness.SIZE_LIMIT_START = 500;
-      AbstactFitness.SIZE_LIMIT = 700;
+      AbstactFitness.SIZE_LIMIT_START = 200;
+      AbstactFitness.SIZE_LIMIT = 250;
 
       SimpleGA.REMOVE_ELITE_FROM_POP = false;
 
@@ -115,9 +115,9 @@ public class Main {
       PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
           new MultiplierTransformer(forkJoin), new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
-      PaleoMultiobejctiveAlgo.PALEO_ITER = 200;
-      PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 3200;
-      PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 3200;
+      PaleoMultiobejctiveAlgo.PALEO_ITER = 150;
+      PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 2400;
+      PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 2400;
       algo.setEralyStoppingCondition(d -> d >= 1.0);
       long start = System.currentTimeMillis();
       algo.theAlgo();
