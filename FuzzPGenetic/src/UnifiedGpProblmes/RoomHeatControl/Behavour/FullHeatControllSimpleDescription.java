@@ -1,7 +1,7 @@
 package UnifiedGpProblmes.RoomHeatControl.Behavour;
 
 public class FullHeatControllSimpleDescription {
-  final int roomInGoodState;
+  final int roomInWrongState;
   final int tankOffLimit;
   final int totalTick;
   final double sizeMulti;
@@ -11,7 +11,7 @@ public class FullHeatControllSimpleDescription {
   public FullHeatControllSimpleDescription(int roomInGoodState, double roomTempError, int tankOffLimit,
       double waterError,
       int totalScenarios, double sizeMulti, int size) {
-    this.roomInGoodState = roomInGoodState;
+    this.roomInWrongState = roomInGoodState;
     this.tankOffLimit = tankOffLimit;
     this.totalTick = totalScenarios;
     this.sizeMulti = sizeMulti;
@@ -21,7 +21,8 @@ public class FullHeatControllSimpleDescription {
   }
   @Override
   public String toString() {
-    return "FullHeatControllSimpleDescription [roomInGoodState=" + roomInGoodState + ", tankOffLimit=" + tankOffLimit
+    return "FullHeatControllSimpleDescription [roomInWrongState=" + roomInWrongState + ", tankOffLimit="
+        + tankOffLimit
         + ", totalTick=" + totalTick + ", sizeMulti=" + sizeMulti + ", size=" + size + ", waterErrot=" + waterErrot
         + ", roomTempError=" + roomTempError + "]";
   }

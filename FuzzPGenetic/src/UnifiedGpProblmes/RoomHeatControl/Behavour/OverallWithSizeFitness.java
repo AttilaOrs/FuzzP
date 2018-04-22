@@ -27,8 +27,8 @@ public class OverallWithSizeFitness implements IBehaviourBasedFitness<UnifiedGpI
 
     double hint = 1.0 / (1.0 + i.waterErrot);
     double tank = (((i.totalTick - i.tankOffLimit) + hint / 10.0)) / i.totalTick;
-    hint = 1.0 / (1.0 + i.roomInGoodState);
-    double room = ((i.roomInGoodState + hint / 10.0)) / i.totalTick;
+    hint = 1.0 / (1.0 + i.roomTempError);
+    double room = (((i.totalTick - i.roomInWrongState) + hint / 10.0)) / i.totalTick;
     double d2 = calcualte(i.size);
     return tank * room * d2;
   }

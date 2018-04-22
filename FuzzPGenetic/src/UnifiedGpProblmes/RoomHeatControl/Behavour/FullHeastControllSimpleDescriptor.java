@@ -72,7 +72,7 @@ public class FullHeastControllSimpleDescriptor extends AbstactFitness
 
         return new Control(lastEvent, gasCmd);
       });
-      nrOfGoodState += simRez.roomInGoodState;
+      nrOfGoodState += simRez.roomInWrongSate;
       waterOffLimit += simRez.waterOffLimit;
       waterError += simRez.waterError;
       roomTempEroor += simRez.roomError;
