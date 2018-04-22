@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
@@ -90,8 +91,8 @@ public class Main {
 
 
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatControllSimpleDescription>>> bfitnesCals = new ArrayList<>();
-      bfitnesCals.add(OverallFitness::new);
-      bfitnesCals.add(() -> new OverallFitness((d1, d2) -> d1 + d2));
+      bfitnesCals.add(RoomOnlyFitness::new);
+      bfitnesCals.add(TankOnlyFitnes::new);
 
       IOperatorFactory<IBeahviourDescriptor<FullHeatControllSimpleDescription, UnifiedGpIndi>> descriptorFactory = () -> new FullHeastControllSimpleDescriptor(
           Arrays.asList(moringScneario, eveningScenario, fitnessScenario));
@@ -126,10 +127,24 @@ public class Main {
       long stop = System.currentTimeMillis();
 
       long startTime = System.currentTimeMillis();
-      Integer i = algo.getBestBasedOn(0);
+      Set<Integer> firstFront = algo.getFirstFront();
+      int maxId = -1;
+      double maxFitnes = 0.0;
+      OverallFitness f = new OverallFitness();
+      f.setStore(pool.getStore());
+
+      for (Integer fi : firstFront) {
+        double fitnes = f.evaluate(fi);
+        if (fitnes > maxFitnes) {
+          maxFitnes = fitnes;
+          maxId = fi;
+        }
+
+      }
+
       long stopTime = System.currentTimeMillis();
 
-      UnifiedGpIndi rez = pool.get(i);
+      UnifiedGpIndi rez = pool.get(maxId);
       double rezFitnes = finalize(rez, path, stopTime - startTime);
       String config = "population surv" + PaleoMultiobejctiveAlgo.PALEO_SURV_POP + "\n";
       config += "population new " + PaleoMultiobejctiveAlgo.PALEO_NEW_POP + "\n";

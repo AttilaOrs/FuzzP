@@ -388,4 +388,8 @@ public class BehaviourParalellPool<TCreatue extends IGPGreature, TBehavourDesc> 
     return null;
   }
 
+  public BehaviourStore<TBehavourDesc> getStore() {
+    return this.store;
+  }
+
 }
