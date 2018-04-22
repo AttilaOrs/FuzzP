@@ -90,8 +90,8 @@ public class Main {
 
 
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatControllSimpleDescription>>> bfitnesCals = new ArrayList<>();
-      bfitnesCals.add(RoomOnlyFitness::new);
-      bfitnesCals.add(TankOnlyFitnes::new);
+      bfitnesCals.add(OverallFitness::new);
+      bfitnesCals.add(OverallWithSizeFitness::new);
 
       IOperatorFactory<IBeahviourDescriptor<FullHeatControllSimpleDescription, UnifiedGpIndi>> descriptorFactory = () -> new FullHeastControllSimpleDescriptor(
           Arrays.asList(moringScneario, eveningScenario, fitnessScenario));
@@ -114,7 +114,7 @@ public class Main {
       PoolWrapperForTheorteticalDistance<UnifiedGpIndi> distPool = new PoolWrapperForTheorteticalDistance<>(pool,
           forkJoin);
       SPEAIISelector paleoSelector = new SPEAIISelector(forkJoin);
-      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
+      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(distPool,
           null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
       PaleoMultiobejctiveAlgo.PALEO_ITER = 150;
