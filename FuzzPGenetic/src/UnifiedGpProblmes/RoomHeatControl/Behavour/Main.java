@@ -91,8 +91,8 @@ public class Main {
 
 
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatControllSimpleDescription>>> bfitnesCals = new ArrayList<>();
-      bfitnesCals.add(() -> new OverallFitness((tank, room) -> 0.85 * room + 0.15 * tank));
-      bfitnesCals.add(OverallWithSizeFitness::new);
+      bfitnesCals.add(() -> new OverallFitness((tank, room) -> 0.95 * room + 0.05 * tank));
+      bfitnesCals.add(() -> new OverallWithSizeFitness((tank, room) -> 0.95 * room + 0.05 * tank));
 
       IOperatorFactory<IBeahviourDescriptor<FullHeatControllSimpleDescription, UnifiedGpIndi>> descriptorFactory = () -> new FullHeastControllSimpleDescriptor(
           Arrays.asList(moringScneario, eveningScenario, fitnessScenario));
@@ -100,8 +100,8 @@ public class Main {
       AbstactFitness.APPLY_SIZE_LIMIT = true;
       AbstactFitness.FIRED_TR_LIMIT = true;
       AbstactFitness.HARD_LIMIT = false;
-      AbstactFitness.SIZE_LIMIT_START = 30;
-      AbstactFitness.SIZE_LIMIT = 300;
+      AbstactFitness.SIZE_LIMIT_START = 400;
+      AbstactFitness.SIZE_LIMIT = 600;
 
       SimpleGA.REMOVE_ELITE_FROM_POP = false;
 
@@ -115,7 +115,7 @@ public class Main {
       PoolWrapperForTheorteticalDistance<UnifiedGpIndi> distPool = new PoolWrapperForTheorteticalDistance<>(pool,
           forkJoin);
       NSGAIISelector paleoSelector = new NSGAIISelector(forkJoin);
-      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(distPool,
+      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
           null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
       PaleoMultiobejctiveAlgo.PALEO_ITER = 150;

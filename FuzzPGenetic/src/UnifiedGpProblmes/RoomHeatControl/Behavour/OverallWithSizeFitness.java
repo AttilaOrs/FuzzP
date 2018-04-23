@@ -2,6 +2,8 @@ package UnifiedGpProblmes.RoomHeatControl.Behavour;
 
 import static java.lang.Math.sqrt;
 
+import java.util.function.BiFunction;
+
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import structure.behaviour.IBehaviourBasedFitness;
 import structure.behaviour.IBehaviourDescriponDataStore;
@@ -10,8 +12,19 @@ public class OverallWithSizeFitness implements IBehaviourBasedFitness<UnifiedGpI
 
   private IBehaviourDescriponDataStore<FullHeatControllSimpleDescription> store;
 
+  private BiFunction<Double, Double, Double> myFunc;
+
   public static int acceptableSize = 20;
   public static int maxSize = 600;
+
+  public OverallWithSizeFitness() {
+    this((d1, d2) -> d1 * d2);
+  }
+
+  public OverallWithSizeFitness(BiFunction<Double, Double, Double> myFunc) {
+    this.myFunc = myFunc;
+  }
+
   @Override
   public void setStore(IBehaviourDescriponDataStore<FullHeatControllSimpleDescription> store) {
     this.store = store;
@@ -30,7 +43,7 @@ public class OverallWithSizeFitness implements IBehaviourBasedFitness<UnifiedGpI
     hint = 1.0 / (1.0 + i.roomTempError);
     double room = (((i.totalTick - i.roomInWrongState) + hint / 10.0)) / i.totalTick;
     double d2 = calcualte(i.size);
-    return tank * room * d2;
+    return myFunc.apply(tank, room) * d2;
   }
 
   private double calcualte(int sum) {
