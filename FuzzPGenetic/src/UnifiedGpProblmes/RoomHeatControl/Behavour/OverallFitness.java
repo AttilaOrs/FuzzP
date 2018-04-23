@@ -35,7 +35,7 @@ public class OverallFitness implements IBehaviourBasedFitness<UnifiedGpIndi, Ful
     double hint = 1.0 / (1.0 + i.waterErrot);
     double tank = (((i.totalTick - i.tankOffLimit) + hint / 10.0)) / i.totalTick;
     hint = 1.0 / (1.0 + i.roomTempError);
-    double room = (((i.totalTick - i.roomInWrongState) + hint / 10.0)) / i.totalTick;
+    double room = (((i.totalTick - i.roomInWrongState) * 0.70)) / i.totalTick + hint * 0.30;
     return this.f.apply(tank, room) * i.sizeMulti;
 
   }

@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
@@ -90,7 +91,7 @@ public class Main {
 
 
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatControllSimpleDescription>>> bfitnesCals = new ArrayList<>();
-      bfitnesCals.add(() -> new OverallFitness((d1, d2) -> 0.90 * d1 + 0.10 * d2));
+      bfitnesCals.add(() -> new OverallFitness((tank, room) -> 0.85 * room + 0.15 * tank));
       bfitnesCals.add(OverallWithSizeFitness::new);
 
       IOperatorFactory<IBeahviourDescriptor<FullHeatControllSimpleDescription, UnifiedGpIndi>> descriptorFactory = () -> new FullHeastControllSimpleDescriptor(
@@ -114,7 +115,7 @@ public class Main {
       PoolWrapperForTheorteticalDistance<UnifiedGpIndi> distPool = new PoolWrapperForTheorteticalDistance<>(pool,
           forkJoin);
       SPEAIISelector paleoSelector = new SPEAIISelector(forkJoin);
-      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(distPool,
+      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
           null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
       PaleoMultiobejctiveAlgo.PALEO_ITER = 150;
@@ -146,7 +147,7 @@ public class Main {
       UnifiedGpIndi rez = pool.get(maxId);
       System.out.println(rez);
       System.out.println(">>" + rez.getRoot());
-      double rezFitnes = finalize(rez, path, stopTime - startTime);
+      double rezFitnes = finalize(rez, path + "princ/", stopTime - startTime);
       String config = "population surv" + PaleoMultiobejctiveAlgo.PALEO_SURV_POP + "\n";
       config += "population new " + PaleoMultiobejctiveAlgo.PALEO_NEW_POP + "\n";
       config += "iteration " + PaleoMultiobejctiveAlgo.PALEO_ITER + "\n";
@@ -179,7 +180,27 @@ public class Main {
       PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("Fit"), path + FITNESS);
       PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree size"), path + SIZE);
       PlotUtils.hist(algo.getSizeHistLog(), path + SIZE_HIST);
+      
+      List<OverallFitness> fis = Arrays.asList(new OverallFitness((tank, room) -> room),
+          new OverallFitness((tank, room) -> room * 70 + tank * 20),
+          new OverallFitness((tank, room) -> room * 50 + tank * 50)
+          );
+      for (int fiIndex = 0; fiIndex < fis.size(); fiIndex++) {
 
+        maxId = -1;
+        maxFitnes = -1000.0;
+        OverallFitness fitnes = fis.get(fiIndex);
+        fitnes.setStore(pool.getStore());
+
+        for (Integer fi : firstFront) {
+          double fitnesVal = f.evaluate(fi);
+          if (fitnesVal > maxFitnes) {
+            maxFitnes = fitnesVal;
+            maxId = fi;
+          }
+        }
+        finalize(pool.get(maxId), path + "Fi" + fiIndex + "/", 0);
+      }
     }
   }
 
