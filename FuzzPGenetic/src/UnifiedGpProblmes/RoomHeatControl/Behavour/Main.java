@@ -20,7 +20,7 @@ import com.google.gson.stream.JsonReader;
 import AlgoImpl.IterationLogger;
 import AlgoImpl.PaleoMultiobejctiveAlgo;
 import AlgoImpl.SimpleGA;
-import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
+import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
 import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import AlgoImpl.pools.behaviour.BehaviourParalellPool;
@@ -114,8 +114,8 @@ public class Main {
 
       PoolWrapperForTheorteticalDistance<UnifiedGpIndi> distPool = new PoolWrapperForTheorteticalDistance<>(pool,
           forkJoin);
-      SPEAIISelector paleoSelector = new SPEAIISelector(forkJoin);
-      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
+      NSGAIISelector paleoSelector = new NSGAIISelector(forkJoin);
+      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(distPool,
           null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
       PaleoMultiobejctiveAlgo.PALEO_ITER = 150;
