@@ -1,3 +1,6 @@
+import static commonUtil.PlotUtils.plot;
+import static java.util.Arrays.asList;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -6,6 +9,7 @@ import java.util.Arrays;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
+import AlgoImpl.IterationLogger;
 import UETPNLisp.UETPNLisp;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGp.Tree.IInnerNode;
@@ -28,9 +32,16 @@ public class FullHeatRunner {
     initScenarios();
     INode<NodeType> root = UETPNLisp.fromFile(new File("heat.uls"));
     FullHeastControllSimpleDescriptor desc = new FullHeastControllSimpleDescriptor(
-        Arrays.asList(moringScneario, eveningScenario, fitnessScenario));
+        asList(moringScneario, eveningScenario, fitnessScenario));
+    desc.setLogging(true);
     FullHeatControllSimpleDescription rez = desc.evaluate(new UnifiedGpIndi((IInnerNode<NodeType>) root));
     System.out.println(rez);
+    int cntr = 0;
+    for( IterationLogger log: desc.getLoggers()) {
+      plot(log.getLogsForPlottingContatinigStrings(""), "scen"+(cntr++));
+    }
+
+    
   }
 
   public static void initScenarios() throws FileNotFoundException {
