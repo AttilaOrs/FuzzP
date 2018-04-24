@@ -20,7 +20,7 @@ import com.google.gson.stream.JsonReader;
 import AlgoImpl.IterationLogger;
 import AlgoImpl.PaleoMultiobejctiveAlgo;
 import AlgoImpl.SimpleGA;
-import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
+import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
 import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import AlgoImpl.pools.behaviour.BehaviourParalellPool;
@@ -92,6 +92,7 @@ public class Main {
 
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatControllSimpleDescription>>> bfitnesCals = new ArrayList<>();
       bfitnesCals.add(() -> new OverallFitness((tank, room) -> 0.95 * room + 0.05 * tank));
+      bfitnesCals.add(() -> new OverallFitness((tank, room) -> 0.05 * room + 0.95 * tank));
       bfitnesCals.add(() -> new OverallWithSizeFitness((tank, room) -> 0.95 * room + 0.05 * tank));
 
       IOperatorFactory<IBeahviourDescriptor<FullHeatControllSimpleDescription, UnifiedGpIndi>> descriptorFactory = () -> new FullHeastControllSimpleDescriptor(
@@ -114,7 +115,7 @@ public class Main {
 
       PoolWrapperForTheorteticalDistance<UnifiedGpIndi> distPool = new PoolWrapperForTheorteticalDistance<>(pool,
           forkJoin);
-      NSGAIISelector paleoSelector = new NSGAIISelector(forkJoin);
+      SPEAIISelector paleoSelector = new SPEAIISelector(forkJoin);
       PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
           null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
