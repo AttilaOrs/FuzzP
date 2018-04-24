@@ -38,12 +38,12 @@ public class OverallWithSizeFitness implements IBehaviourBasedFitness<UnifiedGpI
       return 0.0;
     }
 
-    double hint = 1.0 / (1.0 + i.waterErrot);
-    double tank = (((i.totalTick - i.tankOffLimit) + hint / 10.0)) / i.totalTick;
-    hint = 1.0 / (1.0 + i.roomTempError);
-    double room = (((i.totalTick - i.roomInWrongState) + hint / 10.0)) / i.totalTick;
+    double tankHint = 1.0 / (1.0 + i.waterErrot);
+    double tank = (((i.totalTick - i.tankOffLimit) + tankHint / 10.0)) / i.totalTick;
+    double roomHint = 1.0 / (1.0 + i.roomTempError);
+    double room = (((i.totalTick - i.roomInWrongState) + roomHint / 10.0)) / i.totalTick;
     double d2 = calcualte(i.size);
-    return myFunc.apply(tank, room) * d2;
+    return myFunc.apply(tankHint, roomHint) * d2;
   }
 
   private double calcualte(int sum) {
