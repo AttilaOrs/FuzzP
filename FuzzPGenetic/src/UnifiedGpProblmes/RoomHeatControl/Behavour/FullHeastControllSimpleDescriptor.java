@@ -2,10 +2,12 @@ package UnifiedGpProblmes.RoomHeatControl.Behavour;
 
 import static UnifiedGpProblmes.RoomHeatControl.FullControllMultiScenarioFitness.getProblemSpecification;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import AlgoImpl.IterationLogger;
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
 import UnifiedGpProblmes.RoomHeatControl.Simulator.FullHeatController;
@@ -25,10 +27,24 @@ public class FullHeastControllSimpleDescriptor extends AbstactFitness
       IBeahviourDescriptor<FullHeatControllSimpleDescription, UnifiedGpIndi> {
 
   private List<RoomScenario> scenarios;
+  private List<IterationLogger> loggers;
 
   public FullHeastControllSimpleDescriptor(List<RoomScenario> scenarios) {
     super(getProblemSpecification());
     this.scenarios = scenarios;
+    this.loggers  = null;
+  }
+  
+  public void setLogging(boolean logging) {
+    if(logging) {
+      this.loggers = new ArrayList<>();
+    } else {
+      this.loggers = null;
+    }
+  }
+  
+  public List<IterationLogger> getLoggers(){
+    return this.loggers;
   }
 
   FullHeatController.ControllEvent lastEvent = FullHeatController.ControllEvent.None;
@@ -59,6 +75,11 @@ public class FullHeastControllSimpleDescriptor extends AbstactFitness
 
     for (RoomScenario scenario : scenarios) {
       FullSimulator sim = new FullSimulator(scenario);
+      if(loggers!=null) {
+        IterationLogger log = new IterationLogger();
+        sim.setIterationLogger(log);
+        loggers.add(log);
+      }
       exec.resetSimulator();
       Rezult simRez = sim.simulate((sensorReading, roomTempRef, waterTemp, waterRef) -> {
         lastEvent = FullHeatController.ControllEvent.None;

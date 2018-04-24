@@ -18,6 +18,7 @@ public class FullSimulator {
   public static final String HEATER_ON = " heater";
   private static final String REF_TEMP = " ref temp";
   private static final String WATER_TEMP = " water temp";
+  private static final String WATER_CMD = " water cmd";
 
   private RoomScenario scenario;
   private IterationLogger logger;
@@ -62,6 +63,7 @@ public class FullSimulator {
         logger.addLogToTopic(WINDOW_OPEN, roomModel.getWindowOpen() ? 2.0 : 1.0);
         logger.addLogToTopic(HEATER_ON, roomModel.getHeaterOn() ? 4.0 : 3.0);
         logger.addLogToTopic(WATER_TEMP, heaterModel.getHotWaterTemeprature());
+        logger.addLogToTopic(WATER_CMD, rez.gasCmd*5.0 + 5.0);
       }
 
       double lower_Limit_acc = scenario.getReference(tickNr) - deltaAllowedRoom;
