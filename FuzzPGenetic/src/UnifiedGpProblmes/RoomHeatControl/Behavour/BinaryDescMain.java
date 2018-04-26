@@ -94,8 +94,9 @@ public class BinaryDescMain {
       breeders.add(() -> new UnifromCrossOver(0.3));
 
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatBinaryDescripton>>> bfitnesCals = new ArrayList<>();
-      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), false));
-      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> (room * size), true));
+      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), false, 1.0));
+      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> (room * size), true, 1.0));
+      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.70 * room + 0.30 * tank) * size), false, 0.2));
       bfitnesCals.add(BehaviourDiversityHammingFitness::new);
       
 
@@ -121,7 +122,7 @@ public class BinaryDescMain {
       PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
           new LastMultiplierTransformer(forkJoin), new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
-      PaleoMultiobejctiveAlgo.PALEO_ITER = 150;
+      PaleoMultiobejctiveAlgo.PALEO_ITER = 200;
       PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 2400;
       PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 2400;
       algo.setEralyStoppingCondition(d -> d >= 1.0);
@@ -129,7 +130,6 @@ public class BinaryDescMain {
       algo.theAlgo();
       long stop = System.currentTimeMillis();
 
-      long startTime = System.currentTimeMillis();
       Set<Integer> firstFront = algo.getFirstFront();
       int maxId = -1;
       double maxFitnes = -1000.0;
@@ -145,12 +145,11 @@ public class BinaryDescMain {
 
       }
 
-      long stopTime = System.currentTimeMillis();
 
       UnifiedGpIndi rez = pool.get(maxId);
       System.out.println(rez);
       System.out.println(">>" + rez.getRoot());
-      double rezFitnes = finalize(rez, path + "princ/", stopTime - startTime);
+      double rezFitnes = finalize(rez, path + "princ/", stop - start);
       String config = "population surv" + PaleoMultiobejctiveAlgo.PALEO_SURV_POP + "\n";
       config += "population new " + PaleoMultiobejctiveAlgo.PALEO_NEW_POP + "\n";
       config += "iteration " + PaleoMultiobejctiveAlgo.PALEO_ITER + "\n";
@@ -184,17 +183,19 @@ public class BinaryDescMain {
       PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree size"), path + SIZE);
       PlotUtils.hist(algo.getSizeHistLog(), path + SIZE_HIST);
 
-      List<OverallFitness> fis = Arrays
-          .asList(new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), false),
-              new OverallFitness((tank, room, size) -> (room * tank), false),
-              new OverallFitness((tank, room, size) -> ((0.50 * room + 0.50 * tank) * size), false));
+      List<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatBinaryDescripton>> fis = Arrays
+          .asList(new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), false, 1.0),
+              new OverallFitness((tank, room, size) -> (room * size), true, 1.0),
+              new OverallFitness((tank, room, size) -> ((0.70 * room + 0.30 * tank) * size), false, 0.2),
+              new BehaviourDiversityHammingFitness()
+              );
 
 
       for (int fiIndex = 0; fiIndex < fis.size(); fiIndex++) {
 
         maxId = -1;
         maxFitnes = -1000.0;
-        OverallFitness fitnes = fis.get(fiIndex);
+        IBehaviourBasedFitness<UnifiedGpIndi, FullHeatBinaryDescripton> fitnes = fis.get(fiIndex);
         fitnes.setStore(pool.getStore());
 
         for (Integer fi : firstFront) {
