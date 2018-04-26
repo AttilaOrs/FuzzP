@@ -15,7 +15,7 @@ public class OverallFitness implements IBehaviourBasedFitness<UnifiedGpIndi, Ful
   private TriFunction<Double, Double, Double, Double> f;
   boolean sctrictSize;
   private IBehaviourDescriponDataStore<FullHeatBinaryDescripton> store;
-  private double errorOrState;
+  private double errorStateRatio;
 
   public OverallFitness() {
     this((d1, d2, d3) -> d1 * d2 * d3, false, 1.0);
@@ -23,7 +23,7 @@ public class OverallFitness implements IBehaviourBasedFitness<UnifiedGpIndi, Ful
   public OverallFitness(TriFunction<Double, Double, Double, Double> f, boolean strictSize, double errorStateRatio) {
     this.f = f;
     this.sctrictSize = strictSize;
-    this.errorOrState = errorOrState;
+    this.errorStateRatio = errorStateRatio;
   }
   @Override
   public void setStore(IBehaviourDescriponDataStore<FullHeatBinaryDescripton> store) {
@@ -43,8 +43,8 @@ public class OverallFitness implements IBehaviourBasedFitness<UnifiedGpIndi, Ful
     double roomError = 1.0 / (1.0 + i.roomTempError);
     double roomSate = (((i.totalTick - i.roomInWrongState) + 1.0)) / i.totalTick;
     double sizeMulti = (sctrictSize) ? calcualte(i.size) : i.sizeMulti;
-    double tank = errorOrState * tankError + (1.0 - errorOrState) * tankState;
-    double room = errorOrState * roomError + (1.0 - errorOrState) * roomSate;
+    double tank = errorStateRatio * tankError + (1.0 - errorStateRatio) * tankState;
+    double room = errorStateRatio * roomError + (1.0 - errorStateRatio) * roomSate;
     return this.f.apply(tank, room, sizeMulti);
   }
 
