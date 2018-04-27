@@ -95,8 +95,8 @@ public class BinaryDescMain {
 
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatBinaryDescripton>>> bfitnesCals = new ArrayList<>();
       bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), false, 1.0));
-      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> (room * size), true, 1.0));
-      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.70 * room + 0.30 * tank) * size), false, 0.2));
+      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.50 * room + 0.50 * tank) * size), true, 0.2));
+      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), true, 1.0));
       bfitnesCals.add(BehaviourDiversityHammingFitness::new);
       
 

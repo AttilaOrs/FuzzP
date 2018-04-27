@@ -38,9 +38,9 @@ public class OverallFitness implements IBehaviourBasedFitness<UnifiedGpIndi, Ful
     if (i.sizeMulti == 0.0) {
       return 0.0;
     }
-    double tankError = 1.0 / (1.0 + i.waterErrot);
+    double tankError = 100.0 / (1.0 + i.waterErrot);
     double tankState = (((i.totalTick - i.tankOffLimit) + 1.0)) / i.totalTick;
-    double roomError = 1.0 / (1.0 + i.roomTempError);
+    double roomError = 100.0 / (1.0 + i.roomTempError);
     double roomSate = (((i.totalTick - i.roomInWrongState) + 1.0)) / i.totalTick;
     double sizeMulti = (sctrictSize) ? calcualte(i.size) : i.sizeMulti;
     double tank = errorStateRatio * tankError + (1.0 - errorStateRatio) * tankState;
