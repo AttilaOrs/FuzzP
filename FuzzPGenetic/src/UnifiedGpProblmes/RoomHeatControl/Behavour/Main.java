@@ -4,6 +4,7 @@ import static UnifiedGpProblmes.RoomHeatControl.FullControllMultiScenarioFitness
 import static commonUtil.PlotUtils.plot;
 import static commonUtil.PlotUtils.writeToFile;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -91,9 +92,9 @@ public class Main {
 
 
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatControllSimpleDescription>>> bfitnesCals = new ArrayList<>();
-      bfitnesCals.add(() -> new OverallFitness((tank, room) -> 0.95 * room + 0.05 * tank));
-      bfitnesCals.add(() -> new OverallFitness((tank, room) -> 0.05 * room + 0.95 * tank));
-      bfitnesCals.add(() -> new OverallWithSizeFitness((tank, room) -> 0.95 * room + 0.05 * tank));
+      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), false, 1.0));
+      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.50 * room + 0.50 * tank) * size), true, 0.2));
+      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), true, 1.0));
 
       IOperatorFactory<IBeahviourDescriptor<FullHeatControllSimpleDescription, UnifiedGpIndi>> descriptorFactory = () -> new FullHeastControllSimpleDescriptor(
           Arrays.asList(moringScneario, eveningScenario, fitnessScenario));
@@ -119,7 +120,7 @@ public class Main {
       PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
           null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
-      PaleoMultiobejctiveAlgo.PALEO_ITER = 150;
+      PaleoMultiobejctiveAlgo.PALEO_ITER = 200;
       PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 2400;
       PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 2400;
       algo.setEralyStoppingCondition(d -> d >= 1.0);
@@ -182,15 +183,14 @@ public class Main {
       PlotUtils.plot(logger.getLogsForPlottingContatinigStrings("tree size"), path + SIZE);
       PlotUtils.hist(algo.getSizeHistLog(), path + SIZE_HIST);
       
-      List<OverallFitness> fis = Arrays.asList(new OverallFitness((tank, room) -> room),
-          new OverallFitness((tank, room) -> room * 70 + tank * 20),
-          new OverallFitness((tank, room) -> room * 50 + tank * 50)
-          );
+      List<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatControllSimpleDescription>> fis = bfitnesCals.stream()
+          .map(i -> i.generate()).collect(toList());
+
       for (int fiIndex = 0; fiIndex < fis.size(); fiIndex++) {
 
         maxId = -1;
         maxFitnes = -1000.0;
-        OverallFitness fitnes = fis.get(fiIndex);
+        IBehaviourBasedFitness<UnifiedGpIndi, FullHeatControllSimpleDescription> fitnes = fis.get(fiIndex);
         fitnes.setStore(pool.getStore());
 
         for (Integer fi : firstFront) {
