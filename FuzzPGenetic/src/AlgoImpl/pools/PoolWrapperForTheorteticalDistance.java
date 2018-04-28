@@ -123,7 +123,7 @@ public class PoolWrapperForTheorteticalDistance<T extends IGPGreature> implement
       if (sts[1] - sts[0] < 0.0000001) {
         newFitnesses[originalSize] = 1.0;
       } else {
-        newFitnesses[originalSize] = abs(1.0 - (newFitnes - sts[0]) / (sts[1] - sts[0])) * newFitnesses[0];
+        newFitnesses[originalSize] = abs(1.0 - (newFitnes - sts[0]) / (sts[1] - sts[0]));
       }
       toRet.put(id, newFitnesses);
 

@@ -93,8 +93,7 @@ public class Main {
 
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatControllSimpleDescription>>> bfitnesCals = new ArrayList<>();
       bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), false, 1.0));
-      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.50 * room + 0.50 * tank) * size), true, 0.2));
-      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), true, 1.0));
+      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.80 * room + 0.20 * tank) * size), true, 0.5));
 
       IOperatorFactory<IBeahviourDescriptor<FullHeatControllSimpleDescription, UnifiedGpIndi>> descriptorFactory = () -> new FullHeastControllSimpleDescriptor(
           Arrays.asList(moringScneario, eveningScenario, fitnessScenario));
@@ -117,12 +116,12 @@ public class Main {
       PoolWrapperForTheorteticalDistance<UnifiedGpIndi> distPool = new PoolWrapperForTheorteticalDistance<>(pool,
           forkJoin);
       SPEAIISelector paleoSelector = new SPEAIISelector(forkJoin);
-      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
+      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(distPool,
           null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
-      PaleoMultiobejctiveAlgo.PALEO_ITER = 200;
-      PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 2400;
-      PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 2400;
+      PaleoMultiobejctiveAlgo.PALEO_ITER = 250;
+      PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 3200;
+      PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 3200;
       algo.setEralyStoppingCondition(d -> d >= 1.0);
       long start = System.currentTimeMillis();
       algo.theAlgo();

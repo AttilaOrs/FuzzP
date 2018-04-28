@@ -18,7 +18,6 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import AlgoImpl.IterationLogger;
-import AlgoImpl.LastMultiplierTransformer;
 import AlgoImpl.PaleoMultiobejctiveAlgo;
 import AlgoImpl.SimpleGA;
 import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
@@ -95,8 +94,7 @@ public class BinaryDescMain {
 
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatBinaryDescripton>>> bfitnesCals = new ArrayList<>();
       bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), false, 1.0));
-      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.50 * room + 0.50 * tank) * size), true, 0.2));
-      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), true, 1.0));
+      bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.80 * room + 0.20 * tank) * size), true, 0.5));
       bfitnesCals.add(BehaviourDiversityHammingFitness::new);
       
 
@@ -120,11 +118,11 @@ public class BinaryDescMain {
 
       SPEAIISelector paleoSelector = new SPEAIISelector(forkJoin);
       PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
-          new LastMultiplierTransformer(forkJoin), new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
+          null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
-      PaleoMultiobejctiveAlgo.PALEO_ITER = 200;
-      PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 2400;
-      PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 2400;
+      PaleoMultiobejctiveAlgo.PALEO_ITER = 250;
+      PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 3200;
+      PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 3200;
       algo.setEralyStoppingCondition(d -> d >= 1.0);
       long start = System.currentTimeMillis();
       algo.theAlgo();
