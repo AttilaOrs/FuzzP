@@ -122,8 +122,8 @@ public class BinaryDescMain {
           null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
       PaleoMultiobejctiveAlgo.PALEO_ITER = 100;
-      PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 1600;
-      PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 1600;
+      PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 800;
+      PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 800;
       algo.setEralyStoppingCondition(d -> d >= 1.0);
       long start = System.currentTimeMillis();
       algo.theAlgo();
