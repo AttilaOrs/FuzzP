@@ -1,25 +1,13 @@
 package UnifiedGp.TreeDist;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
 import java.util.List;
 
 import org.junit.Test;
 
-import com.kitfox.svg.animation.parser.SimpleNode;
-
 import UnifiedGp.TestUtils;
-import UnifiedGp.Tree.BreadthFirstVisitor;
-import UnifiedGp.Tree.DepthFirstPostOrderVisitor;
-import UnifiedGp.Tree.IInnerNode;
-import UnifiedGp.Tree.INode;
-import UnifiedGp.Tree.VisitorCostumizer;
-import UnifiedGp.Tree.Nodes.NodeType;
-import structure.TriFunction;
 
 public class TreeDistUtilTest {
 
