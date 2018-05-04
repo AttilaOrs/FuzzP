@@ -23,7 +23,7 @@ import dotDrawer.PetriDotDrawerVertical;
 public class UETPNLispVisualzer {
 
   public static void main(String[] args) {
-    INode<NodeType> root = UETPNLisp.fromFile(new File("example.uls"));
+    INode<NodeType> root = UETPNLisp.fromFile(new File("example_new.uls"));
     ToPetriNet tpn = new ToPetriNet(createProblemSpecification(), true, false);
     PetriConversationResult rez = tpn.toNet((IInnerNode<NodeType>) root);
     FullRecorder<UnifiedToken> rec = new FullRecorder<>();
@@ -44,7 +44,7 @@ public class UETPNLispVisualzer {
 
     PetriDotDrawerVertical drawer = new PetriDotDrawerVertical(
         new DrawableUnifiedPetriNetWithExternalNames(rez.net, TransitionPlaceNameStore.createOrdinarNames(rez.net)));
-    drawer.makeImage("thirdEx");
+    drawer.makeImage("last_arc_fi");
 
   }
 

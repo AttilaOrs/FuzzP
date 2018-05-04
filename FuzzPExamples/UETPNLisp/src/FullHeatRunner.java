@@ -1,10 +1,10 @@
 import static commonUtil.PlotUtils.plot;
+import static commonUtil.PlotUtils.writeToFile;
 import static java.util.Arrays.asList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Arrays;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
@@ -30,7 +30,7 @@ public class FullHeatRunner {
 
   public static void main(String args[]) throws FileNotFoundException {
     initScenarios();
-    INode<NodeType> root = UETPNLisp.fromFile(new File("heat.uls"));
+    INode<NodeType> root = UETPNLisp.fromFile(new File("heat2.uls"));
     FullHeastControllSimpleDescriptor desc = new FullHeastControllSimpleDescriptor(
         asList(moringScneario, eveningScenario, fitnessScenario));
     desc.setLogging(true);
@@ -38,8 +38,11 @@ public class FullHeatRunner {
     System.out.println(rez);
     int cntr = 0;
     for( IterationLogger log: desc.getLoggers()) {
-      plot(log.getLogsForPlottingContatinigStrings(""), "scen"+(cntr++));
+      plot(log.getLogsForPlottingContatinigStrings(""), "scen" + (cntr));
+      writeToFile("scen" + cntr + ".dat", log.exportToDat(""));
+      cntr++;
     }
+    
 
     
   }
