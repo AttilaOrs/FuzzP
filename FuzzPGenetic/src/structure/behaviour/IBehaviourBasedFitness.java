@@ -1,10 +1,18 @@
 package structure.behaviour;
 
-public interface IBehaviourBasedFitness<TCreature, TBehaviourDescription> {
+import structure.ICreaturePool;
+import structure.IGPGreature;
 
-  void setStore(IBehaviourDescriponDataStore<TBehaviourDescription> store);
+public interface IBehaviourBasedFitness<TCreature extends IGPGreature, TBehaviourDescription> {
+
+  default void setStore(IBehaviourDescriponDataStore<TBehaviourDescription> store) {
+    //do nothing
+  }
+  
+  default void setPool(ICreaturePool<TCreature> cr) {
+    //do nothing
+  }
 
   double evaluate(Integer id);
-
 
 }

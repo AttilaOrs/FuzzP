@@ -62,7 +62,7 @@ public class BehaviourParalellPool<TCreatue extends IGPGreature, TBehavourDesc> 
     secondPhaseTask = new ConcurrentLinkedQueue<>();
     store = new BehaviourStore<>();
 		for (int q = 0; q < THREAD_NR; q++) {
-			WorkerThread worker = new WorkerThread();
+			WorkerThread worker = new WorkerThread(this);
 			workers.add(worker);
 			worker.start();
 		}
@@ -220,8 +220,10 @@ public class BehaviourParalellPool<TCreatue extends IGPGreature, TBehavourDesc> 
 
     Random workerRandom;
     private boolean finish;
+    private BehaviourParalellPool<TCreatue, TBehavourDesc> poolToPass;
 
-    public WorkerThread() {
+    public WorkerThread(BehaviourParalellPool<TCreatue, TBehavourDesc> poolToPass) {
+      this.poolToPass = poolToPass;
       workerGenerators = new ArrayList<>();
       for (int i = 0; i < generators.size(); i++) {
         workerGenerators.add(generators.get(i).generate());
@@ -240,6 +242,7 @@ public class BehaviourParalellPool<TCreatue extends IGPGreature, TBehavourDesc> 
       for (int i = 0; i < fitnesCals.size(); i++) {
         IBehaviourBasedFitness<TCreatue, TBehavourDesc> fi = fitnesCals.get(i).generate();
         fi.setStore(store);
+        fi.setPool(poolToPass);
         workerFitnesCals.add(fi);
       }
       behaviourDescriptor = descriptorFactory.generate();

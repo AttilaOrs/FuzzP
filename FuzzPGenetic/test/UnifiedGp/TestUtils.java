@@ -81,6 +81,37 @@ public class TestUtils {
     InnerNode loop = new InnerNode(NodeType.Loop, conc, d5);
     return loop;
   }
+  
+  public static IInnerNode<NodeType> allSimpleModified() {
+    DelayLeaf d1 = new DelayLeaf(1);
+    DelayLeaf d2 = new DelayLeaf(2);
+    DelayLeaf d3 = new DelayLeaf(3);
+    DelayLeaf d4 = new DelayLeaf(4);
+    DelayLeaf d5 = new DelayLeaf(4);
+    InnerNode seq = new InnerNode(NodeType.Seq, d3, d4);
+    InnerNode select = new InnerNode(NodeType.Selc, d1, d2);
+    InnerNode conc = new InnerNode(NodeType.Conc, seq, select);
+    InnerNode loop = new InnerNode(NodeType.Loop, conc, d5);
+    return loop;
+  }
+  
+  public static IInnerNode<NodeType> loopLoopOne() {
+    DelayLeaf d1 = new DelayLeaf(1);
+    DelayLeaf d2 = new DelayLeaf(2);
+    DelayLeaf d3 = new DelayLeaf(3);
+    InnerNode loopInner =  new InnerNode(NodeType.Loop, d1, d2);
+    InnerNode loop = new InnerNode(NodeType.Loop, loopInner, d3);
+    return loop;
+  }
+  
+  public static IInnerNode<NodeType> concLoopOne() {
+    DelayLeaf d1 = new DelayLeaf(1);
+    DelayLeaf d2 = new DelayLeaf(2);
+    DelayLeaf d3 = new DelayLeaf(3);
+    InnerNode loopInner =  new InnerNode(NodeType.Loop, d1, d2);
+    InnerNode loop = new InnerNode(NodeType.Conc, loopInner, d3);
+    return loop;
+  }
 
   public static IInnerNode<NodeType> selectionNet() {
     InnerNode seq1 = new InnerNode(NodeType.Seq, new InputLeaf(InputType.EnableIfNonPhi, 0),

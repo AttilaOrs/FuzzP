@@ -3,10 +3,11 @@ package UnifiedGp.Behaviour;
 
 import java.util.BitSet;
 
+import structure.IGPGreature;
 import structure.behaviour.IBehaviourBasedFitness;
 import structure.behaviour.IBehaviourDescriponDataStore;
 
-public class BehaviourDiversityHammingFitness<TCreature, TBehaviourDescription extends BinaryDescrition>
+public class BehaviourDiversityHammingFitness<TCreature extends IGPGreature, TBehaviourDescription extends BinaryDescrition>
     implements
       IBehaviourBasedFitness<TCreature, TBehaviourDescription> {
 
