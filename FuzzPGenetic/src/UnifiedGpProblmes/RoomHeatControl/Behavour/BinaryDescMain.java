@@ -121,9 +121,9 @@ public class BinaryDescMain {
       PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
           null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
-      PaleoMultiobejctiveAlgo.PALEO_ITER = 250;
-      PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 3200;
-      PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 3200;
+      PaleoMultiobejctiveAlgo.PALEO_ITER = 100;
+      PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 1600;
+      PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 1600;
       algo.setEralyStoppingCondition(d -> d >= 1.0);
       long start = System.currentTimeMillis();
       algo.theAlgo();
