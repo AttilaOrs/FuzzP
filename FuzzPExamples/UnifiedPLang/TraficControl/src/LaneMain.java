@@ -14,7 +14,7 @@ import core.common.recoder.MultiRecorder;
 
 public class LaneMain {
   public static void main(String args[]) {
-    LaneUnifiedPetriMaker maker = new LaneUnifiedPetriMaker();
+    LaneUnifiedPetriMaker2 maker = new LaneUnifiedPetriMaker2();
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(maker.net);
     FullRecorder<UnifiedToken> fullRec = new FullRecorder<>();
     DebuggerRecorder<UnifiedToken> debugRec = new DebuggerRecorder<>();
@@ -24,12 +24,12 @@ public class LaneMain {
     for (int tick = 0; tick < 50; tick++) {
       Map<Integer, UnifiedToken> inp = new HashMap<>();
       if (tick % 10 < 5) {
-        inp.put(maker.iP3, new UnifiedToken((double) (10 - tick % 10)));
+        inp.put(maker.iP1, new UnifiedToken((double) (10 - tick % 10)));
       } else {
-        inp.put(maker.iP2, new UnifiedToken((double) (10 - tick % 10)));
+        inp.put(maker.iP2, new UnifiedToken((double) (15 - tick % 10)));
       }
       if (tick % 7 == 0) {
-        inp.put(maker.iP4, new UnifiedToken(0.0));
+        inp.put(maker.iP3, new UnifiedToken(0.0));
       }
 
       exec.runTick(inp);

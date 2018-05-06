@@ -1,0 +1,36 @@
+
+split = {
+	[<0,FF><0,FF><FF,FF><FF,0><FF,0>]
+	[<0,FF><0,FF><FF,FF><FF,0><FF,0>]
+	[<0,FF><0,FF><FF,FF><FF,0><FF,0>]
+	[<0,FF><0,FF><FF,FF><FF,0><FF,0>]
+	[<0,FF><0,FF><FF,FF><FF,0><FF,0>]
+	};
+	
+splitTwo = {
+	[< 0,FF>< 0,FF>< 0,FF>< 0,FF>< 0,FF>]
+	[< 0,FF>< 0,FF>< 0,FF>< 0,FF>< 0,FF>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>]
+	[<FF, 0><FF, 0><FF, 0><FF, 0><FF, 0>]
+	[<FF, 0><FF, 0><FF, 0><FF, 0><FF, 0>]
+	};
+merge = {
+	[<FF><FF><FF><FF><FF><0>]
+	[<FF><FF><FF><FF><FF><0>]
+	[<FF><FF><FF><FF><FF><0>]
+	[<FF><FF><FF><FF><FF><0>]
+	[<FF><FF><FF><FF><FF><0>]
+	[<0><0><0><0><0><FF>]
+	};
+
+
+iP0(1.0) -> t0[splitTwo] -> P1 -> t1 -> P4 -> t3;
+                                  t1 -> P5 -> oT0;
+            t0           -> P2 -> t2 -> P6 -> t3;
+                                  t2 -> P7 -> oT1;
+                                
+t3[merge] -> P8 -> t4[1] -> P9 -> t0;
+
+P9 <= <0.0>;
+
+  
