@@ -1,0 +1,31 @@
+
+consCopyTable = {
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><-2,-2>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF><-1,-1>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>< 0, 0>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>< 1, 1>]
+	[<FF,FF><FF,FF><FF,FF><FF,FF><FF,FF>< 2, 2>]
+	};
+	
+adder = @+@ {
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	[<2><2><2><2><2>]
+	};
+
+
+P1(10.0) -> t1[consCopyTable] -> P2(10.0) -> t0[adder]; 
+P2 -> t1 -> P1;
+P1 <= <1.0>;
+
+iP3(1)-> t2-> P4(10.0) -> t0 -> P5(10.0);
+              P6 -> t3[0] -> P5;
+              P6 -> t2 ;
+P6 <= <0.0>;
+
+P5-> t5 -> P7 ->t4[1] -> P6;
+     t5 -> P8 -> oT6 ;
+ 
+ 

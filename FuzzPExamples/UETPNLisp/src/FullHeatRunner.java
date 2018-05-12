@@ -30,7 +30,7 @@ public class FullHeatRunner {
 
   public static void main(String args[]) throws FileNotFoundException {
     initScenarios();
-    INode<NodeType> root = UETPNLisp.fromFile(new File("heat2.uls"));
+    INode<NodeType> root = UETPNLisp.fromFile(new File("heat3.uls"));
     FullHeastControllSimpleDescriptor desc = new FullHeastControllSimpleDescriptor(
         asList(moringScneario, eveningScenario, fitnessScenario));
     desc.setLogging(true);
@@ -39,7 +39,7 @@ public class FullHeatRunner {
     int cntr = 0;
     for( IterationLogger log: desc.getLoggers()) {
       plot(log.getLogsForPlottingContatinigStrings(""), "scen" + (cntr));
-      writeToFile("scen" + cntr + ".dat", log.exportToDat(""));
+      writeToFile("scen_n" + cntr + ".dat", log.exportToDat(""));
       cntr++;
     }
     

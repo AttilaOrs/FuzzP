@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import Main.UnifiedVizualizer;
@@ -13,43 +14,34 @@ import core.common.recoder.FullRecorder;
 import core.common.recoder.MultiRecorder;
 import dotDrawer.PetriDotDrawerVertical;
 
-public class PositveNegativeSplitUnifiedPetriMain {
+public class AddIfEventMain {
 
   public static void main(String args[]) {
-    PositveNegativeSplitUnifiedPetriMaker maker = new PositveNegativeSplitUnifiedPetriMaker();
+	  AddIfEventUnifiedPetriMaker maker = new AddIfEventUnifiedPetriMaker();
     SyncronousUnifiedPetriExecutor exec = new SyncronousUnifiedPetriExecutor(maker.net);
     FullRecorder<UnifiedToken> fullRec = new FullRecorder<>();
     DebuggerRecorder<UnifiedToken> debugRec = new DebuggerRecorder<>();
     MultiRecorder<UnifiedToken> multiRec = new MultiRecorder<>(Arrays.asList(fullRec, debugRec));
     exec.setRecorder(multiRec);
+    List<Integer> prims =  Arrays.asList(2,3,5,7,11, 13, 17);
 
-    for (double i0 = -1.0; i0 <= 0.0; i0 += 0.10) {
+    for (int i =0; i <15; i++) {
         Map<Integer, UnifiedToken> inp = new HashMap<>();
-        inp.put(maker.iP0, new UnifiedToken(i0));
+        if(prims.contains(i)) {
+			inp.put(maker.iP3, new UnifiedToken(0.0));
+        }
         exec.runTick(inp);
-    }
-    for(int i=0; i < 5; i++) {
-    	Map<Integer, UnifiedToken> inp = new HashMap<>();
-        inp.put(maker.iP0, new UnifiedToken(0.0));
-        exec.runTick(inp);	
-    }
-    for (double i0 = 0.0; i0 <= 1.0; i0 += 0.11) {
-      Map<Integer, UnifiedToken> inp = new HashMap<>();
-      inp.put(maker.iP0, new UnifiedToken(i0));
-      exec.runTick(inp);
     }
 
     UnifiedVizualizer.visualize(maker.net, fullRec, maker.nameStore);
     PetriDotDrawerVertical drawer = new PetriDotDrawerVertical(new DrawableUnifiedPetriNetWithExternalNames(maker.net,
         TransitionPlaceNameStore.createOrdinarNames(maker.net)));
-    drawer.makeImage("loop");
-    String ip0 = fullRec.evolutionOfPlaceDatFormatOnceInTick(maker.iP0, t -> ((UnifiedToken) t).getValue());
-    String p5 = fullRec.evolutionOfPlaceDatFormatOnceInTick(maker.P5, t -> ((UnifiedToken) t).getValue());
-    String p6 = fullRec.evolutionOfPlaceDatFormatOnceInTick(maker.P6, t -> ((UnifiedToken) t).getValue());
+    drawer.makeImage("pos");
+    String ip0 = fullRec.evolutionOfPlaceDatFormatOnceInTick(maker.iP3, t -> ((UnifiedToken) t).getValue());
+    String p8 = fullRec.evolutionOfPlaceDatFormatOnceInTick(maker.P8, t -> ((UnifiedToken) t).getValue());
 
-    PlotUtils.writeToFile("lip0.txt", ip0);
-    PlotUtils.writeToFile("lp5.txt", p5);
-    PlotUtils.writeToFile("lp6.txt", p6);
+    PlotUtils.writeToFile("posIP0.txt", ip0);
+    PlotUtils.writeToFile("posP8.txt", p8);
 
   }
 }

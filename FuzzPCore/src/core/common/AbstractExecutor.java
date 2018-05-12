@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -71,7 +72,7 @@ public abstract class AbstractExecutor<TTokenType extends FullRecordable<TTokenT
     stateOfPlaces = IntStream.range(0, myNet.getNrOfPlaces())
         .mapToObj(plId -> myNet.getInitialMarkingForPlace(plId).myClone()).collect(toList());
     delayStateOfTransitions = Stream.generate(() -> 0).limit(myNet.getNrOfTransition()).collect(toList());
-    valueHoldInTransitions = Stream.generate(() -> emptyTokenArray()).limit(myNet.getNrOfTransition())
+    valueHoldInTransitions = Stream.generate((Supplier<TTokenType[]>)() -> emptyTokenArray()).limit(myNet.getNrOfTransition())
         .collect(toList());
 
   }

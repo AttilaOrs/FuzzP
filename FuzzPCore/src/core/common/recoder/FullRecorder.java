@@ -164,11 +164,18 @@ public class FullRecorder<TokenType extends FullRecordable<TokenType>>
     int cntr = 0;
     for (List<IFullRecorderEvent> eventsInATick : eventGroupedByTicks()) {
       OptionalDouble avg = eventsInATick.stream()
-          .filter(i -> (i instanceof AbstarctTokenMovment) && ((AbstarctTokenMovment) i).place == placeID)
-          .map(i -> ((AbstarctTokenMovment) i).token)
+          //(i instanceof AbstarctTokenMovment) && ((AbstarctTokenMovment) i).place == placeID
+          .filter(i -> (((i instanceof AbstarctTokenMovment) && ((AbstarctTokenMovment) i).place == placeID)
+              ||((i instanceof InputPuttedInPlace) && ((InputPuttedInPlace) i).placeId == placeID) ))
+          .map(i -> {
+              if(i instanceof AbstarctTokenMovment) {
+                return  ((AbstarctTokenMovment) i).token;
+              }
+              return ((InputPuttedInPlace) i).token;
+          })
           .filter(t -> !t.isPhi())
           .mapToDouble(conv)
-          .average();
+          .findFirst();
       
       if(avg.isPresent()) {
         bld.append(cntr).append("\t").append(avg.getAsDouble()).append("\n");
