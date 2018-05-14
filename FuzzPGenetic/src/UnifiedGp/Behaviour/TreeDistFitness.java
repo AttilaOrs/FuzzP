@@ -32,7 +32,7 @@ public class TreeDistFitness<TCreature extends UnifiedGpIndi, TBehaviourDescript
     	return 0.0;
     }
     TCreature myIndi = pool.get(id);
-    int sum = alive.stream().filter(other -> other!= id).mapToInt(other -> {
+    int sum = alive.stream().filter(other -> other!= id && other!= -1).mapToInt(other -> {
       TCreature otherIndi = pool.get(other);
       return TreeDistUtil.treeEditDistance(myIndi.getRoot(), otherIndi.getRoot());
     }).sum();
