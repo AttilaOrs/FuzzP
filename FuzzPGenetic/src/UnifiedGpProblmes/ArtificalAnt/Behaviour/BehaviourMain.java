@@ -96,13 +96,13 @@ public class BehaviourMain {
     bfitnesCals.add(AntSizeFitness::new);
     bfitnesCals.add(BehaviourDiversityHammingFitness::new);
     IOperatorFactory<IBeahviourDescriptor<AntBinaryDescription, UnifiedGpIndi>> descriptorFactory = AntBinaryDescriptor::new;
-    BehaviourParalellPool<UnifiedGpIndi, AntBinaryDescription> bpool = new BehaviourParalellPool<UnifiedGpIndi, AntBinaryDescription>(
-        gens, mutators, breeders, bfitnesCals, descriptorFactory);
     ForkJoinPool forkJoin = new ForkJoinPool(Runtime.getRuntime().availableProcessors());
+    PaleoSelector selector = selectorFactory.apply(forkJoin);
+    BehaviourParalellPool<UnifiedGpIndi, AntBinaryDescription> bpool = new BehaviourParalellPool<UnifiedGpIndi, AntBinaryDescription>(
+        gens, mutators, breeders, bfitnesCals, descriptorFactory, selector);
     PoolWrapperForTheorteticalDistance<UnifiedGpIndi> distancePool = new PoolWrapperForTheorteticalDistance<>(bpool,
         forkJoin, true);
 
-    PaleoSelector selector = selectorFactory.apply(forkJoin);
 
     PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(distancePool,
         new MultiplierTransformer(forkJoin), new double[]{1.0}, crossWeigth, new double[]{1.0}, selector);

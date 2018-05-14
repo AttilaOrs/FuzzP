@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
+import AlgoImpl.Selectors.PaleoSelectors.PaleoSelector;
 import structure.GPIndividSize;
 import structure.ICreaturePool;
 import structure.IGPGreature;
@@ -46,7 +47,9 @@ public class BehaviourParalellPool<TCreatue extends IGPGreature, TBehavourDesc> 
 			ArrayList<IOperatorFactory<ICreatureMutator<TCreatue>>> mutators,
 			ArrayList<IOperatorFactory<ICreatureBreeder<TCreatue>>> breeders,
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<TCreatue, TBehavourDesc>>> fitnesCals,
-      IOperatorFactory<IBeahviourDescriptor<TBehavourDesc, TCreatue>> descriptorFactory) {
+      IOperatorFactory<IBeahviourDescriptor<TBehavourDesc, TCreatue>> descriptorFactory,
+      PaleoSelector select
+      ) {
 		this.generators = generators;
 		this.mutators = mutators;
 		this.breeders = breeders;
@@ -60,7 +63,7 @@ public class BehaviourParalellPool<TCreatue extends IGPGreature, TBehavourDesc> 
 		toDo = new ConcurrentLinkedQueue<>();
 		workers = new ArrayList<>();
     secondPhaseTask = new ConcurrentLinkedQueue<>();
-    store = new BehaviourStore<>();
+    store = new BehaviourStore<>(select);
 		for (int q = 0; q < THREAD_NR; q++) {
 			WorkerThread worker = new WorkerThread(this);
 			workers.add(worker);

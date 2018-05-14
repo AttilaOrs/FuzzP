@@ -108,14 +108,15 @@ public class Main {
 
       double[] crossWeigth = new double[]{0.5, 0.5};
 
-      BehaviourParalellPool<UnifiedGpIndi, FullHeatControllSimpleDescription> pool = new BehaviourParalellPool<UnifiedGpIndi, FullHeatControllSimpleDescription>(
-          gens, mutators, breeders, bfitnesCals, descriptorFactory);
 
       ForkJoinPool forkJoin = new ForkJoinPool(CreatureParallelPool.THREAD_NR);
 
+      SPEAIISelector paleoSelector = new SPEAIISelector(forkJoin);
+      
+      BehaviourParalellPool<UnifiedGpIndi, FullHeatControllSimpleDescription> pool = new BehaviourParalellPool<UnifiedGpIndi, FullHeatControllSimpleDescription>(
+          gens, mutators, breeders, bfitnesCals, descriptorFactory, paleoSelector);
       PoolWrapperForTheorteticalDistance<UnifiedGpIndi> distPool = new PoolWrapperForTheorteticalDistance<>(pool,
           forkJoin);
-      SPEAIISelector paleoSelector = new SPEAIISelector(forkJoin);
       PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
           null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 

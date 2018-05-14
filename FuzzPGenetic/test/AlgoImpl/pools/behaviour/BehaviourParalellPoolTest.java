@@ -40,7 +40,7 @@ public class BehaviourParalellPoolTest extends CreaturePoolWithStreamsTest {
     setupOperators();
 
     testPool = new BehaviourParalellPool<TestCreature, TestBehaviour>(generators, mutators, breeders, behaveFitnesCals,
-        descriptorFactory);
+        descriptorFactory, null);
     underTest = testPool;
 
   }

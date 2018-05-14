@@ -11,6 +11,8 @@ public interface IBehaviourDescriponDataStore<TBehaviourDescription> {
   public void deleteAllButThese(Set<Integer> ids);
 
   public Set<Integer> getIdsAlive();
+  
+  public Set<Integer> getBest(int i);
 
 
 }

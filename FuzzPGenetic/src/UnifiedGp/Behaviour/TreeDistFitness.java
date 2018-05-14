@@ -27,7 +27,7 @@ public class TreeDistFitness<TCreature extends UnifiedGpIndi, TBehaviourDescript
 
   @Override
   public double evaluate(Integer id) {
-    Set<Integer> alive = store.getIdsAlive();
+    Set<Integer> alive = store.getBest(10);
     TCreature myIndi = pool.get(id);
     int sum = alive.stream().filter(other -> other!= id).mapToInt(other -> {
       TCreature otherIndi = pool.get(other);
