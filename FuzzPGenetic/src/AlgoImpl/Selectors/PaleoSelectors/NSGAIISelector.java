@@ -91,6 +91,9 @@ public class NSGAIISelector extends AbstactMultiobejctiveSelector {
 
   @Override
   public List<int[]> selectNondeterministicly(int howMany, int arraysSize) {
+	  if(fronts == null || fronts.isEmpty()) {
+		  return new ArrayList<>();
+	  }
     List<int[]> toRet = new ArrayList<>();
     int frontCntr = 0;
     while(toRet.size() < howMany) {

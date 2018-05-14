@@ -81,6 +81,9 @@ public class SPEAIISelector extends AbstactMultiobejctiveSelector {
   
   @Override
   public List<int[]> selectNondeterministicly(int howMany, int arraysSize) {
+	if (bestIds == null || bestIds.isEmpty()) {
+		return new ArrayList<>();
+	}
     List<int[]> toRet = new ArrayList<>();
     for (int i = 0; i < bestIds.size(); i++) {
       if (toRet.size() == howMany) {

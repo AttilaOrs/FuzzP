@@ -97,7 +97,7 @@ public class BinaryDescMain {
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatBinaryDescripton>>> bfitnesCals = new ArrayList<>();
       bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), false, 1.0));
       bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.80 * room + 0.20 * tank) * size), true, 0.5));
-      bfitnesCals.add(()-> new RandomFitness<>());
+      bfitnesCals.add(()-> new TreeDistFitness<>());
       
 
       IOperatorFactory<IBeahviourDescriptor<FullHeatBinaryDescripton, UnifiedGpIndi>> descriptorFactory = () -> new FullHeastControllBinaryDescriptor(
