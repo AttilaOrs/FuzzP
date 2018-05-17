@@ -27,7 +27,7 @@ public class TreeDistFitness<TCreature extends UnifiedGpIndi, TBehaviourDescript
 
   @Override
   public double evaluate(Integer id) {
-    Set<Integer> alive = store.getBest(10);
+    Set<Integer> alive = store.getBest(1);
     if(alive.isEmpty()) {
     	return 0.0;
     }
@@ -36,7 +36,7 @@ public class TreeDistFitness<TCreature extends UnifiedGpIndi, TBehaviourDescript
       TCreature otherIndi = pool.get(other);
       return TreeDistUtil.treeEditDistance(myIndi.getRoot(), otherIndi.getRoot());
     }).sum();
-    return ((double) sum )/(alive.size() *1000.0);
+    return (sum )/(alive.size() *1000.0);
   }
 
 }
