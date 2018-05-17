@@ -32,13 +32,13 @@ public abstract class BinaryDescritor<TDesc extends BinaryDescrition, TCreature 
     for (int tickNr = 0; tickNr < rec.inps.size(); tickNr++) {
       Map<Integer, UnifiedToken> currentInp = rec.inps.get(tickNr);
       for (int inputChannelId = 0; inputChannelId < ps.getInputCount(); inputChannelId++) {
-        int inputPlace = rez.inpNrToInpPlace.getOrDefault(inputChannelId, -1);
+        int inputPlace = (rez != null) ? rez.inpNrToInpPlace.getOrDefault(inputChannelId, -1) : -1;
         UnifiedToken inpState = currentInp.getOrDefault(inputPlace, new UnifiedToken());
         putBits(inpState, b, ps.getScaleForInp(inputChannelId));
       }
       Map<Integer, UnifiedToken> currentOut = rec.outs.get(tickNr);
       for (int outChannelId = 0; outChannelId < ps.getOuputCount(); outChannelId++) {
-        int outTr = rez.outNrToOutTr.getOrDefault(outChannelId, -1);
+        int outTr = (rez != null) ? rez.outNrToOutTr.getOrDefault(outChannelId, -1) : -1;
         UnifiedToken outTrState = currentOut.getOrDefault(outTr, new UnifiedToken());
         putBits(outTrState, b, ps.getScaleForOut(outChannelId));
       }
