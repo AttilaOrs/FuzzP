@@ -20,13 +20,11 @@ import com.google.gson.stream.JsonReader;
 import AlgoImpl.IterationLogger;
 import AlgoImpl.PaleoMultiobejctiveAlgo;
 import AlgoImpl.SimpleGA;
-import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
+import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
 import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.behaviour.BehaviourParalellPool;
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.Behaviour.BehaviourDiversityHammingFitness;
-import UnifiedGp.Behaviour.RandomFitness;
-import UnifiedGp.Behaviour.TreeDistFitness;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
@@ -97,7 +95,7 @@ public class BinaryDescMain {
       ArrayList<IOperatorFactory<IBehaviourBasedFitness<UnifiedGpIndi, FullHeatBinaryDescripton>>> bfitnesCals = new ArrayList<>();
       bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.95 * room + 0.05 * tank) * size), false, 1.0));
       bfitnesCals.add(() -> new OverallFitness((tank, room, size) -> ((0.80 * room + 0.20 * tank) * size), true, 0.5));
-      bfitnesCals.add(()-> new TreeDistFitness<>());
+      bfitnesCals.add(() -> new BehaviourDiversityHammingFitness<>());
       
 
       IOperatorFactory<IBeahviourDescriptor<FullHeatBinaryDescripton, UnifiedGpIndi>> descriptorFactory = () -> new FullHeastControllBinaryDescriptor(
@@ -115,7 +113,7 @@ public class BinaryDescMain {
 
       ForkJoinPool forkJoin = new ForkJoinPool(CreatureParallelPool.THREAD_NR);
 
-      SPEAIISelector paleoSelector = new SPEAIISelector(forkJoin);
+      NSGAIISelector paleoSelector = new NSGAIISelector(forkJoin);
       BehaviourParalellPool<UnifiedGpIndi, FullHeatBinaryDescripton> pool = new BehaviourParalellPool<>(
           gens, mutators, breeders, bfitnesCals, descriptorFactory, paleoSelector);
 
