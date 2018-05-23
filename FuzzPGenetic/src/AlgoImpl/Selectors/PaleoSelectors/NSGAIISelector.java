@@ -125,8 +125,8 @@ public class NSGAIISelector extends AbstactMultiobejctiveSelector {
 
   @Override
   protected int compareIndi(int firstIndi, int secondIndi) {
-    RankAndDistance fiRank = ranks.get(firstIndi);
-    RankAndDistance seRank = ranks.get(secondIndi);
+    RankAndDistance fiRank = ranks.getOrDefault(firstIndi, new RankAndDistance(10000));
+    RankAndDistance seRank = ranks.getOrDefault(secondIndi, new RankAndDistance(1000));
     if (fiRank.rank < seRank.rank) {
       return firstIndi;
     }
