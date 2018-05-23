@@ -21,7 +21,8 @@ import com.google.gson.stream.JsonReader;
 import AlgoImpl.IterationLogger;
 import AlgoImpl.PaleoMultiobejctiveAlgo;
 import AlgoImpl.SimpleGA;
-import AlgoImpl.Selectors.PaleoSelectors.SPEAIISelector;
+import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
+import AlgoImpl.Selectors.PaleoSelectors.PaleoSelector;
 import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.PoolWrapperForTheorteticalDistance;
 import AlgoImpl.pools.behaviour.BehaviourParalellPool;
@@ -111,13 +112,13 @@ public class Main {
 
       ForkJoinPool forkJoin = new ForkJoinPool(CreatureParallelPool.THREAD_NR);
 
-      SPEAIISelector paleoSelector = new SPEAIISelector(forkJoin);
+      PaleoSelector paleoSelector = new NSGAIISelector(forkJoin);
       
       BehaviourParalellPool<UnifiedGpIndi, FullHeatControllSimpleDescription> pool = new BehaviourParalellPool<UnifiedGpIndi, FullHeatControllSimpleDescription>(
           gens, mutators, breeders, bfitnesCals, descriptorFactory, paleoSelector);
       PoolWrapperForTheorteticalDistance<UnifiedGpIndi> distPool = new PoolWrapperForTheorteticalDistance<>(pool,
           forkJoin);
-      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
+      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(distPool,
           null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
       PaleoMultiobejctiveAlgo.PALEO_ITER = 250;
