@@ -118,7 +118,7 @@ public class Main {
           gens, mutators, breeders, bfitnesCals, descriptorFactory, paleoSelector);
       PoolWrapperForTheorteticalDistance<UnifiedGpIndi> distPool = new PoolWrapperForTheorteticalDistance<>(pool,
           forkJoin);
-      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(distPool,
+      PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
           null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
       PaleoMultiobejctiveAlgo.PALEO_ITER = 250;
