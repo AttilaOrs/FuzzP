@@ -5,8 +5,8 @@ import UnifiedGp.Tree.INode;
 
 public class InnerNode implements IInnerNode<NodeType> {
 
-  NodeType myType;
-  INode<NodeType> fi, se;
+  final NodeType myType;
+  final INode<NodeType> fi, se;
 
   public InnerNode(NodeType myType, INode<NodeType> fi, INode<NodeType> se) {
     this.myType = myType;

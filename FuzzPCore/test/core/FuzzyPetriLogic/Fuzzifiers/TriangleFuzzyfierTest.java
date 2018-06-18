@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,26 +36,21 @@ public class TriangleFuzzyfierTest {
   @Test
   public void testWithPlot() {
     HashMap<String, ArrayList<Double>> ll = new HashMap<>();
-    ll.put("sin", new ArrayList<>());
-    ll.put("defizified", new ArrayList<>());
-    ll.put(FuzzyValue.NL.name(), new ArrayList<>());
-    ll.put(FuzzyValue.NM.name(), new ArrayList<>());
-    ll.put(FuzzyValue.ZR.name(), new ArrayList<>());
-    ll.put(FuzzyValue.PM.name(), new ArrayList<>());
-    ll.put(FuzzyValue.PL.name(), new ArrayList<>());
-    for (double r = 0; r < 2 * Math.PI; r += 0.001) {
-      double ss = Math.sin(r) * 2.2;
-      FuzzyToken res = underTest.fuzzifie(ss);
-      ll.get("sin").add(ss);
-      ll.get(FuzzyValue.NL.name()).add(res.getFuzzyValue(FuzzyValue.NL));
-      ll.get(FuzzyValue.NM.name()).add(res.getFuzzyValue(FuzzyValue.NM));
-      ll.get(FuzzyValue.ZR.name()).add(res.getFuzzyValue(FuzzyValue.ZR));
-      ll.get(FuzzyValue.PM.name()).add(res.getFuzzyValue(FuzzyValue.PM));
-      ll.get(FuzzyValue.PL.name()).add(res.getFuzzyValue(FuzzyValue.PL));
-      ll.get("defizified").add(underTest.defuzzify(res));
-    }
 
-		// PlotUtils.plot(ll, "kacsa.svg");
+    underTest = new TriangleFuzzyfier(new Double[] { null, 10.0, 16.0 }, new Double[] { 10.0, 16.0, 22.0 },
+        new Double[] { 16.0, 22.0, 28.0 }, new Double[] { 22.0, 28.0, 34.0 }, new Double[] { 28.0, 34.0, null });
+    List<String> strList = new ArrayList<>();
+    for (double r = 5; r < 39; r += 0.1) {
+      StringBuilder bld = new StringBuilder();
+      FuzzyToken res = underTest.fuzzifie(r);
+      bld.append(r).append(" ");
+      for (FuzzyValue fv : FuzzyValue.inOrderWithoutPhi) {
+        bld.append(res.getFuzzyValue(fv)).append(" ");
+      }
+      strList.add(bld.toString());
+    }
+      // Files.write(Paths.get("fuzzy_temp.dat"), strList, Charset.forName("UTF-8"));
+
   }
 
 }

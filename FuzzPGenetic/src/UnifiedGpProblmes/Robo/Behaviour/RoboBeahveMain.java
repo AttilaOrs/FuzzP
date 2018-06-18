@@ -17,7 +17,6 @@ import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
 import AlgoImpl.pools.CreatureParallelPool;
 import AlgoImpl.pools.behaviour.BehaviourParalellPool;
 import UnifiedGp.AbstactFitness;
-import UnifiedGp.Behaviour.BehaviourDiversityHammingFitness;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
 import UnifiedGp.GpIndi.TreeBuilderCongigGeneralImpl;
 import UnifiedGp.GpIndi.UnifiedGpIndi;
@@ -95,9 +94,9 @@ public class RoboBeahveMain {
       PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool,
           null, new double[]{1.0}, crossWeigth, new double[]{1.0}, paleoSelector);
 
-      PaleoMultiobejctiveAlgo.PALEO_ITER = 10;
-      PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 20;
-      PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 20;
+      PaleoMultiobejctiveAlgo.PALEO_ITER = 100;
+      PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 1600;
+      PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 1600;
       long start = System.currentTimeMillis();
       algo.theAlgo();
       long stop = System.currentTimeMillis();
@@ -160,7 +159,7 @@ public class RoboBeahveMain {
   
   private static double finalize(UnifiedGpIndi rez, String path) {
     MazeFitnes mm =new MazeFitnes(Court.getMaze().myClone());
-    AbstactFitness abs = (AbstactFitness) mm;
+    AbstactFitness abs = mm;
     abs.setRecordForOptimize(true);
     double rr = mm.evaluate(rez);
 

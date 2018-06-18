@@ -108,7 +108,7 @@ public class RoboPetriVisulaizerFiveSensors extends Application {
 
   private static void loadMain() {
     PetriNetJsonSaver<UnifiedPetriNet> load = new PetriNetJsonSaver<UnifiedPetriNet>();
-    RoboPetriVisulaizerFiveSensors.net = load.load("Petri.json", UnifiedPetriNet.class);
+    RoboPetriVisulaizerFiveSensors.net = load.load("Petri_sensor.json", UnifiedPetriNet.class);
     inpsPlaceId = Arrays.asList(385, 390, 401, 413, -1);
 
     fiOut = 364;
