@@ -49,13 +49,13 @@ public class MazeFitnes extends AbstactFitness implements ICreatureFitnes<Unifie
     exec.setRecorder(rec);
     rez.addActionIfPossible(0, i -> commonCmd = i.getValue());
     rez.addActionIfPossible(1, i -> diffCmd = i.getValue());
-    double f = evalSimple(maze, exec, false);
+    double f = evalSimple(maze, exec);
     super.updateCreatureWithSimplification(creature, rez, rec);
     double multi2 = super.fireCountMulti(rec, allRun);
     return f * multi * multi2;
   }
 
-  private double evalSimple(Court c, SyncronousUnifiedPetriExecutor exec, boolean chance) {
+  private double evalSimple(Court c, SyncronousUnifiedPetriExecutor exec) {
     exec.resetSimulator();
 
     commonCmd = 0.0;
