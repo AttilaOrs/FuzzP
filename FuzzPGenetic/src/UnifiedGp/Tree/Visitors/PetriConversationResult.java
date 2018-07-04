@@ -1,6 +1,8 @@
 package UnifiedGp.Tree.Visitors;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -45,5 +47,16 @@ public class PetriConversationResult {
     return inpNrToInpPlace.containsKey(i);
 
   }
+  public Map<Integer, UnifiedToken> convertFromInputSpecificationToPlace(Map<Integer, UnifiedToken> inpSpec){
+    Map<Integer, UnifiedToken> toRet = new HashMap<>();
+    for(Entry<Integer, UnifiedToken> i :inpSpec.entrySet()) {
+      if(inpNrToInpPlace.containsKey(i.getKey())) {
+        toRet.put(inpNrToInpPlace.get(i.getKey()), i.getValue());
+      }
+    }
+    return toRet;
+    
+  }
+
 
 }

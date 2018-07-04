@@ -76,8 +76,12 @@ public class TreeBuilderCongigGeneralImpl implements TreeBuilderConfig<NodeType>
         rnd.nextInt(spec.getInputCount())));
     factories.put(NodeType.Out, rnd -> new OutputLeaf(rnd.nextInt(spec.getOuputCount()),
         OutType.values()[rnd.nextInt(OutType.values().length)]));
-    factories.put(NodeType.Delay, rnd -> new DelayLeaf(rnd.nextInt(spec.getMaxDelay())));
-    factories.put(NodeType.Memory, rnd -> new MemoryLeaf(rnd.nextInt(spec.getMaxDelay())));
+    if(spec.getMaxDelay()>0) {
+      factories.put(NodeType.Memory, rnd -> new MemoryLeaf(rnd.nextInt(spec.getMaxDelay())));
+      factories.put(NodeType.Delay, rnd -> new DelayLeaf(rnd.nextInt(spec.getMaxDelay())));
+    } else {
+      factories.put(NodeType.Delay, rnd -> new DelayLeaf(0));
+    }
     factories.put(NodeType.Block, rnd -> new BlockLeaf());
     factories.put(NodeType.Const, rnd -> new ConstantLeaf(consts[rnd.nextInt(consts.length)])); // TODO
     factories.put(NodeType.Inv, rnd -> new InversionLeaf());
@@ -103,7 +107,7 @@ public class TreeBuilderCongigGeneralImpl implements TreeBuilderConfig<NodeType>
 
   @Override
   public Function<Random, INode<NodeType>> getLeafFactory(NodeType t) {
-    return factories.get(t);
+    return factories.getOrDefault(t, m -> new DelayLeaf(0));
   }
 
   @Override
