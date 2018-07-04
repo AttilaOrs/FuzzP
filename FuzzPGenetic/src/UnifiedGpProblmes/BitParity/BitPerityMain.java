@@ -61,14 +61,14 @@ public class BitPerityMain {
 
 
     ArrayList<IOperatorFactory<ICreatureMutator<UnifiedGpIndi>>> mutators = new ArrayList<>();
-    mutators.add(() -> new UnifiedGpIndiTreeMutator(createTreeBuilder(), false));
+    mutators.add(() -> new UnifiedGpIndiTreeMutator(createTreeBuilder(), true));
 
     ArrayList<IOperatorFactory<ICreatureBreeder<UnifiedGpIndi>>> breeders = new ArrayList<>();
-    breeders.add(() -> new UnifiedGpIndiBreeder(false));
+    breeders.add(() -> new UnifiedGpIndiBreeder(true));
     //breeders.add(() -> new UnifromCrossOver(prob));
 
     ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
-    fitnesses.add(() -> new ThreeBitParityFitness(false, false, false));
+    fitnesses.add(() -> new ThreeBitParityFitness(true, false, false));
     ISelector otherSelector = new LinearRankSelection();
     ISelector survSelector = new LinearRankSelection();
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
