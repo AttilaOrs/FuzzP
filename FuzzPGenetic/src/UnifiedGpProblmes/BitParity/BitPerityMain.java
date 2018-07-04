@@ -1,14 +1,15 @@
 package UnifiedGpProblmes.BitParity;
 
 import java.util.ArrayList;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
 
 import AlgoImpl.IterationLogger;
-import AlgoImpl.MultiobjectiveMulioperatorGA;
+import AlgoImpl.PaleoMultiobejctiveAlgo;
 import AlgoImpl.SimpleGA;
-import AlgoImpl.Selectors.LinearRankSelection;
+import AlgoImpl.Selectors.PaleoSelectors.NSGAIISelector;
 import AlgoImpl.pools.CreatureParallelPool;
 import UnifiedGp.AbstactFitness;
 import UnifiedGp.GpIndi.HalfRampHalfFull;
@@ -24,7 +25,6 @@ import core.FuzzyPetriLogic.PetriNet.PetriNetJsonSaver;
 import core.UnifiedPetriLogic.UnifiedPetriNet;
 import structure.ICreatureFitnes;
 import structure.IOperatorFactory;
-import structure.ISelector;
 import structure.operators.ICreatureBreeder;
 import structure.operators.ICreatureGenerator;
 import structure.operators.ICreatureMutator;
@@ -68,14 +68,13 @@ public class BitPerityMain {
     //breeders.add(() -> new UnifromCrossOver(prob));
 
     ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
+    fitnesses.add(() -> new ThreeBitParityFitness(true, true, false));
     fitnesses.add(() -> new ThreeBitParityFitness(true, true, true));
-    ISelector otherSelector = new LinearRankSelection();
-    ISelector survSelector = new LinearRankSelection();
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
     AbstactFitness.APPLY_SIZE_LIMIT = true;
     AbstactFitness.FIRED_TR_LIMIT = true;
     AbstactFitness.HARD_LIMIT = false;
-    AbstactFitness.SIZE_LIMIT_START = 300;
+    AbstactFitness.SIZE_LIMIT_START = 50;
     AbstactFitness.SIZE_LIMIT = 500;
 
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
@@ -86,8 +85,16 @@ public class BitPerityMain {
     CreatureParallelPool<UnifiedGpIndi> pool = new CreatureParallelPool<UnifiedGpIndi>(gens, mutators, breeders,
         fitnesses);
 
-    MultiobjectiveMulioperatorGA<UnifiedGpIndi> algo = new MultiobjectiveMulioperatorGA<>(pool, otherSelector,
-        survSelector, null, new double[] { 1.0 }, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 });
+
+    ForkJoinPool forkJoin = new ForkJoinPool(CreatureParallelPool.THREAD_NR);
+
+    NSGAIISelector paleoSelector = new NSGAIISelector(forkJoin);
+    PaleoMultiobejctiveAlgo<UnifiedGpIndi> algo = new PaleoMultiobejctiveAlgo<>(pool, null, new double[] { 1.0 }, crossWeigth, new double[] { 1.0 },
+        paleoSelector);
+
+    PaleoMultiobejctiveAlgo.PALEO_ITER = 100;
+    PaleoMultiobejctiveAlgo.PALEO_SURV_POP = 250;
+    PaleoMultiobejctiveAlgo.PALEO_NEW_POP = 250;
     SimpleGA.iteration = 100;
     SimpleGA.population = 500;
     algo.setEralyStoppingCondition(d -> d >= 89.0);
