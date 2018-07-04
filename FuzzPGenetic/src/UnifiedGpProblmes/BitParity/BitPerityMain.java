@@ -68,7 +68,7 @@ public class BitPerityMain {
     //breeders.add(() -> new UnifromCrossOver(prob));
 
     ArrayList<IOperatorFactory<ICreatureFitnes<UnifiedGpIndi>>> fitnesses = new ArrayList<>();
-    fitnesses.add(() -> new ThreeBitParityFitness(true, false, false));
+    fitnesses.add(() -> new ThreeBitParityFitness(true, true, false));
     ISelector otherSelector = new LinearRankSelection();
     ISelector survSelector = new LinearRankSelection();
     SimpleGA.REMOVE_ELITE_FROM_POP = false;
@@ -101,7 +101,6 @@ public class BitPerityMain {
     long stopTime = System.currentTimeMillis();
 
     UnifiedGpIndi rez = pool.get(i);
-    double rezFitnes = finalize(rez, runNr, path, stopTime - startTime);
 
 
 
